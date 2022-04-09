@@ -21,6 +21,6 @@ This is me near a lake in Shillong.
 <!-- update these accordingly -->
 
 [1]: http://www.twitter.com/astro_nitesh
-[2]: http://www.facebook.com/Nites874
+[2]: http://www.facebook.com/Nits874
 [3]: http://www.github.com/niteshchandra039
 <!-- [4]: https://www.instagram.com/27_nitesh -->
