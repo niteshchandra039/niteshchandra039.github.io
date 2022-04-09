@@ -5,6 +5,7 @@ You can use the [editor on GitHub](https://github.com/niteshchandra039/niteshcha
 Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
 
 ![This is an image](IMG20211126105307.jpg)
+This is me near a lake in Shillong.
 
 ### Markdown
 
