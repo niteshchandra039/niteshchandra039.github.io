@@ -10,11 +10,12 @@ This is me near a lake in Shillong.
 [![alt text][1.1]][1]
 [![alt text][2.1]][2]
 [![alt text][3.1]][3]
+[![alt text][4.1]][4]
 
 [1.1]: http://i.imgur.com/wWzX9uB.png (Follow on Twitter)
 [2.1]: http://i.imgur.com/fep1WsG.png (Connect with me on Facebook)
 [3.1]: http://i.imgur.com/9I6NRUm.png (Follow for codes)
-
+[4.1]: https://upload.wikimedia.org/wikipedia/commons/5/58/Instagram-Icon.png
 
 <!-- links to your social media accounts -->
 <!-- update these accordingly -->
@@ -22,3 +23,4 @@ This is me near a lake in Shillong.
 [1]: http://www.twitter.com/astro_nitesh
 [2]: http://www.facebook.com/Nites874
 [3]: http://www.github.com/niteshchandra039
+[4]: https://www.instagram.com/27_nitesh
