@@ -1,4 +1,4 @@
-## Welcome to GitHub Pages
+## Welcome to the Home Page of Nitesh
 
 You can use the [editor on GitHub](https://github.com/niteshchandra039/niteshchandra039.github.io/edit/main/index.md) to maintain and preview the content for your website in Markdown files.
 
