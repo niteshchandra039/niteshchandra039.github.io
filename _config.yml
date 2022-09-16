@@ -1,7 +1,3 @@
 theme: jekyll-theme-architect
 title: Nitesh's homepage
 description: Bookmark this to keep an eye on my project updates!
-
-layout: page
-title: "ABOUT SECTION"
-permalink: /about/
