@@ -5,7 +5,7 @@ Here is a link to my [CV](../Nitesh_CV.pdf).
 
 You may take a look one of my project which involves machine learning to generate the light curves of RR Lyrae stars. One can generate and download the light curves of RR Lyrae stars from the following website: [ANN Interpolator for light curves of RRab stars](http://ann-interpolator.web.app/).
 
-To learn more about me, please visit the [About](../about.md/) section.
+To learn more about me, please visit the [About](about.md) section.
 
 
 
