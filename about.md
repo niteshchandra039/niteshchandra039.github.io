@@ -16,7 +16,7 @@ Beyond my research, I am enthusiastic about promoting science outreach and educa
 
 I hold a Senior Research Fellow position at the Department of Physics and Astrophysics, University of Delhi. My academic journey has equipped me with a diverse skill set, including data preprocessing, feature engineering, algorithm development, and statistical analysis. I continually strive to expand my knowledge and stay at the forefront of emerging trends in both machine learning and astrophysics.
 
-If you would like to collaborate, discuss research ideas, or simply share your fascination with the cosmos, feel free to connect with me. You can reach me via email at niteshchandra039@gmail.com or connect on [LinkedIn](http://www.linkedin.com/in/nitesh_kumar).
+If you would like to collaborate, discuss research ideas, or simply share your fascination with the cosmos, feel free to connect with me. You can reach me via email at niteshchandra039@gmail.com or connect on [LinkedIn](http://www.linkedin.com/in/astro-nitesh).
 
 Thank you for visiting my page and your interest in my research!
 
