@@ -8,6 +8,8 @@ One of my notable projects involves using machine learning techniques to generat
 
 To learn more about me and my research interests, please visit the [About](about.md) section.
 
+Check out my latest update in the [Updates](update.md) section to stay informed about my recent work and publications.
+
 Connect with me on social media to stay updated on my latest work:
 
 - Follow me on [Twitter](http://www.twitter.com/astro_nitesh)
