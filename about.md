@@ -1,10 +1,10 @@
 ## About Nitesh Kumar
 
-![Nitesh Kumar](images/nitesh_profile.jpg)
+![Nitesh Kumar](IMG20211126105307.jpg)
 
 I am a passionate machine learning researcher in the field of astronomy and astrophysics, dedicated to unraveling the mysteries of the universe through data-driven approaches. With a strong background in physics and astrophysics, I combine my expertise in machine learning algorithms with my love for the cosmos to contribute to the advancement of astronomical knowledge.
 
-![Astronomy](images/astronomy_image.jpg)
+![Astronomy](ai_generated.jpg)
 
 My research focuses on applying state-of-the-art machine learning techniques to analyze astronomical datasets. I have a particular interest in studying variable stars, such as RR Lyrae stars, and their behavior. By developing innovative algorithms and models, I aim to extract valuable information from these celestial objects, enabling a deeper understanding of their intrinsic properties and evolution.
 
