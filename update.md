@@ -10,7 +10,7 @@ Please visit the [Homepage](index.md) for an overview of my research and project
 
 To learn more about me, please visit the [About](about.md) section.
 
-![Nitesh Kumar](images/nitesh_profile.jpg)
+![Nitesh Kumar](IMG20211126105307.jpg)
 
 One of my recent projects focuses on utilizing machine learning techniques to study the behavior of variable stars, particularly RR Lyrae stars. By leveraging the power of Artificial Neural Networks, Random Forests, and Decision Trees, I aim to enhance our understanding of these fascinating stellar objects.
 
