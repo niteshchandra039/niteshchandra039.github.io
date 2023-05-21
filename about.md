@@ -12,7 +12,7 @@ Throughout my academic journey, I have collaborated with esteemed astronomers an
 
 Beyond my research, I am enthusiastic about promoting science outreach and education. I believe in the power of scientific communication to inspire and engage people from all walks of life. I actively participate in public talks, science festivals, and social media platforms to share the wonders of astronomy and the possibilities of machine learning in unlocking its secrets.
 
-![Telescope](images/telescope_image.jpg)
+![Telescope](telescope.jpeg)
 
 I hold a Senior Research Fellow position at the Department of Physics and Astrophysics, University of Delhi. My academic journey has equipped me with a diverse skill set, including data preprocessing, feature engineering, algorithm development, and statistical analysis. I continually strive to expand my knowledge and stay at the forefront of emerging trends in both machine learning and astrophysics.
 
