@@ -1,22 +1,21 @@
-## Latest Update
+---
+layout: default
+---
 
-![Nitesh Kumar](images/nitesh_profile.jpg)
+## Welcome to Nitesh Kumar's Research Homepage
 
-Greetings everyone!
+I am a Senior Research Fellow at the Department of Physics and Astrophysics, University of Delhi, specializing in machine learning applications in astronomy. My research focuses on leveraging machine learning algorithms, such as Artificial Neural Networks, Random Forests, and Decision Trees, for various astronomical studies. Currently, I am working with variable stars, specifically RR Lyrae stars.
 
-I wanted to share with you my latest update. As a machine learning researcher in the field of astronomy and astrophysics, I have been actively working on applying advanced algorithms to analyze astronomical data and gain insights into celestial phenomena.
+Please take a look at my [CV](../Nitesh_CV.pdf) for more details about my background and research experience.
 
-![Astronomy](images/astronomy_image.jpg)
+One of my notable projects involves using machine learning techniques to generate light curves of RR Lyrae stars. You can access the website for generating and downloading these light curves here: [ANN Interpolator for RRab Star Light Curves](http://ann-interpolator.web.app/).
 
-One of my recent projects focuses on utilizing machine learning techniques to study the behavior of variable stars, particularly RR Lyrae stars. By leveraging the power of Artificial Neural Networks, Random Forests, and Decision Trees, I aim to enhance our understanding of these fascinating stellar objects.
+To learn more about me, please visit the [About](about.md) section.
 
-I'm excited to announce that my research findings have been published in a prestigious astronomy journal. The paper titled "Machine Learning Approaches for Analyzing RR Lyrae Stars" is now available online. You can access it [here](link_to_paper).
+To stay informed about my recent work and publications, check out the [Updates](update.md) section.
 
-I would like to express my gratitude to my research team, collaborators, and the University of Delhi for their support and guidance throughout this project.
+Connect with me on social media to stay updated on my latest work:
 
-Feel free to reach out to me if you have any questions or if you would like to discuss collaborations. You can connect with me on [Twitter](http://www.twitter.com/astro_nitesh) or [LinkedIn](http://www.linkedin.com/in/niteshkumar).
-
-Thank you for your continued support!
-
-Best regards,
-Nitesh Kumar
+- Follow me on [Twitter](http://www.twitter.com/astro_nitesh)
+- Connect with me on [Facebook](http://www.facebook.com/Nits874)
+- Check out my code repositories on [GitHub](http://www.github.com/niteshchandra039)
