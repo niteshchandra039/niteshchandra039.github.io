@@ -1,3 +1,7 @@
+---
+layout: default
+---
+
 ## Welcome to Nitesh Kumar's Research Homepage
 
 I am a Senior Research Fellow at the Department of Physics and Astrophysics, University of Delhi, specializing in machine learning applications in astronomy. My research focuses on leveraging machine learning algorithms, such as Artificial Neural Networks, Random Forests, and Decision Trees, for various astronomical studies. Currently, I am working with variable stars, specifically RR Lyrae stars.
