@@ -1,9 +1,9 @@
 ## Welcome to the Home Page of Nitesh Kumar
 
 I am a Senior Research Fellow at the Department of Physics and Astrophysics, University of Delhi. My research focuses on the applications of machine learning algorithms like Artificial Neural Networks, Random Forests, Decision Tress, etc in Astronomy. Currently, I'm working with the data of variable stars(in particular RR Lyrae stars).
-Here is a link to my cv![](cv.pdf)
+Here is a link to my [CV](../Nitesh_CV.pdf).
 
-[I'm a relative reference to a repository file](../about/)
+You may take a look one of my project which involves machine learning to generate the light curves of RR Lyrae stars. One can generate and download the light curves of RR Lyrae stars from the following website: [ANN Interpolator for light curves of RRab stars.](http://ann-interpolator.web.app/).
 
 
 ![Nitesh Kumar](IMG20211126105307.jpg)
