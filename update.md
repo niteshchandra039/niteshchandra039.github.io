@@ -10,8 +10,6 @@ Please visit the [Homepage](index.md) for an overview of my research and project
 
 To learn more about me, please visit the [About](about.md) section.
 
-![Nitesh Kumar](IMG20211126105307.jpg)
-
 One of my recent projects focuses on utilizing machine learning techniques to study the behavior of variable stars, particularly RR Lyrae stars. By leveraging the power of Artificial Neural Networks, Random Forests, and Decision Trees, I aim to enhance our understanding of these fascinating stellar objects.
 
 I'm excited to announce that my research findings have been published in a prestigious astronomy journal (MNRAS). The paper titled "Predicting light curves of RR Lyrae variables using artificial neural network based interpolation of a grid of pulsation models" is now available online. You can access it [here](https://arxiv.org/abs/2303.15117).
