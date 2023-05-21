@@ -18,6 +18,11 @@ I hold a Senior Research Fellow position at the Department of Physics and Astrop
 
 If you would like to collaborate, discuss research ideas, or simply share your fascination with the cosmos, feel free to connect with me. You can reach me via email at niteshchandra039@gmail.com or connect on [LinkedIn](http://www.linkedin.com/in/astro-nitesh).
 
+Please visit the [Homepage](index.md) for an overview of my research and projects.
+
+To stay informed about my recent work and publications, check out the [Updates](update.md) section.
+
+
 Thank you for visiting my page and your interest in my research!
 
 Best regards,
