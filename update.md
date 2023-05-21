@@ -2,20 +2,25 @@
 layout: default
 ---
 
-## Welcome to Nitesh Kumar's Research Homepage
+## Latest Update
 
-I am a Senior Research Fellow at the Department of Physics and Astrophysics, University of Delhi, specializing in machine learning applications in astronomy. My research focuses on leveraging machine learning algorithms, such as Artificial Neural Networks, Random Forests, and Decision Trees, for various astronomical studies. Currently, I am working with variable stars, specifically RR Lyrae stars.
+Greetings everyone!
 
-Please take a look at my [CV](../Nitesh_CV.pdf) for more details about my background and research experience.
-
-One of my notable projects involves using machine learning techniques to generate light curves of RR Lyrae stars. You can access the website for generating and downloading these light curves here: [ANN Interpolator for RRab Star Light Curves](http://ann-interpolator.web.app/).
+Please visit the [Homepage](index.md) for an overview of my research and projects.
 
 To learn more about me, please visit the [About](about.md) section.
 
-To stay informed about my recent work and publications, check out the [Updates](update.md) section.
+![Nitesh Kumar](images/nitesh_profile.jpg)
 
-Connect with me on social media to stay updated on my latest work:
+One of my recent projects focuses on utilizing machine learning techniques to study the behavior of variable stars, particularly RR Lyrae stars. By leveraging the power of Artificial Neural Networks, Random Forests, and Decision Trees, I aim to enhance our understanding of these fascinating stellar objects.
 
-- Follow me on [Twitter](http://www.twitter.com/astro_nitesh)
-- Connect with me on [Facebook](http://www.facebook.com/Nits874)
-- Check out my code repositories on [GitHub](http://www.github.com/niteshchandra039)
+I'm excited to announce that my research findings have been published in a prestigious astronomy journal (MNRAS). The paper titled "Predicting light curves of RR Lyrae variables using artificial neural network based interpolation of a grid of pulsation models" is now available online. You can access it [here](https://arxiv.org/abs/2303.15117).
+
+I would like to express my gratitude to my research team, collaborators, and the University of Delhi for their support and guidance throughout this project.
+
+Feel free to reach out to me if you have any questions or if you would like to discuss collaborations. You can connect with me on [Twitter](http://www.twitter.com/astro_nitesh) or through email at [niteshchandra039@gmail.com].
+
+Thank you for your interest and support!
+
+Best regards,
+Nitesh Kumar
