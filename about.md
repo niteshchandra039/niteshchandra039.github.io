@@ -1,18 +1,5 @@
 ## About Nitesh Kumar
 
-<a href="#">
-  <button class="button">Homepage</button>
-</a>
-<a href="about.html">
-  <button>About</button>
-</a> <a href="update.html">
-  <button>Updates</button>
-</a> <a href="../Nitesh_CV.pdf">
-  <button>
-    My CV
-  </button>
-</a>
-
 
 ![Nitesh Kumar](IMG20211126105307.jpg)
 
