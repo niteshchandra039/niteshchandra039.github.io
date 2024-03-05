@@ -1,6 +1,7 @@
 ---
 layout: default
 ---
+
 <a href="#">
   <button class="button">Homepage</button>
 </a>
@@ -13,6 +14,7 @@ layout: default
     My CV
   </button>
 </a>
+
 
 ## Latest Update
 
