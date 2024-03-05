@@ -4,19 +4,19 @@ layout: default
 
 
 
-<a href="about.md">
+<a href="about.html">
   <button>About</button>
-</a>
-
-<a href="update.md">
+</a> <a href="update.html">
   <button>Updates</button>
-</a>
-
-<a href="../Nitesh_CV.pdf">
+</a> <a href="../Nitesh_CV.pdf">
   <button>
     My CV
   </button>
 </a>
+
+
+
+
 
 ## Welcome to Nitesh Kumar's Research Homepage
 
