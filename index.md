@@ -2,9 +2,21 @@
 layout: default
 ---
 
-<button onclick="about.md">About</button>
-<button onclick="update.md">Updates</button>
 
+
+<a href="about.md">
+  <button>About</button>
+</a>
+
+<a href="update.md">
+  <button>Updates</button>
+</a>
+
+<a href="../Nitesh_CV.pdf">
+  <button>
+    My CV
+  </button>
+</a>
 
 ## Welcome to Nitesh Kumar's Research Homepage
 
