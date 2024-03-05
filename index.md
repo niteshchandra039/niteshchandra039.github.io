@@ -2,8 +2,8 @@
 layout: default
 ---
 
-<button onclick="location.href='about.md'">About</button>
-<button onclick="location.href='update.md'">Updates</button>
+<button onclick="about.md">About</button>
+<button onclick="update.md">Updates</button>
 
 
 ## Welcome to Nitesh Kumar's Research Homepage
