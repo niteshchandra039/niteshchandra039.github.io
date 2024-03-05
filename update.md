@@ -1,6 +1,18 @@
 ---
 layout: default
 ---
+<a href="#">
+  <button class="button">Homepage</button>
+</a>
+<a href="about.html">
+  <button>About</button>
+</a> <a href="update.html">
+  <button>Updates</button>
+</a> <a href="../Nitesh_CV.pdf">
+  <button>
+    My CV
+  </button>
+</a>
 
 ## Latest Update
 
