@@ -2,8 +2,9 @@
 layout: default
 ---
 
-
-
+<a href="#">
+  <button class="button">Homepage</button>
+</a>
 <a href="about.html">
   <button>About</button>
 </a> <a href="update.html">
