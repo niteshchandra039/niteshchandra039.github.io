@@ -18,7 +18,7 @@ theme_config:
   navbar_background: "#003366"  # Optional (default: "#333")
 
   # Set the hero section background color or image (e.g., a space nebula)
-  hero_background: url("hero-background.jpg")  # Optional (default: none)
+  hero_background: url("https://cdn.esahubble.org/archives/images/large/opo0432d.jpg")  # Optional (default: none)
 
   # Set the hero section text color (e.g., white for better contrast)
   hero_text_color: "#fff"  # Optional (default: "#333")
