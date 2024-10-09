@@ -1,7 +1,7 @@
 # Jekyll configuration file
 
 # Use the Minimal Mistakes theme
-remote_theme: "mmistakes/minimal-mistakes@4.24.0"  # Use the correct GitHub repository for the theme
+remote_theme: "mmistakes/minimal-mistakes@4.26.2"
 
 # Minimal Mistakes theme options
 minimal_mistakes_skin: "dark"  # Choose a dark skin for an elegant, modern appearance
@@ -36,8 +36,8 @@ author:
     facebook: "Nits874"
     github: "niteshchandra039"
 
-# Theme settings
-theme: minimal-mistakes-jekyll
+# # Theme settings
+# theme: minimal-mistakes-jekyll
 
 # Additional plugins
 plugins:
