@@ -36,8 +36,8 @@ author:
     facebook: "Nits874"
     github: "niteshchandra039"
 
-# Theme settings
-theme: minimal-mistakes-jekyll
+# # Theme settings
+# theme: minimal-mistakes-jekyll
 
 # Additional plugins
 plugins:
