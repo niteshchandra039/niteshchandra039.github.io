@@ -1,26 +1,23 @@
-# theme: jekyll-theme-cayman
-# remote_theme: pages-themes/hacker@v0.2.0
-# plugins:
-# - jekyll-remote-theme # add this line to the plugins list if you already have one
-# title: Nitesh's Research
-# description: Machine Learning Researcher in Astronomy and Astrophysics
+# Jekyll configuration file
 
-
-# Configuration for Jekyll Theme Cayman
+# Theme selection
 theme: jekyll-theme-cayman
 
-# Replace with desired theme options (refer to documentation for details)
+# Enable dark mode
 theme_config:
-  # Set to true to enable the dark mode
-  dark_mode: true  # Optional (default: false)
+  dark_mode: true  # Set to true to enable dark mode
 
-  # Set the navigation bar background color (e.g., a space blue)
-  navbar_background: "#003366"  # Optional (default: "#333")
+  # Custom navbar settings
+  navbar_background: "#003366"  # Dark blue color for the navbar background
 
-  # Set the hero section background color or image (e.g., a space nebula)
-  hero_background: url("opo0432d.jpg")  # Optional (default: none)
+  # Hero section settings
+  hero_background: url("opo0432d.jpg")  # Space-themed image as background
+  hero_text_color: "#fff"  # White text color for better contrast on the hero image
 
-  # Set the hero section text color (e.g., white for better contrast)
-  hero_text_color: "#fff"  # Optional (default: "#333")
+# Site settings
+title: "Nitesh's Research"
+description: "Machine Learning Researcher in Astronomy and Astrophysics"
 
-  # Customize other theme options based on your preference (refer to documentation)
+# Additional plugins
+plugins:
+  - jekyll-remote-theme  # Remote theme support plugin
