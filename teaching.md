@@ -4,6 +4,14 @@ title: "Teaching"
 permalink: /teaching/
 ---
 
+## Resources for students
+1. Computational Techniques (B. Sc. Physics)
+    - [Python Programming](_resources/Computational_Techniques/python_notes.pdf)
+    - [Jupyter Notebooks](_resources/Computational_Techniques/python_notes.ipynb)
+    - [End Sem Exam](_resources/Computational_Techniques/end_term_project_instructions.pdf)
+    - [other resources](_resources/Computational_Techniques/)
+
+
 ## Teaching Experience
 
 At UPES Dehradun, I have had the opportunity to teach a diverse range of courses to undergraduate and postgraduate students. My teaching areas include:

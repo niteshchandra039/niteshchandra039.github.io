@@ -1,0 +1,6 @@
+\beamer@sectionintoc {1}{Introduction}{3}{0}{1}
+\beamer@sectionintoc {2}{Syllabus}{5}{0}{2}
+\beamer@sectionintoc {3}{Unit 1}{11}{0}{3}
+\beamer@sectionintoc {4}{Linux Terminal and Commands}{19}{0}{4}
+\beamer@sectionintoc {5}{Editors}{24}{0}{5}
+\beamer@sectionintoc {6}{Computer Architecture and Organization}{35}{0}{6}
