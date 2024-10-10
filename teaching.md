@@ -5,11 +5,11 @@ permalink: /teaching/
 ---
 
 ## Resources for students
-1. Computational Techniques (B. Sc. Physics)
+1. **Computational Techniques (B. Sc. Physics)**
     - [Python Programming](resources/computational_techniques/python_notes.pdf)
     - [Jupyter Notebooks](resources/computational_techniques/python_notes.ipynb)
     - [End Sem Exam](resources/computational_techniques/end_term_project_instructions.pdf)
-    - [other resources](resources/computational_techniques/)
+
 
 
 ## Teaching Experience
