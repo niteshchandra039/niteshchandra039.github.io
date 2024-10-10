@@ -10,7 +10,7 @@ permalink: /teaching/
     - [Jupyter Notebooks](resources/computational_techniques/python_notes.ipynb)
     - [End Sem Exam](resources/computational_techniques/end_term_project_instructions.pdf)
 
-2. **Introduction to Computational Physics Lab**
+2. **Introduction to Computational Physics Lab (Int. B. Sc. + M. Sc.)**
     - [Lab Manual](resources/computational_physics_lab/lab_manual.pdf)
 
 
