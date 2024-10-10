@@ -1,0 +1,22 @@
+# main links
+main:
+  # - title: "About"
+  #   url: https://mmistakes.github.io/minimal-mistakes/about/
+  # - title: "Sample Posts"
+  #   url: /year-archive/
+  # - title: "Sample Collections"
+  #   url: /collection-archive/
+  # - title: "Sitemap"
+  #   url: /sitemap/
+
+  # Custom navigation bar
+  - title: "Home"
+    url: "/"
+  - title: "About"
+    url: "/about/"
+  - title: "Teaching"
+    url: "/teaching/"
+  - title: "Publications"
+    url: "/update/"
+  - title: "My CV"
+    url: "/Nitesh_CV.pdf"
