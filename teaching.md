@@ -13,6 +13,8 @@ permalink: /teaching/
 2. **Introduction to Computational Physics Lab (Int. B. Sc. + M. Sc.)**
     - [Lab Manual](resources/computational_physics_lab/lab_manual.pdf)
 
+3. **Learning Latex**
+    - [Latex Tutorial](resources/LearnLaTeX.pdf) 
 
 ## Teaching Experience
 
