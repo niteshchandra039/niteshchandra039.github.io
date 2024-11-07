@@ -16,6 +16,9 @@ permalink: /teaching/
 3. **Learning Latex**
     - [Latex Tutorial](resources/LearnLaTeX.pdf) 
 
+4. **C++ and Fortran Programming**
+    - [Fortran/C++ Programming](resources/computational_physics/Introduction_to_computational_physics_.pdf)
+
 ## Teaching Experience
 
 At UPES Dehradun, I have had the opportunity to teach a diverse range of courses to undergraduate and postgraduate students. My teaching areas include:
