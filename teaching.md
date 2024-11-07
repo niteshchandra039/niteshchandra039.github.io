@@ -11,7 +11,7 @@ permalink: /teaching/
     - [End Sem Exam](resources/computational_techniques/end_term_project_instructions.pdf)
 
 2. **Introduction to Computational Physics Lab (Int. B. Sc. + M. Sc.)**
-    - [Lab Manual](resources/computational_physics_lab/lab_manual.pdf)
+    - [Lab Manual](resources/computational_physics_lab/lab_manual_1.pdf)
 
 3. **Learning Latex**
     - [Latex Tutorial](resources/LearnLaTeX.pdf) 
