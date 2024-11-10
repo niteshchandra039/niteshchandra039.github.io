@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+    <channel>
+        <title>Your Website Title</title>
+        <link>http://www.yourwebsite.com</link>
+        <description>Your website description</description>
+        <language>en-us</language>
+        <item>
+            <title>Post Title 1</title>
+            <link>http://www.yourwebsite.com/post1</link>
+            <description>Summary of post 1</description>
+            <pubDate>Mon, 01 Jan 2023 00:00:00 +0000</pubDate>
+        </item>
+        <item>
+            <title>Post Title 2</title>
+            <link>http://www.yourwebsite.com/post2</link>
+            <description>Summary of post 2</description>
+            <pubDate>Tue, 02 Jan 2023 00:00:00 +0000</pubDate>
+        </item>
+    </channel>
+</rss>
