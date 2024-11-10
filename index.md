@@ -40,6 +40,11 @@ Here are some of my recent publications:
 - Spectral interpretation in the parameter space of a grid of stars using Machine Learning
 - Identification of new globular clusters in Milky way using Gaia DR3 data using Machine Learning
 
+### Blog
+Computational Astrophysics in INDIA: Exploring the Cosmos with Computational Power [Read More](https://medium.com/@niteshchandra039/computational-astrophysics-in-india-exploring-the-cosmos-with-computational-power-cf9d864858b3)
+
+
+
 ### About Me
 
 To find out more about me, visit the [About](about.md) page, and to stay informed about my recent work and publications, head over to the [Updates](update.md) page.
