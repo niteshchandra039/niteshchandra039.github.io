@@ -19,11 +19,11 @@ Here are my most recent publications indexed by NASA ADS:
   **Link:** [Read more](https://arxiv.org/abs/2303.15118)  
   **Abstract:** This study explores the application of machine learning techniques such as Random Forests and Decision Trees in the analysis of variable stars. Our findings demonstrate significant improvements in classification accuracy.
 
-3. **Title:** Enhancing Stellar Models with Deep Learning  
+<!-- 3. **Title:** Enhancing Stellar Models with Deep Learning  
   **Journal:** The Astrophysical Journal  
   **Link:** [Read more](https://arxiv.org/abs/2303.15119)  
-  **Abstract:** We introduce a deep learning framework to enhance the precision of stellar models. Our approach leverages convolutional neural networks to predict stellar parameters with unprecedented accuracy.
+  **Abstract:** We introduce a deep learning framework to enhance the precision of stellar models. Our approach leverages convolutional neural networks to predict stellar parameters with unprecedented accuracy. -->
 
-For a complete list of my publications, please visit my [NASA ADS profile](https://ui.adsabs.harvard.edu/).
+For a complete list of my publications, please visit my [NASA ADS profile](https://ui.adsabs.harvard.edu/search/q=orcid%3A0000-0003-0668-9999&sort=date%20desc%2C%20bibcode%20desc&p_=0).
 
 
