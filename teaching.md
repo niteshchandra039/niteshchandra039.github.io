@@ -16,8 +16,9 @@ permalink: /teaching/
 3. **Learning Latex**
     - [Latex Tutorial](resources/LearnLaTeX.pdf) 
 
-4. **C++ and Fortran Programming**
-    - [Fortran/C++ Programming](resources/computational_physics/Introduction_to_computational_physics_.pdf)
+4. **Computational Physics**
+    - [Computational Physics](resources/computational_physics/Introduction_to_computational_physics.pdf)
+    This course introduces students to numerical methods and their applications in physics. The course covers topics like numerical integration, solving differential equations, and Monte Carlo simulations. This coouse contains the introduction to Linux, Fortran, C++, Gnuplot, Latex, and Numerical Methods.
 
 ## Teaching Experience
 
@@ -36,7 +37,7 @@ At UPES Dehradun, I have had the opportunity to teach a diverse range of courses
 - **General Physics Labs**: Hands-on experiments in mechanics, optics, and electromagnetism.
 
 ### Mentorship:
-- Supervised several undergraduate and master's students on their thesis projects involving machine learning applications in astronomy.
+- Supervising several undergraduate and master's students on their thesis projects involving machine learning applications in astronomy.
 
 
 As a **Senior Research Fellow** at the University of Delhi, I have had the opportunity to mentor and teach undergraduate and postgraduate students.

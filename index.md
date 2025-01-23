@@ -1,7 +1,7 @@
 ---
 layout: home
 author_profile: true
-title: "Nitesh Kumar"
+title: "Nitesh Kumar (Ph. D)"
 ---
 
 ## Welcome to My Research Page
