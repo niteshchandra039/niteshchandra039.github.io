@@ -6,7 +6,7 @@ title: "Nitesh Kumar (Ph. D)"
 
 ## Welcome to My Research Page
 
-I am Assistant Professor (Astrophysics) at the **Department of Physics, University of Petroleum and Energy Studies (UPES), Deharadun**. I was Senior Research Fellow at the **Department of Physics and Astrophysics, University of Delhi**, specializing in **machine learning applications in astronomy**. My research focuses on leveraging machine learning algorithms, such as Artificial Neural Networks (ANN), Random Forests, and Decision Trees, for astronomical studies. Currently, I am working on **RR Lyrae variable stars**.
+I am an Assistant Professor (Astrophysics) at the **Department of Physics, University of Petroleum and Energy Studies (UPES), Dehradun**. I was a Senior Research Fellow at the **Department of Physics and Astrophysics, University of Delhi**, specialising in **machine learning applications in astronomy**. For astronomical studies, my research uses machine learning algorithms, such as Artificial Neural Networks (ANN), Random Forests, and Decision Trees. Currently, I am working on **RR Lyrae variable stars**.
 
 ### Current Research
 
