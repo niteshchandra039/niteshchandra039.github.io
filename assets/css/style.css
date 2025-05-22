@@ -1,0 +1,11 @@
+body {
+    font-family: 'Google Sans', sans-serif;
+    margin: 0; /* Set margins to minimum */
+    justify-content: center;
+    flex-direction: column;
+    text-shadow: 2px 2px 4px rgba(231, 226, 226, 0.7); /* Add shadow to text */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* add styles for the body */
