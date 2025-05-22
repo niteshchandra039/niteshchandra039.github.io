@@ -1,64 +1,106 @@
 ---
 layout: home
+title: "Nitesh Kumar | Astrophysicist"
+# permalink: /
 author_profile: true
-title: "Nitesh Kumar (Ph. D)"
 ---
 
-## Welcome to My Research Page
 
-I am an Assistant Professor (Astrophysics) at the **Department of Physics, University of Petroleum and Energy Studies (UPES), Dehradun**. I was a Senior Research Fellow at the **Department of Physics and Astrophysics, University of Delhi**, specialising in **machine learning applications in astronomy**. For astronomical studies, my research uses machine learning algorithms, such as Artificial Neural Networks (ANN), Random Forests, and Decision Trees. Currently, I am working on **RR Lyrae variable stars**.
+<br>
+ 
+<div class="page__content index-page" style="font-size: 16px; line-height: 1.6;">
 
-### Current Research
+<h1>Welcome to My Academic Homepage</h1>
 
-One of my notable projects involves using machine learning techniques to generate light curves of RR Lyrae stars. You can explore the project here:
+<p>
+I am <strong>Dr. Nitesh Kumar</strong>, an Assistant Professor of Astrophysics at the <strong>University of Petroleum and Energy Studies (UPES), Dehradun</strong>. 
+My research lies at the intersection of <strong>astronomy</strong> and <strong>machine learning</strong>, with a particular emphasis on the study of variable stars such as <strong>RR Lyrae</strong>.
+</p>
 
-- [ANN Interpolator for RRab Star Light Curves](http://ann-interpolator.web.app/)
-- [Multiwavelength photometric study of RR Lyrae variables in the globular cluster NGC 5272 (Messier 3)](https://academic.oup.com/mnras/article/531/3/2976/7681976)
+<p>
+Previously, I served as a Senior Research Fellow at the <strong>University of Delhi</strong>, where I developed machine learning pipelines for analyzing light curves, stellar spectra, and time series data.
+</p>
 
-### Research Interests
+<hr>
 
-My research interests include:
+<h2>🔬 Current Research Areas</h2>
+<ul>
+  <li>Machine learning-based generation of RR Lyrae star light curves</li>
+  <li>Supervised classification of variable stars</li>
+  <li>Stellar model interpolation using artificial neural networks</li>
+  <li>Searching for globular clusters in Gaia DR3</li>
+</ul>
 
-- Machine Learning Applications in Astronomy
-- Variable Stars (RR Lyrae, Cepheids)
-- Stellar Evolution and Pulsation
-- Time Series Analysis
-- Data Mining and Feature Engineering
+<h3>Featured Projects</h3>
+<ul>
+  <li><a href="http://ann-interpolator.web.app/" target="_blank">ANN Interpolator for RRab Star Light Curves</a></li>
+  <li><a href="https://academic.oup.com/mnras/article/531/3/2976/7681976" target="_blank">Photometric Study of RR Lyrae in NGC 5272 (M3)</a></li>
+</ul>
 
-### Recent Publications
+<hr>
 
-Here are some of my recent publications:
+<h2>📚 Recent Publications</h2>
+<ol>
+  <li>
+    Nitesh Kumar et al., <em>"Multiwavelength photometric study of RR Lyrae variables in the globular cluster NGC 5272 (Messier 3)"</em>, 
+    <strong>MNRAS</strong>, May 2024. 
+    <a href="https://doi.org/10.1093/mnras/stae1334" target="_blank">[DOI]</a>
+  </li>
+  <li>
+    Nitesh Kumar et al., <em>"Predicting light curves of RR Lyrae variables using artificial neural network based interpolation of a grid of pulsation models"</em>, 
+    <strong>MNRAS</strong>, March 2023. 
+    <a href="https://doi.org/10.1093/mnras/stad937" target="_blank">[DOI]</a>
+  </li>
+</ol>
 
-1. Nitesh Kumar, A. Bhardwaj, H. P. Singh, M. Rejkuba, M. Marconi, and P. Prugniel, “Multiwavelength photometric study of RR lyrae variables in the globular cluster NGC 5272 (Messier 3),” Monthly Notices of the Royal Astronomical Society, vol. 531, no. 3, pp. 2976–2997, May 2024, issn: 0035-8711. [doi:10.1093/mnras/stae1334](https://doi.org/10.1093/mnras/stae1334). 
+<p>See the full list on my 
+<a href="https://ui.adsabs.harvard.edu/search/q=orcid%3A0000-0003-0668-9999&sort=date+desc" target="_blank">NASA ADS profile</a>.</p>
 
-2. Nitesh Kumar, A. Bhardwaj, H. P. Singh, et al., “Predicting light curves of RR Lyrae variables using artificial neural network based interpolation of a grid of pulsation models,” Monthly Notices of the Royal Astronomical Society, vol. 522, no. 1, pp. 1504–1520, Mar. 2023, issn: 0035-8711.  [doi:10.1093/mnras/stad937](https://doi.org/10.1093/mnras/stad937).
+<hr>
 
-### Research Projects
-- Light Curve Generation of RR Lyrae Stars using Machine Learning
-- Classification of Variable Stars using Machine Learning
-- Time Series Analysis of RR Lyrae Stars
-- Spectral interpretation in the parameter space of a grid of stars using Machine Learning
-- Identification of new globular clusters in Milky way using Gaia DR3 data using Machine Learning
+<h2>🧠 Research Interests</h2>
+<ul>
+  <li>Machine Learning in Astronomy</li>
+  <li>Variable Stars: RR Lyrae, Cepheids</li>
+  <li>Stellar Evolution and Pulsation Models</li>
+  <li>Time Series Analysis & Data Mining</li>
+  <li>Photometric and Spectroscopic Classification</li>
+</ul>
 
-### Blog
-Computational Astrophysics in INDIA: Exploring the Cosmos with Computational Power [Read More](https://medium.com/@niteshchandra039/computational-astrophysics-in-india-exploring-the-cosmos-with-computational-power-cf9d864858b3)
+<hr>
 
+<h2>🎓 Teaching & Mentorship</h2>
+<p>
+At UPES, I teach courses at both undergraduate and postgraduate levels, including:
+</p>
+<ul>
+  <li>Python, C++, and Fortran Programming</li>
+  <li>Computational and Numerical Methods</li>
+  <li>Astrophysics and Planetary Science</li>
+  <li>Machine Learning in Astronomy</li>
+  <li>Observational Astronomy Labs</li>
+</ul>
 
+<p><a href="/teaching/">View detailed teaching resources and syllabi &raquo;</a></p>
 
-### About Me
+<hr>
 
-To find out more about me, visit the [About](about.md) page, and to stay informed about my recent work and publications, head over to the [Updates](update.md) page.
+<h2>✍️ Recent Blog</h2>
+<p>
+<a href="https://medium.com/@niteshchandra039/computational-astrophysics-in-india-exploring-the-cosmos-with-computational-power-cf9d864858b3" target="_blank">
+Computational Astrophysics in INDIA: Exploring the Cosmos with Computational Power</a>
+</p>
 
-### Get in Touch
+<hr>
 
-Connect with me on social media to stay updated on my latest work:
+<h2>📬 Connect with Me</h2>
+<ul>
+  <li>Email: <a href="mailto:niteshchandra039@gmail.com">niteshchandra039@gmail.com</a></li>
+  <li><a href="http://www.twitter.com/astro_nitesh" target="_blank">Twitter</a></li>
+  <li><a href="http://www.linkedin.com/in/astro-nitesh" target="_blank">LinkedIn</a></li>
+  <li><a href="http://www.github.com/niteshchandra039" target="_blank">GitHub</a></li>
+</ul>
 
-- [Twitter](http://www.twitter.com/astro_nitesh)
-- [Facebook](http://www.facebook.com/Nits874)
-- [GitHub](http://www.github.com/niteshchandra039)
-- [LinkedIn](http://www.linkedin.com/in/astro-nitesh)
+<p><em>Thank you for visiting my academic homepage!</em></p>
 
-
----
-
-{% include footer.html %}
+</div>

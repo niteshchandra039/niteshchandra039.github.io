@@ -5,22 +5,35 @@ permalink: /about/
 
 ---
 
-### About Nitesh Kumar
+<br>
 
-Hello! I am Nitesh Kumar, Assistant Professor (Astrophysics) at the Department of Physics, University of Petroleum and Energy Studies (UPES), Deharadun. I specialize in machine learning applications in astronomy, with a particular focus on variable stars, such as RR Lyrae stars. My research aims to leverage machine learning algorithms to analyze astronomical datasets and extract valuable insights from celestial objects.
-<!-- keep the image in center with a given width and height -->
-<!-- <img src='../nitesh.jpeg' alt='NK' width='200' height='200'  /> -->
+<div class="page__content" style="font-size: 16px; line-height: 1.6;">
 
-My research focuses on applying state-of-the-art machine learning techniques to analyze astronomical datasets. I have a particular interest in studying variable stars, such as RR Lyrae stars, and their behavior. By developing innovative algorithms and models, I aim to extract valuable information from these celestial objects, enabling a deeper understanding of their intrinsic properties and evolution.
+<h1 style="text-align: center;">About Me</h1>
 
-Throughout my academic journey, I have collaborated with esteemed astronomers and researchers, and I have actively contributed to the field through scientific publications and conference presentations. I have also been involved in organizing workshops and seminars, aiming to disseminate knowledge and foster collaboration among fellow researchers.
+<p style="text-align: center;">
+  <img src="/nitesh.jpeg" alt="Nitesh Kumar" width="180" height="180" style="border-radius: 50%; margin-bottom: 15px;" />
+</p>
 
-I hold a Senior Research Fellow position at the Department of Physics and Astrophysics, University of Delhi. My academic journey has equipped me with a diverse skill set, including data preprocessing, feature engineering, algorithm development, and statistical analysis. I continually strive to expand my knowledge and stay at the forefront of emerging trends in both machine learning and astrophysics.
 
-If you would like to collaborate, discuss research ideas, or simply share your fascination with the cosmos, feel free to connect with me. You can reach me via email at [niteshchandra039@gmail.com](mailto:niteshchandra039@gmail.com) or connect on [LinkedIn](http://www.linkedin.com/in/astro-nitesh).
+<p>
+I am <strong>Dr. Nitesh Kumar</strong>, Assistant Professor of Astrophysics at the <strong>University of Petroleum and Energy Studies (UPES), Dehradun</strong>.
+My research focuses on applying <strong>machine learning techniques to astronomical data</strong>, with a particular interest in <strong>variable stars</strong> such as RR Lyrae and Cepheids.
+</p>
 
-Please visit the [Homepage](index.md) for an overview of my research and projects.
+<p>
+I hold a Ph.D. in Physics from the <strong>University of Delhi</strong>, where I worked extensively on stellar variability and time-series modeling using artificial neural networks and statistical classifiers.
+My work integrates data-driven methodologies with classical astrophysical theory to uncover patterns in large-scale surveys like Gaia and Pan-STARRS.
+</p>
 
-To stay informed about my recent work and publications, check out the [Updates](update.md) section.
+<p>
+I am passionate about interdisciplinary collaboration, open science, and mentoring students in computational and observational astrophysics. If you’re interested in working together or just want to connect over astronomy and machine learning, feel free to reach out.
+</p>
 
-Thank you for visiting my page and your interest in my research!
+<p>
+📫 <a href="mailto:niteshchandra039@gmail.com">niteshchandra039@gmail.com</a> &nbsp; | &nbsp;
+<a href="http://www.linkedin.com/in/astro-nitesh" target="_blank">LinkedIn</a> &nbsp; | &nbsp;
+<a href="http://www.twitter.com/astro_nitesh" target="_blank">Twitter</a>
+</p>
+
+</div>
