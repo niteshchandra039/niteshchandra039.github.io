@@ -38,7 +38,18 @@ My teaching philosophy emphasizes clarity, experimentation, and the integration 
 
 <h3>4. Computational Physics (M.Sc. Level)</h3>
 <ul>
-  <li><a href="/resources/computational_physics/Introduction_to_computational_physics.pdf" target="_blank">Intro to Computational Physics (PDF)</a></li>
+  <li><a href="/resources/computational_physics/Introduction_to_computational_physics_23_May.pdf" target="_blank">Intro to Computational Physics (PDF)</a></li>
+</ul>
+
+<h3>5. Fundamentals of Astronomy (B.Sc. Physics)</h3>
+<ul>
+  <li><a href="/resources/fundamentals_of_astronomy/Astronomy_Notes.pdf" target="_blank">Lecture Notes (PDF)</a></li>
+  <li><a href="/resources/fundamentals_of_astronomy/assignment.pdf" target="_blank">Problem Sets (PDF)</a></li>
+</ul>
+
+<h3>6. Observational Astronomy Lab (B.Sc. Physics)</h3>
+<ul>
+  <li><a href="/resources/observational_astronomy_lab/Observational_Astronomy_Handbook.pdf" target="_blank">Lab Manual (PDF)</a></li>
 </ul>
 
 <p>
@@ -71,6 +82,14 @@ I mentor several B.Sc. and M.Sc. students in research projects involving:
   <li>RR Lyrae and Cepheid variable star classification</li>
   <li>Machine learning applications in astronomical time series</li>
   <li>Photometric data analysis using Python & neural networks</li>
+</ul>
+
+<hr>
+
+<h2>📝 Dissertation Guidance</h2>
+<ul>
+  <li><strong>Multiwavelength study of RR Lyrae stars:</strong> Atharva Bhatele</li>
+  <li><strong>Exoplanet parameter extraction using ExoFAST:</strong> Neelesh</li>
 </ul>
 
 <p>
