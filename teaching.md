@@ -21,24 +21,24 @@ My teaching philosophy emphasizes clarity, experimentation, and the integration 
 
 <h3>1. Computational Techniques (B.Sc. Physics)</h3>
 <ul>
-  <li><a href="resources/computational_techniques/python_notes.pdf" target="_blank">Python Programming Notes (PDF)</a></li>
-  <li><a href="resources/computational_techniques/python_notes.ipynb" target="_blank">Jupyter Notebooks</a></li>
-  <li><a href="resources/computational_techniques/end_term_project_instructions.pdf" target="_blank">End-Sem Project Instructions</a></li>
+  <li><a href="/resources/computational_techniques/python_notes.pdf" target="_blank">Python Programming Notes (PDF)</a></li>
+  <li><a href="/resources/computational_techniques/python_notes.ipynb" target="_blank">Jupyter Notebooks</a></li>
+  <li><a href="/resources/computational_techniques/end_term_project_instructions.pdf" target="_blank">End-Sem Project Instructions</a></li>
 </ul>
 
 <h3>2. Introduction to Computational Physics Lab (Int. B.Sc. + M.Sc.)</h3>
 <ul>
-  <li><a href="resources/computational_physics_lab/lab_manual_1.pdf" target="_blank">Lab Manual (PDF)</a></li>
+  <li><a href="/resources/computational_physics_lab/lab_manual_1.pdf" target="_blank">Lab Manual (PDF)</a></li>
 </ul>
 
 <h3>3. Learning LaTeX</h3>
 <ul>
-  <li><a href="resources/LearnLaTeX.pdf" target="_blank">LaTeX Tutorial (PDF)</a></li>
+  <li><a href="/resources/LearnLaTeX.pdf" target="_blank">LaTeX Tutorial (PDF)</a></li>
 </ul>
 
 <h3>4. Computational Physics (M.Sc. Level)</h3>
 <ul>
-  <li><a href="resources/computational_physics/Introduction_to_computational_physics.pdf" target="_blank">Intro to Computational Physics (PDF)</a></li>
+  <li><a href="/resources/computational_physics/Introduction_to_computational_physics.pdf" target="_blank">Intro to Computational Physics (PDF)</a></li>
 </ul>
 
 <p>
