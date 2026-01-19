@@ -1,106 +1,305 @@
 ---
 layout: home
-title: "Nitesh Kumar | Astrophysicist"
-# permalink: /
+title: "Dr. Nitesh Kumar | Astrophysicist"
 author_profile: true
 ---
 
 
-<br>
- 
-<div class="page__content index-page" style="font-size: 16px; line-height: 1.6;">
+<script>
+  // --- 0. DYNAMIC FAVICON INJECTION (Physics Atom) ---
+  (function() {
+    const link = document.createElement('link');
+    link.rel = 'icon';
+    // This creates an SVG favicon on the fly using an emoji
+    link.href = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚛️</text></svg>";
+    document.head.appendChild(link);
+  })();
+</script>
 
-<h1>Welcome to My Academic Homepage</h1>
 
-<p>
-I am <strong>Dr. Nitesh Kumar</strong>, an Assistant Professor of Astrophysics at the <strong>University of Petroleum and Energy Studies (UPES), Dehradun</strong>. 
-My research lies at the intersection of <strong>astronomy</strong> and <strong>machine learning</strong>, with a particular emphasis on the study of variable stars such as <strong>RR Lyrae</strong>.
-</p>
+<style>
+  /* ===============================
+     TYPOGRAPHY & GLOBAL STYLES
+     =============================== */
 
-<p>
-Previously, I served as a Senior Research Fellow at the <strong>University of Delhi</strong>, where I developed machine learning pipelines for analyzing light curves, stellar spectra, and time series data.
-</p>
+  .wide-content {
+    max-width: calc(100vw - 280px);
+  }
 
-<hr>
+  @media (max-width: 1024px) {
+    .wide-content {
+      max-width: 100%;
+    }
+  }
 
-<h2>🔬 Current Research Areas</h2>
-<ul>
-  <li>Machine learning-based generation of RR Lyrae star light curves</li>
-  <li>Supervised classification of variable stars</li>
-  <li>Stellar model interpolation using artificial neural networks</li>
-  <li>Searching for globular clusters in Gaia DR3</li>
-</ul>
+  .page__title { display: none; }
 
-<h3>Featured Projects</h3>
-<ul>
-  <li><a href="http://ann-interpolator.web.app/" target="_blank">ANN Interpolator for RRab Star Light Curves</a></li>
-  <li><a href="https://academic.oup.com/mnras/article/531/3/2976/7681976" target="_blank">Photometric Study of RR Lyrae in NGC 5272 (M3)</a></li>
-</ul>
+  .wide-content {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #444;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  }
 
-<hr>
+  h1 {
+    font-size: 1.75em;
+    margin-bottom: 0.5em;
+    color: #222;
+    font-weight: 700;
+  }
 
-<h2>📚 Recent Publications</h2>
-<ol>
-  <li>
-    Nitesh Kumar et al., <em>"Multiwavelength photometric study of RR Lyrae variables in the globular cluster NGC 5272 (Messier 3)"</em>, 
-    <strong>MNRAS</strong>, May 2024. 
-    <a href="https://doi.org/10.1093/mnras/stae1334" target="_blank">[DOI]</a>
-  </li>
-  <li>
-    Nitesh Kumar et al., <em>"Predicting light curves of RR Lyrae variables using artificial neural network based interpolation of a grid of pulsation models"</em>, 
-    <strong>MNRAS</strong>, March 2023. 
-    <a href="https://doi.org/10.1093/mnras/stad937" target="_blank">[DOI]</a>
-  </li>
-</ol>
+  h2 {
+    font-size: 1.4em;
+    margin-top: 1.6em;
+    margin-bottom: 0.8em;
+    color: #333;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 8px;
+  }
 
-<p>See the full list on my 
-<a href="https://ui.adsabs.harvard.edu/search/q=orcid%3A0000-0003-0668-9999&sort=date+desc" target="_blank">NASA ADS profile</a>.</p>
+  h3 {
+    font-size: 1.15em;
+    margin-bottom: 10px;
+    color: #222;
+    font-weight: 600;
+  }
 
-<hr>
+  a {
+    color: #2a7ae2;
+    text-decoration: none;
+  }
 
-<h2>🧠 Research Interests</h2>
-<ul>
-  <li>Machine Learning in Astronomy</li>
-  <li>Variable Stars: RR Lyrae, Cepheids</li>
-  <li>Stellar Evolution and Pulsation Models</li>
-  <li>Time Series Analysis & Data Mining</li>
-  <li>Photometric and Spectroscopic Classification</li>
-</ul>
+  a:hover {
+    color: #1a5cba;
+    text-decoration: underline;
+  }
 
-<hr>
+  /* ===============================
+     COMPONENTS
+     =============================== */
 
-<h2>🎓 Teaching & Mentorship</h2>
-<p>
-At UPES, I teach courses at both undergraduate and postgraduate levels, including:
-</p>
-<ul>
-  <li>Python, C++, and Fortran Programming</li>
-  <li>Computational and Numerical Methods</li>
-  <li>Astrophysics and Planetary Science</li>
-  <li>Machine Learning in Astronomy</li>
-  <li>Observational Astronomy Labs</li>
-</ul>
+  .intro-card {
+    background: linear-gradient(to right, #f9fbfd, #ffffff);
+    border-left: 4px solid #2a7ae2;
+    padding: 20px 25px;
+    border-radius: 6px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  }
 
-<p><a href="/teaching/">View detailed teaching resources and syllabi &raquo;</a></p>
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    margin-top: 20px;
+  }
 
-<hr>
+  .card {
+    background: #ffffff;
+    border: 1px solid #e1e4e8;
+    border-radius: 8px;
+    padding: 20px;
+    height: 100%;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
 
-<h2>✍️ Recent Blog</h2>
-<p>
-<a href="https://medium.com/@niteshchandra039/computational-astrophysics-in-india-exploring-the-cosmos-with-computational-power-cf9d864858b3" target="_blank">
-Computational Astrophysics in INDIA: Exploring the Cosmos with Computational Power</a>
-</p>
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.06);
+    border-color: #2a7ae2;
+  }
 
-<hr>
+  .card ul {
+    margin: 0;
+    padding-left: 20px;
+  }
 
-<h2>📬 Connect with Me</h2>
-<ul>
-  <li>Email: <a href="mailto:niteshchandra039@gmail.com">niteshchandra039@gmail.com</a></li>
-  <li><a href="http://www.twitter.com/astro_nitesh" target="_blank">Twitter</a></li>
-  <li><a href="http://www.linkedin.com/in/astro-nitesh" target="_blank">LinkedIn</a></li>
-  <li><a href="http://www.github.com/niteshchandra039" target="_blank">GitHub</a></li>
-</ul>
+  .card li {
+    margin-bottom: 6px;
+    font-size: 0.95em;
+  }
 
-<p><em>Thank you for visiting my academic homepage!</em></p>
+  .pub-item {
+    margin-bottom: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px dashed #eee;
+    font-size: 0.95em;
+  }
+
+  .pub-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    margin: 0 4px 6px 0;
+    background: #f1f8ff;
+    color: #0366d6;
+    border: 1px solid #c8e1ff;
+    border-radius: 12px;
+    font-size: 0.8em;
+    font-weight: 600;
+  }
+
+  .btn {
+    display: inline-block;
+    background: #2a7ae2;
+    color: #ffffff;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-weight: 500;
+    margin-top: 10px;
+  }
+
+  .btn:hover {
+    background: #1d5cb0;
+  }
+
+  hr {
+    border: 0;
+    border-top: 1px solid #eaeaea;
+    margin: 40px 0;
+  }
+</style>
+
+<div class="wide-content">
+
+  <div class="intro-card">
+    <h1>Welcome</h1>
+    <p style="font-size:1.05em; color:#555;">
+      I am <strong>Dr. Nitesh Kumar</strong>, an <strong>Assistant Professor</strong> at UPES, Dehradun and an
+      <strong>IUCAA Associate</strong>. I completed my Ph.D. in 2025 from the University of Delhi.
+      My research bridges <strong>Stellar Astrophysics</strong> and <strong>Machine Learning</strong>,
+      focusing on variable stars and large astronomical surveys.
+    </p>
+  </div>
+
+  <h2>🔬 Research & Skills</h2>
+
+  <div class="grid-container">
+    <div class="card">
+      <h3>Research Focus</h3>
+      <ul>
+        <li>RR Lyrae and pulsating variable stars</li>
+        <li>ANN based stellar model interpolation</li>
+        <li>Gaia DR3 and JWST data mining</li>
+        <li>Photometric and spectroscopic analysis</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Technical Skills</h3>
+      <span class="badge">Python</span>
+      <span class="badge">C++ / Fortran</span>
+      <span class="badge">Machine Learning</span>
+      <span class="badge">TensorFlow</span>
+      <span class="badge">SQL / ADQL</span>
+      <span class="badge">HPC</span>
+      <p style="font-size:0.9em; color:#666;">
+        Development of automated pipelines for astronomical time series.
+      </p>
+    </div>
+  </div>
+
+  <hr>
+
+  <h2>🚀 Featured Projects</h2>
+
+  <div class="grid-container">
+    <div class="card">
+      <h3>ANN Interpolator</h3>
+      <p>
+        Neural network based interpolation framework for RRab star light curves.
+      </p>
+      <a class="btn" href="http://ann-interpolator.web.app/" target="_blank">Project Website</a>
+    </div>
+
+    <div class="card">
+      <h3>RR Lyrae in M3</h3>
+      <p>
+        Photometric analysis of RR Lyrae stars in the globular cluster NGC 5272.
+      </p>
+      <a class="btn" href="https://academic.oup.com/mnras/article/531/3/2976/7681976" target="_blank">MNRAS Paper</a>
+    </div>
+  </div>
+
+  <hr>
+
+  <h2>📚 Recent Publications (2025–2026)</h2>
+  <div class="card">
+    <div class="pub-item">
+      <strong>A multiband photometric study of RR Lyrae stars in M53</strong><br>
+      <em>S. A. Gaur, Nitesh Kumar et al.</em><br>
+      New Astronomy (2026) | <a href="https://doi.org/10.1016/j.newast.2025.102515">DOI</a>
+    </div>
+    <div class="pub-item">
+      <strong>Physical parameters of stars in NGC 6397 using ANN</strong><br>
+      <em>Nitesh Kumar, P. Prugniel, H. P. Singh</em><br>
+      New Astronomy (2025) | <a href="https://doi.org/10.1016/j.newast.2025.102416">DOI</a>
+    </div>
+    <div class="pub-item">
+      <strong>Extraction of physical parameters of RRab variables</strong><br>
+      <em>Nitesh Kumar et al.</em><br>
+      Universe (2025) | <a href="https://doi.org/10.3390/universe11070207">DOI</a>
+    </div>
+    <div style="text-align:right;">
+      <a class="btn" href="https://ui.adsabs.harvard.edu/search/q=orcid%3A0000-0003-0668-9999" target="_blank"> View full list on NASA ADS </a>
+    </div>
+  </div>
+
+  <hr>
+
+  <h2>🎓 Teaching & Mentorship</h2>
+
+  <div class="grid-container">
+    <div class="card">
+      <h3>Courses</h3>
+      <ul>
+        <li>Computational Physics</li>
+        <li>Python, C++ and Fortran Programming</li>
+        <li>Machine Learning in Astronomy</li>
+        <li>Observational Astronomy</li>
+      </ul>
+      <a href="/teaching/" class="btn">Teaching Resources</a>
+    </div>
+
+    <div class="card">
+      <h3>Mentorship</h3>
+      <ul>
+        <li>Exoplanets with JWST data</li>
+        <li>Globular clusters using Gaia DR3</li>
+        <li>Age and metallicity of star clusters</li>
+      </ul>
+    </div>
+  </div>
+
+  <hr>
+
+  <h2>✍️ Recent Blog</h2>
+
+  <div class="card">
+    <p>
+      <a href="https://medium.com/@niteshchandra039/computational-astrophysics-in-india-exploring-the-cosmos-with-computational-power-cf9d864858b3" target="_blank">
+        Computational Astrophysics in India: Exploring the Cosmos with Computational Power
+      </a>
+    </p>
+  </div>
+
+  <hr>
+
+  <h2>📬 Connect</h2>
+
+  <div class="card" style="text-align:center;">
+    <p>Open to academic collaborations and student research projects.</p>
+    <span class="badge">📧 <a href="mailto:niteshchandra039@gmail.com">Email</a></span>
+    <span class="badge">🐦 <a href="https://twitter.com/astro_nitesh">Twitter</a></span>
+    <span class="badge">💼 <a href="https://linkedin.com/in/astro-nitesh">LinkedIn</a></span>
+    <span class="badge">💻 <a href="https://github.com/niteshchandra039">GitHub</a></span>
+  </div>
 
 </div>
+

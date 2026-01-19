@@ -1,20 +1,15 @@
 ---
-# Only the main Sass file needs front matter (the dashes are enough)
+# Only the main Sass file needs front matter
 search: false
 ---
 
 @charset "utf-8";
 
-@import "minimal-mistakes/skins/{{ site.minimal_mistakes_skin | default: 'default' }}"; // skin
-@import "minimal-mistakes"; // main partials
+/* Theme skin */
+@import "minimal-mistakes/skins/{{ site.minimal_mistakes_skin | default: 'default' }}";
 
-.index-page .page__content {
-//   font-size: 14px; // Decrease font size for main text
-  max-width: 100%; // Expand content to cover the full width
-  margin: 0; // Remove default margins
-  padding: 0 20px; // Add some padding for better readability
-}
+/* Theme core */
+@import "minimal-mistakes";
 
-.index-page .author__profile {
-  display: none; // Hide the left sidebar to utilize full width
-}
+
+

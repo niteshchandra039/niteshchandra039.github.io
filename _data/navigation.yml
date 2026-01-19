@@ -11,4 +11,5 @@ main:
   - title: "News"
     url: "/update/"
   - title: "Resume"
-    url: "/Nitesh_CV_20_july_25.pdf"
+    url: "/Nitesh_CV_19_Jan.pdf"
+    target: "_blank"
