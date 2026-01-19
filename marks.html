@@ -4,335 +4,326 @@ title: "Student Marks Portal"
 permalink: /marks/
 ---
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-  /* --- Global & Container Styles --- */
+  /* --- BASE STYLES --- */
+  * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
+  
   body {
-    background-color: #f8f9fc; /* Soft background */
-  }
-  
-  .marks-container { 
-    max-width: 480px; 
-    margin: 60px auto; 
-    font-family: 'Inter', sans-serif; 
-    color: #333; 
-    padding: 0 15px;
-  }
-
-  /* --- Header Section --- */
-  .portal-header {
-    text-align: center;
-    margin-bottom: 30px;
-  }
-  .portal-header h2 {
-    margin: 0;
-    font-size: 28px;
-    font-weight: 700;
-    color: #1a202c;
-    letter-spacing: -0.5px;
-  }
-  .portal-header p {
-    margin-top: 8px;
-    color: #718096;
-    font-size: 15px;
-  }
-
-  /* --- Form Card --- */
-  .search-card {
-    background: #ffffff;
-    border-radius: 16px;
-    padding: 30px;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
-    border: 1px solid #e2e8f0;
-  }
-
-  .input-group { 
-    margin-bottom: 20px; 
-  }
-  
-  .input-group label { 
-    display: block; 
-    font-weight: 600; 
-    font-size: 13px; 
-    margin-bottom: 6px; 
-    color: #4a5568; 
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-  
-  .input-group select, .input-group input { 
-    width: 100%; 
-    padding: 12px 16px; 
-    border: 2px solid #e2e8f0; 
-    border-radius: 10px; 
-    font-size: 16px; 
-    background-color: #f7fafc;
-    color: #2d3748;
-    transition: all 0.2s ease;
-    box-sizing: border-box;
-  }
-  
-  .input-group select:focus, .input-group input:focus { 
-    border-color: #4299e1; 
-    background-color: #fff;
-    outline: none; 
-    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
-  }
-
-  /* --- Action Button --- */
-  .btn-submit { 
-    background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%); 
-    color: white; 
-    border: none; 
-    padding: 14px; 
-    font-size: 16px; 
-    font-weight: 600; 
-    cursor: pointer; 
-    border-radius: 10px; 
-    width: 100%; 
-    margin-top: 10px; 
-    transition: transform 0.1s, box-shadow 0.2s; 
-    box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3);
-  }
-  .btn-submit:hover { 
-    transform: translateY(-1px);
-    box-shadow: 0 6px 8px rgba(59, 130, 246, 0.4);
-  }
-  .btn-submit:active { 
-    transform: translateY(1px); 
-  }
-  .btn-submit:disabled { 
-    background: #cbd5e0; 
-    transform: none; 
-    box-shadow: none;
-    cursor: not-allowed; 
-  }
-
-  /* --- Result Styling --- */
-  .result-box { 
-    margin-top: 30px; 
-    background: #fff; 
-    border: 1px solid #e2e8f0; 
-    border-radius: 16px; 
-    padding: 0; 
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); 
-    overflow: hidden;
-    animation: slideUp 0.4s ease-out;
-  }
-
-  .result-header {
-    background: #f7fafc;
-    padding: 20px 25px;
-    border-bottom: 1px solid #edf2f7;
-  }
-
-  .student-name { 
-    font-size: 22px; 
-    font-weight: 700; 
-    margin: 0; 
-    color: #1a202c; 
-  }
-  .sap-id { 
-    font-size: 14px; 
-    color: #718096; 
-    margin-top: 4px; 
-    font-family: 'Monaco', monospace; 
-  }
-
-  .marks-list {
-    padding: 15px 25px;
-  }
-
-  .mark-row { 
+    margin: 0; padding: 0;
+    font-family: 'Poppins', sans-serif;
+    /* Soft Gradient Background */
+    background: radial-gradient(circle at center, #f3f4f6 0%, #e5e7eb 100%);
+    min-height: 100vh;
+    
+    /* --- CRITICAL CENTERING FIX --- */
     display: flex; 
-    justify-content: space-between; 
-    align-items: center;
-    padding: 12px 0; 
-    border-bottom: 1px solid #edf2f7; 
-  }
-  .mark-row:last-child { border-bottom: none; }
-  
-  .exam-name { 
-    font-weight: 500; 
-    color: #4a5568; 
-  }
-  
-  /* Score Badge */
-  .score-badge {
-    background-color: #ebf8ff;
-    color: #2b6cb0;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-weight: 700;
-    font-size: 15px;
-  }
-  .max-marks {
-    font-size: 12px;
-    color: #a0aec0;
-    margin-left: 4px;
-    font-weight: normal;
+    justify-content: center; /* Center Horizontally */
+    align-items: center;     /* Center Vertically */
+    padding: 20px;
+    color: #333;
   }
 
-  /* Footer & Composite */
-  .result-footer {
-    background: #2d3748;
-    color: #fff;
-    padding: 20px 25px;
+  /* --- MAIN DASHBOARD CONTAINER --- */
+  .dashboard {
+    width: 100%;
+    max-width: 1000px; /* Optimal reading width */
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 24px;
+    border: 1px solid white;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: zoomIn 0.5s ease;
+    margin: auto; /* Ensures centering */
+  }
+
+  /* --- TOP BAR (SEARCH) --- */
+  .top-bar {
+    background: white;
+    padding: 30px 40px;
+    border-bottom: 1px solid #f3f4f6;
+    display: flex;
+    flex-direction: column; /* Stack Title & Inputs for centering */
+    align-items: center;    /* Center everything */
+    gap: 25px;
+  }
+
+  .header-brand { text-align: center; }
+  .header-brand h1 { margin: 0; font-size: 26px; font-weight: 700; color: #111; letter-spacing: -0.5px; }
+  .header-brand p { margin: 4px 0 0; font-size: 14px; color: #6b7280; }
+
+  /* Inputs container */
+  .controls-row {
+    display: flex;
+    gap: 15px;
+    width: 100%;
+    justify-content: center; /* Center the inputs */
+    flex-wrap: wrap;
+  }
+
+  .input-wrap { display: flex; flex-direction: column; min-width: 150px; flex: 1; max-width: 220px; }
+  .input-wrap label { font-size: 11px; font-weight: 600; text-transform: uppercase; color: #9ca3af; margin-bottom: 6px; letter-spacing: 0.5px; text-align: left; }
+  
+  .field {
+    width: 100%; height: 48px;
+    border: 2px solid #f3f4f6; border-radius: 10px;
+    padding: 0 14px; font-size: 14px; font-family: inherit;
+    background: #f9fafb; color: #374151; transition: all 0.2s;
+  }
+  .field:focus { border-color: #6366f1; background: white; box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1); }
+  
+  .btn-search {
+    height: 48px; padding: 0 30px;
+    background: #111;
+    color: white; font-weight: 600; border: none; border-radius: 10px;
+    cursor: pointer; transition: transform 0.2s, opacity 0.2s;
+    white-space: nowrap;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    margin-top: auto; /* Align with bottom of inputs */
+  }
+  .btn-search:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+  .btn-search:active { transform: scale(0.98); }
+
+  /* --- RESULTS AREA --- */
+  .results-area {
+    padding: 40px;
+    min-height: 400px;
+    background: #fafafa;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center content in results */
+  }
+
+  /* Empty State */
+  .empty-state {
+    text-align: center; color: #9ca3af;
+    margin: auto;
+  }
+  .empty-state i { font-size: 48px; margin-bottom: 15px; opacity: 0.2; }
+
+  /* Content Wrapper */
+  #content { width: 100%; max-width: 900px; }
+
+  /* Student Header */
+  .student-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background: white;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    margin-bottom: 30px;
+    animation: slideDown 0.4s ease;
+    border: 1px solid #f3f4f6;
   }
-  .composite-label { font-weight: 500; opacity: 0.9; }
-  .composite-value { font-size: 20px; font-weight: 700; }
+  .stu-info h2 { margin: 0; font-size: 24px; color: #111; font-weight: 700; }
+  .stu-info span { font-family: monospace; color: #6b7280; background: #f3f4f6; padding: 4px 8px; border-radius: 6px; font-size: 13px; }
+  .stu-grade { text-align: right; }
+  .grade-box { font-size: 32px; font-weight: 800; color: #111; line-height: 1; }
+  .grade-label { font-size: 11px; text-transform: uppercase; color: #6b7280; font-weight: 600; }
 
-  /* Jokes Section */
-  .prof-note {
-    background: #fffbeb;
-    border-top: 1px solid #fef3c7;
-    padding: 15px 25px;
-    color: #92400e;
-    font-size: 14px;
-    font-style: italic;
-    text-align: center;
-  }
-
-  /* Credits */
-  .dev-credit {
-    text-align: center;
-    margin-top: 40px;
-    font-size: 13px;
-    color: #a0aec0;
-  }
-  .dev-credit span { color: #e53e3e; }
-
-  /* Utilities */
-  .error-msg { 
-    color: #c53030; 
-    background: #fff5f5; 
-    padding: 15px; 
-    border-radius: 8px; 
-    text-align: center; 
-    border: 1px solid #feb2b2;
-    margin-top: 20px;
-  }
-  .loader { 
-    display: none; 
-    margin: 20px auto; 
-    width: 30px; 
-    height: 30px; 
-    border: 4px solid #e2e8f0; 
-    border-top-color: #3b82f6; 
-    border-radius: 50%; 
-    animation: spin 0.8s linear infinite; 
+  /* GRID LAYOUT FOR MARKS */
+  .marks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Responsive columns */
+    gap: 20px;
+    margin-bottom: 40px;
+    width: 100%;
+    /* Center the grid if few items */
+    justify-content: center;
   }
 
+  .mark-card {
+    background: white;
+    padding: 20px;
+    border-radius: 14px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+    border: 1px solid #f3f4f6;
+    transition: transform 0.2s;
+    animation: fadeIn 0.5s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+  }
+  .mark-card:hover { transform: translateY(-4px); box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05); }
+  
+  .exam-name { font-size: 12px; font-weight: 600; color: #6b7280; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+  
+  .score-display { display: flex; align-items: baseline; justify-content: space-between; }
+  .score-val { font-size: 26px; font-weight: 700; color: #111; }
+  .score-max { font-size: 13px; color: #9ca3af; }
+
+  /* Progress Bar */
+  .mini-progress { height: 6px; background: #f3f4f6; border-radius: 3px; margin-top: 15px; overflow: hidden; }
+  .mini-fill { height: 100%; background: #111; width: 0%; transition: width 1s ease-out; border-radius: 3px; }
+
+  /* Prof Note */
+  .prof-note { text-align: center; margin-top: auto; padding: 15px; background: #fffbeb; color: #b45309; border-radius: 10px; font-size: 13px; font-style: italic; border: 1px dashed #fcd34d; width: 100%; }
+
+  /* Loaders & Errors */
+  .loader { display: none; margin: auto; width: 40px; height: 40px; border: 4px solid #e5e7eb; border-top-color: #111; border-radius: 50%; animation: spin 0.8s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
-  @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes zoomIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  @keyframes slideDown { from { transform: translateY(-10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+  /* --- MOBILE ADAPTATIONS --- */
+  @media (max-width: 768px) {
+    body { align-items: flex-start; /* Allow scrolling on mobile */ padding: 15px; }
+    .dashboard { max-width: 100%; margin: 0; min-height: auto; }
+    .top-bar { padding: 25px 20px; }
+    .controls-row { flex-direction: column; align-items: stretch; }
+    .input-wrap { max-width: 100%; }
+    .btn-search { width: 100%; margin-top: 10px; }
+    .marks-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .student-header { flex-direction: column; text-align: center; gap: 15px; }
+    .stu-grade { text-align: center; }
+  }
+  @media (max-width: 480px) {
+    .marks-grid { grid-template-columns: 1fr; }
+  }
 </style>
 
-<div class="marks-container">
+<div class="dashboard">
   
-  <div class="portal-header">
-    <h2>Exam Results Portal</h2>
-    <p>Select your course details to view scorecard</p>
+  <div class="top-bar">
+    <div class="header-brand">
+      <h1>Student Portal</h1>
+      <p>Physics Department Scorecard</p>
+    </div>
+
+    <div class="controls-row">
+      <div class="input-wrap">
+        <label>Year</label>
+        <select id="year" class="field">
+            <option value="2026">2026</option>
+            <option value="2025">2025</option>
+            <option value="2024">2024</option>
+        </select>
+      </div>
+      <div class="input-wrap">
+        <label>Semester</label>
+        <select id="semester" class="field">
+            <option value="even">Even</option>
+            <option value="odd">Odd</option>
+        </select>
+      </div>
+      <div class="input-wrap" style="flex: 2;">
+        <label>Course</label>
+        <select id="course" class="field">
+          <option value="Physics For Computer Engineers">Physics for Computer Engineers</option>
+          <option value="Computational Astrophysics">Computational Astrophysics</option>
+          <option value="Classical Mechanics">Classical Mechanics</option>
+          <option value="Computational Techniques">Computational Techniques</option>
+        </select>
+      </div>
+      <div class="input-wrap" style="flex: 1.5;">
+        <label>SAP ID</label>
+        <input type="tel" id="sapid" class="field" placeholder="e.g. 590021234" onkeypress="if(event.key==='Enter') fetchMarks()">
+      </div>
+      <div class="input-wrap" style="flex: 0;">
+        <button id="btnFetch" class="btn-search" onclick="fetchMarks()">
+          Search Result
+        </button>
+      </div>
+    </div>
   </div>
 
-  <div class="search-card">
-    <div class="input-group">
-      <label>Academic Year</label>
-      <select id="year">
-          <option value="2026">2026</option>
-          <option value="2025">2025</option>
-          <option value="2024">2024</option>
-      </select>
-    </div>
+  <div class="results-area" id="resultsArea">
     
-    <div class="input-group">
-      <label>Semester</label>
-      <select id="semester"><option value="even">Even Semester</option><option value="odd">Odd Semester</option></select>
-    </div>
-    
-    <div class="input-group">
-      <label>Course Name</label>
-      <select id="course">
-        <option value="Physics For Computer Engineers">Physics for Computer Engineers</option>
-        <option value="Computational Astrophysics">Computational Astrophysics</option>
-        <option value="Classical Mechanics">Classical Mechanics</option>
-        <option value="Computational Techniques">Computational Techniques</option>
-      </select>
-    </div>
-    
-    <div class="input-group">
-      <label>SAP ID</label>
-      <input type="text" id="sapid" placeholder="e.g. 590021234" onkeypress="if(event.key==='Enter') fetchMarks()" />
-    </div>
-    
-    <button id="btnFetch" class="btn-submit" onclick="fetchMarks()">Check My Result</button>
     <div id="loader" class="loader"></div>
+
+    <div id="emptyState" class="empty-state">
+      <i class="fa-solid fa-chart-simple"></i>
+      <h3>Ready to view?</h3>
+      <p>Enter details above to check your marks.</p>
+    </div>
+
+    <div id="content" style="display: none;">
+      </div>
+
+    <div style="text-align:center; margin-top:30px; font-size:12px; color:#aaa; width:100%;">
+      Developed with ❤️ by your Professor
+    </div>
   </div>
 
-  <div id="result"></div>
-
-  <div class="dev-credit">
-    Developed with <span>&hearts;</span> and Physics by your Professor
-  </div>
 </div>
 
 <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 
 <script>
-// A mix of physics jokes and encouraging quotes
+// --- CONFIGURATION ---
 const JOKES = [
   "Why can't you trust an atom? Because they make up everything!",
   "Newton’s First Law of Exams: A student in procrastination tends to stay in procrastination.",
-  "I have a physics joke, but I'm unsure of its momentum.",
-  "Your marks are relative. (Einstein would agree).",
   "Don't worry, potential energy is just as important as kinetic energy!",
   "Success is 1% inspiration and 99% calculation error correction.",
-  "Remember: Even a photon has zero rest mass but infinite potential.",
   "Schrödinger’s Student: You have both passed and failed until you check the result."
 ];
 
-function getRandomJoke() {
-  return JOKES[Math.floor(Math.random() * JOKES.length)];
-}
+// Define Custom Order
+const EXAM_ORDER = [
+  "Assignment 1",
+  "Quiz 1",
+  "Class Test 1",
+  "Mid Sem",
+  "Assignment 2",
+  "Quiz 2",
+  "Class Test 2",
+  "End Sem"
+];
+
+function getRandomJoke() { return JOKES[Math.floor(Math.random() * JOKES.length)]; }
+
+// Helper to normalize strings for comparison
+function normalize(str) { return str.toLowerCase().replace(/[^a-z0-9]/g, ""); }
 
 async function fetchMarks() {
   const ui = {
     btn: document.getElementById('btnFetch'),
     loader: document.getElementById('loader'),
-    res: document.getElementById('result'),
+    empty: document.getElementById('emptyState'),
+    content: document.getElementById('content'),
     year: document.getElementById('year').value,
     sem: document.getElementById('semester').value,
     course: document.getElementById('course').value,
     sap: document.getElementById('sapid').value.replace(/,/g, '').trim()
   };
 
-  if (!ui.sap) { alert("Please enter your SAP ID first!"); return; }
+  if (!ui.sap) { alert("Please enter a SAP ID"); return; }
 
-  // 1. Prepare UI
-  ui.res.innerHTML = '';
+  // Set Loading State
+  ui.empty.style.display = 'none';
+  ui.content.style.display = 'none';
   ui.loader.style.display = 'block';
   ui.btn.disabled = true;
-  ui.btn.innerText = "Crunching Numbers...";
+  ui.btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i>`;
 
   try {
-    // 2. Fetch File
+    await new Promise(r => setTimeout(r, 600)); // Smooth UX delay
+
     const path = `/resources/Marks/${ui.year}/${ui.sem}/${encodeURIComponent(ui.course)}.xlsx`;
     const response = await fetch(path);
-    if (!response.ok) throw new Error("Course file not found. (Did the Prof upload it yet?)");
+    if (!response.ok) throw new Error("Course file not found. Please contact the Professor.");
     
     const arrayBuffer = await response.arrayBuffer();
     const workbook = XLSX.read(new Uint8Array(arrayBuffer), {type: 'array'});
     
-    // 3. Process Data
     let studentName = "";
     let compositeScore = "xx";
-    let compositeMax = 100;
     let examDetails = [];
     
-    // A. Parse Marksheet (Master Sheet)
+    // 1. Get Marksheet Master Data
     if (workbook.Sheets['Marksheet']) {
       const sheet = workbook.Sheets['Marksheet'];
       const range = XLSX.utils.sheet_to_json(sheet, {header: 1, range: 0, defval: ""});
@@ -348,7 +339,7 @@ async function fetchMarks() {
       }
     }
 
-    // B. Iterate Sheets
+    // 2. Iterate Sheets
     workbook.SheetNames.forEach(sheetName => {
       if (sheetName === "Marksheet" || sheetName.startsWith("Sheet")) return; 
 
@@ -366,7 +357,6 @@ async function fetchMarks() {
         if (studentRow) {
           const score = studentRow['Total'] || studentRow['Total '] || "-";
           let maxScore = 0;
-          
           if (maxRow) {
             if (maxRow['Total'] && !isNaN(maxRow['Total'])) {
                 maxScore = maxRow['Total'];
@@ -381,56 +371,89 @@ async function fetchMarks() {
       }
     });
 
-    // 4. Render Output
-    if (!studentName && examDetails.length === 0) {
-      ui.res.innerHTML = `<div class="error-msg">⚠️ No record found for SAP ID: <b>${ui.sap}</b>. <br><small>Check for typos or contact the professor.</small></div>`;
-    } else {
-      let rowsHtml = examDetails.map(exam => `
-        <div class="mark-row">
-          <span class="exam-name">${exam.name}</span>
-          <div class="score-container">
-            <span class="score-badge">${exam.score}</span>
-            <span class="max-marks">/ ${exam.max}</span>
-          </div>
-        </div>
-      `).join('');
+    // 3. SORTING LOGIC
+    examDetails.sort((a, b) => {
+      const nameA = normalize(a.name);
+      const nameB = normalize(b.name);
+      
+      let indexA = EXAM_ORDER.findIndex(key => normalize(key) === nameA);
+      let indexB = EXAM_ORDER.findIndex(key => normalize(key) === nameB);
 
-      // Determine Composite max (usually 100)
+      // If item not in order list, push to end
+      if (indexA === -1) indexA = 999;
+      if (indexB === -1) indexB = 999;
+
+      return indexA - indexB;
+    });
+
+    if (!studentName && examDetails.length === 0) {
+      ui.content.innerHTML = `<div style="text-align:center; padding:40px; color:#d32f2f;">
+        <i class="fa-solid fa-triangle-exclamation" style="font-size:30px;"></i><br><br>
+        No record found for SAP ID: <b>${ui.sap}</b>
+      </div>`;
+    } else {
+      // Generate Grid HTML
+      const cardsHtml = examDetails.map((exam) => {
+        let percent = 0;
+        let scoreVal = parseFloat(exam.score);
+        let maxVal = parseFloat(exam.max);
+        if(!isNaN(scoreVal) && !isNaN(maxVal) && maxVal > 0) percent = (scoreVal / maxVal) * 100;
+        
+        let barColor = "#111"; // Default Black
+        if(percent < 40) barColor = "#ef4444"; // Red for fail
+        else if(percent >= 90) barColor = "#10b981"; // Green for top
+
+        return `
+        <div class="mark-card">
+          <div>
+            <div class="exam-name">${exam.name}</div>
+            <div class="score-display">
+              <span class="score-val">${exam.score}</span>
+              <span class="score-max">/ ${exam.max}</span>
+            </div>
+          </div>
+          <div class="mini-progress">
+             <div class="mini-fill" style="width: ${percent}%; background-color: ${barColor}"></div>
+          </div>
+        </div>`;
+      }).join('');
+
+      // Clean Composite
       if(compositeScore !== "xx" && !isNaN(compositeScore)) {
-          // Keep it clean
           compositeScore = Number(compositeScore).toFixed(1).replace(/\.0$/, '');
       }
 
-      ui.res.innerHTML = `
-        <div class="result-box">
-          <div class="result-header">
-             <h3 class="student-name">${studentName || "Student"}</h3>
-             <div class="sap-id">SAP ID: ${ui.sap}</div>
-          </div>
-          
-          <div class="marks-list">
-             ${rowsHtml}
-          </div>
-          
-          <div class="result-footer">
-            <span class="composite-label">Total Composite Score</span>
-            <span class="composite-value">${compositeScore} <small style="font-size:0.6em; opacity:0.7">/ 100</small></span>
-          </div>
+      ui.content.innerHTML = `
+        <div class="student-header">
+           <div class="stu-info">
+             <h2>${studentName || "Student"}</h2>
+             <span>SAP: ${ui.sap}</span>
+           </div>
+           <div class="stu-grade">
+             <div class="grade-label">Composite Score</div>
+             <div class="grade-box">${compositeScore} <small style="font-size:14px; color:#999; font-weight:400">/100</small></div>
+           </div>
+        </div>
+        
+        <div class="marks-grid">
+           ${cardsHtml}
+        </div>
 
-          <div class="prof-note">
-             💡 <strong>Prof's Note:</strong> ${getRandomJoke()}
-          </div>
+        <div class="prof-note">
+           <i class="fa-solid fa-lightbulb"></i> <strong>Prof's Note:</strong> ${getRandomJoke()}
         </div>
       `;
     }
+    ui.content.style.display = 'block';
 
   } catch (err) {
     console.error(err);
-    ui.res.innerHTML = `<div class="error-msg">Error: ${err.message}</div>`;
+    ui.content.innerHTML = `<div style="text-align:center; color:red; padding:20px;">Error: ${err.message}</div>`;
+    ui.content.style.display = 'block';
   } finally {
     ui.loader.style.display = 'none';
     ui.btn.disabled = false;
-    ui.btn.innerText = "Check My Result";
+    ui.btn.innerHTML = `Search Result`;
   }
 }
 
