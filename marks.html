@@ -1,0 +1,443 @@
+---
+layout: splash
+title: "Student Marks Portal"
+permalink: /marks/
+---
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+  /* --- Global & Container Styles --- */
+  body {
+    background-color: #f8f9fc; /* Soft background */
+  }
+  
+  .marks-container { 
+    max-width: 480px; 
+    margin: 60px auto; 
+    font-family: 'Inter', sans-serif; 
+    color: #333; 
+    padding: 0 15px;
+  }
+
+  /* --- Header Section --- */
+  .portal-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  .portal-header h2 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a202c;
+    letter-spacing: -0.5px;
+  }
+  .portal-header p {
+    margin-top: 8px;
+    color: #718096;
+    font-size: 15px;
+  }
+
+  /* --- Form Card --- */
+  .search-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+    border: 1px solid #e2e8f0;
+  }
+
+  .input-group { 
+    margin-bottom: 20px; 
+  }
+  
+  .input-group label { 
+    display: block; 
+    font-weight: 600; 
+    font-size: 13px; 
+    margin-bottom: 6px; 
+    color: #4a5568; 
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .input-group select, .input-group input { 
+    width: 100%; 
+    padding: 12px 16px; 
+    border: 2px solid #e2e8f0; 
+    border-radius: 10px; 
+    font-size: 16px; 
+    background-color: #f7fafc;
+    color: #2d3748;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+  }
+  
+  .input-group select:focus, .input-group input:focus { 
+    border-color: #4299e1; 
+    background-color: #fff;
+    outline: none; 
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+  }
+
+  /* --- Action Button --- */
+  .btn-submit { 
+    background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%); 
+    color: white; 
+    border: none; 
+    padding: 14px; 
+    font-size: 16px; 
+    font-weight: 600; 
+    cursor: pointer; 
+    border-radius: 10px; 
+    width: 100%; 
+    margin-top: 10px; 
+    transition: transform 0.1s, box-shadow 0.2s; 
+    box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3);
+  }
+  .btn-submit:hover { 
+    transform: translateY(-1px);
+    box-shadow: 0 6px 8px rgba(59, 130, 246, 0.4);
+  }
+  .btn-submit:active { 
+    transform: translateY(1px); 
+  }
+  .btn-submit:disabled { 
+    background: #cbd5e0; 
+    transform: none; 
+    box-shadow: none;
+    cursor: not-allowed; 
+  }
+
+  /* --- Result Styling --- */
+  .result-box { 
+    margin-top: 30px; 
+    background: #fff; 
+    border: 1px solid #e2e8f0; 
+    border-radius: 16px; 
+    padding: 0; 
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); 
+    overflow: hidden;
+    animation: slideUp 0.4s ease-out;
+  }
+
+  .result-header {
+    background: #f7fafc;
+    padding: 20px 25px;
+    border-bottom: 1px solid #edf2f7;
+  }
+
+  .student-name { 
+    font-size: 22px; 
+    font-weight: 700; 
+    margin: 0; 
+    color: #1a202c; 
+  }
+  .sap-id { 
+    font-size: 14px; 
+    color: #718096; 
+    margin-top: 4px; 
+    font-family: 'Monaco', monospace; 
+  }
+
+  .marks-list {
+    padding: 15px 25px;
+  }
+
+  .mark-row { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    padding: 12px 0; 
+    border-bottom: 1px solid #edf2f7; 
+  }
+  .mark-row:last-child { border-bottom: none; }
+  
+  .exam-name { 
+    font-weight: 500; 
+    color: #4a5568; 
+  }
+  
+  /* Score Badge */
+  .score-badge {
+    background-color: #ebf8ff;
+    color: #2b6cb0;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 15px;
+  }
+  .max-marks {
+    font-size: 12px;
+    color: #a0aec0;
+    margin-left: 4px;
+    font-weight: normal;
+  }
+
+  /* Footer & Composite */
+  .result-footer {
+    background: #2d3748;
+    color: #fff;
+    padding: 20px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .composite-label { font-weight: 500; opacity: 0.9; }
+  .composite-value { font-size: 20px; font-weight: 700; }
+
+  /* Jokes Section */
+  .prof-note {
+    background: #fffbeb;
+    border-top: 1px solid #fef3c7;
+    padding: 15px 25px;
+    color: #92400e;
+    font-size: 14px;
+    font-style: italic;
+    text-align: center;
+  }
+
+  /* Credits */
+  .dev-credit {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 13px;
+    color: #a0aec0;
+  }
+  .dev-credit span { color: #e53e3e; }
+
+  /* Utilities */
+  .error-msg { 
+    color: #c53030; 
+    background: #fff5f5; 
+    padding: 15px; 
+    border-radius: 8px; 
+    text-align: center; 
+    border: 1px solid #feb2b2;
+    margin-top: 20px;
+  }
+  .loader { 
+    display: none; 
+    margin: 20px auto; 
+    width: 30px; 
+    height: 30px; 
+    border: 4px solid #e2e8f0; 
+    border-top-color: #3b82f6; 
+    border-radius: 50%; 
+    animation: spin 0.8s linear infinite; 
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+
+<div class="marks-container">
+  
+  <div class="portal-header">
+    <h2>Exam Results Portal</h2>
+    <p>Select your course details to view scorecard</p>
+  </div>
+
+  <div class="search-card">
+    <div class="input-group">
+      <label>Academic Year</label>
+      <select id="year">
+          <option value="2026">2026</option>
+          <option value="2025">2025</option>
+          <option value="2024">2024</option>
+      </select>
+    </div>
+    
+    <div class="input-group">
+      <label>Semester</label>
+      <select id="semester"><option value="even">Even Semester</option><option value="odd">Odd Semester</option></select>
+    </div>
+    
+    <div class="input-group">
+      <label>Course Name</label>
+      <select id="course">
+        <option value="Physics For Computer Engineers">Physics for Computer Engineers</option>
+        <option value="Computational Astrophysics">Computational Astrophysics</option>
+        <option value="Classical Mechanics">Classical Mechanics</option>
+        <option value="Computational Techniques">Computational Techniques</option>
+      </select>
+    </div>
+    
+    <div class="input-group">
+      <label>SAP ID</label>
+      <input type="text" id="sapid" placeholder="e.g. 590021234" onkeypress="if(event.key==='Enter') fetchMarks()" />
+    </div>
+    
+    <button id="btnFetch" class="btn-submit" onclick="fetchMarks()">Check My Result</button>
+    <div id="loader" class="loader"></div>
+  </div>
+
+  <div id="result"></div>
+
+  <div class="dev-credit">
+    Developed with <span>&hearts;</span> and Physics by your Professor
+  </div>
+</div>
+
+<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+
+<script>
+// A mix of physics jokes and encouraging quotes
+const JOKES = [
+  "Why can't you trust an atom? Because they make up everything!",
+  "Newton’s First Law of Exams: A student in procrastination tends to stay in procrastination.",
+  "I have a physics joke, but I'm unsure of its momentum.",
+  "Your marks are relative. (Einstein would agree).",
+  "Don't worry, potential energy is just as important as kinetic energy!",
+  "Success is 1% inspiration and 99% calculation error correction.",
+  "Remember: Even a photon has zero rest mass but infinite potential.",
+  "Schrödinger’s Student: You have both passed and failed until you check the result."
+];
+
+function getRandomJoke() {
+  return JOKES[Math.floor(Math.random() * JOKES.length)];
+}
+
+async function fetchMarks() {
+  const ui = {
+    btn: document.getElementById('btnFetch'),
+    loader: document.getElementById('loader'),
+    res: document.getElementById('result'),
+    year: document.getElementById('year').value,
+    sem: document.getElementById('semester').value,
+    course: document.getElementById('course').value,
+    sap: document.getElementById('sapid').value.replace(/,/g, '').trim()
+  };
+
+  if (!ui.sap) { alert("Please enter your SAP ID first!"); return; }
+
+  // 1. Prepare UI
+  ui.res.innerHTML = '';
+  ui.loader.style.display = 'block';
+  ui.btn.disabled = true;
+  ui.btn.innerText = "Crunching Numbers...";
+
+  try {
+    // 2. Fetch File
+    const path = `/resources/Marks/${ui.year}/${ui.sem}/${encodeURIComponent(ui.course)}.xlsx`;
+    const response = await fetch(path);
+    if (!response.ok) throw new Error("Course file not found. (Did the Prof upload it yet?)");
+    
+    const arrayBuffer = await response.arrayBuffer();
+    const workbook = XLSX.read(new Uint8Array(arrayBuffer), {type: 'array'});
+    
+    // 3. Process Data
+    let studentName = "";
+    let compositeScore = "xx";
+    let compositeMax = 100;
+    let examDetails = [];
+    
+    // A. Parse Marksheet (Master Sheet)
+    if (workbook.Sheets['Marksheet']) {
+      const sheet = workbook.Sheets['Marksheet'];
+      const range = XLSX.utils.sheet_to_json(sheet, {header: 1, range: 0, defval: ""});
+      let headerRowIdx = range.findIndex(row => row.some(cell => String(cell).includes("SAP ID")));
+      if (headerRowIdx === -1) headerRowIdx = 2; 
+
+      const data = XLSX.utils.sheet_to_json(sheet, { range: headerRowIdx, defval: "" });
+      const record = findRecord(data, ui.sap);
+      
+      if (record) {
+        studentName = record['Name'] || record['Name '];
+        compositeScore = record['Total'] || record['Total '] || "xx";
+      }
+    }
+
+    // B. Iterate Sheets
+    workbook.SheetNames.forEach(sheetName => {
+      if (sheetName === "Marksheet" || sheetName.startsWith("Sheet")) return; 
+
+      const rawRows = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {header: 1});
+      const headerIdx = rawRows.findIndex(row => row.some(cell => 
+        String(cell).trim().toUpperCase() === "SAP ID" || 
+        String(cell).trim().toUpperCase() === "STUDENT ID"
+      ));
+
+      if (headerIdx !== -1) {
+        const data = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { range: headerIdx, defval: "" });
+        const studentRow = findRecord(data, ui.sap);
+        const maxRow = data.find(r => Object.values(r).some(val => String(val).toLowerCase().includes("max marks")));
+
+        if (studentRow) {
+          const score = studentRow['Total'] || studentRow['Total '] || "-";
+          let maxScore = 0;
+          
+          if (maxRow) {
+            if (maxRow['Total'] && !isNaN(maxRow['Total'])) {
+                maxScore = maxRow['Total'];
+            } else {
+                for (let key in maxRow) {
+                   if (!isNaN(parseFloat(maxRow[key])) && key !== 'Total') maxScore += parseFloat(maxRow[key]);
+                }
+            }
+          }
+          examDetails.push({ name: sheetName, score: score, max: maxScore });
+        }
+      }
+    });
+
+    // 4. Render Output
+    if (!studentName && examDetails.length === 0) {
+      ui.res.innerHTML = `<div class="error-msg">⚠️ No record found for SAP ID: <b>${ui.sap}</b>. <br><small>Check for typos or contact the professor.</small></div>`;
+    } else {
+      let rowsHtml = examDetails.map(exam => `
+        <div class="mark-row">
+          <span class="exam-name">${exam.name}</span>
+          <div class="score-container">
+            <span class="score-badge">${exam.score}</span>
+            <span class="max-marks">/ ${exam.max}</span>
+          </div>
+        </div>
+      `).join('');
+
+      // Determine Composite max (usually 100)
+      if(compositeScore !== "xx" && !isNaN(compositeScore)) {
+          // Keep it clean
+          compositeScore = Number(compositeScore).toFixed(1).replace(/\.0$/, '');
+      }
+
+      ui.res.innerHTML = `
+        <div class="result-box">
+          <div class="result-header">
+             <h3 class="student-name">${studentName || "Student"}</h3>
+             <div class="sap-id">SAP ID: ${ui.sap}</div>
+          </div>
+          
+          <div class="marks-list">
+             ${rowsHtml}
+          </div>
+          
+          <div class="result-footer">
+            <span class="composite-label">Total Composite Score</span>
+            <span class="composite-value">${compositeScore} <small style="font-size:0.6em; opacity:0.7">/ 100</small></span>
+          </div>
+
+          <div class="prof-note">
+             💡 <strong>Prof's Note:</strong> ${getRandomJoke()}
+          </div>
+        </div>
+      `;
+    }
+
+  } catch (err) {
+    console.error(err);
+    ui.res.innerHTML = `<div class="error-msg">Error: ${err.message}</div>`;
+  } finally {
+    ui.loader.style.display = 'none';
+    ui.btn.disabled = false;
+    ui.btn.innerText = "Check My Result";
+  }
+}
+
+function findRecord(data, id) {
+  return data.find(row => {
+    const val = row['SAP ID'] || row['Student ID'] || row['Student Id'] || row['SAP ID '];
+    return val && String(val).replace(/,/g, '').trim() === id;
+  });
+}
+</script>

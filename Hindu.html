@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presentation: Dr. Nitesh Kumar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+        .slide-container {
+            width: 100%;
+            max-width: 1100px;
+            aspect-ratio: 16 / 9;
+            margin: 2rem auto;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-radius: 0.75rem;
+            overflow: hidden;
+            position: relative;
+            background-color: #ffffff;
+        }
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 3rem 4rem;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            transition: opacity 0.6s ease-in-out;
+            visibility: hidden;
+        }
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .slide-header {
+            font-family: 'Lora', serif;
+            color: #1e3a8a; /* Dark Blue */
+            border-bottom: 2px solid #fbbf24; /* Amber */
+            padding-bottom: 0.75rem;
+            margin-bottom: 2rem;
+            flex-shrink: 0;
+        }
+        .nav-button {
+            position: absolute;
+            bottom: 2rem;
+            background-color: #1e3a8a;
+            color: white;
+            border: none;
+            border-radius: 9999px;
+            width: 3rem;
+            height: 3rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            z-index: 10;
+        }
+        .nav-button:hover {
+            background-color: #1d4ed8;
+        }
+        .nav-button.prev {
+            right: 6rem;
+        }
+        .nav-button.next {
+            right: 2rem;
+        }
+        .progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 6px;
+            background-color: #fbbf24;
+            transition: width 0.3s ease-in-out;
+        }
+        .script-container {
+            max-width: 1100px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #fff;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .placeholder-img {
+            object-fit: cover;
+            border-radius: 0.5rem;
+            background-color: #e5e7eb;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-4 md:p-8">
+
+    <div class="slide-container">
+        <!-- Slide 0: Title -->
+        <div id="slide-0" class="slide active flex-col justify-center items-center text-center bg-gray-50">
+            <div class="w-24 h-24 mb-6">
+                 <svg class="w-full h-full text-blue-900" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.783-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-bold text-blue-900 font-lora">Dr. Nitesh Kumar</h1>
+            <p class="text-2xl md:text-3xl text-gray-700 mt-4">Assistant Professor Candidate (Physics)</p>
+            <hr class="w-1/4 my-8 border-t-2 border-amber-400">
+            <p class="text-xl md:text-2xl text-gray-600">Presentation for Hindu College, University of Delhi</p>
+            <p class="text-lg md:text-xl text-gray-500 mt-4">Topic: Ongoing Teaching & Research Work and Vision for the Next 5 Years</p>
+        </div>
+
+        <!-- Slide 1: Academic Background -->
+        <div id="slide-1" class="slide">
+            <h2 class="text-3xl font-bold slide-header">Academic Background & DU Roots</h2>
+            <div class="flex-grow flex flex-col md:flex-row items-center gap-8">
+                <div class="w-full md:w-3/5">
+                    <ul class="space-y-4 text-lg text-gray-800 w-full">
+                        <li class="flex items-start">
+                            <span class="text-amber-500 mr-4 mt-1 text-xl">&#10148;</span>
+                            <div><strong>Ph.D. in Astronomy & Astrophysics</strong> – University of Delhi (2025) <br><em class="text-gray-600">Thesis: Automated Analysis of Stellar Photometric and Spectroscopic Data</em></div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-amber-500 mr-4 mt-1 text-xl">&#10148;</span>
+                            <div><strong>M.Sc. Physics</strong> – Hansraj College, University of Delhi (2018)</div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-amber-500 mr-4 mt-1 text-xl">&#10148;</span>
+                            <div><strong>B.Sc. (Hons.) Physics</strong> – Deshbandhu College, University of Delhi (2015, 80.02%)</div>
+                        </li>
+                        <li class="flex items-start mt-6 pt-6 border-t-2 border-gray-200">
+                            <span class="text-blue-800 mr-4 mt-1 text-xl">&#10003;</span>
+                            <div class="font-semibold text-blue-800">10+ years of academic association with DU as student, mentor, and collaborator.</div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="w-full md:w-2/5 h-full">
+                    <!-- Image Placeholder -->
+                    <img src="https://placehold.co/400x500/1e3a8a/ffffff?text=DU+Campus" alt="Placeholder for University of Delhi Campus Image" class="w-full h-full placeholder-img">
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Teaching and NEP Experience -->
+        <div id="slide-2" class="slide">
+            <h2 class="text-3xl font-bold slide-header">Teaching & NEP 2020 Experience</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 flex-grow">
+                <div class="bg-blue-50 p-6 rounded-lg flex flex-col justify-center">
+                    <h3 class="text-xl font-semibold text-blue-800 mb-3">Core Teaching</h3>
+                    <ul class="list-disc list-inside space-y-2 text-lg text-gray-700">
+                        <li>Assistant Professor at UPES, Dehradun (2024–Present)</li>
+                        <li>Taught diverse UG/PG courses: Classical Mechanics, Astronomy, Quantum Mechanics</li>
+                        <li>Developed computational physics modules using Python, C++, Fortran, LaTeX, Gnuplot</li>
+                    </ul>
+                </div>
+                <div class="bg-amber-50 p-6 rounded-lg flex flex-col justify-center">
+                    <h3 class="text-xl font-semibold text-amber-800 mb-3">NEP 2020 Framework</h3>
+                    <ul class="list-disc list-inside space-y-2 text-lg text-gray-700">
+                        <li>Contributed to curriculum design at UPES under NEP 2020</li>
+                        <li>Well-acquainted with NEP mandates and internship components</li>
+                        <li>Ready to actively support research-based internship mentorship under the 4-year UG structure</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Mentoring and Student Engagement -->
+        <div id="slide-3" class="slide">
+            <h2 class="text-3xl font-bold slide-header">Mentoring & Student Engagement</h2>
+            <div class="flex-grow flex flex-col md:flex-row items-center gap-8">
+                <div class="w-full md:w-1/2">
+                    <h3 class="text-xl font-semibold text-blue-800 mb-4">Dissertation & Internship Mentorship</h3>
+                    <ul class="space-y-3 text-lg text-gray-700">
+                        <li class="flex"><span class="mr-3 text-amber-500">&#9733;</span>Mentored UG/PG dissertations (DU & UPES)</li>
+                        <li class="flex"><span class="mr-3 text-amber-500">&#9733;</span>Projects: RR Lyrae modeling, Cepheid light curves, Exoplanet detection (TESS)</li>
+                        <li class="flex"><span class="mr-3 text-amber-500">&#9733;</span>Miranda House Summer Program (DU Interns)</li>
+                    </ul>
+                     <h3 class="text-xl font-semibold text-blue-800 mb-4 mt-6">Workshops & Initiatives</h3>
+                    <ul class="space-y-3 text-lg text-gray-700">
+                        <li class="flex"><span class="mr-3 text-amber-500">&#9733;</span>Organized "Stars & Stats" Workshop (2025)</li>
+                        <li class="flex"><span class="mr-3 text-amber-500">&#9733;</span>Setting up campus observatory at UPES for hands-on student training</li>
+                    </ul>
+                </div>
+                <div class="w-full md:w-1/2 h-full">
+                    <!-- Image Placeholder -->
+                    <img src="https://placehold.co/400x400/fbbf24/1e3a8a?text=Student+Collaboration" alt="Placeholder for student collaboration or workshop" class="w-full h-full placeholder-img">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 4: Research Profile -->
+        <div id="slide-4" class="slide">
+            <h2 class="text-3xl font-bold slide-header">Research Profile & Publications</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 flex-grow">
+                <div class="flex flex-col justify-center">
+                    <h3 class="text-xl font-semibold text-blue-800 mb-3">Research Areas</h3>
+                    <p class="text-lg text-gray-700">RR Lyrae variables, Red Giant spectroscopy, and Machine Learning applications in astrophysics.</p>
+                    
+                    <h3 class="text-xl font-semibold text-blue-800 mt-6 mb-3">Technical Toolkit</h3>
+                    <p class="text-lg text-gray-700">Artificial Neural Networks, Full-spectrum fitting, ML interpolation of pulsation models.</p>
+                    
+                    <h3 class="text-xl font-semibold text-blue-800 mt-6 mb-3">Professional Service</h3>
+                    <p class="text-lg text-gray-700">Reviewer: The Astronomical Journal (AAS)</p>
+                    <p class="text-lg text-gray-700 mt-2">Developer: <a href="https://ann-interpolator.web.app/" target="_blank" class="text-blue-600 hover:underline">ann-interpolator.web.app</a></p>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-lg flex flex-col justify-center">
+                    <h3 class="text-xl font-semibold text-blue-800 mb-3">Recent Publications</h3>
+                    <ul class="space-y-3 text-lg">
+                        <li class="flex items-center"><span class="text-amber-500 font-bold mr-3">&bull;</span><strong>MNRAS</strong> (2023, 2024)</li>
+                        <li class="flex items-center"><span class="text-amber-500 font-bold mr-3">&bull;</span><strong>Universe</strong> (2025)</li>
+                        <li class="flex items-center"><span class="text-amber-500 font-bold mr-3">&bull;</span><strong>New Astronomy</strong> (2025)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: PhD Thesis -->
+        <div id="slide-5" class="slide">
+            <h2 class="text-3xl font-bold slide-header">Highlights from Ph.D. Thesis</h2>
+            <p class="text-xl text-center text-gray-600 italic mb-6">"Automated Analysis of Stellar Photometric and Spectroscopic Astronomical Data"</p>
+            <div class="flex-grow grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="flex flex-col gap-6 justify-center">
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                        <h3 class="font-semibold text-blue-800 text-lg">ANN Interpolators & Pulsation Modeling</h3>
+                        <p class="text-gray-700 mt-2 text-base">Developed neural-network based models to derive physical parameters of RRab stars from light curves, creating synthetic models using grid-based pulsation techniques.</p>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                        <h3 class="font-semibold text-blue-800 text-lg">Full-Spectrum Fitting & Automation</h3>
+                        <p class="text-gray-700 mt-2 text-base">Applied advanced fitting for spectroscopic analysis of red giants in globular clusters, emphasizing scalable, automated approaches for large datasets.</p>
+                    </div>
+                </div>
+                <div class="w-full h-full">
+                     <!-- Image Placeholder -->
+                    <img src="https://placehold.co/500x400/1e3a8a/ffffff?text=Data+Visualization" alt="Placeholder for a chart or data visualization" class="w-full h-full placeholder-img">
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Current Research -->
+        <div id="slide-6" class="slide">
+            <h2 class="text-3xl font-bold slide-header">Current Research & Recognition</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 flex-grow">
+                <div class="bg-blue-50 p-6 rounded-lg flex flex-col justify-center">
+                    <h3 class="text-xl font-semibold text-blue-800 mb-3">Active Collaborations & Talks</h3>
+                    <ul class="list-disc list-inside space-y-2 text-lg text-gray-700">
+                        <li>Collaborating with IUCAA and DU faculty</li>
+                        <li>Integrating research with teaching at UPES</li>
+                        <li>Invited talks at Govt. Degree Colleges & Dolphin PG Institute</li>
+                    </ul>
+                </div>
+                <div class="bg-amber-50 p-6 rounded-lg flex flex-col justify-center">
+                    <h3 class="text-xl font-semibold text-amber-800 mb-3">Grant Proposals & Workshops</h3>
+                    <ul class="list-disc list-inside space-y-2 text-lg text-gray-700">
+                        <li>ANRF-sponsored workshop organizer (Hansraj College, 2025)</li>
+                        <li>Planning/secured proposals under ANRF ARG and SERB MATRICS schemes</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Vision -->
+        <div id="slide-7" class="slide">
+            <h2 class="text-3xl font-bold slide-header">Vision for Hindu College (Next 5 Years)</h2>
+            <div class="flex-grow flex flex-col md:flex-row items-center gap-8">
+                <div class="w-full md:w-3/5">
+                    <ul class="space-y-3 text-lg text-gray-800">
+                        <li class="flex items-start"><span class="text-blue-600 text-2xl mr-3 mt-1">&#10146;</span>Foster a research-integrated UG curriculum (NEP 2020).</li>
+                        <li class="flex items-start"><span class="text-blue-600 text-2xl mr-3 mt-1">&#10146;</span>Set up an Astronomy & Astrophysics Lab for student projects.</li>
+                        <li class="flex items-start"><span class="text-blue-600 text-2xl mr-3 mt-1">&#10146;</span>Support NEP internships via astronomical data projects.</li>
+                        <li class="flex items-start"><span class="text-blue-600 text-2xl mr-3 mt-1">&#10146;</span>Apply for competitive grants (ANRF, SERB) with students.</li>
+                        <li class="flex items-start"><span class="text-blue-600 text-2xl mr-3 mt-1">&#10146;</span>Host national-level outreach and astronomy workshops.</li>
+                        <li class="flex items-start"><span class="text-blue-600 text-2xl mr-3 mt-1">&#10146;</span>Design interdisciplinary research-based physics modules.</li>
+                    </ul>
+                </div>
+                 <div class="w-full md:w-2/5 h-full">
+                    <!-- Image Placeholder -->
+                    <img src="https://placehold.co/400x500/1e3a8a/ffffff?text=Hindu+College" alt="Placeholder for Hindu College Image" class="w-full h-full placeholder-img">
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Closing -->
+        <div id="slide-8" class="slide justify-center items-center text-center">
+            <h2 class="text-4xl font-bold text-blue-900 font-lora">Closing & Commitment</h2>
+            <p class="text-xl text-gray-700 mt-8 max-w-4xl">
+                A unique blend of strong grounding in the DU ecosystem, proven research productivity, curriculum design experience under NEP 2020, and a deep commitment to inclusive mentorship.
+            </p>
+            <p class="text-xl font-semibold text-blue-800 mt-8">
+                Passionate about contributing to Hindu College's legacy of academic and research excellence.
+            </p>
+            <hr class="w-1/4 my-8 border-t-2 border-amber-400">
+            <p class="text-2xl text-gray-600">Thank you for your time and consideration.</p>
+        </div>
+
+        <!-- Navigation -->
+        <button id="prevBtn" class="nav-button prev" onclick="changeSlide(-1)">&#8249;</button>
+        <button id="nextBtn" class="nav-button next" onclick="changeSlide(1)">&#8250;</button>
+        <div id="progressBar" class="progress-bar"></div>
+    </div>
+
+    <!-- Script Section -->
+    <div class="script-container">
+        <details>
+            <summary class="text-xl font-semibold text-blue-900 cursor-pointer hover:text-blue-700">
+                Show/Hide 6-Minute Presentation Script
+            </summary>
+            <div class="mt-4 pt-4 border-t text-gray-700 space-y-4">
+                <p><strong>(Start)</strong> Good morning respected members of the committee. My name is Dr. Nitesh Kumar, and I am currently serving as Assistant Professor at the University of Petroleum and Energy Studies, Dehradun.</p>
+                <p>I have a long-standing connection with the University of Delhi, having completed my B.Sc. from Deshbandhu College, M.Sc. from Hansraj College, and Ph.D. from the Department of Physics and Astrophysics. My academic identity is rooted in DU, and I’ve been involved in research, teaching, and mentorship within its ecosystem for over a decade.</p>
+                <p>My doctoral thesis, titled <em>Automated Analysis of Stellar Photometric and Spectroscopic Astronomical Data</em>, focuses on deriving stellar parameters from light curves and spectra using machine learning. I developed neural network-based interpolators and applied full-spectrum fitting to red giants in globular clusters. The work is scalable and well-suited for big-data astronomical surveys.</p>
+                <p>I have published in high-impact journals like MNRAS, Universe, and New Astronomy and also serve as a reviewer for The Astronomical Journal. My research tools include ANN models, interpolation of pulsation models, and custom data pipelines.</p>
+                <p>At UPES, I teach computational and core physics courses and contributed to NEP-aligned curriculum design. I organized the "Stars & Stats" workshop and am setting up a small observatory for student-led observations and training. I’ve mentored several projects, including exoplanet detection and RR Lyrae light curve modeling.</p>
+                <p>In 2025, I co-organized an ANRF-sponsored workshop at Hansraj College and am actively engaged in grant proposals under ANRF and SERB schemes.</p>
+                <p><strong>Looking ahead, my plan at Hindu College includes:</strong></p>
+                <ul class="list-disc list-inside ml-4">
+                    <li>Developing a research-integrated UG curriculum,</li>
+                    <li>Establishing an Astronomy and Astrophysics lab,</li>
+                    <li>Mentoring NEP internships in data-intensive astrophysics using my DU collaborations,</li>
+                    <li>Applying for research funding to support student research, and</li>
+                    <li>Promoting Hindu College as a national hub for physics outreach and undergraduate research.</li>
+                </ul>
+                <p>I bring with me a deep familiarity with NEP 2020 and the curriculum design process. I’m confident in supporting Hindu College’s role in implementing this transformative policy effectively.</p>
+                <p><strong>(Closing)</strong> In closing, I combine strong DU roots with teaching innovation, research productivity, and mentorship. I look forward to the opportunity to contribute meaningfully to Hindu College.</p>
+                <p>Thank you for your time and consideration.</p>
+            </div>
+        </details>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        const progressBar = document.getElementById('progressBar');
+
+        function showSlide(n) {
+            slides.forEach((slide, index) => {
+                if (index === n) {
+                    slide.classList.add('active');
+                } else {
+                    slide.classList.remove('active');
+                }
+            });
+            updateUI();
+        }
+
+        function changeSlide(n) {
+            currentSlide += n;
+            if (currentSlide >= totalSlides) {
+                currentSlide = 0; // Loop to start
+            }
+            if (currentSlide < 0) {
+                currentSlide = totalSlides - 1; // Loop to end
+            }
+            showSlide(currentSlide);
+        }
+
+        function updateUI() {
+            // Update progress bar
+            const progress = ((currentSlide + 1) / totalSlides) * 100;
+            progressBar.style.width = `${progress}%`;
+
+            // Always show buttons for looping
+            document.getElementById('prevBtn').style.display = 'block';
+            document.getElementById('nextBtn').style.display = 'block';
+        }
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowRight') {
+                changeSlide(1);
+            } else if (event.key === 'ArrowLeft') {
+                changeSlide(-1);
+            }
+        });
+
+        // Initial setup
+        showSlide(currentSlide);
+    </script>
+
+</body>
+</html>
