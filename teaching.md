@@ -21,6 +21,11 @@ My teaching philosophy emphasizes clarity, experimentation, and the integration 
 
 <h3>1. Computational Techniques (B.Sc. Physics)</h3>
 <ul>
+  <li><a href="" target="_blank">Computational Astrophysics Lecture Notebooks</a></li>
+</ul>
+
+<h3>1. Computational Techniques (B.Sc. Physics)</h3>
+<ul>
   <li><a href="/resources/computational_techniques/python_notes.pdf" target="_blank">Python Programming Notes (PDF)</a></li>
   <!-- <li><a href="/resources/computational_techniques/python_notes.ipynb" target="_blank">Jupyter Notebooks</a></li> -->
   <li><a href="/resources/computational_techniques/Python_learning/python_notes_updated.ipynb" target="_blank">Jupyter Notebooks (*Use crtl+s to save* and open in jupyter lab or VS code.)</a></li>
