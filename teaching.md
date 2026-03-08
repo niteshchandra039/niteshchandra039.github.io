@@ -19,9 +19,19 @@ My teaching philosophy emphasizes clarity, experimentation, and the integration 
 
 <h2>📘 Courses & Resources</h2>
 
-<h3>1. Computational Techniques (B.Sc. Physics)</h3>
+<h3>0. Computational Astrophysics (M.Sc.)</h3>
 <ul>
-  <li><a href="" target="_blank">Computational Astrophysics Lecture Notebooks</a></li>
+  <li><a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational%20Astrophysics%20-%20Lect%201.ipynb" target="_blank">Lecture 1 (View in Browser)</a> | <a href="/resources/computational_astrophysics/Computational%20Astrophysics%20-%20Lect%201.ipynb" target="_blank">Download .ipynb</a></li>
+  <li><a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational%20Astrophysics%20Lecture%202_%20Data%20Sorting%20Algorithms%20in%20Python.ipynb" target="_blank">Lecture 2: Data Sorting Algorithms (View in Browser)</a> | <a href="/resources/computational_astrophysics/Computational%20Astrophysics%20Lecture%202_%20Data%20Sorting%20Algorithms%20in%20Python.ipynb" target="_blank">Download .ipynb</a></li>
+  <li><a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational%20Astrophysics%20-%20Lecture%203.ipynb" target="_blank">Lecture 3 (View in Browser)</a> | <a href="/resources/computational_astrophysics/Computational%20Astrophysics%20-%20Lecture%203.ipynb" target="_blank">Download .ipynb</a></li>
+  <li><a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational%20Astrophysics%20-%20Lecture%204%20%26%205.ipynb" target="_blank">Lecture 4 and 5 (View in Browser)</a> | <a href="/resources/computational_astrophysics/Computational%20Astrophysics%20-%20Lecture%204%20%26%205.ipynb" target="_blank">Download .ipynb</a></li>
+  <li><a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational%20Astrophysics%20Lecture%206.ipynb" target="_blank">Lecture 6 (View in Browser)</a> | <a href="/resources/computational_astrophysics/Computational%20Astrophysics%20Lecture%206.ipynb" target="_blank">Download .ipynb</a></li>
+  <li><a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational%20Astrophysics%20Lecture%207.ipynb" target="_blank">Lecture 7 (View in Browser)</a> | <a href="/resources/computational_astrophysics/Computational%20Astrophysics%20Lecture%207.ipynb" target="_blank">Download .ipynb</a></li>
+  <li><a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational%20Astrophysics%20Lect%2011_%20Error%20Analysis.ipynb" target="_blank">Lecture 11: Error Analysis (View in Browser)</a> | <a href="/resources/computational_astrophysics/Computational%20Astrophysics%20Lect%2011_%20Error%20Analysis.ipynb" target="_blank">Download .ipynb</a></li>
+  <li><a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational%20Astrophysics%20Lect%2013_%20ODEs%20and%20Euler_s%20Method%20Lecture.ipynb" target="_blank">Lecture 13: ODEs and Euler's Method (View in Browser)</a> | <a href="/resources/computational_astrophysics/Computational%20Astrophysics%20Lect%2013_%20ODEs%20and%20Euler_s%20Method%20Lecture.ipynb" target="_blank">Download .ipynb</a></li>
+  <li><a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational_Astrophysics_lecture_17_PDE_.ipynb" target="_blank">Lecture 17: PDEs (View in Browser)</a> | <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_17_PDE_.ipynb" target="_blank">Download .ipynb</a></li>
+  <li><a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational_Astrophysics_lecture_19.ipynb" target="_blank">Lecture 19 (View in Browser)</a> | <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_19.ipynb" target="_blank">Download .ipynb</a></li>
+  <li><a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational_Astrophysics_lecture_20.ipynb" target="_blank">Lecture 20 (View in Browser)</a> | <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_20.ipynb" target="_blank">Download .ipynb</a></li>
 </ul>
 
 <h3>1. Computational Techniques (B.Sc. Physics)</h3>
@@ -58,6 +68,8 @@ My teaching philosophy emphasizes clarity, experimentation, and the integration 
 <ul>
   <li><a href="/resources/observational_astronomy_lab/Observational_Astronomy_Handbook.pdf" target="_blank">Lab Manual (PDF)</a></li>
 </ul>
+
+
 
 <p>
 Topics include numerical integration, solving differential equations, Monte Carlo simulations, and the use of <strong>Linux, Fortran, C++, Gnuplot</strong>, and <strong>LaTeX</strong>.
