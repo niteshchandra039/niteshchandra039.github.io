@@ -152,7 +152,7 @@ permalink: /teaching/
 <div class="page__content page-wrapper">
 
   <div class="intro-box">
-    <h1 style="margin-top: 0; border-bottom: none;">Teaching & Student Resources</h1>
+    <h1 style="margin-top: 1; border-bottom: none;">Teaching & Student Resources</h1>
     <p style="margin-bottom: 0;">
       As an Assistant Professor at <strong>UPES, Dehradun</strong>, I actively teach and mentor undergraduate and postgraduate students. 
       My teaching philosophy emphasizes clarity, experimentation, and the integration of computation into modern physics education.
@@ -367,6 +367,12 @@ permalink: /teaching/
     <div class="grid-card-mentor">
       <h3 style="margin-top: 0; color: #44337a; font-size: 1.1em;">Dissertation Guidance</h3>
       <ul style="padding-left: 20px; margin-bottom: 0;">
+        <li style="margin-bottom: 8px;"><strong>Madhumita Singh:</strong> Timing and Spectral Analysis of Low Mass X-ray Binaries</li>
+        <li style="margin-bottom: 8px;"><strong>Aniket Prakash:</strong> Theoretical Modelling of Variable stars using MESA</li>
+        <li style="margin-bottom: 8px;"><strong>Shagun Thakur:</strong> Analysis of variable stars in the Gaia DR3 Era</li>
+        <!-- <li style="margin-bottom: 8px;"><strong>Atharva Bhatele:</strong> Multiwavelength study of RR Lyrae stars</li> -->
+        <li style="margin-bottom: 8px;"><strong>Divya Krishna:</strong> Precision Distance Determination of the SMC via Multiphase P-L Relations using the LMC as a Calibrator Galaxy </li>
+        <li style="margin-bottom: 8px;"><strong>Rushil Soni:</strong> Age and Metallicity of the open cluster Berkely 6 </li>
         <li style="margin-bottom: 8px;"><strong>Atharva Bhatele:</strong> Multiwavelength study of RR Lyrae stars</li>
         <li><strong>Neelesh:</strong> Exoplanet parameter extraction using ExoFAST</li>
       </ul>
