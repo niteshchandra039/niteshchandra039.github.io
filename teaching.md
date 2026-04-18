@@ -286,6 +286,20 @@ permalink: /teaching/
               <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_25.ipynb" class="btn-link" target="_blank">⬇️ Download .ipynb</a>
             </div>
           </li>
+          <li>
+            <span class="lecture-title">Lecture 26: Random Walks</span>
+            <div>
+              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational_Astrophysics_lecture_26.ipynb" class="btn-link" target="_blank">🌐 View in Browser</a>
+              <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_26.ipynb" class="btn-link" target="_blank">⬇️ Download .ipynb</a>
+            </div>
+          </li>
+          <li>
+            <span class="lecture-title">Lagrangian vs Eulerian </span>
+            <div>
+              <!-- <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational_Astrophysics_lecture_27.ipynb" class="btn-link" target="_blank">🌐 View in Browser</a> -->
+              <a href="/resources/computational_astrophysics/html/lag_vs_eul.html" class="btn-link" target="_blank"> Animation Page</a>
+            </div>
+
         </ul>
       </details>
     </li>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eulerian vs Lagrangian Fluid Dynamics</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            background-color: #f4f4f9;
+            color: #333;
+            padding: 20px;
+        }
+        canvas {
+            background-color: #ffffff;
+            border: 2px solid #2c3e50;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+        .controls {
+            margin-top: 20px;
+        }
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #c0392b;
+        }
+        #description {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #555;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Hydrodynamics Perspectives: Control Mass vs Control Volume</h2>
+    
+    <div class="controls">
+        <button id="toggleBtn" onclick="toggleMode()">Switch to Eulerian (Grid) View</button>
+    </div>
+
+    <canvas id="simCanvas" width="720" height="400"></canvas>
+
+    <div id="description">
+        <strong>Lagrangian View:</strong> Tracking individual "packets" of fluid as they move continuously through space.
+    </div>
+
+    <script>
+        const canvas = document.getElementById('simCanvas');
+        const ctx = canvas.getContext('2d');
+        const btn = document.getElementById('toggleBtn');
+        const desc = document.getElementById('description');
+
+        let mode = 'lagrangian'; 
+        const numParticles = 600;
+        const particles = [];
+        
+        // Grid setup for Eulerian view
+        const gridSize = 40;
+        const cols = Math.ceil(canvas.width / gridSize);
+        const rows = Math.ceil(canvas.height / gridSize);
+
+        // Initialize particles with a flow behavior
+        for(let i = 0; i < numParticles; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                baseSpeed: 2.0 + Math.random() * 1.5,
+                wobbleOffset: Math.random() * Math.PI * 2
+            });
+        }
+
+        // Update particle positions
+        function update() {
+            particles.forEach(p => {
+                // Simulate pipe flow (faster in the center, slower near edges)
+                let centerDist = Math.abs(p.y - canvas.height / 2) / (canvas.height / 2);
+                let speed = p.baseSpeed * (1 - centerDist * 0.4);
+                
+                p.x += speed;
+                p.y += Math.sin(p.x * 0.03 + p.wobbleOffset) * 0.5; // Slight wave motion
+
+                // Wrap particles around when they exit the right side
+                if(p.x > canvas.width) p.x = 0;
+                
+                // Keep particles vertically constrained
+                if(p.y > canvas.height) p.y -= canvas.height;
+                if(p.y < 0) p.y += canvas.height;
+            });
+        }
+
+        // Draw the simulation
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            if(mode === 'lagrangian') {
+                // Draw individual fluid particles
+                ctx.fillStyle = '#3498db';
+                particles.forEach(p => {
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+            } else {
+                // EULERIAN MODE: Calculate density inside fixed grid cells
+                let grid = new Array(cols).fill(0).map(() => new Array(rows).fill(0));
+                
+                // Count particles in each cell
+                particles.forEach(p => {
+                    let c = Math.floor(p.x / gridSize);
+                    let r = Math.floor(p.y / gridSize);
+                    if(c >= 0 && c < cols && r >= 0 && r < rows) {
+                        grid[c][r]++;
+                    }
+                });
+
+                // Draw the grid cells colored by density
+                for(let c = 0; c < cols; c++) {
+                    for(let r = 0; r < rows; r++) {
+                        let density = grid[c][r];
+                        // Max opacity capped so the deepest blue represents high density
+                        let intensity = Math.min(density * 0.1, 1); 
+                        
+                        ctx.fillStyle = `rgba(52, 152, 219, ${intensity})`;
+                        ctx.fillRect(c * gridSize, r * gridSize, gridSize, gridSize);
+                        
+                        // Draw faint grid lines
+                        ctx.strokeStyle = '#ecf0f1';
+                        ctx.strokeRect(c * gridSize, r * gridSize, gridSize, gridSize);
+                    }
+                }
+            }
+        }
+
+        // Main animation loop
+        function loop() {
+            update();
+            draw();
+            requestAnimationFrame(loop);
+        }
+
+        // Toggle button logic
+        function toggleMode() {
+            if(mode === 'lagrangian') {
+                mode = 'eulerian';
+                btn.innerText = "Switch to Lagrangian (Particle) View";
+                btn.style.backgroundColor = "#27ae60";
+                desc.innerHTML = "<strong>Eulerian View:</strong> The fluid is a continuous field. We measure fluid density as it passes through fixed, rigid grid cells (Control Volumes).";
+            } else {
+                mode = 'lagrangian';
+                btn.innerText = "Switch to Eulerian (Grid) View";
+                btn.style.backgroundColor = "#e74c3c";
+                desc.innerHTML = "<strong>Lagrangian View:</strong> The fluid is made of discrete packets. We track individual fluid masses as they flow through space (Control Masses).";
+            }
+        }
+
+        // Start simulation
+        loop();
+    </script>
+</body>
+</html>
