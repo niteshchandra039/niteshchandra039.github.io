@@ -287,7 +287,7 @@ permalink: /teaching/
             </div>
           </li>
           <li>
-            <span class="lecture-title">Lecture 26: Random Walks</span>
+            <span class="lecture-title">Lecture 26: Shockwave Propagation</span>
             <div>
               <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational_Astrophysics_lecture_26.ipynb" class="btn-link" target="_blank">🌐 View in Browser</a>
               <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_26.ipynb" class="btn-link" target="_blank">⬇️ Download .ipynb</a>
@@ -296,9 +296,27 @@ permalink: /teaching/
           <li>
             <span class="lecture-title">Lagrangian vs Eulerian </span>
             <div>
-              <!-- <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational_Astrophysics_lecture_27.ipynb" class="btn-link" target="_blank">🌐 View in Browser</a> -->
-              <a href="/resources/computational_astrophysics/html/lag_vs_eul.html" class="btn-link" target="_blank"> Animation Page</a>
+              <a href="/resources/computational_astrophysics/lag_vs_eul.html" class="btn-link" target="_blank"> Animation Page</a>
             </div>
+          </li>
+
+          <li>
+            <span class="lecture-title">Supernova Shockwave Animation</span>
+            <div>
+              <a href="/resources/computational_astrophysics/supernova_shockwave.html" class="btn-link" target="_blank"> Supernova Shockwave Animation</a>
+            </div>
+          </li>
+
+          <li>
+            <span class="lecture-title">Supernova Shockwave Animation 1 </span>
+            <div>
+              <a href="/resources/computational_astrophysics/shockwave_1.html" class="btn-link" target="_blank"> Animation Page</a>
+            </div>
+          </li>
+
+        
+
+
 
         </ul>
       </details>

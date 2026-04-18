@@ -3,174 +3,291 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eulerian vs Lagrangian Fluid Dynamics</title>
+    <title>Eulerian vs Lagrangian Perspectives</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e2e;
+            color: #cdd6f4;
             text-align: center;
-            background-color: #f4f4f9;
-            color: #333;
+            margin: 0;
             padding: 20px;
         }
+        h1 {
+            color: #89b4fa;
+            margin-bottom: 5px;
+        }
+        p.subtitle {
+            color: #a6adc8;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
         canvas {
-            background-color: #ffffff;
-            border: 2px solid #2c3e50;
+            background-color: #11111b;
+            border: 2px solid #45475a;
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            margin-top: 20px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            display: block;
+            margin: 0 auto;
         }
         .controls {
-            margin-top: 20px;
+            margin-top: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
         }
-        button {
+        .btn {
             padding: 12px 24px;
             font-size: 16px;
             font-weight: bold;
-            cursor: pointer;
-            background-color: #e74c3c;
-            color: white;
+            color: #11111b;
+            background-color: #a6e3a1;
             border: none;
-            border-radius: 5px;
-            transition: background 0.3s;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
         }
-        button:hover {
-            background-color: #c0392b;
+        .btn:hover {
+            background-color: #94e2d5;
+            transform: translateY(-2px);
         }
-        #description {
-            margin-top: 20px;
-            font-size: 1.2em;
-            color: #555;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            line-height: 1.5;
+        .btn.eulerian {
+            background-color: #f38ba8;
+        }
+        .btn.eulerian:hover {
+            background-color: #eba0ac;
+        }
+        .slider-group {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            background: #313244;
+            padding: 10px 15px;
+            border-radius: 6px;
+        }
+        .slider-group label {
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: #bac2de;
+        }
+        .explanation-box {
+            max-width: 800px;
+            margin: 30px auto;
+            background: #313244;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid #a6e3a1;
+            text-align: left;
+            line-height: 1.6;
+        }
+        .highlight {
+            font-weight: bold;
+            color: #f9e2af;
         }
     </style>
 </head>
 <body>
 
-    <h2>Hydrodynamics Perspectives: Control Mass vs Control Volume</h2>
-    
+    <h1>Hydrodynamics: Frames of Reference</h1>
+    <p class="subtitle">Interactive demonstration for Computational Astrophysics</p>
+
+    <canvas id="simCanvas" width="800" height="400"></canvas>
+
     <div class="controls">
-        <button id="toggleBtn" onclick="toggleMode()">Switch to Eulerian (Grid) View</button>
+        <button id="modeBtn" class="btn" onclick="toggleMode()">Switch to Eulerian Mode</button>
+        
+        <div class="slider-group">
+            <label for="speedSlider">Fluid Flow Velocity (v): <span id="speedVal">2.0</span></label>
+            <input type="range" id="speedSlider" min="0.5" max="5.0" step="0.1" value="2.0" oninput="updateSpeed()">
+        </div>
     </div>
 
-    <canvas id="simCanvas" width="720" height="400"></canvas>
-
-    <div id="description">
-        <strong>Lagrangian View:</strong> Tracking individual "packets" of fluid as they move continuously through space.
+    <div id="explanation" class="explanation-box">
+        <div id="textLagrangian">
+            <span class="highlight">LAGRANGIAN PERSPECTIVE (Control Mass)</span><br><br>
+            Notice the red tracking box. In this mathematical framework, we lock our coordinates onto a specific "packet" of fluid and follow it as it moves through space and time. Our position coordinates (x, y) are entirely dependent on the time (t). We are sitting in a boat, floating down the river.
+        </div>
+        <div id="textEulerian" style="display: none;">
+            <span class="highlight">EULERIAN PERSPECTIVE (Control Volume)</span><br><br>
+            Notice the fixed red sensor box in the center. In this mathematical framework, we do not care where individual particles go. We establish a fixed coordinate in space (a rigid grid cell) and measure the density and velocity of whatever fluid happens to pass through our sensor at time (t). We are standing on a bridge, watching the river flow underneath us.
+        </div>
     </div>
 
     <script>
         const canvas = document.getElementById('simCanvas');
         const ctx = canvas.getContext('2d');
-        const btn = document.getElementById('toggleBtn');
-        const desc = document.getElementById('description');
-
-        let mode = 'lagrangian'; 
-        const numParticles = 600;
+        
+        let mode = 'lagrangian'; // Start in Lagrangian mode
+        let baseSpeed = 2.0;
+        
+        const numParticles = 400;
         const particles = [];
         
-        // Grid setup for Eulerian view
-        const gridSize = 40;
-        const cols = Math.ceil(canvas.width / gridSize);
-        const rows = Math.ceil(canvas.height / gridSize);
+        // Target particle for Lagrangian tracking
+        let trackedParticleIndex = 0;
 
-        // Initialize particles with a flow behavior
+        // Eulerian fixed volume definitions
+        const eulerBox = { x: 300, y: 100, width: 200, height: 200 };
+
+        // Initialize Particles
         for(let i = 0; i < numParticles; i++) {
             particles.push({
                 x: Math.random() * canvas.width,
                 y: Math.random() * canvas.height,
-                baseSpeed: 2.0 + Math.random() * 1.5,
-                wobbleOffset: Math.random() * Math.PI * 2
+                offset: Math.random() * Math.PI * 2, // For wave motion
+                speedMultiplier: 0.8 + Math.random() * 0.4
             });
         }
 
-        // Update particle positions
-        function update() {
-            particles.forEach(p => {
-                // Simulate pipe flow (faster in the center, slower near edges)
-                let centerDist = Math.abs(p.y - canvas.height / 2) / (canvas.height / 2);
-                let speed = p.baseSpeed * (1 - centerDist * 0.4);
-                
-                p.x += speed;
-                p.y += Math.sin(p.x * 0.03 + p.wobbleOffset) * 0.5; // Slight wave motion
+        // Make sure the tracked particle starts on the left so we can watch it travel
+        particles[trackedParticleIndex].x = 50;
+        particles[trackedParticleIndex].y = 200;
 
-                // Wrap particles around when they exit the right side
-                if(p.x > canvas.width) p.x = 0;
-                
-                // Keep particles vertically constrained
-                if(p.y > canvas.height) p.y -= canvas.height;
-                if(p.y < 0) p.y += canvas.height;
-            });
+        function updateSpeed() {
+            baseSpeed = parseFloat(document.getElementById('speedSlider').value);
+            document.getElementById('speedVal').innerText = baseSpeed.toFixed(1);
         }
 
-        // Draw the simulation
-        function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            if(mode === 'lagrangian') {
-                // Draw individual fluid particles
-                ctx.fillStyle = '#3498db';
-                particles.forEach(p => {
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
-                    ctx.fill();
-                });
+        function toggleMode() {
+            const btn = document.getElementById('modeBtn');
+            const expBox = document.getElementById('explanation');
+            
+            if (mode === 'lagrangian') {
+                mode = 'eulerian';
+                btn.innerText = "Switch to Lagrangian Mode";
+                btn.className = "btn eulerian";
+                btn.style.backgroundColor = "#f38ba8";
+                
+                document.getElementById('textLagrangian').style.display = 'none';
+                document.getElementById('textEulerian').style.display = 'block';
+                expBox.style.borderLeftColor = "#f38ba8";
             } else {
-                // EULERIAN MODE: Calculate density inside fixed grid cells
-                let grid = new Array(cols).fill(0).map(() => new Array(rows).fill(0));
+                mode = 'lagrangian';
+                btn.innerText = "Switch to Eulerian Mode";
+                btn.className = "btn";
+                btn.style.backgroundColor = "#a6e3a1";
                 
-                // Count particles in each cell
-                particles.forEach(p => {
-                    let c = Math.floor(p.x / gridSize);
-                    let r = Math.floor(p.y / gridSize);
-                    if(c >= 0 && c < cols && r >= 0 && r < rows) {
-                        grid[c][r]++;
-                    }
-                });
+                document.getElementById('textEulerian').style.display = 'none';
+                document.getElementById('textLagrangian').style.display = 'block';
+                expBox.style.borderLeftColor = "#a6e3a1";
+                
+                // Reset tracked particle to the left side when switching back
+                particles[trackedParticleIndex].x = 10;
+                particles[trackedParticleIndex].y = 200;
+            }
+        }
 
-                // Draw the grid cells colored by density
-                for(let c = 0; c < cols; c++) {
-                    for(let r = 0; r < rows; r++) {
-                        let density = grid[c][r];
-                        // Max opacity capped so the deepest blue represents high density
-                        let intensity = Math.min(density * 0.1, 1); 
-                        
-                        ctx.fillStyle = `rgba(52, 152, 219, ${intensity})`;
-                        ctx.fillRect(c * gridSize, r * gridSize, gridSize, gridSize);
-                        
-                        // Draw faint grid lines
-                        ctx.strokeStyle = '#ecf0f1';
-                        ctx.strokeRect(c * gridSize, r * gridSize, gridSize, gridSize);
-                    }
+        function update() {
+            for(let i = 0; i < numParticles; i++) {
+                let p = particles[i];
+                
+                // Flow dynamics (Move right with slight sine wave wobble)
+                let currentSpeed = baseSpeed * p.speedMultiplier;
+                p.x += currentSpeed;
+                p.y += Math.sin(p.x * 0.02 + p.offset) * 0.5;
+
+                // Loop particles around
+                if (p.x > canvas.width) {
+                    p.x = -10;
+                    p.y = Math.random() * canvas.height;
                 }
             }
         }
 
-        // Main animation loop
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw all general fluid particles
+            ctx.fillStyle = '#89b4fa';
+            for(let i = 0; i < numParticles; i++) {
+                // Dim the other particles in Lagrangian mode to focus on the tracked one
+                if (mode === 'lagrangian' && i !== trackedParticleIndex) {
+                    ctx.fillStyle = 'rgba(137, 180, 250, 0.3)';
+                } else {
+                    ctx.fillStyle = '#89b4fa';
+                }
+                
+                ctx.beginPath();
+                ctx.arc(particles[i].x, particles[i].y, 3, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            if (mode === 'lagrangian') {
+                // --- LAGRANGIAN DRAWING ---
+                let target = particles[trackedParticleIndex];
+                
+                // Draw target particle
+                ctx.fillStyle = '#a6e3a1';
+                ctx.beginPath();
+                ctx.arc(target.x, target.y, 6, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Draw tracking box (moves with the mass)
+                ctx.strokeStyle = '#a6e3a1';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(target.x - 20, target.y - 20, 40, 40);
+
+                // Draw velocity vector
+                ctx.beginPath();
+                ctx.moveTo(target.x, target.y);
+                ctx.lineTo(target.x + 40, target.y);
+                ctx.lineWidth = 3;
+                ctx.stroke();
+
+                // Draw HUD Text moving with particle
+                ctx.fillStyle = '#a6e3a1';
+                ctx.font = '14px sans-serif';
+                ctx.fillText(`Mass ID: 001`, target.x - 30, target.y - 30);
+                ctx.fillText(`Pos: (${Math.floor(target.x)}, ${Math.floor(target.y)})`, target.x - 30, target.y - 45);
+
+            } else if (mode === 'eulerian') {
+                // --- EULERIAN DRAWING ---
+                
+                // Count particles currently inside the fixed box
+                let particlesInside = 0;
+                for(let i = 0; i < numParticles; i++) {
+                    let p = particles[i];
+                    if (p.x > eulerBox.x && p.x < eulerBox.x + eulerBox.width &&
+                        p.y > eulerBox.y && p.y < eulerBox.y + eulerBox.height) {
+                        particlesInside++;
+                    }
+                }
+
+                // Color the box based on density (intensity increases with count)
+                let fillAlpha = Math.min(particlesInside / 40, 0.5);
+                ctx.fillStyle = `rgba(243, 139, 168, ${fillAlpha})`;
+                ctx.fillRect(eulerBox.x, eulerBox.y, eulerBox.width, eulerBox.height);
+
+                // Draw fixed grid boundary
+                ctx.strokeStyle = '#f38ba8';
+                ctx.lineWidth = 3;
+                ctx.strokeRect(eulerBox.x, eulerBox.y, eulerBox.width, eulerBox.height);
+
+                // Draw HUD Text fixed to the grid cell
+                ctx.fillStyle = '#f38ba8';
+                ctx.font = '16px sans-serif';
+                ctx.fillText(`STATIC CONTROL VOLUME`, eulerBox.x + 5, eulerBox.y - 10);
+                
+                // Dashboard inside the box
+                ctx.font = '18px monospace';
+                ctx.fillStyle = '#cdd6f4';
+                ctx.fillText(`Density (ρ): ${particlesInside} units`, eulerBox.x + 10, eulerBox.y + 30);
+                ctx.fillText(`Velocity (v): ${baseSpeed.toFixed(1)} m/s`, eulerBox.x + 10, eulerBox.y + 60);
+                
+                // Calculate Mass Flux (Density * Velocity)
+                let flux = particlesInside * baseSpeed;
+                ctx.fillText(`Mass Flux : ${flux.toFixed(1)}`, eulerBox.x + 10, eulerBox.y + 90);
+            }
+        }
+
         function loop() {
             update();
             draw();
             requestAnimationFrame(loop);
         }
 
-        // Toggle button logic
-        function toggleMode() {
-            if(mode === 'lagrangian') {
-                mode = 'eulerian';
-                btn.innerText = "Switch to Lagrangian (Particle) View";
-                btn.style.backgroundColor = "#27ae60";
-                desc.innerHTML = "<strong>Eulerian View:</strong> The fluid is a continuous field. We measure fluid density as it passes through fixed, rigid grid cells (Control Volumes).";
-            } else {
-                mode = 'lagrangian';
-                btn.innerText = "Switch to Eulerian (Grid) View";
-                btn.style.backgroundColor = "#e74c3c";
-                desc.innerHTML = "<strong>Lagrangian View:</strong> The fluid is made of discrete packets. We track individual fluid masses as they flow through space (Control Masses).";
-            }
-        }
-
-        // Start simulation
+        // Start animation
         loop();
     </script>
 </body>

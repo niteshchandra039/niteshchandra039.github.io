@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supernova Shockwave: Hydrodynamic Smearing</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0b0c10;
+            color: #c5c6c7;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #66fcf1;
+            margin-bottom: 5px;
+        }
+        p.subtitle {
+            color: #45a29e;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        .canvas-wrapper {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        canvas {
+            background-color: #1f2833;
+            border: 2px solid #45a29e;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(102, 252, 241, 0.2);
+        }
+        .controls {
+            background-color: #1f2833;
+            padding: 20px;
+            border-radius: 8px;
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            border: 1px solid #45a29e;
+        }
+        .btn {
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #0b0c10;
+            background-color: #66fcf1;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn:hover {
+            background-color: #45a29e;
+            color: #fff;
+        }
+        .slider-group {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .slider-group label {
+            font-size: 14px;
+            margin-bottom: 8px;
+            color: #c5c6c7;
+            font-weight: bold;
+        }
+        input[type="range"] {
+            width: 200px;
+            accent-color: #66fcf1;
+        }
+        select {
+            padding: 8px;
+            border-radius: 4px;
+            background-color: #0b0c10;
+            color: #66fcf1;
+            border: 1px solid #45a29e;
+            font-weight: bold;
+        }
+        .explanation {
+            max-width: 900px;
+            text-align: left;
+            background-color: #1f2833;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid #66fcf1;
+            line-height: 1.6;
+        }
+        .highlight {
+            color: #66fcf1;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Supernova Shockwave Propagation</h1>
+    <p class="subtitle">Removing Artificial Smearing: Comparing Numerical Solvers</p>
+
+    <div class="container">
+        <div class="controls">
+            <button id="playBtn" class="btn" onclick="togglePlay()">Launch Shockwave</button>
+            <button class="btn" onclick="resetSim()" style="background-color: #c5c6c7;">Reset Simulation</button>
+            
+            <div class="slider-group">
+                <label for="velocitySlider">Courant Number (v * dt/dx): <span id="velVal">0.60</span></label>
+                <input type="range" id="velocitySlider" min="0.1" max="1.0" step="0.05" value="0.6" oninput="updateParams()">
+            </div>
+
+            <div class="slider-group">
+                <label for="schemeSelect">Numerical Scheme (Solver):</label>
+                <select id="schemeSelect" onchange="updateParams()">
+                    <option value="LF">Lax-Friedrichs (High Smearing)</option>
+                    <option value="UPWIND">Upwind Scheme (Low Smearing)</option>
+                    <option value="LW" selected>Lax-Wendroff (Ringing/Oscillations)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="canvas-wrapper">
+            <!-- 2D Radial View -->
+            <div>
+                <h3 style="color: #c5c6c7; margin-bottom: 10px;">2D Physical View</h3>
+                <canvas id="view2D" width="400" height="400"></canvas>
+            </div>
+            <!-- 1D Mathematical View -->
+            <div>
+                <h3 style="color: #c5c6c7; margin-bottom: 10px;">1D Eulerian Grid Density Profile</h3>
+                <canvas id="view1D" width="500" height="400"></canvas>
+            </div>
+        </div>
+
+        <div class="explanation">
+            <span class="highlight">Removing the Smear:</span> To stop the extreme diffusion of the Lax-Friedrichs scheme, we must upgrade to higher-order solvers.<br><br>
+            <span class="highlight">Godunov's Theorem:</span> Try the <strong>Lax-Wendroff</strong> scheme. Notice how it perfectly preserves the sharp vertical cliff of the shock front (removing the smearing). However, it introduces physical impossibilities: ripples and negative densities trailing behind the shock. This "ringing" proves that no linear second-order scheme can handle a shockwave perfectly!
+        </div>
+    </div>
+
+    <script>
+        const canvas2D = document.getElementById('view2D');
+        const ctx2D = canvas2D.getContext('2d');
+        const canvas1D = document.getElementById('view1D');
+        const ctx1D = canvas1D.getContext('2d');
+        
+        let isPlaying = false;
+        let animationId;
+        
+        // Simulation Parameters
+        const nx = 200; // Grid cells
+        let u = new Array(nx).fill(0);
+        let u_initial = new Array(nx).fill(0);
+        
+        let courant = 0.6; // C = velocity * dt / dx
+        let scheme = "LW";
+
+        function updateParams() {
+            courant = parseFloat(document.getElementById('velocitySlider').value);
+            scheme = document.getElementById('schemeSelect').value;
+            document.getElementById('velVal').innerText = courant.toFixed(2);
+        }
+
+        function initSimulation() {
+            // Create a sharp "top hat" shock profile near the center
+            for(let i = 0; i < nx; i++) {
+                if(i >= 10 && i <= 30) {
+                    u[i] = 1.0;
+                    u_initial[i] = 1.0;
+                } else {
+                    u[i] = 0.0;
+                    u_initial[i] = 0.0;
+                }
+            }
+        }
+
+        function togglePlay() {
+            isPlaying = !isPlaying;
+            const btn = document.getElementById('playBtn');
+            if(isPlaying) {
+                btn.innerText = "Pause Simulation";
+                btn.style.backgroundColor = "#f38ba8"; 
+                btn.style.color = "#11111b";
+                loop();
+            } else {
+                btn.innerText = "Resume Simulation";
+                btn.style.backgroundColor = "#66fcf1";
+                cancelAnimationFrame(animationId);
+            }
+        }
+
+        function resetSim() {
+            isPlaying = false;
+            const btn = document.getElementById('playBtn');
+            btn.innerText = "Launch Shockwave";
+            btn.style.backgroundColor = "#66fcf1";
+            cancelAnimationFrame(animationId);
+            initSimulation();
+            draw();
+        }
+
+        function updatePhysics() {
+            let u_next = [...u];
+            
+            for(let i = 1; i < nx - 1; i++) {
+                if (scheme === "LF") {
+                    // Lax-Friedrichs (High numerical viscosity)
+                    u_next[i] = 0.5 * (u[i+1] + u[i-1]) - 0.5 * courant * (u[i+1] - u[i-1]);
+                } 
+                else if (scheme === "UPWIND") {
+                    // First-Order Upwind (Lower numerical viscosity)
+                    u_next[i] = u[i] - courant * (u[i] - u[i-1]);
+                } 
+                else if (scheme === "LW") {
+                    // Lax-Wendroff (Second order, no viscosity, introduces dispersion/ringing)
+                    u_next[i] = u[i] - 0.5 * courant * (u[i+1] - u[i-1]) + 
+                                0.5 * courant * courant * (u[i+1] - 2 * u[i] + u[i-1]);
+                }
+            }
+            
+            // Outflow boundary condition
+            u_next[nx-1] = u_next[nx-2];
+            u_next[0] = 0; // Core stops injecting after initial burst
+            
+            u = u_next;
+
+            // Auto-pause if wave reaches the edge
+            if(u[nx-5] > 0.1 || u[nx-5] < -0.1) {
+                togglePlay();
+                document.getElementById('playBtn').innerText = "Shockwave Escaped (Reset)";
+            }
+        }
+
+        // Color mapping for plasma (Handles negative densities from ringing)
+        function getPlasmaColor(val) {
+            if (val < 0) return 'rgb(50, 0, 100)'; // Purple for unphysical negative ringing
+            let r = Math.min(255, val * 500);
+            let g = Math.min(255, Math.max(0, val * 500 - 200));
+            let b = Math.min(255, Math.max(0, val * 500 - 400));
+            return `rgb(${r}, ${g}, ${b})`;
+        }
+
+        function draw() {
+            // --- DRAW 1D GRAPH ---
+            ctx1D.clearRect(0, 0, canvas1D.width, canvas1D.height);
+            
+            // Grid lines
+            ctx1D.strokeStyle = '#45a29e';
+            ctx1D.lineWidth = 1;
+            ctx1D.beginPath();
+            let baseLineY = canvas1D.height - 50; // Raised baseline to show negative dips
+            ctx1D.moveTo(0, baseLineY);
+            ctx1D.lineTo(canvas1D.width, baseLineY);
+            ctx1D.stroke();
+
+            // Labels
+            ctx1D.fillStyle = '#c5c6c7';
+            ctx1D.font = '14px sans-serif';
+            ctx1D.fillText("Core", 10, baseLineY + 20);
+            ctx1D.fillText("Radial Distance (r) ->", canvas1D.width / 2 - 60, baseLineY + 20);
+            ctx1D.fillText("Density (ρ)", 10, 20);
+
+            // Draw Initial Profile (Ghost trace)
+            ctx1D.beginPath();
+            for(let i = 0; i < nx; i++) {
+                let x = (i / nx) * canvas1D.width;
+                let y = baseLineY - (u_initial[i] * (canvas1D.height - 100));
+                if(i === 0) ctx1D.moveTo(x, y);
+                else ctx1D.lineTo(x, y);
+            }
+            ctx1D.strokeStyle = 'rgba(102, 252, 241, 0.2)';
+            ctx1D.lineWidth = 2;
+            ctx1D.setLineDash([5, 5]);
+            ctx1D.stroke();
+            ctx1D.setLineDash([]);
+
+            // Draw Current Profile
+            ctx1D.beginPath();
+            for(let i = 0; i < nx; i++) {
+                let x = (i / nx) * canvas1D.width;
+                let y = baseLineY - (u[i] * (canvas1D.height - 100));
+                if(i === 0) ctx1D.moveTo(x, y);
+                else ctx1D.lineTo(x, y);
+            }
+            ctx1D.strokeStyle = '#66fcf1';
+            ctx1D.lineWidth = 3;
+            ctx1D.stroke();
+
+            // Fill under the curve
+            ctx1D.lineTo(canvas1D.width, baseLineY);
+            ctx1D.lineTo(0, baseLineY);
+            ctx1D.fillStyle = 'rgba(102, 252, 241, 0.1)';
+            ctx1D.fill();
+
+
+            // --- DRAW 2D RADIAL VIEW ---
+            ctx2D.clearRect(0, 0, canvas2D.width, canvas2D.height);
+            let cx = canvas2D.width / 2;
+            let cy = canvas2D.height / 2;
+            let maxRadius = Math.min(cx, cy);
+
+            // Draw expanding concentric circles mapped to grid density
+            for(let i = nx - 1; i >= 0; i--) {
+                if (Math.abs(u[i]) > 0.01) { 
+                    let r = (i / nx) * maxRadius;
+                    ctx2D.beginPath();
+                    ctx2D.arc(cx, cy, r, 0, 2 * Math.PI);
+                    ctx2D.strokeStyle = getPlasmaColor(u[i]);
+                    ctx2D.lineWidth = (maxRadius / nx) * 1.5; 
+                    ctx2D.stroke();
+                }
+            }
+            
+            // Draw central remnant
+            ctx2D.beginPath();
+            ctx2D.arc(cx, cy, 4, 0, 2 * Math.PI);
+            ctx2D.fillStyle = '#ffffff';
+            ctx2D.fill();
+        }
+
+        function loop() {
+            updatePhysics();
+            draw();
+            if(isPlaying) {
+                animationId = requestAnimationFrame(loop);
+            }
+        }
+
+        // Initialize
+        updateParams();
+        initSimulation();
+        draw();
+    </script>
+</body>
+</html>
