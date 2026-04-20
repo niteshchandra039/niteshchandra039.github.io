@@ -167,6 +167,9 @@ permalink: /marks/
   .score-display { display: flex; align-items: baseline; justify-content: space-between; }
   .score-val { font-size: 24px; font-weight: 700; color: #1f2937; }
   .score-max { font-size: 13px; color: #9ca3af; font-weight: 500; }
+  .lab-display { display: flex; justify-content: space-between; margin-top: 8px; font-size: 12px; }
+  .lab-label { color: #6b7280; font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; }
+  .lab-value { color: #1f2937; font-weight: 600; }
 
   /* Mini Progress Bar */
   .mini-progress { height: 6px; background: #f3f4f6; border-radius: 10px; margin-top: 12px; overflow: hidden; }
@@ -311,6 +314,22 @@ function getRandomJoke() { return JOKES[Math.floor(Math.random() * JOKES.length)
 // Normalize string for consistent matching
 function normalize(str) { return str.toLowerCase().replace(/[^a-z0-9\s]/g, "").trim(); }
 
+function getLabValue(row) {
+  if (!row) return "";
+  const labKey = Object.keys(row).find((key) => {
+    const normalizedKey = normalize(String(key));
+    return (
+      normalizedKey === "lab" ||
+      normalizedKey.startsWith("lab ") ||
+      normalizedKey.endsWith(" lab") ||
+      normalizedKey.includes(" laboratory") ||
+      normalizedKey.startsWith("laboratory")
+    );
+  });
+
+  return labKey ? row[labKey] : "";
+}
+
 async function fetchMarks() {
   const ui = {
     btn: document.getElementById('btnFetch'),
@@ -379,7 +398,9 @@ async function fetchMarks() {
 
         if (studentRow) {
           const score = studentRow['Total'] || studentRow['Total '] || "-";
+          const labScore = getLabValue(studentRow);
           let maxScore = 0;
+          let labMax = "";
           if (maxRow) {
             if (maxRow['Total'] && !isNaN(maxRow['Total'])) {
                 maxScore = maxRow['Total'];
@@ -388,8 +409,13 @@ async function fetchMarks() {
                    if (!isNaN(parseFloat(maxRow[key])) && key !== 'Total') maxScore += parseFloat(maxRow[key]);
                 }
             }
+
+            const labMaxValue = getLabValue(maxRow);
+            if (labMaxValue !== "" && labMaxValue !== null && labMaxValue !== undefined) {
+              labMax = labMaxValue;
+            }
           }
-          examDetails.push({ name: sheetName, score: score, max: maxScore });
+          examDetails.push({ name: sheetName, score: score, max: maxScore, labScore: labScore, labMax: labMax });
         }
       }
     });
@@ -421,6 +447,8 @@ async function fetchMarks() {
         let scoreVal = parseFloat(exam.score);
         let maxVal = parseFloat(exam.max);
         if(!isNaN(scoreVal) && !isNaN(maxVal) && maxVal > 0) percent = (scoreVal / maxVal) * 100;
+        const hasLab = exam.labScore !== "" && exam.labScore !== null && exam.labScore !== undefined;
+        const labMaxDisplay = exam.labMax !== "" && exam.labMax !== null && exam.labMax !== undefined ? ` / ${exam.labMax}` : "";
         
         let barColor = "#111827"; 
         if(percent < 40) barColor = "#ef4444"; // Red for fail
@@ -434,6 +462,11 @@ async function fetchMarks() {
               <span class="score-val">${exam.score}</span>
               <span class="score-max">/ ${exam.max}</span>
             </div>
+            ${hasLab ? `
+            <div class="lab-display">
+              <span class="lab-label">LAB</span>
+              <span class="lab-value">${exam.labScore}${labMaxDisplay}</span>
+            </div>` : ""}
           </div>
           <div class="mini-progress">
              <div class="mini-fill" style="width: ${percent}%; background-color: ${barColor}"></div>
