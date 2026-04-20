@@ -138,7 +138,6 @@ permalink: /marks/
   .stu-grade { text-align: right; }
   .grade-box { font-size: 36px; font-weight: 800; color: #111; line-height: 1; letter-spacing: -1px; }
   .grade-label { font-size: 11px; text-transform: uppercase; color: #6b7280; font-weight: 700; margin-top: 4px; }
-  .grade-sub { margin-top: 6px; font-size: 12px; color: #4b5563; font-weight: 600; }
 
   /* Marks Grid */
   .marks-grid {
@@ -317,11 +316,6 @@ function normalize(str) { return str.toLowerCase().replace(/[^a-z0-9\s]/g, "").t
 
 function getLabValue(row) {
   if (!row) return "";
-
-  // First try exact logical header match for common Marksheet columns.
-  const exactLabKey = Object.keys(row).find((key) => normalize(String(key)) === "lab");
-  if (exactLabKey) return row[exactLabKey];
-
   const labKey = Object.keys(row).find((key) => {
     const normalizedKey = normalize(String(key));
     const condensedKey = normalizedKey.replace(/\s+/g, "");
@@ -372,8 +366,6 @@ async function fetchMarks() {
     
     let studentName = "";
     let compositeScore = "xx";
-    let overallLabScore = "";
-    let overallLabMax = "";
     let examDetails = [];
     
     // 1. Get Marksheet Master Data
@@ -385,15 +377,10 @@ async function fetchMarks() {
 
       const data = XLSX.utils.sheet_to_json(sheet, { range: headerRowIdx, defval: "" });
       const record = findRecord(data, ui.sap);
-      const marksheetMaxRow = data.find(r => Object.values(r).some(val => String(val).toLowerCase().includes("max marks")));
       
       if (record) {
         studentName = record['Name'] || record['Name '];
         compositeScore = record['Total'] || record['Total '] || "xx";
-        overallLabScore = getLabValue(record);
-        if (marksheetMaxRow) {
-          overallLabMax = getLabValue(marksheetMaxRow);
-        }
       }
     }
 
@@ -494,35 +481,6 @@ async function fetchMarks() {
       if(compositeScore !== "xx" && !isNaN(compositeScore)) {
           compositeScore = Number(compositeScore).toFixed(1).replace(/\.0$/, '');
       }
-      const showOverallLab = overallLabScore !== "" && overallLabScore !== null && overallLabScore !== undefined;
-      const overallLabMaxDisplay = overallLabMax !== "" && overallLabMax !== null && overallLabMax !== undefined ? ` / ${overallLabMax}` : "";
-      let overallLabCard = "";
-      if (showOverallLab) {
-        let labPercent = 0;
-        const labScoreNum = parseFloat(overallLabScore);
-        const labMaxNum = parseFloat(overallLabMax);
-        if (!isNaN(labScoreNum) && !isNaN(labMaxNum) && labMaxNum > 0) {
-          labPercent = (labScoreNum / labMaxNum) * 100;
-        }
-
-        let labBarColor = "#111827";
-        if (labPercent < 40) labBarColor = "#ef4444";
-        else if (labPercent >= 90) labBarColor = "#10b981";
-
-        overallLabCard = `
-        <div class="mark-card">
-          <div>
-            <div class="exam-name">Lab (Overall)</div>
-            <div class="score-display">
-              <span class="score-val">${overallLabScore}</span>
-              <span class="score-max">${overallLabMaxDisplay || ""}</span>
-            </div>
-          </div>
-          <div class="mini-progress">
-            <div class="mini-fill" style="width: ${labPercent}%; background-color: ${labBarColor}"></div>
-          </div>
-        </div>`;
-      }
 
       ui.content.innerHTML = `
         <div class="student-header">
@@ -533,12 +491,10 @@ async function fetchMarks() {
            <div class="stu-grade">
              <div class="grade-label">Composite Score</div>
              <div class="grade-box">${compositeScore} <small style="font-size:14px; color:#999; font-weight:400">/100</small></div>
-             ${showOverallLab ? `<div class="grade-sub">Lab: ${overallLabScore}${overallLabMaxDisplay}</div>` : ""}
            </div>
         </div>
         
         <div class="marks-grid">
-            ${overallLabCard}
            ${cardsHtml}
         </div>
 
