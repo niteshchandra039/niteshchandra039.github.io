@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PN Junction - Microscopic Physics Simulator</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600&display=swap');
+:root {
+  --bg:#07090f; --surf:#0f1623; --surf2:#151e2e; --surf3:#1c2840;
+  --border:#243044; --border2:#2e3d58;
+  --blue:#4f8ef7; --cyan:#22d3ee; --rose:#fb7185; --amber:#fbbf24;
+  --emerald:#34d399; --violet:#a78bfa; --orange:#fb923c; --indigo:#818cf8;
+  --txt:#dde5f0; --txt2:#8899b0; --txt3:#4a5e7a;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--txt);font-family:'Inter',sans-serif;font-size:13px}
+#app{display:grid;grid-template-columns:240px 1fr 270px;grid-template-rows:48px 1fr 90px;height:100vh}
+/* HEADER */
+#hdr{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:0 20px;background:rgba(15,22,35,0.98);border-bottom:1px solid var(--border);z-index:50}
+.hlogo{font-family:'Space Mono',monospace;font-size:12px;color:var(--cyan);letter-spacing:2px}
+.hlogo b{color:var(--txt)}
+.hbadges{display:flex;gap:8px}
+.hbadge{font-family:'Space Mono',monospace;font-size:9px;padding:3px 9px;border-radius:3px;letter-spacing:1px;border:1px solid}
+.hb-stage{color:var(--violet);border-color:rgba(167,139,250,.35);background:rgba(167,139,250,.08)}
+.hb-run{color:var(--emerald);border-color:rgba(52,211,153,.35);background:rgba(52,211,153,.08)}
+/* LEFT PANEL */
+#lpanel{grid-column:1;grid-row:2/4;background:var(--surf);border-right:1px solid var(--border);overflow-y:auto;padding:14px 12px;display:flex;flex-direction:column;gap:14px}
+.psec{}
+.ptitle{font-family:'Space Mono',monospace;font-size:9px;font-weight:700;color:var(--txt3);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;padding-bottom:5px;border-bottom:1px solid var(--border)}
+.stage-nav{display:flex;flex-direction:column;gap:4px}
+.snav-btn{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:6px;border:1px solid var(--border);background:var(--surf2);cursor:pointer;transition:.2s;text-align:left;width:100%}
+.snav-btn:hover{border-color:var(--violet);background:rgba(167,139,250,.08)}
+.snav-btn.active{border-color:var(--violet);background:rgba(167,139,250,.15)}
+.snav-btn.done .sn-num{color:var(--emerald)}
+.sn-num{font-family:'Space Mono',monospace;font-size:9px;color:var(--violet);min-width:16px}
+.sn-lbl{font-size:11px;color:var(--txt2);line-height:1.3}
+.snav-btn.active .sn-lbl{color:var(--txt)}
+.ctrl-row{margin-bottom:12px}
+.ctrl-lbl{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.ctrl-lbl span{font-size:11px;color:var(--txt2)}
+.ctrl-val{font-family:'Space Mono',monospace;font-size:10px;color:var(--cyan);background:rgba(34,211,238,.1);padding:2px 7px;border-radius:3px}
+input[type=range]{-webkit-appearance:none;width:100%;height:3px;background:var(--surf3);border-radius:2px;outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:var(--cyan);cursor:pointer;box-shadow:0 0 6px rgba(34,211,238,.5)}
+input[type=range].r::-webkit-slider-thumb{background:var(--rose);box-shadow:0 0 6px rgba(251,113,133,.5)}
+input[type=range].a::-webkit-slider-thumb{background:var(--amber);box-shadow:0 0 6px rgba(251,191,36,.5)}
+.bias-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.bias-btn{padding:7px 4px;border-radius:5px;border:1px solid var(--border);background:var(--surf2);color:var(--txt2);font-family:'Space Mono',monospace;font-size:9px;cursor:pointer;transition:.2s;text-align:center;letter-spacing:.5px}
+.bias-btn:hover{border-color:var(--cyan);color:var(--cyan)}
+.bias-btn.on{background:rgba(79,142,247,.2);border-color:var(--blue);color:var(--blue)}
+.bias-btn.on.fwd{background:rgba(52,211,153,.2);border-color:var(--emerald);color:var(--emerald)}
+.bias-btn.on.rev{background:rgba(251,113,133,.2);border-color:var(--rose);color:var(--rose)}
+.bias-btn.on.brk{background:rgba(251,191,36,.2);border-color:var(--amber);color:var(--amber)}
+.pb-row{display:flex;gap:5px}
+.pb-btn{flex:1;padding:8px;border-radius:5px;border:1px solid var(--border);background:var(--surf2);color:var(--txt2);font-size:13px;cursor:pointer;transition:.2s}
+.pb-btn:hover{background:var(--surf3);color:var(--txt)}
+.pb-btn.pri{background:rgba(79,142,247,.2);border-color:var(--blue);color:var(--blue);font-size:15px}
+.pb-btn.rst{background:rgba(251,113,133,.1);border-color:rgba(251,113,133,.3);color:var(--rose)}
+.pb-btn.rst:hover{background:rgba(251,113,133,.2)}
+.leg-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--txt2)}
+.leg-d{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.leg-s{width:9px;height:9px;border-radius:2px;flex-shrink:0;border:1.5px solid}
+/* MAIN */
+#main{grid-column:2;grid-row:2/3;position:relative;overflow:hidden;background:var(--bg)}
+#mc{display:block;width:100%;height:100%}
+#bflash{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at center,rgba(251,191,36,.22) 0%,transparent 65%);opacity:0;transition:opacity .12s}
+/* INFO BAR */
+#ibar{grid-column:2;grid-row:3;background:var(--surf);border-top:1px solid var(--border);padding:10px 18px;display:flex;flex-direction:column;justify-content:center}
+.istage{font-family:'Space Mono',monospace;font-size:9px;color:var(--violet);letter-spacing:2px;margin-bottom:5px}
+.ibody{font-size:11.5px;color:var(--txt2);line-height:1.65}
+.ibody em{color:var(--cyan);font-style:normal}
+.ibody strong{color:var(--amber);font-weight:600}
+/* RIGHT */
+#rpanel{grid-column:3;grid-row:2/4;background:var(--surf);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto}
+.gbox{padding:12px;border-bottom:1px solid var(--border)}
+.gtitle{font-family:'Space Mono',monospace;font-size:9px;color:var(--txt3);letter-spacing:1.5px;margin-bottom:8px}
+canvas.gc{width:100%;border-radius:4px;background:var(--bg);display:block}
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:12px}
+.mcard{background:var(--surf2);border-radius:6px;padding:10px;border:1px solid var(--border)}
+.mlbl{font-size:9px;color:var(--txt3);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
+.mval{font-family:'Space Mono',monospace;font-size:13px;color:var(--txt)}
+.munit{font-size:8px;color:var(--txt3)}
+#tip{position:fixed;z-index:999;pointer-events:none;background:rgba(15,22,35,.97);border:1px solid var(--border2);border-radius:6px;padding:8px 12px;font-size:11px;color:var(--txt2);line-height:1.5;max-width:210px;opacity:0;transition:opacity .1s}
+#tip.show{opacity:1}
+#tip strong{color:var(--cyan);font-family:'Space Mono',monospace;font-size:10px}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+</style>
+</head>
+<body>
+<div id="app">
+
+<header id="hdr">
+  <div class="hlogo">PN <b>Junction</b> <span style="color:var(--txt3)">// Microscopic Physics Simulator</span></div>
+  <div class="hbadges">
+    <span class="hbadge hb-stage" id="stageBadge">STAGE 1 · SEPARATED</span>
+    <span class="hbadge hb-run" id="runBadge">● RUNNING</span>
+  </div>
+</header>
+
+<aside id="lpanel">
+  <div class="psec">
+    <div class="ptitle">Simulation Stages</div>
+    <div class="stage-nav">
+      <button class="snav-btn active" id="sn0" onclick="goStage(0)"><span class="sn-num">01</span><span class="sn-lbl">Separated P &amp; N</span></button>
+      <button class="snav-btn" id="sn1" onclick="goStage(1)"><span class="sn-num">02</span><span class="sn-lbl">Joining the Junction</span></button>
+      <button class="snav-btn" id="sn2" onclick="goStage(2)"><span class="sn-num">03</span><span class="sn-lbl">Diffusion Begins</span></button>
+      <button class="snav-btn" id="sn3" onclick="goStage(3)"><span class="sn-num">04</span><span class="sn-lbl">Depletion Region Forms</span></button>
+      <button class="snav-btn" id="sn4" onclick="goStage(4)"><span class="sn-num">05</span><span class="sn-lbl">Equilibrium</span></button>
+      <button class="snav-btn" id="sn5" onclick="goStage(5)"><span class="sn-num">06</span><span class="sn-lbl">Forward Bias</span></button>
+      <button class="snav-btn" id="sn6" onclick="goStage(6)"><span class="sn-num">07</span><span class="sn-lbl">Reverse Bias</span></button>
+      <button class="snav-btn" id="sn7" onclick="goStage(7)"><span class="sn-num">08</span><span class="sn-lbl">Breakdown</span></button>
+    </div>
+  </div>
+  <div class="psec">
+    <div class="ptitle">Parameters</div>
+    <div class="ctrl-row">
+      <div class="ctrl-lbl"><span>P-Doping Nₐ</span><span class="ctrl-val" id="vPd">2×10¹⁶</span></div>
+      <input type="range" class="r" id="sPd" min="1" max="5" step=".5" value="2" oninput="updParam('pd',this)">
+    </div>
+    <div class="ctrl-row">
+      <div class="ctrl-lbl"><span>N-Doping Nᴅ</span><span class="ctrl-val" id="vNd">2×10¹⁶</span></div>
+      <input type="range" id="sNd" min="1" max="5" step=".5" value="2" oninput="updParam('nd',this)">
+    </div>
+    <div class="ctrl-row">
+      <div class="ctrl-lbl"><span>Temperature</span><span class="ctrl-val" id="vT">300 K</span></div>
+      <input type="range" class="a" id="sT" min="200" max="500" step="10" value="300" oninput="updParam('T',this)">
+    </div>
+    <div class="ctrl-row">
+      <div class="ctrl-lbl"><span>Applied Voltage</span><span class="ctrl-val" id="vV">0.00 V</span></div>
+      <input type="range" id="sV" min="-7" max="1" step=".05" value="0" style="background:linear-gradient(to right,var(--rose) 0%,var(--surf3) 50%,var(--emerald) 100%)" oninput="updParam('V',this)">
+    </div>
+  </div>
+  <div class="psec">
+    <div class="ptitle">Bias Mode</div>
+    <div class="bias-grid">
+      <button class="bias-btn on" id="bb0" onclick="setBias('eq')">EQUIL.</button>
+      <button class="bias-btn" id="bb1" onclick="setBias('fwd')">FWD BIAS</button>
+      <button class="bias-btn" id="bb2" onclick="setBias('rev')">REV BIAS</button>
+      <button class="bias-btn" id="bb3" onclick="setBias('brk')">BREAKDOWN</button>
+    </div>
+  </div>
+  <div class="psec">
+    <div class="ptitle">Playback</div>
+    <div class="pb-row">
+      <button class="pb-btn pri" id="btnPlay" onclick="togglePlay()">⏸</button>
+      <button class="pb-btn" onclick="stepOnce()" title="Single step">⏭</button>
+      <button class="pb-btn" onclick="nextStage()" title="Next stage" style="font-size:11px">NEXT →</button>
+      <button class="pb-btn rst" onclick="fullReset()" title="Full reset">↺ RESET</button>
+    </div>
+  </div>
+  <div class="psec">
+    <div class="ptitle">Legend</div>
+    <div class="leg-grid">
+      <div class="leg-item"><div class="leg-d" style="background:var(--blue)"></div>Electron (maj.)</div>
+      <div class="leg-item"><div class="leg-d" style="background:var(--rose)"></div>Hole (maj.)</div>
+      <div class="leg-item"><div class="leg-d" style="background:rgba(79,142,247,.3);outline:1.5px dashed var(--blue);outline-offset:1px"></div>Electron (min.)</div>
+      <div class="leg-item"><div class="leg-d" style="background:rgba(251,113,133,.2);outline:1.5px dashed var(--rose);outline-offset:1px"></div>Hole (min.)</div>
+      <div class="leg-item"><div class="leg-s" style="border-color:var(--orange);background:rgba(251,146,60,.18)"></div>+ Donor ion (N)</div>
+      <div class="leg-item"><div class="leg-s" style="border-color:var(--indigo);background:rgba(129,140,248,.18)"></div>− Acceptor ion (P)</div>
+    </div>
+  </div>
+</aside>
+
+<main id="main">
+  <canvas id="mc"></canvas>
+  <div id="bflash"></div>
+</main>
+
+<div id="ibar">
+  <div class="istage" id="iStageLabel">STAGE 1 · SEPARATED SEMICONDUCTORS</div>
+  <div class="ibody" id="iBody">Both P-type and N-type semiconductors exist separately. <em>P-type</em> has majority <strong>holes</strong> (open red circles) and few minority electrons (dashed blue). <em>N-type</em> has majority <strong>electrons</strong> (solid blue) and few minority holes (dashed red). Each region is electrically neutral - fixed lattice ions perfectly compensated by mobile carriers.</div>
+</div>
+
+<aside id="rpanel">
+  <div class="gbox"><div class="gtitle">ENERGY BAND DIAGRAM</div><canvas class="gc" id="gcBand" height="130"></canvas></div>
+  <div class="gbox"><div class="gtitle">POTENTIAL V(x)</div><canvas class="gc" id="gcPot" height="90"></canvas></div>
+  <div class="gbox"><div class="gtitle">CHARGE DENSITY ρ(x)</div><canvas class="gc" id="gcChg" height="90"></canvas></div>
+  <div class="gbox"><div class="gtitle">ELECTRIC FIELD |E(x)|</div><canvas class="gc" id="gcEf" height="80"></canvas></div>
+  <div class="metrics">
+    <div class="mcard"><div class="mlbl">Barrier V</div><div class="mval" id="mVbi">- <span class="munit">V</span></div></div>
+    <div class="mcard"><div class="mlbl">Dep. Width</div><div class="mval" id="mWd">- <span class="munit">µm</span></div></div>
+    <div class="mcard"><div class="mlbl">Peak E-field</div><div class="mval" id="mEf">- <span class="munit">kV/cm</span></div></div>
+    <div class="mcard"><div class="mlbl">Current</div><div class="mval" id="mI">- <span class="munit">mA</span></div></div>
+  </div>
+</aside>
+</div>
+<div id="tip"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+//  PN JUNCTION MICROSCOPIC SIMULATOR  v2.0
+//  8 Stages: separated -> joining -> diffusion -> depletion ->
+//            equilibrium -> forward -> reverse -> breakdown
+// ═══════════════════════════════════════════════════════════════
+const mc=document.getElementById('mc');
+const ctx=mc.getContext('2d');
+let W=0,H=0;
+
+// ── Master state (single source of truth) ───────────────────
+const DEF={stage:0,running:true,t:0,pd:2,nd:2,T:300,V:0,bias:'eq',gapFrac:0.20,depFrac:0};
+let S=Object.assign({},DEF);
+
+// Particle pools
+let elMaj=[],holMaj=[],elMin=[],holMin=[],ions=[],sparks=[],dArrows=[];
+
+// Computed physics
+let P={};
+
+// ── Resize ───────────────────────────────────────────────────
+function resize(){
+  const r=mc.parentElement.getBoundingClientRect();
+  mc.width=r.width; mc.height=r.height; W=r.width; H=r.height;
+  
+  // Safe layout updates for right panel canvases to prevent Layout Thrashing
+  ['gcBand','gcPot','gcChg','gcEf'].forEach(id=>{
+    const c=document.getElementById(id);
+    if(c) c.width=c.parentElement.clientWidth - 24; // Account for 12px padding
+  });
+  
+  rebuild();
+}
+window.addEventListener('resize',resize);
+
+// ── Physics ──────────────────────────────────────────────────
+function calcPhys(){
+  const Na=S.pd*1e22,Nd=S.nd*1e22; // m^-3
+  const T=S.T,Ve=S.V;
+  const q=1.6e-19,kB=1.38e-23,eps0=8.85e-12,epsr=11.7,eps=eps0*epsr;
+  const ni=1.5e16*Math.exp((T-300)/300*0.8);
+  const Vt=kB*T/q;
+  const Vbi0=Math.max(0.01,Vt*Math.log(Na*Nd/(ni*ni)));
+  const Vbi_eff=Math.max(0.01,Vbi0-Ve);
+  const Wdep=Math.sqrt(2*eps*Vbi_eff/q*(1/Na+1/Nd));
+  const Emax=2*Vbi_eff/Wdep;
+  const I_mA=Math.min(999999, Math.max(-999999, 1e-9*(Math.exp(Ve/Vt)-1)*1000)); // Capped exponentially large UI values
+  const depCanvas=Math.min(W*0.28,Math.max(W*0.035,Wdep*1e6*30*(S.pd+S.nd)/4));
+  P={Vt,Vbi0,Vbi_eff,Wdep_um:Wdep*1e6,Emax_kVcm:Emax/1e5,I_mA,depCanvas};
+  updMetrics();
+}
+
+function updMetrics(){
+  const ok=S.stage>=4;
+  const fmt=(v,d)=>ok?v.toFixed(d):'-';
+  document.getElementById('mVbi').innerHTML=fmt(P.Vbi_eff,2)+' <span class="munit">V</span>';
+  document.getElementById('mWd').innerHTML=fmt(P.Wdep_um,3)+' <span class="munit">µm</span>';
+  document.getElementById('mEf').innerHTML=(ok?P.Emax_kVcm.toFixed(0):'-')+' <span class="munit">kV/cm</span>';
+  const i=P.I_mA,is=ok?(Math.abs(i)<0.001?'~0':i>9999?'>9999':i<-9999?'<-9999':i>0?'+'+i.toFixed(2):i.toFixed(2)):'-';
+  document.getElementById('mI').innerHTML=is+' <span class="munit">mA</span>';
+}
+
+// ── Geometry ──────────────────────────────────────────────────
+const JX=()=>W/2;
+const GAP=()=>S.stage<=1?S.gapFrac*W*0.42:0;
+const DH=()=>Math.max(0,S.depFrac*(P.depCanvas||W*0.12));
+
+// ── Particle factory ──────────────────────────────────────────
+function spd(){return 0.35+(S.T/300)*(0.45+Math.random()*0.7);}
+function mkP(x,y){
+  const a=Math.random()*Math.PI*2,s=spd();
+  return {x,y,vx:s*Math.cos(a),vy:s*Math.sin(a),alive:true,trail:[],glowing:false,r:5};
+}
+
+// ── Rebuild all particles ─────────────────────────────────────
+function rebuild(){
+  calcPhys();
+  elMaj=[]; holMaj=[]; elMin=[]; holMin=[]; ions=[]; sparks=[]; dArrows=[];
+  const jx=JX(),gap=GAP(),dh=DH();
+  const pad=20;
+
+  const nMH=Math.round(18+S.pd*3.5),nME=Math.round(18+S.nd*3.5);
+  const nmiH=Math.round(3+S.pd*0.5),nmiE=Math.round(3+S.nd*0.5);
+
+  if(S.stage===0){
+    // Separated - each region fully contained
+    const pR=jx-gap, nL=jx+gap;
+    // Math.max guarantees positive coordinate lengths
+    for(let i=0;i<nMH;i++) holMaj.push(mkP(pad+Math.random()*Math.max(1, pR-2*pad), pad+Math.random()*Math.max(1, H-2*pad)));
+    for(let i=0;i<nmiH;i++) elMin.push(mkP(pad+Math.random()*Math.max(1, pR-2*pad), pad+Math.random()*Math.max(1, H-2*pad)));
+    for(let i=0;i<nME;i++) elMaj.push(mkP(nL+pad+Math.random()*Math.max(1, W-nL-2*pad), pad+Math.random()*Math.max(1, H-2*pad)));
+    for(let i=0;i<nmiE;i++) holMin.push(mkP(nL+pad+Math.random()*Math.max(1, W-nL-2*pad), pad+Math.random()*Math.max(1, H-2*pad)));
+    return;
+  }
+
+  // Stage 1+: gap may be animating closed, or zero
+  const pBulk=Math.max(pad,jx-dh-pad);
+  const nBulk=Math.min(W-pad,jx+dh+pad);
+  const extra=S.bias==='fwd'?10:0;
+  const brkE=S.bias==='brk'?15:0;
+
+  for(let i=0;i<nMH+extra;i++) holMaj.push(mkP(pad+Math.random()*Math.max(1,pBulk-pad), pad+Math.random()*Math.max(1,H-2*pad)));
+  for(let i=0;i<nmiH;i++) elMin.push(mkP(pad+Math.random()*Math.max(1,pBulk-pad), pad+Math.random()*Math.max(1,H-2*pad)));
+  for(let i=0;i<nME+extra+brkE;i++) elMaj.push(mkP(nBulk+Math.random()*Math.max(1,W-nBulk-pad), pad+Math.random()*Math.max(1,H-2*pad)));
+  for(let i=0;i<nmiE;i++) holMin.push(mkP(nBulk+Math.random()*Math.max(1,W-nBulk-pad), pad+Math.random()*Math.max(1,H-2*pad)));
+
+  if(S.stage===2){
+    for(let y=H*0.12;y<H*0.9;y+=H*0.13){
+      dArrows.push({x:jx+10,y,dir:-1,life:1,type:'e'});
+      dArrows.push({x:jx-10,y:y+H*0.065,dir:1,life:1,type:'h'});
+    }
+  }
+  rebuildIons();
+}
+
+function rebuildIons(){
+  ions=[];
+  const dh=DH(); if(dh<5) return;
+  const jx=JX(),sp=34;
+  for(let x=jx+sp/2;x<jx+dh;x+=sp) for(let y=sp/2;y<H;y+=sp) ions.push({x,y,charge:+1});
+  for(let x=jx-dh+sp/2;x<jx;x+=sp) for(let y=sp/2;y<H;y+=sp) ions.push({x,y,charge:-1});
+}
+
+// ── Stage definitions ─────────────────────────────────────────
+const STAGES=[
+  {label:'STAGE 1 · SEPARATED',info:'Both P-type and N-type semiconductors exist <em>separately</em>. The <em>P-type</em> contains majority <strong>holes</strong> (open red circles) and few minority <em>electrons</em> (dashed blue - thermally generated). The <em>N-type</em> contains majority <strong>electrons</strong> (filled blue circles) and few minority <em>holes</em> (dashed red). Each region is electrically neutral overall: every mobile carrier is balanced by a fixed lattice ion.'},
+  {label:'STAGE 2 · JOINING',info:'The two semiconductors are <em>brought together</em> at the metallurgical junction. At the moment of contact, a sharp <em>concentration gradient</em> exists: electrons dense in N, holes dense in P. This is the driving force for <strong>diffusion</strong>. No electric field exists yet - the junction is newly formed.'},
+  {label:'STAGE 3 · DIFFUSION',info:'<em>Diffusion current begins.</em> Electrons drift N→P, holes drift P→N (see arrows). As opposite carriers meet near the junction they <em>recombine</em> (white flashes), annihilating each other. This leaves behind <strong>uncompensated fixed ions</strong>: positive donor ions on the N-side, negative acceptor ions on the P-side - the seed of the depletion region.'},
+  {label:'STAGE 4 · DEPLETION FORMS',info:'The uncovered <strong>fixed ions</strong> (orange + squares on N-side, indigo − squares on P-side) create an internal <em>electric field E</em> pointing from N→P. This field opposes further diffusion. The <em>depletion region</em> grows until drift current (E-field) exactly balances diffusion current. Watch ions accumulate and the E-field arrows strengthen.'},
+  {label:'STAGE 5 · EQUILIBRIUM',info:'<strong>Thermal equilibrium.</strong> Built-in potential Vbi ≈ 0.7V for silicon. Net current = 0. Fermi level is flat across the device. <em>Minority carriers</em> (dashed) exist in bulk regions due to thermal generation. The depletion region is stable. The energy band diagram shows band bending across the junction equal to qVbi.'},
+  {label:'STAGE 6 · FORWARD BIAS',info:'<em>Forward bias</em> (+V on P-side): The external voltage opposes the built-in field, <strong>narrowing the depletion region</strong> and lowering the barrier. Majority carriers flood across - electrons N→P, holes P→N. Current grows exponentially: <em>I = I₀(e^(V/Vₜ)-1)</em>. Minority carrier injection creates excess carriers near each junction edge.'},
+  {label:'STAGE 7 · REVERSE BIAS',info:'<em>Reverse bias</em> (−V on P-side): The external field <strong>adds to</strong> the built-in field, widening the depletion region and raising the barrier. Majority carriers are swept away. Only tiny <em>reverse saturation current I₀</em> flows - minority carriers that drift into the depletion region are swept across. The diode is "off".'},
+  {label:'STAGE 8 · BREAKDOWN',info:'<em>Zener breakdown</em>: At high reverse bias, quantum <strong>tunneling</strong> lets valence electrons tunnel directly through the thin barrier (amber flashes at junction). <em>Avalanche breakdown</em>: carriers accelerated by the strong field gain enough energy for <strong>impact ionization</strong> - each collision creates a new e-h pair (chain reaction, glowing hot electrons). Current surges dramatically.'},
+];
+
+// ── Simulation step ───────────────────────────────────────────
+function simStep(){
+  S.t+=0.016;
+  calcPhys();
+  const jx=JX(),dh=DH();
+  let gap=GAP();
+
+  // Stage-specific progressions
+  if(S.stage===1){
+    S.gapFrac=Math.max(0,S.gapFrac-0.0025);
+    gap=GAP(); // update locally as it shrinks
+  }
+  if(S.stage===2){
+    S.depFrac=Math.min(0.25,S.depFrac+0.0006);
+    // Animate diffusion arrows
+    dArrows.forEach(a=>{a.x+=a.dir*0.5; a.life-=0.007;});
+    dArrows=dArrows.filter(a=>a.life>0);
+    if(Math.random()<0.07){
+      const y=H*0.08+Math.random()*H*0.84;
+      dArrows.push({x:jx+8,y,dir:-1,life:1,type:'e'});
+      dArrows.push({x:jx-8,y:y+14,dir:1,life:1,type:'h'});
+    }
+  }
+  if(S.stage===3) S.depFrac=Math.min(0.7,S.depFrac+0.001);
+  if(S.stage>=4) S.depFrac=Math.min(1.0,S.depFrac+0.004);
+
+  // Update particles, pass in the gap to restrict particle areas correctly
+  const vibM=S.T/300;
+  elMaj=elMaj.filter(p=>p.alive);  elMaj.forEach(p=>updElecMaj(p,jx,dh,gap));
+  holMaj=holMaj.filter(p=>p.alive); holMaj.forEach(p=>updHoleMaj(p,jx,dh,gap));
+  elMin=elMin.filter(p=>p.alive);   elMin.forEach(p=>updElecMin(p,jx,dh,gap));
+  holMin=holMin.filter(p=>p.alive); holMin.forEach(p=>updHoleMin(p,jx,dh,gap));
+
+  // Recombination near junction (stages 2-6)
+  if(S.stage>=2 && S.stage<=6) doRecomb(jx,dh);
+  // Breakdown
+  if(S.stage===7) doBreakdown(jx,dh);
+
+  // Safely decrease particle life BEFORE filtering to prevent negative rendering artifacts
+  sparks.forEach(s=>{s.life-=0.04;s.x+=s.vx;s.y+=s.vy;s.vx*=0.94;s.vy*=0.94;});
+  sparks=sparks.filter(s=>s.life>0);
+
+  replenish(jx,dh,gap);
+  rebuildIons();
+  document.getElementById('bflash').style.opacity=(S.stage===7&&S.t%0.45<0.09)?'1':'0';
+}
+
+// ── Particle physics ──────────────────────────────────────────
+function thermalKick(p){if(Math.random()<0.035){const a=Math.random()*Math.PI*2,s=spd();p.vx=s*Math.cos(a);p.vy=s*Math.sin(a);}}
+function bounce(p,x1,x2){
+  if(p.x<x1+4){p.x=x1+4;p.vx=Math.abs(p.vx);} if(p.x>x2-4){p.x=x2-4;p.vx=-Math.abs(p.vx);}
+  if(p.y<4){p.y=4;p.vy=Math.abs(p.vy);} if(p.y>H-4){p.y=H-4;p.vy=-Math.abs(p.vy);}
+}
+function trail(p){p.trail.push({x:p.x,y:p.y});if(p.trail.length>7)p.trail.shift();}
+
+function updElecMaj(p,jx,dh,gap){
+  thermalKick(p);
+  const inDep=p.x>jx-dh&&p.x<jx+dh;
+  const ds=Math.min(0.1,P.Vbi_eff/4.5);
+  if(inDep) p.vx+=ds; // E-field pushes electrons back to N
+  if(S.bias==='fwd'&&p.x>jx&&Math.random()<0.004*S.nd){p.vx=-Math.abs(spd());p.x=jx+3;}
+  if((S.bias==='rev'||S.bias==='brk')&&p.x<jx+dh+25) p.vx+=0.035;
+  p.x+=p.vx; p.y+=p.vy;
+  if(S.bias!=='fwd'&&S.stage>=4&&p.x<jx-dh*1.7) p.vx=Math.abs(p.vx)*1.2;
+  
+  // Dynamic boundaries based on simulation stage constraints
+  const bL = (S.stage<=1) ? jx+gap : 0; 
+  bounce(p,bL,W); trail(p);
+}
+function updHoleMaj(p,jx,dh,gap){
+  thermalKick(p);
+  const inDep=p.x>jx-dh&&p.x<jx+dh;
+  const ds=Math.min(0.1,P.Vbi_eff/4.5);
+  if(inDep) p.vx-=ds; // E-field pushes holes back to P
+  if(S.bias==='fwd'&&p.x<jx&&Math.random()<0.004*S.pd){p.vx=Math.abs(spd());p.x=jx-3;}
+  if((S.bias==='rev'||S.bias==='brk')&&p.x>jx-dh-25) p.vx-=0.035;
+  p.x+=p.vx; p.y+=p.vy;
+  if(S.bias!=='fwd'&&S.stage>=4&&p.x>jx+dh*1.7) p.vx=-Math.abs(p.vx)*1.2;
+  
+  const bR = (S.stage<=1) ? jx-gap : W;
+  bounce(p,0,bR); trail(p);
+}
+function updElecMin(p,jx,dh,gap){
+  thermalKick(p);
+  // Minority electrons in P: slowly drift toward junction under rev bias
+  if(S.bias==='rev'||S.bias==='brk') p.vx+=0.008;
+  p.x+=p.vx; p.y+=p.vy;
+  
+  const bR = (S.stage<=1) ? jx-gap : jx-dh*0.4;
+  bounce(p,0,bR); trail(p);
+}
+function updHoleMin(p,jx,dh,gap){
+  thermalKick(p);
+  if(S.bias==='rev'||S.bias==='brk') p.vx-=0.008;
+  p.x+=p.vx; p.y+=p.vy;
+  
+  const bL = (S.stage<=1) ? jx+gap : jx+dh*0.4;
+  bounce(p,bL,W); trail(p);
+}
+
+function doRecomb(jx,dh){
+  const zone=Math.max(12,dh*0.85);
+  for(let i=elMaj.length-1;i>=0;i--){
+    if(!elMaj[i].alive) continue;
+    for(let j=holMaj.length-1;j>=0;j--){
+      if(!holMaj[j].alive) continue;
+      const dx=elMaj[i].x-holMaj[j].x,dy=elMaj[i].y-holMaj[j].y;
+      if(Math.sqrt(dx*dx+dy*dy)<11&&Math.abs(elMaj[i].x-jx)<zone){
+        sparks.push({x:(elMaj[i].x+holMaj[j].x)/2,y:(elMaj[i].y+holMaj[j].y)/2,life:1,vx:0,vy:0,type:'recomb'});
+        elMaj[i].alive=false; holMaj[j].alive=false; break;
+      }
+    }
+  }
+}
+
+function doBreakdown(jx,dh){
+  // Zener tunneling
+  if(Math.random()<0.022){
+    const y=H*0.1+Math.random()*H*0.8;
+    const e=mkP(jx+dh+6,y); e.vx=Math.abs(spd()); elMaj.push(e);
+    const h=mkP(jx-dh-6,y); h.vx=-Math.abs(spd()); holMaj.push(h);
+    sparks.push({x:jx,y,life:1.3,vx:0,vy:0,type:'zener'});
+  }
+  // Avalanche
+  for(let i=elMaj.length-1;i>=0;i--){
+    if(!elMaj[i].alive) continue;
+    if(Math.abs(elMaj[i].x-jx)<dh*1.4&&Math.random()<0.014&&elMaj.length<95){
+      elMaj[i].glowing=true;
+      const e2=mkP(elMaj[i].x+4,elMaj[i].y+(Math.random()-.5)*16);
+      const h2=mkP(elMaj[i].x-4,elMaj[i].y+(Math.random()-.5)*16);
+      elMaj.push(e2); holMaj.push(h2);
+      sparks.push({x:elMaj[i].x,y:elMaj[i].y,life:0.7,vx:(Math.random()-.5)*2.5,vy:(Math.random()-.5)*2.5,type:'aval'});
+    }
+  }
+}
+
+function replenish(jx,dh,gap){
+  const pad=18;
+  const tE=Math.min(60,Math.round(18+S.nd*4+(S.bias==='fwd'?8:0)+(S.bias==='brk'?18:0)));
+  const tH=Math.min(60,Math.round(18+S.pd*4+(S.bias==='fwd'?8:0)+(S.bias==='brk'?18:0)));
+  const tEm=Math.round(3+S.pd*0.6),tHm=Math.round(3+S.nd*0.6);
+  
+  const effDh = Math.max(dh, gap); // Don't spawn randomly inside the gap bounds
+  const nBx=jx+effDh+pad,pBx=jx-effDh-pad;
+  
+  while(elMaj.length<tE&&nBx<W-pad) elMaj.push(mkP(nBx+Math.random()*Math.max(1,W-nBx-pad),pad+Math.random()*Math.max(1,H-2*pad)));
+  while(holMaj.length<tH&&pBx>pad) holMaj.push(mkP(pad+Math.random()*Math.max(1,pBx-pad),pad+Math.random()*Math.max(1,H-2*pad)));
+  while(elMin.length<tEm&&pBx>pad) elMin.push(mkP(pad+Math.random()*Math.max(1,pBx-pad),pad+Math.random()*Math.max(1,H-2*pad)));
+  while(holMin.length<tHm&&nBx<W-pad) holMin.push(mkP(nBx+Math.random()*Math.max(1,W-nBx-pad),pad+Math.random()*Math.max(1,H-2*pad)));
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  RENDERING
+// ═══════════════════════════════════════════════════════════════
+function render(){
+  ctx.clearRect(0,0,W,H);
+  const jx=JX(),dh=DH(),gap=GAP();
+  const pR=jx-gap, nL=jx+gap;
+
+  drawBg(jx,dh,gap,pR,nL);
+  drawLattice(jx,dh,gap);
+  if(S.stage>=3) drawIons();
+  if(S.stage>=3) drawEField(jx,dh);
+  if(S.stage===2) drawDiffArrows();
+  drawSparks();
+  // Draw minority first (behind majority)
+  drawGroup(holMin,false,'hole');
+  drawGroup(elMin,false,'elec');
+  drawGroup(holMaj,true,'hole');
+  drawGroup(elMaj,true,'elec');
+  drawLabels(jx,dh,gap,pR,nL);
+  if(S.stage>=1) drawJunctionLine(jx,gap);
+  if(S.stage>=3&&dh>20) drawDepLabel(jx,dh);
+  if(S.stage>=5) drawVoltUI();
+  // Right panel graphs
+  drawBand(); drawPot(); drawChg(); drawEfGraph();
+}
+
+function drawBg(jx,dh,gap,pR,nL){
+  // P region
+  if(pR>0){
+    const g=ctx.createLinearGradient(0,0,pR,0);
+    g.addColorStop(0,'#1e0d38'); g.addColorStop(1,'#160924'); ctx.fillStyle=g; ctx.fillRect(0,0,pR,H);
+  }
+  // N region
+  if(nL<W){
+    const g=ctx.createLinearGradient(nL,0,W,0);
+    g.addColorStop(0,'#041624'); g.addColorStop(1,'#051e32'); ctx.fillStyle=g; ctx.fillRect(nL,0,W-nL,H);
+  }
+  // Gap
+  if(gap>1){
+    ctx.fillStyle='#07090f'; ctx.fillRect(pR,0,nL-pR,H);
+    // Gap borders
+    ctx.strokeStyle='rgba(255,255,255,0.07)'; ctx.lineWidth=1; ctx.setLineDash([4,4]);
+    ctx.beginPath(); ctx.moveTo(pR,0); ctx.lineTo(pR,H); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(nL,0); ctx.lineTo(nL,H); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle='rgba(148,163,184,0.2)'; ctx.font='10px Inter,sans-serif'; ctx.textAlign='center';
+    ctx.fillText('← GAP →',jx,H/2);
+  }
+  // Depletion highlight
+  if(dh>2&&gap<2){
+    const dg=ctx.createLinearGradient(jx-dh,0,jx+dh,0);
+    dg.addColorStop(0,'rgba(129,140,248,0.09)'); dg.addColorStop(0.5,'rgba(15,22,40,0.4)'); dg.addColorStop(1,'rgba(251,146,60,0.09)');
+    ctx.fillStyle=dg; ctx.fillRect(jx-dh,0,dh*2,H);
+  }
+}
+
+function drawLattice(jx,dh,gap){
+  const sp=34,vm=S.T/300;
+  for(let bx=sp/2;bx<W;bx+=sp){
+    for(let by=sp/2;by<H;by+=sp){
+      const isP=bx<jx-(gap>1?gap:0); const isN=bx>jx+(gap>1?gap:0);
+      if(!isP&&!isN) continue;
+      const vib=vm*(Math.sin(S.t*2.2+bx*0.31+by*0.19)*0.65);
+      const ax=bx+vib,ay=by+vib*0.75;
+      ctx.strokeStyle=isP?'rgba(167,139,250,0.09)':'rgba(34,211,238,0.09)';
+      ctx.lineWidth=0.6;
+      ctx.beginPath();ctx.moveTo(ax,ay);ctx.lineTo(ax+sp,ay);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(ax,ay);ctx.lineTo(ax,ay+sp);ctx.stroke();
+      const inDep=bx>jx-dh&&bx<jx+dh;
+      ctx.beginPath();ctx.arc(ax,ay,3.5,0,Math.PI*2);
+      ctx.fillStyle=inDep?(isP?'#1e0d40':'#061828'):(isP?'#341260':'#0d2a50'); ctx.fill();
+      if(!inDep){
+        ctx.strokeStyle=isP?'rgba(167,139,250,0.28)':'rgba(34,211,238,0.28)';
+        ctx.lineWidth=0.7; ctx.beginPath();ctx.arc(ax,ay,5.5,0,Math.PI*2);ctx.stroke();
+      }
+    }
+  }
+}
+
+function drawIons(){
+  const alpha=Math.min(1,S.depFrac*1.6);
+  ions.forEach(ion=>{
+    const pos=ion.charge>0;
+    ctx.save(); ctx.globalAlpha=alpha;
+    // Glow
+    const rg=ctx.createRadialGradient(ion.x,ion.y,0,ion.x,ion.y,13);
+    rg.addColorStop(0,pos?'rgba(251,146,60,0.4)':'rgba(129,140,248,0.4)'); rg.addColorStop(1,'transparent');
+    ctx.beginPath();ctx.arc(ion.x,ion.y,13,0,Math.PI*2);ctx.fillStyle=rg;ctx.fill();
+    // Square
+    ctx.strokeStyle=pos?'#fb923c':'#818cf8';
+    ctx.fillStyle=pos?'rgba(251,146,60,0.2)':'rgba(129,140,248,0.2)';
+    ctx.lineWidth=1.5; ctx.fillRect(ion.x-6,ion.y-6,12,12); ctx.strokeRect(ion.x-6,ion.y-6,12,12);
+    ctx.font='bold 10px Space Mono,monospace'; ctx.fillStyle=pos?'#fb923c':'#818cf8';
+    ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(pos?'+':'−',ion.x,ion.y+0.5);
+    ctx.restore();
+  });
+}
+
+function drawEField(jx,dh){
+  if(dh<14) return;
+  const str=Math.min(1,P.Vbi_eff/1.1);
+  const rows=Math.floor(H/52);
+  const alen=12+str*16;
+  ctx.save();
+  for(let i=0;i<=rows;i++){
+    const y=28+i*(H-48)/Math.max(1,rows);
+    ctx.strokeStyle=`rgba(251,191,36,${0.22+str*0.48})`; ctx.fillStyle=`rgba(251,191,36,${0.28+str*0.48})`; ctx.lineWidth=1.5;
+    const ax=jx+alen/2,bx=jx-alen/2;
+    ctx.beginPath();ctx.moveTo(ax,y);ctx.lineTo(bx+7,y);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(bx,y);ctx.lineTo(bx+7,y-4);ctx.lineTo(bx+7,y+4);ctx.closePath();ctx.fill();
+  }
+  ctx.font='bold 10px Space Mono,monospace'; ctx.fillStyle='rgba(251,191,36,0.65)'; ctx.textAlign='center';
+  ctx.fillText('← Ē (built-in field)',jx,11);
+  ctx.restore();
+}
+
+function drawDiffArrows(){
+  dArrows.forEach(a=>{
+    ctx.save(); ctx.globalAlpha=a.life*0.75;
+    ctx.strokeStyle=a.type==='e'?'#4f8ef7':'#fb7185'; ctx.fillStyle=a.type==='e'?'#4f8ef7':'#fb7185'; ctx.lineWidth=2;
+    const hx=a.x+a.dir*18;
+    ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(hx-a.dir*7,a.y);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(hx,a.y);ctx.lineTo(hx-a.dir*7,a.y-4);ctx.lineTo(hx-a.dir*7,a.y+4);ctx.closePath();ctx.fill();
+    ctx.restore();
+  });
+}
+
+function drawSparks(){
+  sparks.forEach(s=>{
+    const a=s.life;
+    if(s.type==='recomb'){
+      const rg=ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,20*a);
+      rg.addColorStop(0,`rgba(255,255,255,${a*0.9})`); rg.addColorStop(0.35,`rgba(167,139,250,${a*0.6})`); rg.addColorStop(1,'transparent');
+      ctx.beginPath();ctx.arc(s.x,s.y,20*a,0,Math.PI*2);ctx.fillStyle=rg;ctx.fill();
+      ctx.fillStyle=`rgba(255,255,255,${a*0.7})`; ctx.font='9px Inter'; ctx.textAlign='center';
+      if(a>0.6) ctx.fillText('recomb',s.x,s.y-14*a);
+    } else if(s.type==='zener'){
+      ctx.save(); ctx.globalAlpha=a;
+      const rg=ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,18);
+      rg.addColorStop(0,'rgba(251,191,36,1)'); rg.addColorStop(1,'transparent');
+      ctx.beginPath();ctx.arc(s.x,s.y,18*a,0,Math.PI*2);ctx.fillStyle=rg;ctx.fill();
+      ctx.fillStyle='rgba(251,191,36,0.8)'; ctx.font='8px Space Mono'; ctx.textAlign='center';
+      if(a>0.7) ctx.fillText('tunnel',s.x,s.y+20);
+      ctx.restore();
+    } else {
+      ctx.save(); ctx.globalAlpha=a*0.85;
+      ctx.beginPath();ctx.arc(s.x,s.y,9*a,0,Math.PI*2); ctx.fillStyle='rgba(251,146,60,0.75)';ctx.fill();
+      ctx.restore();
+    }
+  });
+}
+
+function drawGroup(arr,isMaj,type){
+  const isE=type==='elec';
+  const col=isE?'#4f8ef7':'#fb7185';
+  arr.forEach(p=>{
+    if(!p.alive) return;
+    // Trail
+    for(let i=1;i<p.trail.length;i++){
+      ctx.save(); ctx.globalAlpha=(i/p.trail.length)*(isMaj?0.22:0.1);
+      ctx.strokeStyle=col; ctx.lineWidth=isMaj?1.5:1;
+      ctx.beginPath();ctx.moveTo(p.trail[i-1].x,p.trail[i-1].y);ctx.lineTo(p.trail[i].x,p.trail[i].y);ctx.stroke();
+      ctx.restore();
+    }
+    // Glow aura
+    const gr=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r+6);
+    gr.addColorStop(0,p.glowing?'rgba(251,191,36,0.5)':(isE?'rgba(79,142,247,0.3)':'rgba(251,113,133,0.3)'));
+    gr.addColorStop(1,'transparent');
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r+6,0,Math.PI*2);ctx.fillStyle=gr;ctx.fill();
+
+    ctx.save();
+    if(!isMaj) ctx.setLineDash([2.5,2.5]);
+    ctx.lineWidth=isMaj?0:1.5;
+    if(isE){
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=p.glowing?'#fbbf24':(isMaj?col:'rgba(79,142,247,0.25)');
+      ctx.fill();
+      if(!isMaj){ctx.strokeStyle=col;ctx.stroke();}
+    } else {
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=isMaj?'rgba(251,113,133,0.15)':'rgba(251,113,133,0.08)';
+      ctx.fill();
+      ctx.strokeStyle=col; ctx.lineWidth=isMaj?2:1.5; ctx.stroke();
+      if(isMaj){ctx.beginPath();ctx.arc(p.x,p.y,2,0,Math.PI*2);ctx.fillStyle=col;ctx.fill();}
+    }
+    ctx.restore();
+    // Label
+    const sym=isE?'−':'+';
+    ctx.fillStyle=isMaj?(isE?'rgba(147,197,253,0.9)':'rgba(253,164,175,0.9)'):(isE?'rgba(147,197,253,0.45)':'rgba(253,164,175,0.45)');
+    ctx.font=(isMaj?'9':'8')+'px Space Mono,monospace'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(sym,p.x,p.y-p.r-4);
+    if(!isMaj){
+      ctx.fillStyle=isE?'rgba(79,142,247,0.5)':'rgba(251,113,133,0.5)';
+      ctx.font='7px Inter,sans-serif'; ctx.fillText('min',p.x,p.y+p.r+6);
+    }
+  });
+}
+
+function drawLabels(jx,dh,gap,pR,nL){
+  ctx.save(); ctx.textBaseline='top';
+  const pM=pR/2, nM=nL+(W-nL)/2;
+  ctx.font='bold 13px Space Mono,monospace'; ctx.textAlign='center';
+  ctx.fillStyle='rgba(192,132,252,0.8)'; ctx.fillText('P-TYPE',pM,10);
+  ctx.font='10px Inter,sans-serif'; ctx.fillStyle='rgba(192,132,252,0.45)'; ctx.fillText('holes majority',pM,27);
+  ctx.fillStyle='rgba(192,132,252,0.28)'; ctx.fillText('Nₐ='+S.pd+'×10¹⁶ cm⁻³',pM,41);
+  ctx.font='bold 13px Space Mono,monospace'; ctx.fillStyle='rgba(56,189,248,0.8)'; ctx.fillText('N-TYPE',nM,10);
+  ctx.font='10px Inter,sans-serif'; ctx.fillStyle='rgba(56,189,248,0.45)'; ctx.fillText('electrons majority',nM,27);
+  ctx.fillStyle='rgba(56,189,248,0.28)'; ctx.fillText('Nᴅ='+S.nd+'×10¹⁶ cm⁻³',nM,41);
+  ctx.font='9px Space Mono,monospace';
+  ctx.fillStyle='rgba(79,142,247,0.38)'; ctx.textAlign='center'; ctx.fillText('▲ minority e⁻',pM,H-18);
+  ctx.fillStyle='rgba(251,113,133,0.38)'; ctx.fillText('▲ minority h⁺',nM,H-18);
+  ctx.restore();
+}
+
+function drawJunctionLine(jx,gap){
+  if(gap>3) return;
+  ctx.save(); ctx.setLineDash([5,5]); ctx.strokeStyle='rgba(255,255,255,0.1)'; ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(jx,0);ctx.lineTo(jx,H);ctx.stroke(); ctx.restore();
+  ctx.fillStyle='rgba(255,255,255,0.18)'; ctx.font='9px Space Mono,monospace'; ctx.textAlign='center';
+  ctx.fillText('metallurgical junction',jx,H-8);
+}
+
+function drawDepLabel(jx,dh){
+  ctx.save();
+  ctx.fillStyle='rgba(148,163,184,0.4)'; ctx.font='9px Space Mono,monospace'; ctx.textAlign='center';
+  ctx.fillText('DEPLETION REGION',jx,H-36);
+  ctx.strokeStyle='rgba(148,163,184,0.18)'; ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(jx-dh,H-44);ctx.lineTo(jx-dh,H-48);ctx.lineTo(jx+dh,H-48);ctx.lineTo(jx+dh,H-44);ctx.stroke();
+  ctx.restore();
+}
+
+function drawVoltUI(){
+  if(Math.abs(S.V)<0.01) return;
+  const fwd=S.V>0;
+  ctx.save(); ctx.font='10px Space Mono,monospace'; ctx.textBaseline='bottom';
+  ctx.fillStyle=fwd?'rgba(52,211,153,0.8)':'rgba(251,113,133,0.8)';
+  ctx.textAlign='left'; ctx.fillText(fwd?'P: +'+S.V.toFixed(2)+'V':'P: '+S.V.toFixed(2)+'V',6,H-70);
+  ctx.fillStyle=fwd?'rgba(52,211,153,0.5)':'rgba(251,113,133,0.5)';
+  ctx.textAlign='right'; ctx.fillText('N: GND',W-6,H-70);
+  ctx.restore();
+}
+
+// ── Graph helpers ─────────────────────────────────────────────
+function gSetup(id,h){
+  const c=document.getElementById(id);
+  const gw=c.width, gh=c.height;
+  const gx=c.getContext('2d');
+  gx.clearRect(0,0,gw,gh);
+  gx.fillStyle='#07090f'; gx.fillRect(0,0,gw,gh);
+  return {gx,gw,gh};
+}
+function gNA(gx,gw,gh){gx.fillStyle='rgba(148,163,184,0.22)';gx.font='9px Inter,sans-serif';gx.textAlign='center';gx.fillText('(available after stage 4)',gw/2,gh/2+2);}
+
+function drawBand(){
+  const {gx,gw,gh}=gSetup('gcBand',130);
+  const ok=S.stage>=4;
+  if(!ok){gNA(gx,gw,gh);return;}
+  const jx=gw/2,dh=DH()/W*gw,Vbi=P.Vbi_eff,sc=36;
+  const Ec_P=40,Ev_P=Ec_P+sc*1.12,Ec_N=Ec_P-Vbi*sc,Ev_N=Ev_P-Vbi*sc;
+  gx.fillStyle='rgba(139,92,246,0.06)';gx.fillRect(0,0,jx-dh,gh);
+  gx.fillStyle='rgba(79,142,247,0.06)';gx.fillRect(jx+dh,0,gw-jx-dh,gh);
+  function bpath(yP,yN){
+    gx.beginPath();gx.moveTo(0,yP);gx.lineTo(jx-dh*1.7,yP);
+    gx.bezierCurveTo(jx-dh*.3,yP,jx+dh*.3,yN,jx+dh*1.7,yN);gx.lineTo(gw,yN);
+  }
+  bpath(Ec_P,Ec_N);gx.strokeStyle='#22d3ee';gx.lineWidth=2;gx.stroke();
+  bpath(Ev_P,Ev_N);gx.strokeStyle='#a78bfa';gx.lineWidth=2;gx.stroke();
+  const Ef=(Ec_P+Ev_P)/2+4;
+  gx.save();gx.setLineDash([5,4]);gx.strokeStyle='#fbbf24';gx.lineWidth=1.5;
+  if(S.bias==='fwd'){
+    const sp=S.V*sc*0.55;
+    gx.beginPath();gx.moveTo(0,Ef+sp);gx.lineTo(jx,Ef+sp);gx.stroke();
+    gx.beginPath();gx.moveTo(jx,Ef);gx.lineTo(gw,Ef);gx.stroke();
+  } else if(S.bias==='rev'||S.bias==='brk'){
+    gx.beginPath();gx.moveTo(0,Ef);gx.lineTo(gw,Ef+Math.abs(S.V)*sc*0.35);gx.stroke();
+  } else {
+    gx.beginPath();gx.moveTo(0,Ef);gx.lineTo(gw,Ef);gx.stroke();
+  }
+  gx.restore();
+  gx.font='9px Space Mono,monospace';gx.textAlign='left';
+  gx.fillStyle='#22d3ee';gx.fillText('Ec',2,Ec_P-2);
+  gx.fillStyle='#a78bfa';gx.fillText('Ev',2,Ev_P+10);
+  gx.fillStyle='#fbbf24';gx.fillText('Ef',2,Ef-2);
+  if(dh>4){
+    gx.save();gx.setLineDash([2,3]);gx.strokeStyle='rgba(251,191,36,.28)';gx.lineWidth=1;
+    gx.beginPath();gx.moveTo(jx+dh*2.2,Ec_P);gx.lineTo(jx+dh*2.2,Ec_N);gx.stroke();gx.restore();
+    gx.fillStyle='rgba(251,191,36,.5)';gx.font='8px Space Mono,monospace';gx.textAlign='left';
+    gx.fillText('qVbi='+Vbi.toFixed(2)+'eV',jx+dh*2.2+2,(Ec_P+Ec_N)/2);
+  }
+}
+
+function drawPot(){
+  const {gx,gw,gh}=gSetup('gcPot',90);
+  if(S.stage<3){gNA(gx,gw,gh);return;}
+  const jx=gw/2,dh=DH()/W*gw,Vbi=P.Vbi_eff,sy=26,zy=70;
+  gx.beginPath();
+  for(let px=0;px<=gw;px++){
+    let V=0;
+    if(px<jx-dh) V=0;
+    else if(px>jx+dh) V=-Vbi;
+    else{const t=(px-(jx-dh))/(dh*2||1);V=-Vbi*(3*t*t-2*t*t*t);}
+    px===0?gx.moveTo(0,zy+V*sy):gx.lineTo(px,zy+V*sy);
+  }
+  gx.strokeStyle='#34d399';gx.lineWidth=2;gx.stroke();
+  gx.save();gx.setLineDash([3,3]);gx.strokeStyle='rgba(255,255,255,0.07)';gx.lineWidth=1;
+  gx.beginPath();gx.moveTo(0,zy);gx.lineTo(gw,zy);gx.stroke();gx.restore();
+  gx.font='9px Space Mono,monospace';gx.fillStyle='#34d399';gx.textAlign='left';gx.fillText('V(x)',2,10);
+  gx.fillStyle='rgba(52,211,153,0.5)';gx.textAlign='right';gx.fillText('−'+Vbi.toFixed(2)+'V',gw-2,zy-Vbi*sy+10);
+}
+
+function drawChg(){
+  const {gx,gw,gh}=gSetup('gcChg',90);
+  if(S.stage<3){gNA(gx,gw,gh);return;}
+  const jx=gw/2,dh=DH()/W*gw,sy=26,my=44;
+  gx.fillStyle='rgba(251,146,60,0.22)';gx.fillRect(jx,my-sy,dh,sy);
+  gx.strokeStyle='#fb923c';gx.lineWidth=1.5;gx.strokeRect(jx,my-sy,dh,sy);
+  gx.fillStyle='rgba(129,140,248,0.22)';gx.fillRect(jx-dh,my,dh,sy);
+  gx.strokeStyle='#818cf8';gx.lineWidth=1.5;gx.strokeRect(jx-dh,my,dh,sy);
+  gx.save();gx.setLineDash([3,3]);gx.strokeStyle='rgba(255,255,255,0.08)';gx.lineWidth=1;
+  gx.beginPath();gx.moveTo(0,my);gx.lineTo(gw,my);gx.stroke();gx.restore();
+  gx.font='9px Space Mono,monospace';gx.fillStyle='#fb923c';gx.textAlign='right';gx.fillText('+ρ',jx+dh-2,my-sy+10);
+  gx.fillStyle='#818cf8';gx.textAlign='left';gx.fillText('−ρ',jx-dh+2,my+sy-2);
+  gx.fillStyle='rgba(148,163,184,0.4)';gx.textAlign='left';gx.fillText('ρ(x)',2,10);
+}
+
+function drawEfGraph(){
+  const {gx,gw,gh}=gSetup('gcEf',80);
+  if(S.stage<3){gNA(gx,gw,gh);return;}
+  const jx=gw/2,dh=DH()/W*gw,Emax=40,my=68;
+  gx.beginPath();
+  for(let px=0;px<=gw;px++){
+    let E=0;
+    if(px>=jx-dh&&px<=jx+dh){const t=(px-(jx-dh))/(dh*2||1);E=Emax*Math.sin(Math.PI*t);}
+    px===0?gx.moveTo(0,my-E):gx.lineTo(px,my-E);
+  }
+  gx.lineTo(gw,my);gx.lineTo(0,my);gx.closePath();
+  gx.fillStyle='rgba(251,191,36,0.1)';gx.fill();gx.strokeStyle='#fbbf24';gx.lineWidth=2;gx.stroke();
+  gx.save();gx.setLineDash([3,3]);gx.strokeStyle='rgba(255,255,255,0.07)';gx.lineWidth=1;
+  gx.beginPath();gx.moveTo(0,my);gx.lineTo(gw,my);gx.stroke();gx.restore();
+  gx.font='9px Space Mono,monospace';gx.fillStyle='#fbbf24';gx.textAlign='left';gx.fillText('|E(x)|',2,10);
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  CONTROLS
+// ═══════════════════════════════════════════════════════════════
+function goStage(n){
+  S.stage=n;
+  const gapMap=[0.20,0.20,0,0,0,0,0,0];
+  const depMap=[0,0,0.05,0.55,1.0,1.0,1.0,1.0];
+  const vMap  =[0,0,0,0,0,0.5,-3,-6.5];
+  const biasMap=['eq','eq','eq','eq','eq','fwd','rev','brk'];
+
+  S.gapFrac=gapMap[n]; S.depFrac=depMap[n];
+  S.V=vMap[n]; S.bias=biasMap[n];
+
+  // Sync UI
+  document.getElementById('sV').value=S.V;
+  document.getElementById('vV').textContent=S.V.toFixed(2)+' V';
+  setBiasUI(S.bias);
+
+  document.getElementById('stageBadge').textContent=STAGES[n].label;
+  document.getElementById('iStageLabel').textContent=STAGES[n].label;
+  document.getElementById('iBody').innerHTML=STAGES[n].info;
+
+  for(let i=0;i<8;i++){
+    const b=document.getElementById('sn'+i);
+    b.className='snav-btn'+(i===n?' active':i<n?' done':'');
+  }
+  calcPhys(); rebuild();
+}
+
+function setBias(b){
+  S.bias=b; const vmap={eq:0,fwd:0.5,rev:-3,brk:-6.5}; S.V=vmap[b];
+  document.getElementById('sV').value=S.V;
+  document.getElementById('vV').textContent=S.V.toFixed(2)+' V';
+  setBiasUI(b);
+  const smap={eq:4,fwd:5,rev:6,brk:7};
+  goStage(smap[b]);
+}
+
+function setBiasUI(b){
+  const map={eq:'bb0',fwd:'bb1',rev:'bb2',brk:'bb3'};
+  const cls={eq:'on',fwd:'on fwd',rev:'on rev',brk:'on brk'};
+  Object.keys(map).forEach(k=>{
+    document.getElementById(map[k]).className='bias-btn'+(k===b?' '+cls[k]:'');
+  });
+}
+
+function updParam(p,el){
+  const v=parseFloat(el.value);
+  if(p==='pd'){S.pd=v;document.getElementById('vPd').textContent=v.toFixed(1)+'×10¹⁶';}
+  if(p==='nd'){S.nd=v;document.getElementById('vNd').textContent=v.toFixed(1)+'×10¹⁶';}
+  if(p==='T') {S.T=v; document.getElementById('vT').textContent=v+' K';}
+  if(p==='V') {
+    S.V=v; document.getElementById('vV').textContent=v.toFixed(2)+' V';
+    const b=v>0.1?'fwd':v<-5.8?'brk':v<-0.1?'rev':'eq';
+    S.bias=b; setBiasUI(b);
+  }
+  calcPhys(); rebuildIons();
+}
+
+function togglePlay(){
+  S.running=!S.running;
+  document.getElementById('btnPlay').textContent=S.running?'⏸':'▶';
+  document.getElementById('runBadge').textContent=S.running?'● RUNNING':'◆ PAUSED';
+  document.getElementById('runBadge').style.color=S.running?'var(--emerald)':'var(--amber)';
+}
+
+function stepOnce(){if(!S.running){simStep();render();}}
+function nextStage(){if(S.stage<7) goStage(S.stage+1);}
+
+function fullReset(){
+  // Restore every property of S from DEF
+  Object.assign(S,DEF);
+  S.running=true;  // make sure it's running
+
+  // Reset all sliders & labels
+  document.getElementById('sPd').value=2; document.getElementById('vPd').textContent='2×10¹⁶';
+  document.getElementById('sNd').value=2; document.getElementById('vNd').textContent='2×10¹⁶';
+  document.getElementById('sT').value=300; document.getElementById('vT').textContent='300 K';
+  document.getElementById('sV').value=0; document.getElementById('vV').textContent='0.00 V';
+  document.getElementById('btnPlay').textContent='⏸';
+  document.getElementById('runBadge').textContent='● RUNNING';
+  document.getElementById('runBadge').style.color='var(--emerald)';
+  setBiasUI('eq');
+  goStage(0);
+}
+
+// ── Tooltip ───────────────────────────────────────────────────
+mc.addEventListener('mousemove',e=>{
+  const r=mc.getBoundingClientRect(),mx=e.clientX-r.left;
+  const tip=document.getElementById('tip'), jx=JX(),dh=DH(),gap=GAP();
+  let html='';
+  if(gap>5&&mx>jx-gap&&mx<jx+gap){
+    html='<strong>GAP</strong><br>Semiconductors not yet joined.<br>No junction effects yet.';
+  } else if(mx<jx-Math.max(dh,2)){
+    html=`<strong>P-TYPE REGION</strong><br>Majority: holes (Nₐ=${S.pd}×10¹⁶ cm⁻³)<br>Minority: electrons (thermal gen.)<br>Dopant: Acceptor atoms (Group III)`;
+  } else if(mx>jx+Math.max(dh,2)){
+    html=`<strong>N-TYPE REGION</strong><br>Majority: electrons (Nᴅ=${S.nd}×10¹⁶ cm⁻³)<br>Minority: holes (thermal gen.)<br>Dopant: Donor atoms (Group V)`;
+  } else {
+    html=`<strong>DEPLETION REGION</strong><br>Width ≈ ${P.Wdep_um?.toFixed(3)} µm<br>Peak E-field ≈ ${P.Emax_kVcm?.toFixed(0)} kV/cm<br>Built-in Vbi ≈ ${P.Vbi_eff?.toFixed(2)} V<br>No free carriers here`;
+  }
+  if(html){
+    tip.innerHTML=html;
+    tip.style.left=(e.clientX+12)+'px';
+    tip.style.top=(e.clientY-10)+'px';
+    tip.classList.add('show');
+  }
+});
+mc.addEventListener('mouseleave',()=>document.getElementById('tip').classList.remove('show'));
+
+// ── Main loop ─────────────────────────────────────────────────
+function loop(){if(S.running) simStep(); render(); requestAnimationFrame(loop);}
+
+window.addEventListener('load',()=>{resize(); goStage(0); loop();});
+</script>
+</body>
+</html>

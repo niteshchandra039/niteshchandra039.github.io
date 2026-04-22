@@ -161,6 +161,30 @@ permalink: /teaching/
 
   <h2 class="section-header">📘 Courses & Resources</h2>
 
+  <h2 class="section-header">🤖 AI & Interactive Simulations in Teaching</h2>
+  <ul class="interactive-list">
+    <li class="interactive-card">
+      <span class="card-title">Explore Interactive HTML Simulations</span>
+      <ul class="sub-list">
+        <li>
+          <span class="lecture-title">Lagrangian vs Eulerian Animation</span>
+          <a href="/resources/computational_astrophysics/lag_vs_eul.html" class="btn-link" target="_blank">🌐 Open Simulation</a>
+        </li>
+        <li>
+          <span class="lecture-title">Supernova Shockwave Animation</span>
+          <a href="/resources/computational_astrophysics/supernova_shockwave.html" class="btn-link" target="_blank">🌐 Open Simulation</a>
+        </li>
+        <li>
+          <span class="lecture-title">Supernova Shockwave Animation 1</span>
+          <a href="/resources/computational_astrophysics/shockwave_1.html" class="btn-link" target="_blank">🌐 Open Simulation</a>
+        </li>
+      </ul>
+      <p style="font-size: 0.85em; color: #718096; margin-top: 10px; margin-bottom: 0;">
+        <em>*These interactive simulations are designed to enhance conceptual understanding using AI and computational techniques.*</em>
+      </p>
+    </li>
+  </ul>
+
   <ul class="interactive-list">
     <li class="interactive-card">
       <span class="card-title">Computational Astrophysics (M.Sc.)</span>
