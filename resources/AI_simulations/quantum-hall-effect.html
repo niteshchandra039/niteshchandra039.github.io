@@ -1,0 +1,743 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quantum Hall Effect – Interactive Simulation</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+    :root {
+      --bg: #04111c;
+      --panel: #0b1e2e;
+      --border: rgba(100,180,230,0.18);
+      --text: #dff0ff;
+      --muted: #7aaec8;
+      --accent: #22d3ee;
+      --green: #34d399;
+      --orange: #f59e0b;
+      --red: #f87171;
+      --purple: #a78bfa;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: radial-gradient(ellipse at 15% 20%, rgba(34,211,238,0.12) 0%, transparent 40%),
+                  radial-gradient(ellipse at 85% 80%, rgba(167,139,250,0.10) 0%, transparent 38%),
+                  linear-gradient(160deg, #03101a 0%, #071828 60%, #0a1f30 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 16px;
+    }
+
+    .app { max-width: 1280px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+
+    .header {
+      background: linear-gradient(90deg, rgba(34,211,238,0.10), rgba(167,139,250,0.08));
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .header h1 {
+      font-size: clamp(1.1rem, 2.2vw, 1.6rem);
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--accent), var(--green));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .header p { color: var(--muted); font-size: 0.88rem; margin-top: 3px; }
+    .header-badges { display: flex; gap: 8px; flex-wrap: wrap; }
+    .badge {
+      background: rgba(34,211,238,0.12); border: 1px solid rgba(34,211,238,0.28);
+      border-radius: 20px; padding: 3px 10px; font-size: 0.78rem; color: var(--accent);
+      font-family: 'IBM Plex Mono', monospace;
+    }
+
+    .concept-strip { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; }
+    .concept-card {
+      background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
+      padding: 12px 14px; position: relative; overflow: hidden;
+    }
+    .concept-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 12px 12px 0 0;
+    }
+    .concept-card:nth-child(1)::before { background: var(--accent); }
+    .concept-card:nth-child(2)::before { background: var(--green); }
+    .concept-card:nth-child(3)::before { background: var(--orange); }
+    .concept-card:nth-child(4)::before { background: var(--purple); }
+    .concept-card .icon { font-size: 1.4rem; margin-bottom: 5px; }
+    .concept-card h4 { font-size: 0.80rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 4px; }
+    .concept-card p { font-size: 0.82rem; line-height: 1.5; color: var(--text); }
+    .concept-card .formula {
+      margin-top: 6px; font-family: 'IBM Plex Mono', monospace; font-size: 0.79rem;
+      color: var(--accent); background: rgba(34,211,238,0.08); padding: 3px 7px;
+      border-radius: 5px; display: inline-block;
+    }
+
+    .main-grid { display: grid; grid-template-columns: 1fr 320px; gap: 14px; align-items: start; }
+    .viz-col { display: flex; flex-direction: column; gap: 12px; }
+
+    .canvas-box {
+      background: var(--panel); border: 1px solid var(--border); border-radius: 14px;
+      overflow: hidden; position: relative;
+    }
+    .canvas-box canvas { display: block; width: 100%; }
+    .canvas-label {
+      position: absolute; top: 10px; left: 14px; font-size: 0.74rem; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); pointer-events: none;
+    }
+    .graphs-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    .side { display: flex; flex-direction: column; gap: 12px; }
+    .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 13px; padding: 13px 14px; }
+    .panel-title {
+      font-size: 0.77rem; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 11px; padding-bottom: 7px; border-bottom: 1px solid var(--border);
+    }
+    .ctrl { margin-bottom: 11px; }
+    .ctrl:last-child { margin-bottom: 0; }
+    .ctrl-row { display: flex; justify-content: space-between; font-size: 0.84rem; margin-bottom: 4px; }
+    .ctrl-val { font-family: 'IBM Plex Mono', monospace; font-size: 0.80rem; color: var(--accent); }
+    input[type="range"] { width: 100%; accent-color: var(--accent); cursor: pointer; }
+
+    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .stat { background: rgba(4,17,28,0.6); border: 1px solid var(--border); border-radius: 9px; padding: 8px 10px; }
+    .stat-label { font-size: 0.71rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+    .stat-val { font-family: 'IBM Plex Mono', monospace; font-size: 0.92rem; color: var(--green); margin-top: 2px; }
+    .stat-val.warn { color: var(--orange); }
+    .stat-val.hi { color: var(--accent); font-size: 1.02rem; }
+
+    .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 10px; }
+    button {
+      background: rgba(22,50,74,0.7); border: 1px solid rgba(100,180,230,0.28);
+      color: var(--text); border-radius: 8px; padding: 7px; font-family: inherit;
+      font-size: 0.82rem; cursor: pointer; transition: background 0.18s;
+    }
+    button:hover { background: rgba(34,211,238,0.18); }
+    button.active { background: rgba(34,211,238,0.20); border-color: var(--accent); color: var(--accent); }
+
+    .step-info {
+      background: rgba(52,211,153,0.07); border: 1px solid rgba(52,211,153,0.20);
+      border-radius: 9px; padding: 9px 11px; font-size: 0.81rem; line-height: 1.55; color: var(--text);
+    }
+    .step-info strong { color: var(--green); }
+
+    @media (max-width: 960px) {
+      .main-grid { grid-template-columns: 1fr; }
+      .concept-strip { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 600px) {
+      .concept-strip { grid-template-columns: 1fr; }
+      .graphs-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <header class="header">
+    <div>
+      <h1>Quantum Hall Effect</h1>
+      <p>2D electron gas in strong magnetic field at ultra-low temperature — Integer QHE model</p>
+    </div>
+    <div class="header-badges">
+      <span class="badge">R_xy = h / &nu;e&sup2;</span>
+      <span class="badge">&nu; = nh / eB</span>
+      <span class="badge">E_N = &hbar;&omega;<sub>c</sub>(N+&frac12;)</span>
+    </div>
+  </header>
+
+  <div class="concept-strip">
+    <div class="concept-card">
+      <div class="icon">&#9889;</div>
+      <h4>Landau Levels</h4>
+      <p>In a perpendicular B field, allowed electron energies become discrete — like a 2D harmonic oscillator.</p>
+      <span class="formula">E_N = &hbar;&omega;<sub>c</sub>(N+&frac12;)</span>
+    </div>
+    <div class="concept-card">
+      <div class="icon">&#128290;</div>
+      <h4>Filling Factor &nu;</h4>
+      <p>How many Landau levels are completely filled. Increasing B empties levels one by one.</p>
+      <span class="formula">&nu; = nh / eB</span>
+    </div>
+    <div class="concept-card">
+      <div class="icon">&#128260;</div>
+      <h4>Chiral Edge States</h4>
+      <p>Bulk states localize. Current flows via 1D edge channels — no backscattering, perfect conductance!</p>
+      <span class="formula">&sigma;<sub>xy</sub> = &nu;e&sup2;/h</span>
+    </div>
+    <div class="concept-card">
+      <div class="icon">&#128208;</div>
+      <h4>Quantized Plateaus</h4>
+      <p>R_xy locks to exact h/&nu;e&sup2; at integer &nu;. Simultaneously R_xx &rarr; 0 on each plateau.</p>
+      <span class="formula">R_xy = h / &nu;e&sup2;</span>
+    </div>
+  </div>
+
+  <div class="main-grid">
+    <div class="viz-col">
+      <div class="canvas-box" style="height:360px">
+        <span class="canvas-label">2D Hall Bar &amp; Chiral Edge Channels</span>
+        <canvas id="hallCanvas"></canvas>
+      </div>
+      <div class="graphs-row">
+        <div class="canvas-box" style="height:240px">
+          <span class="canvas-label">Landau Level Fan</span>
+          <canvas id="landauCanvas"></canvas>
+        </div>
+        <div class="canvas-box" style="height:240px">
+          <span class="canvas-label">R_xy &amp; R_xx vs Magnetic Field</span>
+          <canvas id="plateauCanvas"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="side">
+      <div class="panel">
+        <div class="panel-title">Controls</div>
+        <div class="ctrl">
+          <div class="ctrl-row"><span>Magnetic field <i>B</i></span><span class="ctrl-val" id="bLbl">8.0 T</span></div>
+          <input type="range" id="sB" min="1" max="18" step="0.1" value="8">
+        </div>
+        <div class="ctrl">
+          <div class="ctrl-row"><span>2D density <i>n</i></span><span class="ctrl-val" id="nLbl">4.0 &times; 10&sup1;&sup5; m&sup2;</span></div>
+          <input type="range" id="sN" min="0.5" max="10" step="0.1" value="4">
+        </div>
+        <div class="ctrl">
+          <div class="ctrl-row"><span>Temperature <i>T</i></span><span class="ctrl-val" id="tLbl">1.5 K</span></div>
+          <input type="range" id="sT" min="0.1" max="10" step="0.1" value="1.5">
+        </div>
+        <div class="ctrl">
+          <div class="ctrl-row"><span>Drive current <i>I</i></span><span class="ctrl-val" id="iLbl">5.0 &mu;A</span></div>
+          <input type="range" id="sI" min="1" max="20" step="0.5" value="5">
+        </div>
+        <div class="btn-row">
+          <button id="btnPlay">&#9646;&#9646; Pause</button>
+          <button id="btnReset">&#8635; Reset</button>
+          <button id="btnFlip">&#8645; Flip B</button>
+          <button id="btnSnap">&#9678; Snap &nu;</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Live Readouts</div>
+        <div class="stats">
+          <div class="stat">
+            <div class="stat-label">Filling factor &nu;</div>
+            <div class="stat-val hi" id="rNu">2.00</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Plateau index</div>
+            <div class="stat-val hi" id="rPlateau">2</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">R<sub>xy</sub> (Hall)</div>
+            <div class="stat-val" id="rRxy">12.91 k&Omega;</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">R<sub>xx</sub> (long.)</div>
+            <div class="stat-val" id="rRxx">&asymp; 0 &Omega;</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">V<sub>Hall</sub></div>
+            <div class="stat-val" id="rVh">64.6 mV</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">&hbar;&omega;<sub>c</sub></div>
+            <div class="stat-val" id="rEll">1.39 meV</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">&sigma;<sub>xy</sub></div>
+            <div class="stat-val" id="rSig">2 &times; e&sup2;/h</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Cyclotron freq.</div>
+            <div class="stat-val" id="rOmega">2.11 THz</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">What is happening now?</div>
+        <div class="step-info" id="stepInfo">Loading...</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  const e_c  = 1.602176634e-19;
+  const h_p  = 6.62607015e-34;
+  const hbar = h_p / (2 * Math.PI);
+  const me   = 9.1093837015e-31;
+  const mStar = 0.067 * me;    // GaAs effective mass
+  const e2h  = e_c * e_c / h_p;
+  const kB   = 1.380649e-23;
+
+  const sB = document.getElementById('sB');
+  const sN = document.getElementById('sN');
+  const sT = document.getElementById('sT');
+  const sI = document.getElementById('sI');
+
+  const bLbl = document.getElementById('bLbl');
+  const nLbl = document.getElementById('nLbl');
+  const tLbl = document.getElementById('tLbl');
+  const iLbl = document.getElementById('iLbl');
+  const rNu  = document.getElementById('rNu');
+  const rPlateau = document.getElementById('rPlateau');
+  const rRxy = document.getElementById('rRxy');
+  const rRxx = document.getElementById('rRxx');
+  const rVh  = document.getElementById('rVh');
+  const rEll = document.getElementById('rEll');
+  const rSig = document.getElementById('rSig');
+  const rOmega = document.getElementById('rOmega');
+  const stepInfo = document.getElementById('stepInfo');
+
+  const hallCanvas   = document.getElementById('hallCanvas');
+  const landauCanvas = document.getElementById('landauCanvas');
+  const plateauCanvas = document.getElementById('plateauCanvas');
+  const hCtx = hallCanvas.getContext('2d');
+  const lCtx = landauCanvas.getContext('2d');
+  const pCtx = plateauCanvas.getContext('2d');
+
+  let running = true;
+  const DOTS = 50;
+  let topDots = Array.from({length: DOTS}, () => Math.random());
+  let botDots = Array.from({length: DOTS}, () => Math.random());
+
+  const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+
+  function fmtR(v) {
+    if (Math.abs(v) < 2) return '\u224800 \u03a9';
+    if (Math.abs(v) >= 1e6) return (v/1e6).toFixed(2) + ' M\u03a9';
+    if (Math.abs(v) >= 1e3) return (v/1e3).toFixed(2) + ' k\u03a9';
+    return v.toFixed(0) + ' \u03a9';
+  }
+
+  function physics() {
+    const B   = parseFloat(sB.value);
+    const n2d = parseFloat(sN.value) * 1e15;
+    const T   = parseFloat(sT.value);
+    const IuA = parseFloat(sI.value);
+    const I   = IuA * 1e-6;
+
+    const wc      = e_c * Math.abs(B) / mStar;
+    const hwc     = hbar * wc;
+    const hwcmeV  = hwc / e_c * 1000;
+    const fc      = wc / (2 * Math.PI);
+
+    const nuReal = n2d * h_p / (e_c * Math.abs(B));
+    const nuInt  = Math.max(1, Math.round(nuReal));
+    const delta  = Math.abs(nuReal - nuInt) * 2;
+
+    const gap  = hwc * clamp(1 - delta, 0, 1);
+    const Rxy  = h_p / (nuInt * e_c * e_c);
+    const Rxx  = gap > 1e-24
+      ? Rxy * 8 * Math.exp(-gap / (2 * kB * T)) * (1 + 6 * delta)
+      : 0;
+
+    const Vhall = I * Rxy;
+    const sigxy = nuInt * e2h;
+
+    return { B, n2d, T, I, IuA, wc, hwcmeV, fc, nuReal, nuInt, delta, Rxy, Rxx, Vhall, sigxy };
+  }
+
+  function updateLabels(m) {
+    bLbl.textContent  = m.B.toFixed(1) + ' T';
+    nLbl.textContent  = (m.n2d/1e15).toFixed(1) + ' \u00d7 10\u00b9\u2075 m\u207b\u00b2';
+    tLbl.textContent  = m.T.toFixed(1) + ' K';
+    iLbl.textContent  = m.IuA.toFixed(1) + ' \u03bcA';
+    rNu.textContent   = m.nuReal.toFixed(2);
+    rPlateau.textContent = String(m.nuInt);
+    rRxy.textContent  = fmtR(m.Rxy);
+    rRxx.textContent  = fmtR(m.Rxx);
+    rVh.textContent   = (m.Vhall*1e3).toFixed(2) + ' mV';
+    rEll.textContent  = m.hwcmeV.toFixed(2) + ' meV';
+    rSig.textContent  = m.nuInt + ' \u00d7 e\u00b2/h';
+    rOmega.textContent = (m.fc/1e12).toFixed(2) + ' THz';
+    rRxx.className    = 'stat-val' + (m.Rxx < 500 ? '' : ' warn');
+
+    const onPlateau = m.delta < 0.25 && m.T < 4;
+    const thermalBreak = m.T > 5;
+    const kBT_meV = kB * m.T / e_c * 1000;
+    if (thermalBreak) {
+      stepInfo.innerHTML = '<strong>High temperature!</strong> k\u0427T = ' + kBT_meV.toFixed(2) + ' meV &gt; \u0127\u03c9<sub>c</sub> = ' + m.hwcmeV.toFixed(2) + ' meV. Thermal energy smears Landau levels \u2014 the mobility gap closes and R<sub>xx</sub> becomes nonzero. QHE requires T &laquo; \u0127\u03c9<sub>c</sub>/k\u0427.';
+    } else if (onPlateau) {
+      stepInfo.innerHTML = 'Fermi energy sits in the <strong>mobility gap</strong> between Landau levels (plateau &nu; = ' + m.nuInt + '). Bulk electrons are <strong>all localized</strong>. Only <strong>' + m.nuInt + ' chiral edge channel(s)</strong> carry current \u2014 no backscattering possible. Result: R<sub>xy</sub> = h/' + m.nuInt + 'e\u00b2 exactly, R<sub>xx</sub> \u2192 0.';
+    } else {
+      stepInfo.innerHTML = 'Fermi energy is near a <strong>Landau level</strong> (&nu; \u2248 ' + m.nuReal.toFixed(2) + '). Extended bulk states exist \u2014 backscattering occurs and <strong>R<sub>xx</sub> rises</strong>. The system is between &nu; = ' + Math.max(1,m.nuInt-1) + ' and &nu; = ' + (m.nuInt+1) + ' plateaus. Use &ldquo;Snap &nu;&rdquo; to jump to a plateau.';
+    }
+  }
+
+  /* ─────────────────────────────────────────────────────
+     HALL BAR CANVAS
+  ───────────────────────────────────────────────────── */
+  function resizeHall() {
+    const r = hallCanvas.parentElement.getBoundingClientRect();
+    hallCanvas.width = r.width; hallCanvas.height = r.height;
+  }
+
+  const ECOLS = ['#22d3ee','#34d399','#a78bfa','#f59e0b'];
+
+  function drawHallBar(m) {
+    const W = hallCanvas.width, H = hallCanvas.height;
+    const ctx = hCtx;
+    ctx.clearRect(0, 0, W, H);
+    const bx = 88, by = 88, bw = W - 176, bh = H - 176;
+    if (bw < 40 || bh < 40) return;
+
+    // B-field symbols
+    const bAlpha = clamp(Math.abs(m.B)/18, 0, 1) * 0.5;
+    for (let r = 0; r < 4; r++) for (let c = 0; c < 8; c++) {
+      drawBsym(ctx, bx + 18 + c*((bw-36)/7), by + 16 + r*((bh-32)/3), m.B, bAlpha);
+    }
+
+    // Bar body
+    const g = ctx.createLinearGradient(bx, by, bx, by+bh);
+    g.addColorStop(0, 'rgba(14,52,84,0.95)');
+    g.addColorStop(1, 'rgba(6,28,52,0.98)');
+    ctx.fillStyle = g;
+    ctx.strokeStyle = 'rgba(100,180,230,0.42)';
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.roundRect(bx, by, bw, bh, 10); ctx.fill(); ctx.stroke();
+
+    // Edge glow bands (one per filled channel)
+    const nc = Math.min(m.nuInt, 4);
+    for (let k = 0; k < nc; k++) {
+      const off = k * 6, bw2 = 16;
+      const tg = ctx.createLinearGradient(0, by+off, 0, by+off+bw2);
+      tg.addColorStop(0, ECOLS[k]+'44'); tg.addColorStop(1, 'transparent');
+      ctx.fillStyle = tg; ctx.fillRect(bx+2, by+off, bw-4, bw2);
+      const bg = ctx.createLinearGradient(0, by+bh-off-bw2, 0, by+bh-off);
+      bg.addColorStop(0, 'transparent'); bg.addColorStop(1, ECOLS[k]+'44');
+      ctx.fillStyle = bg; ctx.fillRect(bx+2, by+bh-off-bw2, bw-4, bw2);
+    }
+
+    // Animate edge dots
+    const spd = 0.0032 * clamp(Math.abs(m.B)/8, 0.4, 2.2);
+    const dir = m.B >= 0 ? 1 : -1;
+    if (running) {
+      topDots = topDots.map(t => { let v = t + spd*dir; if(v>1)v-=1; if(v<0)v+=1; return v; });
+      botDots = botDots.map(t => { let v = t - spd*dir; if(v>1)v-=1; if(v<0)v+=1; return v; });
+    }
+    for (let k = 0; k < nc; k++) {
+      const off = k * 6;
+      ctx.fillStyle = ECOLS[k]; ctx.globalAlpha = 0.88;
+      topDots.forEach(t => {
+        ctx.beginPath(); ctx.arc(bx+8+t*(bw-16), by+8+off, 2.6, 0, Math.PI*2); ctx.fill();
+      });
+      botDots.forEach(t => {
+        ctx.beginPath(); ctx.arc(bx+8+t*(bw-16), by+bh-8-off, 2.6, 0, Math.PI*2); ctx.fill();
+      });
+    }
+    ctx.globalAlpha = 1;
+
+    // Direction arrows on edges
+    const aw = 55;
+    arrow(ctx, bx+18, by+10, bx+18+aw, by+10, '#22d3ee', dir>0);
+    arrow(ctx, bx+bw-18, by+bh-10, bx+bw-18-aw, by+bh-10, '#22d3ee', dir<0);
+
+    // Current contacts
+    contact(ctx, bx-24, by+bh/2, '#f59e0b', 'I+');
+    contact(ctx, bx+bw+24, by+bh/2, '#f87171', 'I\u2212');
+    ctx.strokeStyle='rgba(245,158,11,0.75)'; ctx.lineWidth=2.5;
+    ctx.beginPath(); ctx.moveTo(bx-12,by+bh/2); ctx.lineTo(bx,by+bh/2); ctx.stroke();
+    ctx.strokeStyle='rgba(248,113,113,0.75)';
+    ctx.beginPath(); ctx.moveTo(bx+bw,by+bh/2); ctx.lineTo(bx+bw+12,by+bh/2); ctx.stroke();
+
+    // Hall probes
+    const vxt = bx + bw*0.55, vxb = bx + bw*0.45;
+    ctx.strokeStyle='rgba(52,211,153,0.75)'; ctx.lineWidth=1.8; ctx.setLineDash([4,3]);
+    ctx.beginPath(); ctx.moveTo(vxt,by); ctx.lineTo(vxt,by-44); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(vxb,by+bh); ctx.lineTo(vxb,by+bh+44); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // V_H meter
+    const mxc = bx + bw*0.5;
+    ctx.fillStyle='rgba(5,16,28,0.88)'; ctx.strokeStyle='rgba(52,211,153,0.55)'; ctx.lineWidth=1.4;
+    ctx.beginPath(); ctx.roundRect(mxc-52, by-80, 104, 38, 7); ctx.fill(); ctx.stroke();
+    ctx.fillStyle='#34d399'; ctx.font='600 11px IBM Plex Mono'; ctx.textAlign='center';
+    ctx.fillText('V_H = '+(m.Vhall*1e3).toFixed(2)+' mV', mxc, by-59);
+    ctx.fillStyle='rgba(34,211,238,0.85)'; ctx.font='500 10px IBM Plex Mono';
+    ctx.fillText('R_xy = '+fmtR(m.Rxy), mxc, by-46);
+    ctx.textAlign='left';
+
+    // Longitudinal probes
+    const lx1 = bx+bw*0.28, lx2 = bx+bw*0.72;
+    ctx.strokeStyle='rgba(167,139,250,0.65)'; ctx.lineWidth=1.5; ctx.setLineDash([3,3]);
+    ctx.beginPath(); ctx.moveTo(lx1,by); ctx.lineTo(lx1,by-22);
+    ctx.moveTo(lx2,by); ctx.lineTo(lx2,by-22);
+    ctx.moveTo(lx1,by-22); ctx.lineTo(lx2,by-22); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle='#a78bfa'; ctx.font='500 10px IBM Plex Mono'; ctx.textAlign='center';
+    ctx.fillText('R_xx \u00d7 I = '+fmtR(m.Rxx*m.I), (lx1+lx2)/2, by-27);
+    ctx.textAlign='left';
+
+    // B label
+    ctx.fillStyle='rgba(245,158,11,0.9)'; ctx.font='600 12px IBM Plex Mono';
+    const blabel = m.B >= 0 ? 'B = +'+m.B.toFixed(1)+' T  \u2299 out of page' : 'B = '+m.B.toFixed(1)+' T  \u2297 into page';
+    ctx.fillText(blabel, bx + bw - 220, by+bh+22);
+
+    // nu overlay
+    ctx.fillStyle='rgba(34,211,238,0.95)'; ctx.font='700 14px IBM Plex Mono';
+    ctx.fillText('\u03bd = '+m.nuReal.toFixed(2)+'  |  plateau \u03bd = '+m.nuInt, bx+10, by+bh-12);
+
+    // Legend
+    let lxl = bx+8, lyl = by+bh+44;
+    ldot(ctx, lxl, lyl, '#22d3ee', 'Chiral edge electrons'); lxl += 180;
+    ldot(ctx, lxl, lyl, '#f59e0b', 'Current contacts'); lxl += 145;
+    ldot(ctx, lxl, lyl, '#34d399', 'Hall probe');
+  }
+
+  function ldot(ctx, x, y, c, t) {
+    ctx.fillStyle=c; ctx.beginPath(); ctx.arc(x,y,4.5,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='rgba(223,240,255,0.70)'; ctx.font='500 11px Space Grotesk';
+    ctx.fillText(t, x+8, y+4);
+  }
+  function contact(ctx, x, y, c, lbl) {
+    ctx.fillStyle=c; ctx.strokeStyle='rgba(255,255,255,0.35)'; ctx.lineWidth=1.2;
+    ctx.beginPath(); ctx.arc(x,y,10,0,Math.PI*2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle='#000'; ctx.font='700 8px IBM Plex Mono'; ctx.textAlign='center';
+    ctx.fillText(lbl, x, y+3); ctx.textAlign='left';
+  }
+  function drawBsym(ctx, x, y, B, alpha) {
+    ctx.save(); ctx.translate(x,y); ctx.globalAlpha=alpha;
+    ctx.strokeStyle='#f59e0b'; ctx.fillStyle='#f59e0b'; ctx.lineWidth=1.1;
+    if (B >= 0) {
+      ctx.beginPath(); ctx.arc(0,0,4.2,0,Math.PI*2); ctx.stroke();
+      ctx.beginPath(); ctx.arc(0,0,1.4,0,Math.PI*2); ctx.fill();
+    } else {
+      ctx.beginPath(); ctx.moveTo(-3.5,-3.5); ctx.lineTo(3.5,3.5);
+      ctx.moveTo(3.5,-3.5); ctx.lineTo(-3.5,3.5); ctx.stroke();
+    }
+    ctx.restore();
+  }
+  function arrow(ctx, x1, y1, x2, y2, col, fwd) {
+    ctx.strokeStyle=col; ctx.fillStyle=col; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+    const dx=x2-x1, dy=y2-y1, len=Math.sqrt(dx*dx+dy*dy);
+    if (len < 1) return;
+    const ux=dx/len, uy=dy/len, ex=fwd?x2:x1, ey=fwd?y2:y1, fd=fwd?1:-1;
+    ctx.beginPath(); ctx.moveTo(ex,ey);
+    ctx.lineTo(ex-fd*ux*9-uy*4, ey-fd*uy*9+ux*4);
+    ctx.lineTo(ex-fd*ux*9+uy*4, ey-fd*uy*9-ux*4);
+    ctx.closePath(); ctx.fill();
+  }
+
+  /* ─────────────────────────────────────────────────────
+     LANDAU LEVEL FAN CANVAS
+  ───────────────────────────────────────────────────── */
+  function resizeLandau() {
+    const r = landauCanvas.parentElement.getBoundingClientRect();
+    landauCanvas.width = r.width; landauCanvas.height = r.height;
+  }
+
+  function drawLandau(m) {
+    const W = landauCanvas.width, H = landauCanvas.height;
+    const ctx = lCtx;
+    ctx.clearRect(0, 0, W, H);
+    const pd = {l:46,r:16,t:26,b:32};
+    const pw = W-pd.l-pd.r, ph = H-pd.t-pd.b;
+    if (pw<20||ph<20) return;
+    const Bmin=1, Bmax=18, maxN=8;
+    const maxE = hbar*(e_c*Bmax/mStar)*(maxN+0.5)/e_c*1000; // meV
+
+    // Axes
+    ctx.strokeStyle='rgba(100,180,230,0.30)'; ctx.lineWidth=1;
+    ctx.beginPath();
+    ctx.moveTo(pd.l,pd.t); ctx.lineTo(pd.l,pd.t+ph); ctx.lineTo(pd.l+pw,pd.t+ph); ctx.stroke();
+
+    // Labels
+    ctx.fillStyle='rgba(122,174,200,0.85)'; ctx.font='500 10px IBM Plex Mono';
+    ctx.textAlign='center'; ctx.fillText('B (T)', pd.l+pw/2, H-3);
+    ctx.save(); ctx.translate(11,pd.t+ph/2); ctx.rotate(-Math.PI/2);
+    ctx.fillText('Energy (meV)',0,0); ctx.restore(); ctx.textAlign='left';
+
+    const LCOLS = ['#22d3ee','#34d399','#a78bfa','#f59e0b','#f87171','#38bdf8','#fb7185','#84cc16'];
+
+    for (let N=0; N<maxN; N++) {
+      ctx.beginPath(); let first=true;
+      for (let bi=0; bi<=120; bi++) {
+        const Bv = Bmin + (bi/120)*(Bmax-Bmin);
+        const E  = hbar*(e_c*Bv/mStar)*(N+0.5)/e_c*1000; // meV
+        if (E > maxE*1.05) break;
+        const px = pd.l + ((Bv-Bmin)/(Bmax-Bmin))*pw;
+        const py = pd.t + ph*(1 - E/maxE);
+        if (first) { ctx.moveTo(px,py); first=false; } else ctx.lineTo(px,py);
+      }
+      ctx.strokeStyle = LCOLS[N];
+      ctx.lineWidth = N < m.nuInt ? 2.2 : 1.1;
+      ctx.globalAlpha = N < m.nuInt ? 0.95 : 0.38;
+      ctx.stroke(); ctx.globalAlpha = 1;
+
+      // label at B=15
+      const E15 = hbar*(e_c*15/mStar)*(N+0.5)/e_c*1000;
+      if (E15 < maxE*0.92) {
+        ctx.fillStyle=LCOLS[N]; ctx.font='500 9px IBM Plex Mono';
+        ctx.fillText('N='+N, pd.l+((15-Bmin)/(Bmax-Bmin))*pw+3, pd.t+ph*(1-E15/maxE)+4);
+      }
+    }
+
+    // Fermi level (dashed red)
+    const Ef = hbar*(e_c*Math.abs(m.B)/mStar)*(m.nuReal-0.5)/e_c*1000;
+    const EfC = clamp(Ef, 0.05, maxE*0.94);
+    const fermiY = pd.t + ph*(1-EfC/maxE);
+    ctx.strokeStyle='#f87171'; ctx.lineWidth=1.7; ctx.setLineDash([5,4]);
+    ctx.beginPath(); ctx.moveTo(pd.l+4,fermiY); ctx.lineTo(pd.l+pw-4,fermiY); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle='#f87171'; ctx.font='600 9px IBM Plex Mono';
+    ctx.fillText('E_F', pd.l+4, fermiY-4);
+
+    // Current B marker
+    const mx = pd.l+((Math.abs(m.B)-Bmin)/(Bmax-Bmin))*pw;
+    ctx.strokeStyle='rgba(245,158,11,0.75)'; ctx.lineWidth=1.3; ctx.setLineDash([3,3]);
+    ctx.beginPath(); ctx.moveTo(mx,pd.t); ctx.lineTo(mx,pd.t+ph); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle='#f59e0b'; ctx.font='600 10px IBM Plex Mono'; ctx.textAlign='center';
+    ctx.fillText('B='+Math.abs(m.B).toFixed(1), mx, pd.t-5); ctx.textAlign='left';
+
+    // Title
+    ctx.fillStyle='rgba(122,174,200,0.75)'; ctx.font='500 9px IBM Plex Mono';
+    ctx.fillText('Bright = filled levels | E_F (red dashed)', pd.l, pd.t-5);
+  }
+
+  /* ─────────────────────────────────────────────────────
+     Rxy / Rxx PLATEAU CANVAS
+  ───────────────────────────────────────────────────── */
+  function resizePlateau() {
+    const r = plateauCanvas.parentElement.getBoundingClientRect();
+    plateauCanvas.width = r.width; plateauCanvas.height = r.height;
+  }
+
+  function drawPlateau(m) {
+    const W = plateauCanvas.width, H = plateauCanvas.height;
+    const ctx = pCtx;
+    ctx.clearRect(0, 0, W, H);
+    const pd = {l:50,r:12,t:26,b:32};
+    const pw = W-pd.l-pd.r, ph = H-pd.t-pd.b;
+    if (pw<20||ph<20) return;
+
+    const Bmin=1, Bmax=18;
+    const n2d = parseFloat(sN.value)*1e15;
+    const T   = parseFloat(sT.value);
+    const STEPS = 350;
+    const rxyArr=[], rxxArr=[];
+    let maxRxy=0;
+
+    for (let i=0; i<=STEPS; i++) {
+      const Bv   = Bmin + (i/STEPS)*(Bmax-Bmin);
+      const wc   = e_c*Bv/mStar;
+      const hwc  = hbar*wc;
+      const nuR  = n2d*h_p/(e_c*Bv);
+      const nuI  = Math.max(1, Math.round(nuR));
+      const dlt  = Math.abs(nuR-nuI)*2;
+      const gap  = hwc*clamp(1-dlt,0,1);
+      const rxy  = h_p/(nuI*e_c*e_c);
+      const rxx  = gap>1e-24 ? rxy*8*Math.exp(-gap/(2*kB*T))*(1+6*dlt) : 0;
+      rxyArr.push({B:Bv,R:rxy}); rxxArr.push({B:Bv,R:rxx});
+      if (rxy>maxRxy) maxRxy=rxy;
+    }
+
+    // Axes
+    ctx.strokeStyle='rgba(100,180,230,0.30)'; ctx.lineWidth=1;
+    ctx.beginPath();
+    ctx.moveTo(pd.l,pd.t); ctx.lineTo(pd.l,pd.t+ph); ctx.lineTo(pd.l+pw,pd.t+ph); ctx.stroke();
+    ctx.fillStyle='rgba(122,174,200,0.85)'; ctx.font='500 10px IBM Plex Mono';
+    ctx.textAlign='center'; ctx.fillText('B (T)', pd.l+pw/2, H-3);
+    ctx.textAlign='right'; ctx.fillText('R(k\u03a9)', pd.l-2, pd.t+4); ctx.textAlign='left';
+
+    // Y-ticks (plateau values h/νe²)
+    [1,2,3,4,5].forEach(nu => {
+      const rv = h_p/(nu*e_c*e_c)/1e3; // kOhm
+      const py = pd.t + ph*(1 - rv*1e3/maxRxy);
+      ctx.strokeStyle='rgba(100,180,230,0.12)'; ctx.lineWidth=0.7;
+      ctx.beginPath(); ctx.moveTo(pd.l,py); ctx.lineTo(pd.l+pw,py); ctx.stroke();
+      ctx.fillStyle='rgba(122,174,200,0.65)'; ctx.font='500 9px IBM Plex Mono';
+      ctx.textAlign='right';
+      ctx.fillText(rv.toFixed(1), pd.l-2, py+3);
+      ctx.fillStyle='rgba(34,211,238,0.5)'; ctx.font='500 8px IBM Plex Mono';
+      ctx.textAlign='right';
+      ctx.fillText('\u03bd='+nu, pd.l+pw, py-2);
+      ctx.textAlign='left';
+    });
+
+    // R_xy curve
+    ctx.beginPath(); let first=true;
+    rxyArr.forEach(pt => {
+      const px = pd.l + ((pt.B-Bmin)/(Bmax-Bmin))*pw;
+      const py = pd.t + ph*(1 - pt.R/maxRxy);
+      if(first){ctx.moveTo(px,py);first=false;}else ctx.lineTo(px,py);
+    });
+    ctx.strokeStyle='#22d3ee'; ctx.lineWidth=2; ctx.stroke();
+
+    // R_xx curve (normalised)
+    const rxxMax = Math.max(...rxxArr.map(p=>p.R), 1);
+    ctx.beginPath(); first=true;
+    rxxArr.forEach(pt => {
+      const px = pd.l + ((pt.B-Bmin)/(Bmax-Bmin))*pw;
+      const ry = (pt.R/rxxMax) * maxRxy * 0.30;
+      const py = pd.t + ph*(1 - ry/maxRxy);
+      if(first){ctx.moveTo(px,py);first=false;}else ctx.lineTo(px,py);
+    });
+    ctx.strokeStyle='#f87171'; ctx.lineWidth=1.5; ctx.stroke();
+
+    // Current B marker + dot
+    const mx = pd.l + ((Math.abs(m.B)-Bmin)/(Bmax-Bmin))*pw;
+    ctx.strokeStyle='rgba(245,158,11,0.8)'; ctx.lineWidth=1.4; ctx.setLineDash([4,3]);
+    ctx.beginPath(); ctx.moveTo(mx,pd.t); ctx.lineTo(mx,pd.t+ph); ctx.stroke(); ctx.setLineDash([]);
+    const dotRxy = h_p/(m.nuInt*e_c*e_c);
+    const dotY = pd.t + ph*(1 - dotRxy/maxRxy);
+    ctx.fillStyle='#f59e0b'; ctx.beginPath(); ctx.arc(mx,dotY,5,0,Math.PI*2); ctx.fill();
+
+    // Legend
+    ctx.font='500 9px IBM Plex Mono';
+    ctx.fillStyle='#22d3ee'; ctx.fillText('\u2014 R_xy (Hall)', pd.l+4, pd.t+14);
+    ctx.fillStyle='#f87171'; ctx.fillText('\u2014 R_xx (long.)', pd.l+90, pd.t+14);
+    ctx.fillStyle='#f59e0b'; ctx.fillText('\u25cf current B', pd.l+180, pd.t+14);
+  }
+
+  function resizeAll() { resizeHall(); resizeLandau(); resizePlateau(); }
+
+  function frame() {
+    const m = physics();
+    updateLabels(m);
+    drawHallBar(m);
+    drawLandau(m);
+    drawPlateau(m);
+    requestAnimationFrame(frame);
+  }
+
+  document.getElementById('btnPlay').addEventListener('click', function() {
+    running = !running;
+    this.textContent = running ? '\u23f8 Pause' : '\u25b6 Play';
+    this.classList.toggle('active', !running);
+  });
+  document.getElementById('btnReset').addEventListener('click', () => {
+    sB.value=8; sN.value=4; sT.value=1.5; sI.value=5;
+    topDots=Array.from({length:DOTS},()=>Math.random());
+    botDots=Array.from({length:DOTS},()=>Math.random());
+  });
+  document.getElementById('btnFlip').addEventListener('click', () => {
+    sB.value = (-parseFloat(sB.value)).toFixed(1);
+  });
+  document.getElementById('btnSnap').addEventListener('click', () => {
+    const B = parseFloat(sB.value);
+    const n2d = parseFloat(sN.value)*1e15;
+    const nuR = n2d*h_p/(e_c*Math.abs(B));
+    const nuT = Math.max(1, Math.round(nuR));
+    sN.value = clamp(nuT*e_c*Math.abs(B)/h_p/1e15, 0.5, 10).toFixed(2);
+  });
+
+  window.addEventListener('resize', resizeAll);
+  resizeAll();
+  frame();
+})();
+</script>
+</body>
+</html>
