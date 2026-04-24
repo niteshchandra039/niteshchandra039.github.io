@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hall Effect Interactive Animation</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+    :root {
+      --bg: #06131f;
+      --panel: #0e2436;
+      --panel-2: #12314a;
+      --line: #2d5676;
+      --text: #e8f4ff;
+      --muted: #95b4cb;
+      --accent: #22d3ee;
+      --warm: #f59e0b;
+      --good: #34d399;
+      --danger: #f87171;
+      --shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      font-family: 'Space Grotesk', sans-serif;
+      background:
+        radial-gradient(circle at 14% 18%, rgba(34, 211, 238, 0.2), transparent 35%),
+        radial-gradient(circle at 82% 85%, rgba(245, 158, 11, 0.18), transparent 32%),
+        linear-gradient(150deg, #03101a, #082238 55%, #0a2a42);
+      display: grid;
+      place-items: center;
+      padding: 18px;
+    }
+
+    .app {
+      width: min(1100px, 100%);
+      background: linear-gradient(160deg, rgba(14, 36, 54, 0.92), rgba(10, 31, 48, 0.94));
+      border: 1px solid rgba(149, 180, 203, 0.22);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      backdrop-filter: blur(4px);
+    }
+
+    .header {
+      padding: 16px 20px;
+      border-bottom: 1px solid rgba(149, 180, 203, 0.2);
+      background: linear-gradient(90deg, rgba(34, 211, 238, 0.1), rgba(245, 158, 11, 0.08));
+    }
+
+    .title {
+      margin: 0;
+      font-size: clamp(1.2rem, 2.2vw, 1.8rem);
+      letter-spacing: 0.02em;
+    }
+
+    .subtitle {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .content {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 0;
+    }
+
+    .canvas-wrap {
+      position: relative;
+      min-height: 470px;
+      border-right: 1px solid rgba(149, 180, 203, 0.18);
+      background: repeating-linear-gradient(
+        90deg,
+        rgba(149, 180, 203, 0.03) 0,
+        rgba(149, 180, 203, 0.03) 1px,
+        transparent 1px,
+        transparent 28px
+      );
+      animation: fadeIn 0.65s ease;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .side {
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+      align-content: start;
+      background: linear-gradient(170deg, rgba(18, 49, 74, 0.85), rgba(12, 38, 59, 0.96));
+    }
+
+    .panel {
+      border: 1px solid rgba(149, 180, 203, 0.22);
+      background: rgba(6, 19, 31, 0.55);
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .panel h3 {
+      margin: 0 0 10px;
+      font-size: 0.86rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .control {
+      margin-bottom: 10px;
+    }
+
+    .control:last-child {
+      margin-bottom: 0;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+      font-size: 0.9rem;
+    }
+
+    .value {
+      font-family: 'IBM Plex Mono', monospace;
+      color: var(--accent);
+      font-size: 0.84rem;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    .btn-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .type-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .type-btn {
+      border: 1px solid rgba(149, 180, 203, 0.35);
+      background: rgba(14, 36, 54, 0.8);
+      color: var(--text);
+      border-radius: 8px;
+      padding: 7px 10px;
+      font-family: inherit;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: transform 0.18s ease, background 0.2s ease, border-color 0.2s ease;
+    }
+
+    .type-btn.active {
+      background: rgba(34, 211, 238, 0.24);
+      border-color: rgba(34, 211, 238, 0.72);
+    }
+
+    button {
+      border: 1px solid rgba(149, 180, 203, 0.35);
+      background: rgba(14, 36, 54, 0.8);
+      color: var(--text);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-family: inherit;
+      font-size: 0.86rem;
+      cursor: pointer;
+      transition: transform 0.18s ease, background 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      background: rgba(34, 211, 238, 0.18);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .stat {
+      background: rgba(18, 49, 74, 0.64);
+      border: 1px solid rgba(149, 180, 203, 0.2);
+      border-radius: 8px;
+      padding: 8px;
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .stat-value {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 1rem;
+      margin-top: 3px;
+      color: var(--good);
+    }
+
+    .note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.45;
+    }
+
+    @media (max-width: 900px) {
+      .content {
+        grid-template-columns: 1fr;
+      }
+
+      .canvas-wrap {
+        min-height: 390px;
+        border-right: 0;
+        border-bottom: 1px solid rgba(149, 180, 203, 0.18);
+      }
+
+      .stats {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <h1 class="title">Hall Effect: Charge Deflection in a Magnetic Field</h1>
+      <p class="subtitle">Visualize how moving carriers separate and generate Hall voltage across a conductor.</p>
+    </header>
+
+    <section class="content">
+      <div class="canvas-wrap">
+        <canvas id="simCanvas" aria-label="Hall effect simulation"></canvas>
+      </div>
+
+      <aside class="side">
+        <div class="panel">
+          <h3>Controls</h3>
+          <div class="control">
+            <div class="row"><span>Magnetic field B</span><span class="value" id="bVal">0.80 T</span></div>
+            <input id="bField" type="range" min="-2" max="2" step="0.05" value="0.8">
+          </div>
+          <div class="control">
+            <div class="row"><span>Current I</span><span class="value" id="iVal">1.20 A</span></div>
+            <input id="current" type="range" min="-2" max="2" step="0.05" value="1.2">
+          </div>
+          <div class="control">
+            <div class="row"><span>Carrier density n</span><span class="value" id="nVal">4.0e22 m^-3</span></div>
+            <input id="density" type="range" min="1" max="8" step="0.2" value="4">
+          </div>
+          <div class="control">
+            <div class="row"><span>Thickness t</span><span class="value" id="tVal">1.5 mm</span></div>
+            <input id="thickness" type="range" min="0.5" max="4" step="0.1" value="1.5">
+          </div>
+          <div class="control">
+            <div class="row"><span>Semiconductor type</span><span class="value" id="typeVal">n-type</span></div>
+            <div class="type-grid">
+              <button id="typeN" class="type-btn active" type="button">n-type (electrons)</button>
+              <button id="typeP" class="type-btn" type="button">p-type (holes)</button>
+            </div>
+          </div>
+          <div class="btn-grid">
+            <button id="toggleAnim">Pause</button>
+            <button id="resetBtn">Reset</button>
+            <button id="flipB">Flip B</button>
+            <button id="flipI">Flip I</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Computed Outputs</h3>
+          <div class="stats">
+            <div class="stat">
+              <div class="stat-label">Hall voltage</div>
+              <div class="stat-value" id="vHall">0.000 V</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Drift speed</div>
+              <div class="stat-value" id="vDrift">0.00 m/s</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Lorentz force</div>
+              <div class="stat-value" id="force">0.00e0 N</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Polarity</div>
+              <div class="stat-value" id="polarity">Top +</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Concept</h3>
+          <p class="note">When charge carriers move with velocity v in magnetic field B, they feel a force q(v x B). Carriers accumulate on one side until electric force balances magnetic force. That separation creates Hall voltage.</p>
+        </div>
+      </aside>
+    </section>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('simCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const controls = {
+      bField: document.getElementById('bField'),
+      current: document.getElementById('current'),
+      density: document.getElementById('density'),
+      thickness: document.getElementById('thickness')
+    };
+
+    const labels = {
+      bVal: document.getElementById('bVal'),
+      iVal: document.getElementById('iVal'),
+      nVal: document.getElementById('nVal'),
+      tVal: document.getElementById('tVal'),
+      typeVal: document.getElementById('typeVal'),
+      vHall: document.getElementById('vHall'),
+      vDrift: document.getElementById('vDrift'),
+      force: document.getElementById('force'),
+      polarity: document.getElementById('polarity')
+    };
+
+    const state = {
+      carrierType: 'n',
+      accumulationPulse: 0
+    };
+
+    const q = 1.602e-19;
+    const area = 4e-6;
+    const particleCount = 96;
+    let running = true;
+
+    const particles = [];
+
+    function resize() {
+      const wrap = canvas.parentElement.getBoundingClientRect();
+      canvas.width = wrap.width;
+      canvas.height = wrap.height;
+    }
+
+    function getBarGeometry(m) {
+      const w = canvas.width;
+      const h = canvas.height;
+      const thicknessMm = m ? m.t * 1e3 : Number(controls.thickness.value);
+
+      // Map physical thickness slider (0.5-4 mm) to visual bar depth.
+      const depthX = 18 + thicknessMm * 12;
+      const depthY = -(10 + thicknessMm * 7);
+
+      return {
+        left: 120,
+        top: 160,
+        bw: w - 320,
+        bh: h - 300,
+        dx: depthX,
+        dy: depthY
+      };
+    }
+
+    function newParticle() {
+      const g = getBarGeometry();
+      const left = g.left + 8;
+      const top = g.top + 8;
+      const right = g.left + g.bw - 8;
+      const bottom = g.top + g.bh - 8;
+      return {
+        x: left + Math.random() * Math.max(1, right - left),
+        y: top + Math.random() * Math.max(1, bottom - top),
+        vx: 0,
+        vy: 0
+      };
+    }
+
+    function seedParticles() {
+      particles.length = 0;
+      for (let i = 0; i < particleCount; i += 1) {
+        particles.push(newParticle());
+      }
+    }
+
+    function clamp(v, min, max) {
+      return Math.min(max, Math.max(min, v));
+    }
+
+    function compute() {
+      const carrierSign = state.carrierType === 'n' ? -1 : 1;
+      const carrierCharge = carrierSign * q;
+      const B = Number(controls.bField.value);
+      const I = Number(controls.current.value);
+      const n = Number(controls.density.value) * 1e22;
+      const t = Number(controls.thickness.value) * 1e-3;
+
+      // Drift velocity and Hall voltage include carrier charge sign (n-type vs p-type physics).
+      const drift = I / (n * carrierCharge * area);
+      const hallV = (I * B) / (n * carrierCharge * t);
+      const forceSigned = carrierCharge * drift * B;
+      const lorentz = Math.abs(forceSigned);
+
+      return { B, I, n, t, drift, hallV, lorentz, carrierCharge, forceSigned, carrierSign };
+    }
+
+    function updateLabels(m) {
+      labels.bVal.textContent = `${m.B.toFixed(2)} T`;
+      labels.iVal.textContent = `${m.I.toFixed(2)} A`;
+      labels.nVal.textContent = `${(m.n / 1e22).toFixed(1)}e22 m^-3`;
+      labels.tVal.textContent = `${(m.t * 1e3).toFixed(1)} mm`;
+      labels.typeVal.textContent = state.carrierType === 'n' ? 'n-type' : 'p-type';
+      labels.vHall.textContent = `${m.hallV.toFixed(3)} V`;
+      labels.vDrift.textContent = `${m.drift.toFixed(2)} m/s`;
+      labels.force.textContent = `${m.lorentz.toExponential(2)} N`;
+      labels.polarity.textContent = `${m.hallV >= 0 ? 'Top +' : 'Bottom +'} | ${state.carrierType === 'n' ? 'R_H < 0' : 'R_H > 0'}`;
+    }
+
+    function drawBar(m) {
+      const { left, top, bw, bh, dx, dy } = getBarGeometry(m);
+
+      const front = [
+        [left, top],
+        [left + bw, top],
+        [left + bw, top + bh],
+        [left, top + bh]
+      ];
+      const back = front.map(([x, y]) => [x + dx, y + dy]);
+
+      const sideStrength = clamp(Math.abs(m.hallV) / 0.5, 0, 1);
+      const topAlpha = m.hallV >= 0 ? 0.2 + sideStrength * 0.4 : 0.08;
+      const bottomAlpha = m.hallV < 0 ? 0.2 + sideStrength * 0.4 : 0.08;
+
+      // Subtle shadow improves shape readability against the light background.
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.12)';
+      ctx.beginPath();
+      ctx.ellipse(left + bw * 0.55, top + bh + 28, bw * 0.38, 26, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      drawMagnets(left, top, bw, bh, dx, dy, m.B);
+
+      // Top face
+      let grad = ctx.createLinearGradient(back[0][0], back[0][1], back[1][0], back[1][1]);
+      grad.addColorStop(0, 'rgba(36, 94, 130, 0.95)');
+      grad.addColorStop(1, 'rgba(22, 67, 101, 0.95)');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.moveTo(back[0][0], back[0][1]);
+      ctx.lineTo(back[1][0], back[1][1]);
+      ctx.lineTo(front[1][0], front[1][1]);
+      ctx.lineTo(front[0][0], front[0][1]);
+      ctx.closePath();
+      ctx.fill();
+
+      // Right face
+      grad = ctx.createLinearGradient(front[1][0], front[1][1], back[2][0], back[2][1]);
+      grad.addColorStop(0, 'rgba(13, 49, 78, 0.98)');
+      grad.addColorStop(1, 'rgba(7, 33, 56, 0.98)');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.moveTo(front[1][0], front[1][1]);
+      ctx.lineTo(back[1][0], back[1][1]);
+      ctx.lineTo(back[2][0], back[2][1]);
+      ctx.lineTo(front[2][0], front[2][1]);
+      ctx.closePath();
+      ctx.fill();
+
+      // Front face
+      grad = ctx.createLinearGradient(front[0][0], front[0][1], front[0][0], front[3][1]);
+      grad.addColorStop(0, 'rgba(21, 84, 122, 0.95)');
+      grad.addColorStop(1, 'rgba(11, 58, 91, 0.97)');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.moveTo(front[0][0], front[0][1]);
+      ctx.lineTo(front[1][0], front[1][1]);
+      ctx.lineTo(front[2][0], front[2][1]);
+      ctx.lineTo(front[3][0], front[3][1]);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.strokeStyle = 'rgba(172, 209, 235, 0.42)';
+      ctx.lineWidth = 1.7;
+      ctx.beginPath();
+      ctx.moveTo(front[0][0], front[0][1]);
+      ctx.lineTo(front[1][0], front[1][1]);
+      ctx.lineTo(front[2][0], front[2][1]);
+      ctx.lineTo(front[3][0], front[3][1]);
+      ctx.closePath();
+      ctx.moveTo(back[0][0], back[0][1]);
+      ctx.lineTo(back[1][0], back[1][1]);
+      ctx.lineTo(back[2][0], back[2][1]);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(front[0][0], front[0][1]);
+      ctx.lineTo(back[0][0], back[0][1]);
+      ctx.moveTo(front[1][0], front[1][1]);
+      ctx.lineTo(back[1][0], back[1][1]);
+      ctx.moveTo(front[2][0], front[2][1]);
+      ctx.lineTo(back[2][0], back[2][1]);
+      ctx.stroke();
+
+      // Hall charge accumulation hint
+      ctx.fillStyle = `rgba(52, 211, 153, ${topAlpha.toFixed(3)})`;
+      ctx.fillRect(front[0][0] + 3, front[0][1] + 3, bw - 6, 18);
+      ctx.fillStyle = `rgba(248, 113, 113, ${bottomAlpha.toFixed(3)})`;
+      ctx.fillRect(front[3][0] + 3, front[3][1] - 21, bw - 6, 18);
+
+      // Field symbols on top face
+      for (let i = 0; i < 8; i += 1) {
+        const t = i / 7;
+        const gx = back[0][0] + 24 + t * (bw - 48);
+        const gy = back[0][1] + 18 + (i % 3) * 8;
+        drawFieldSymbol(gx, gy, m.B);
+      }
+
+      const cIn = { x: front[0][0] - 12, y: (front[0][1] + front[3][1]) * 0.5 };
+      const cOut = { x: front[1][0] + 12, y: (front[1][1] + front[2][1]) * 0.5 };
+      const hallTop = { x: left + bw * 0.52, y: top - 6 };
+      const hallBottom = { x: left + bw * 0.45, y: top + bh + 6 };
+
+      drawTerminal(cIn.x, cIn.y, 'I-');
+      drawTerminal(cOut.x, cOut.y, 'I+');
+      drawProbe(hallTop.x, hallTop.y, true);
+      drawProbe(hallBottom.x, hallBottom.y, false);
+
+      drawCurrentSource(cIn, cOut, m.I);
+      drawVoltmeter(hallTop, hallBottom, m.hallV);
+
+      drawCurrentArrow(front[0][0] + 25, front[0][1] - 28, front[1][0] - 25, front[1][1] - 28, m.I, state.carrierType);
+
+      ctx.fillStyle = 'rgba(232, 244, 255, 0.8)';
+      ctx.font = '600 13px Space Grotesk';
+      ctx.fillText(m.B >= 0 ? 'B field out of page' : 'B field into page', back[1][0] - 160, back[1][1] - 18);
+      ctx.fillText(`${Math.abs(m.hallV).toFixed(3)} V`, hallTop.x + 12, (hallTop.y + hallBottom.y) * 0.5 + 2);
+    }
+
+    function drawTerminal(x, y, label) {
+      ctx.fillStyle = 'rgba(244, 184, 36, 0.85)';
+      ctx.strokeStyle = 'rgba(255, 223, 133, 0.7)';
+      ctx.lineWidth = 1.3;
+      ctx.beginPath();
+      ctx.arc(x, y, 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = 'rgba(232, 244, 255, 0.88)';
+      ctx.font = '500 11px IBM Plex Mono';
+      ctx.fillText(label, x - 10, y - 11);
+    }
+
+    function drawProbe(x, y, isTop) {
+      ctx.fillStyle = isTop ? 'rgba(52, 211, 153, 0.9)' : 'rgba(248, 113, 113, 0.9)';
+      ctx.beginPath();
+      ctx.arc(x, y, 4, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    function drawCable(points, color) {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2.2;
+      ctx.beginPath();
+      ctx.moveTo(points[0].x, points[0].y);
+      for (let i = 1; i < points.length; i += 1) {
+        ctx.lineTo(points[i].x, points[i].y);
+      }
+      ctx.stroke();
+    }
+
+    function drawCurrentSource(cIn, cOut, current) {
+      const y = cIn.y + 110;
+      const leftX = cIn.x - 78;
+      const rightX = cOut.x + 78;
+      const boxW = 130;
+      const boxH = 52;
+      const boxX = (leftX + rightX) * 0.5 - boxW * 0.5;
+      const boxY = y - boxH * 0.5;
+
+      drawCable([
+        { x: cIn.x, y: cIn.y },
+        { x: cIn.x - 34, y: cIn.y },
+        { x: cIn.x - 34, y },
+        { x: boxX, y }
+      ], 'rgba(244, 184, 36, 0.9)');
+
+      drawCable([
+        { x: cOut.x, y: cOut.y },
+        { x: cOut.x + 34, y: cOut.y },
+        { x: cOut.x + 34, y },
+        { x: boxX + boxW, y }
+      ], 'rgba(244, 184, 36, 0.9)');
+
+      const grad = ctx.createLinearGradient(boxX, boxY, boxX + boxW, boxY + boxH);
+      grad.addColorStop(0, 'rgba(24, 62, 91, 0.95)');
+      grad.addColorStop(1, 'rgba(15, 43, 66, 0.95)');
+      ctx.fillStyle = grad;
+      ctx.strokeStyle = 'rgba(149, 180, 203, 0.45)';
+      ctx.lineWidth = 1.4;
+      ctx.beginPath();
+      ctx.roundRect(boxX, boxY, boxW, boxH, 8);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = 'rgba(232, 244, 255, 0.9)';
+      ctx.font = '500 11px IBM Plex Mono';
+      ctx.fillText('DC CURRENT SOURCE', boxX + 10, boxY + 16);
+      ctx.fillStyle = 'rgba(34, 211, 238, 0.95)';
+      ctx.font = '600 13px IBM Plex Mono';
+      ctx.fillText(`${current.toFixed(2)} A`, boxX + 39, boxY + 36);
+    }
+
+    function drawVoltmeter(topProbe, bottomProbe, hallV) {
+      const meterX = topProbe.x + 115;
+      const meterY = (topProbe.y + bottomProbe.y) * 0.5 - 32;
+      const meterW = 95;
+      const meterH = 64;
+
+      drawCable([
+        { x: topProbe.x, y: topProbe.y },
+        { x: topProbe.x + 34, y: topProbe.y - 24 },
+        { x: meterX, y: meterY + 16 }
+      ], 'rgba(52, 211, 153, 0.92)');
+
+      drawCable([
+        { x: bottomProbe.x, y: bottomProbe.y },
+        { x: bottomProbe.x + 30, y: bottomProbe.y + 24 },
+        { x: meterX, y: meterY + meterH - 14 }
+      ], 'rgba(248, 113, 113, 0.92)');
+
+      ctx.fillStyle = 'rgba(11, 37, 56, 0.96)';
+      ctx.strokeStyle = 'rgba(149, 180, 203, 0.5)';
+      ctx.lineWidth = 1.3;
+      ctx.beginPath();
+      ctx.roundRect(meterX, meterY, meterW, meterH, 9);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = 'rgba(34, 211, 238, 0.9)';
+      ctx.font = '500 10px IBM Plex Mono';
+      ctx.fillText('HALL METER', meterX + 16, meterY + 14);
+      ctx.font = '600 14px IBM Plex Mono';
+      ctx.fillText(`${hallV.toFixed(3)} V`, meterX + 14, meterY + 39);
+      ctx.fillStyle = 'rgba(232, 244, 255, 0.78)';
+      ctx.font = '500 10px IBM Plex Mono';
+      ctx.fillText(hallV >= 0 ? 'Top terminal +' : 'Bottom terminal +', meterX + 7, meterY + 54);
+    }
+
+    function drawMagnets(left, top, bw, bh, dx, dy, B) {
+      const magW = bw * 0.68;
+      const magX = left + (bw - magW) * 0.5 + dx * 0.18;
+      const topY = top - 98;
+      const bottomY = top + bh + 44;
+
+      drawMagnetBlock(magX, topY, magW, 34, B >= 0 ? 'N' : 'S', B >= 0 ? 'S' : 'N');
+      drawMagnetBlock(magX, bottomY, magW, 34, B >= 0 ? 'S' : 'N', B >= 0 ? 'N' : 'S');
+
+      ctx.strokeStyle = 'rgba(245, 158, 11, 0.35)';
+      ctx.lineWidth = 1.2;
+      for (let i = 0; i < 5; i += 1) {
+        const x = magX + 20 + i * ((magW - 40) / 4);
+        ctx.beginPath();
+        ctx.moveTo(x, topY + 34);
+        ctx.lineTo(x, bottomY);
+        ctx.stroke();
+      }
+    }
+
+    function drawMagnetBlock(x, y, w, h, leftPole, rightPole) {
+      const split = w * 0.5;
+      ctx.fillStyle = 'rgba(187, 42, 42, 0.88)';
+      ctx.beginPath();
+      ctx.roundRect(x, y, split, h, 6);
+      ctx.fill();
+      ctx.fillStyle = 'rgba(44, 100, 185, 0.88)';
+      ctx.beginPath();
+      ctx.roundRect(x + split, y, split, h, 6);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(228, 236, 245, 0.4)';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.roundRect(x, y, w, h, 6);
+      ctx.stroke();
+
+      ctx.fillStyle = 'rgba(240, 248, 255, 0.95)';
+      ctx.font = '700 14px Space Grotesk';
+      ctx.fillText(leftPole, x + split * 0.48, y + 22);
+      ctx.fillText(rightPole, x + split + split * 0.46, y + 22);
+    }
+
+    function drawCurrentArrow(x1, y1, x2, y2, current, carrierType) {
+      const dir = current >= 0 ? 1 : -1;
+      const sx = dir > 0 ? x1 : x2;
+      const ex = dir > 0 ? x2 : x1;
+
+      ctx.strokeStyle = 'rgba(52, 211, 153, 0.82)';
+      ctx.lineWidth = 2.1;
+      ctx.beginPath();
+      ctx.moveTo(sx, y1);
+      ctx.lineTo(ex, y2);
+      ctx.stroke();
+
+      const head = 8;
+      ctx.fillStyle = 'rgba(52, 211, 153, 0.9)';
+      ctx.beginPath();
+      ctx.moveTo(ex, y2);
+      ctx.lineTo(ex - dir * head, y2 - 4);
+      ctx.lineTo(ex - dir * head, y2 + 4);
+      ctx.closePath();
+      ctx.fill();
+
+      // Carrier drift: electrons move opposite to conventional current,
+      // holes move in the same direction as conventional current.
+      const carrierDir = carrierType === 'n' ? -dir : dir;
+      const csx = carrierDir > 0 ? x1 : x2;
+      const cex = carrierDir > 0 ? x2 : x1;
+      const cy = y2 + 16;
+
+      ctx.strokeStyle = carrierType === 'n' ? 'rgba(34, 211, 238, 0.86)' : 'rgba(251, 191, 36, 0.9)';
+      ctx.fillStyle = carrierType === 'n' ? 'rgba(34, 211, 238, 0.9)' : 'rgba(251, 191, 36, 0.95)';
+      ctx.lineWidth = 1.8;
+      ctx.beginPath();
+      ctx.moveTo(csx, cy);
+      ctx.lineTo(cex, cy);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(cex, cy);
+      ctx.lineTo(cex - carrierDir * head, cy - 4);
+      ctx.lineTo(cex - carrierDir * head, cy + 4);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.fillStyle = 'rgba(232, 244, 255, 0.82)';
+      ctx.font = '500 10px IBM Plex Mono';
+      ctx.fillText('I (conventional)', sx + 4, y2 - 6);
+      ctx.fillText(carrierType === 'n' ? 'electron drift' : 'hole drift', csx + 4, cy + 12);
+    }
+
+    function drawFieldSymbol(x, y, B) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.strokeStyle = 'rgba(245, 158, 11, 0.6)';
+      ctx.fillStyle = 'rgba(245, 158, 11, 0.55)';
+      ctx.lineWidth = 1.5;
+      if (B >= 0) {
+        ctx.beginPath();
+        ctx.arc(0, 0, 5, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(0, 0, 1.7, 0, Math.PI * 2);
+        ctx.fill();
+      } else {
+        ctx.beginPath();
+        ctx.moveTo(-4, -4);
+        ctx.lineTo(4, 4);
+        ctx.moveTo(-4, 4);
+        ctx.lineTo(4, -4);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    function updateParticles(m) {
+      const g = getBarGeometry(m);
+      const left = g.left + 8;
+      const top = g.top + 8;
+      const right = g.left + g.bw - 8;
+      const bottom = g.top + g.bh - 8;
+
+      const driftScale = clamp(Math.abs(m.drift) * 0.15, 0.3, 2.5);
+      // Lorentz direction is from q(v x B). Use signed drift velocity and carrier charge.
+      const deflect = clamp(m.carrierCharge * m.drift * m.B * 8e18, -1.8, 1.8);
+      const sideDir = Math.sign(deflect || 0);
+
+      state.accumulationPulse *= 0.93;
+
+      for (const p of particles) {
+        p.vx = driftScale * Math.sign(m.drift || 1);
+        p.vy += deflect * 0.03;
+        p.vy *= 0.92;
+
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.x > right) p.x = left;
+        if (p.x < left) p.x = right;
+
+        // Carriers reaching the collection side are replaced by newly injected
+        // carriers from the opposite side.
+        if (sideDir > 0 && p.y > bottom) {
+          p.y = top + Math.random() * 10;
+          p.x = left + Math.random() * (right - left);
+          p.vy = 0;
+          state.accumulationPulse = Math.min(1, state.accumulationPulse + 0.08);
+        } else if (sideDir < 0 && p.y < top) {
+          p.y = bottom - Math.random() * 10;
+          p.x = left + Math.random() * (right - left);
+          p.vy = 0;
+          state.accumulationPulse = Math.min(1, state.accumulationPulse + 0.08);
+        } else {
+          p.y = clamp(p.y, top, bottom);
+        }
+      }
+    }
+
+    function drawParticles(m) {
+      const alpha = 0.7 + clamp(Math.abs(m.hallV), 0, 0.3);
+      if (state.carrierType === 'n') {
+        ctx.fillStyle = `rgba(34, 211, 238, ${alpha.toFixed(3)})`;
+        for (const p of particles) {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, 2.4, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      } else {
+        ctx.fillStyle = `rgba(251, 191, 36, ${alpha.toFixed(3)})`;
+        ctx.font = '700 14px IBM Plex Mono';
+        for (const p of particles) {
+          ctx.fillText('+', p.x - 3.5, p.y + 4.5);
+        }
+      }
+    }
+
+    function drawAccumulationZone(m) {
+      const g = getBarGeometry(m);
+      const left = g.left + 8;
+      const right = g.left + g.bw - 8;
+      const top = g.top + 8;
+      const bottom = g.top + g.bh - 8;
+
+      const dir = Math.sign(m.forceSigned || 0);
+      const pulse = clamp(state.accumulationPulse, 0, 1);
+      if (dir === 0 || pulse <= 0.01) return;
+
+      const alpha = (0.08 + 0.22 * pulse).toFixed(3);
+      ctx.fillStyle = state.carrierType === 'n'
+        ? `rgba(34, 211, 238, ${alpha})`
+        : `rgba(251, 191, 36, ${alpha})`;
+
+      if (dir > 0) {
+        ctx.fillRect(left, bottom - 10, right - left, 10);
+      } else {
+        ctx.fillRect(left, top, right - left, 10);
+      }
+    }
+
+    function drawCarrierForceArrows(m) {
+      if (!particles.length) return;
+
+      const dir = Math.sign(m.forceSigned || 0);
+      if (dir === 0) return;
+
+      const sampleStep = Math.max(1, Math.floor(particles.length / 6));
+      ctx.strokeStyle = 'rgba(245, 114, 182, 0.9)';
+      ctx.fillStyle = 'rgba(245, 114, 182, 0.9)';
+      ctx.lineWidth = 1.6;
+
+      for (let i = 3; i < particles.length; i += sampleStep) {
+        const p = particles[i];
+        const x1 = p.x + 5;
+        const y1 = p.y;
+        const x2 = x1;
+        const y2 = y1 + dir * 12;
+
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(x2, y2);
+        ctx.lineTo(x2 - 3, y2 - dir * 4);
+        ctx.lineTo(x2 + 3, y2 - dir * 4);
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      ctx.fillStyle = 'rgba(232, 244, 255, 0.85)';
+      ctx.font = '600 11px IBM Plex Mono';
+      ctx.fillText('Lorentz force on carriers', 18, 26);
+    }
+
+    function drawAxesHint() {
+      ctx.fillStyle = 'rgba(149, 180, 203, 0.8)';
+      ctx.font = '500 12px IBM Plex Mono';
+      ctx.fillText(state.carrierType === 'n' ? 'Majority carriers: electrons' : 'Majority carriers: holes', 20, canvas.height - 70);
+      ctx.fillText('x: current direction', 20, canvas.height - 52);
+      ctx.fillText('y: Hall voltage side-to-side', 20, canvas.height - 34);
+      ctx.fillText('z: magnetic field +/-', 20, canvas.height - 16);
+    }
+
+    function frame() {
+      const m = compute();
+      updateLabels(m);
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawBar(m);
+
+      if (running) {
+        updateParticles(m);
+      }
+
+      drawAccumulationZone(m);
+      drawParticles(m);
+      drawCarrierForceArrows(m);
+      drawAxesHint();
+
+      requestAnimationFrame(frame);
+    }
+
+    document.getElementById('toggleAnim').addEventListener('click', () => {
+      running = !running;
+      document.getElementById('toggleAnim').textContent = running ? 'Pause' : 'Play';
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      controls.bField.value = 0.8;
+      controls.current.value = 1.2;
+      controls.density.value = 4;
+      controls.thickness.value = 1.5;
+      setCarrierType('n');
+      state.accumulationPulse = 0;
+      seedParticles();
+    });
+
+    document.getElementById('flipB').addEventListener('click', () => {
+      controls.bField.value = (-Number(controls.bField.value)).toFixed(2);
+    });
+
+    document.getElementById('flipI').addEventListener('click', () => {
+      controls.current.value = (-Number(controls.current.value)).toFixed(2);
+    });
+
+    function setCarrierType(type) {
+      state.carrierType = type;
+      state.accumulationPulse = 0;
+      document.getElementById('typeN').classList.toggle('active', type === 'n');
+      document.getElementById('typeP').classList.toggle('active', type === 'p');
+    }
+
+    document.getElementById('typeN').addEventListener('click', () => {
+      setCarrierType('n');
+    });
+
+    document.getElementById('typeP').addEventListener('click', () => {
+      setCarrierType('p');
+    });
+
+    window.addEventListener('resize', () => {
+      resize();
+      seedParticles();
+    });
+
+    resize();
+    seedParticles();
+    frame();
+  </script>
+</body>
+</html>

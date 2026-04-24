@@ -182,6 +182,10 @@ permalink: /teaching/
           <span class="lecture-title">PN Juntion Diode</span>
           <a href="/resources/AI_simulations/pn-diode.html" class="btn-link" target="_blank">🌐 Open Simulation</a>
         </li>
+        <li>
+          <span class="lecture-title">Hall Effect Animation</span>
+          <a href="/resources/AI_simulations/hall-effect.html" class="btn-link" target="_blank">🌐 Open Simulation</a>
+        </li>
       </ul>
       <p style="font-size: 0.85em; color: #718096; margin-top: 10px; margin-bottom: 0;">
         <em>*These interactive simulations are designed to enhance conceptual understanding using AI and computational techniques.*</em>
