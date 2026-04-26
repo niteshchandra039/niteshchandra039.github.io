@@ -6,7 +6,7 @@ main:
     url: "/"
   - title: "Biography"
     url: "/about/"
-  - title: "Courses"
+  - title: "Resources"
     url: "/teaching/"
   - title: "News"
     url: "/update/"
