@@ -257,7 +257,7 @@ author_profile: true
 
   <div class="grid-container">
     <div class="card">
-      <h3>Courses</h3>
+      <h3>Resources</h3>
       <ul>
         <li>Computational Physics</li>
         <li>Python, C++ and Fortran Programming</li>
