@@ -190,6 +190,15 @@ permalink: /teaching/
           <span class="lecture-title">Quantum Hall Effect Animation</span>
           <a href="/resources/AI_simulations/quantum-hall-effect.html" class="btn-link" target="_blank">🌐 Open Simulation</a>
         </li>
+        <li>
+          <span class="lecture-title">N-Body Simulation</span>
+          <a href="/resources/AI_simulations/simple_nbody_orbits.html" class="btn-link" target="_blank">🌐 Open Simulation</a>
+        </li>
+        <li>
+          <span class="lecture-title">Motion Gravity Lab</span>
+          <a href="/resources/AI_simulations/motion_gravity_lab.html" class="btn-link" target="_blank">🌐 Open Simulation</a>
+        </li>
+
       </ul>
       <p style="font-size: 0.85em; color: #718096; margin-top: 10px; margin-bottom: 0;">
         <em>*These interactive simulations are designed to enhance conceptual understanding using AI and computational techniques.*</em>
