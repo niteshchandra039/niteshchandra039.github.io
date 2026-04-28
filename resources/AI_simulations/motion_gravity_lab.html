@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Motion and Gravity Virtual Lab</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #071526;
+      --panel: #0e2432;
+      --muted: #9fb7c7;
+      --text: #e8f4ff;
+      --accent: #66e0ff;
+      --accent2: #ffcc7a;
+      --good: #6ee7b7;
+      --danger: #ff8a8a;
+      --glass: rgba(255,255,255,0.04);
+      --shadow: 0 8px 30px rgba(2,8,23,0.65);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      height: 100%;
+      font-family: "Space Grotesk", system-ui, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 12% 18%, rgba(102,224,255,0.16), transparent 35%),
+        radial-gradient(circle at 82% 78%, rgba(255,204,122,0.13), transparent 33%),
+        linear-gradient(170deg, #041019, #072235 52%, #0a3148);
+    }
+
+    .app {
+      height: 100vh;
+      display: grid;
+      grid-template-columns: 340px minmax(400px, 1fr) 420px;
+      grid-template-rows: 64px 1fr;
+      gap: 12px;
+      padding: 12px;
+    }
+
+    header {
+      grid-column: 1 / 4;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      background: linear-gradient(90deg, #0b2230, rgba(255,255,255,0.03));
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+    }
+
+    h1 { margin: 0; font-size: 16px; }
+    .subtitle { color: var(--muted); font-size: 12px; }
+
+    .panel {
+      background: var(--panel);
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+      overflow: auto;
+      padding: 10px;
+    }
+
+    .tabbar { display: flex; gap: 6px; flex-wrap: wrap; }
+    .tab {
+      border: 0;
+      border-radius: 8px;
+      padding: 7px 10px;
+      cursor: pointer;
+      background: var(--glass);
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .tab.active { background: linear-gradient(90deg, #2bbde3, #4ea4ff); color: #022437; }
+
+    .controls { display: grid; gap: 8px; }
+    .row { display: flex; gap: 8px; align-items: center; }
+    .field { display: grid; gap: 4px; }
+    label { font-size: 12px; color: var(--muted); }
+    input[type="range"], input[type="number"], select, textarea { width: 100%; }
+    input[type="number"], select {
+      background: #0a1d29;
+      color: var(--text);
+      border: 1px solid #23495f;
+      border-radius: 6px;
+      padding: 6px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 7px;
+      padding: 7px 10px;
+      cursor: pointer;
+      color: #fff;
+      background: linear-gradient(180deg, #176b89, #10495f);
+      font-weight: 600;
+    }
+
+    .small { font-size: 12px; }
+    .value {
+      font-family: "IBM Plex Mono", monospace;
+      background: rgba(255,255,255,0.03);
+      border-radius: 6px;
+      padding: 4px 6px;
+      font-size: 12px;
+      overflow-wrap: anywhere;
+    }
+
+    .simWrap { position: relative; height: 100%; min-height: 460px; }
+    #simCanvas { width: 100%; height: 100%; display: block; border-radius: 8px; background: #061621; }
+    #overlay {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      border-radius: 8px;
+      background: rgba(2, 8, 12, 0.62);
+      color: var(--muted);
+      padding: 8px;
+      font-size: 12px;
+      min-width: 170px;
+    }
+
+    .section {
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px;
+      padding: 8px;
+      margin-bottom: 8px;
+      background: rgba(255,255,255,0.01);
+    }
+
+    .kicker { color: var(--muted); font-size: 12px; }
+
+    .mono { font-family: "IBM Plex Mono", monospace; }
+
+    #pyCode {
+      min-height: 220px;
+      resize: vertical;
+      border-radius: 8px;
+      border: 1px solid #23495f;
+      background: #061722;
+      color: #d6f2ff;
+      font-family: "IBM Plex Mono", monospace;
+      padding: 8px;
+    }
+
+    #pyOutput {
+      min-height: 80px;
+      border-radius: 8px;
+      padding: 8px;
+      background: #061722;
+      color: var(--muted);
+      font-size: 12px;
+      white-space: pre-wrap;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      font-size: 12px;
+    }
+
+    @media (max-width: 1260px) {
+      .app {
+        grid-template-columns: 330px 1fr;
+        grid-template-rows: 68px 1fr 360px;
+      }
+      header { grid-column: 1 / 3; }
+      .rightPane { grid-column: 1 / 3; }
+    }
+
+    @media (max-width: 900px) {
+      .app {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto auto;
+        height: auto;
+        min-height: 100vh;
+      }
+      header, .leftPane, .midPane, .rightPane { grid-column: 1 / 2; }
+      .simWrap { min-height: 360px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div style="flex:1">
+        <h1>Motion and the Law of Gravity: Interactive Astrophysics Lab</h1>
+        <div class="subtitle">Intuition Mode -> Mathematical Mode -> Numerical Experiment Mode</div>
+      </div>
+      <div class="tabbar" id="tabbar">
+        <button class="tab active" data-tab="module1">Module 1</button>
+        <button class="tab" data-tab="module2">Module 2</button>
+        <button class="tab" data-tab="module3">Module 3</button>
+        <button class="tab" data-tab="module4">Module 4</button>
+        <button class="tab" data-tab="module5">Module 5</button>
+        <button class="tab" data-tab="solar">Solar System</button>
+      </div>
+    </header>
+
+    <aside class="panel leftPane">
+      <div class="controls">
+        <div class="section">
+          <div class="kicker">Global Controls</div>
+          <div class="field">
+            <label>Integrator</label>
+            <select id="integrator">
+              <option value="VelocityVerlet">VelocityVerlet</option>
+              <option value="RK4">RK4</option>
+              <option value="Euler">Euler</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Gravitational Constant Scale</label>
+            <input id="gScale" type="range" min="0.01" max="10" step="0.01" value="1" />
+          </div>
+          <div class="field">
+            <label>Simulation Speed</label>
+            <input id="simSpeed" type="range" min="0.1" max="20" step="0.1" value="1" />
+          </div>
+          <div class="field">
+            <label>Time Step (s internal unit)</label>
+            <input id="dt" type="range" min="0.0005" max="2" step="0.0005" value="0.02" />
+          </div>
+          <div class="row">
+            <button id="playBtn" class="small">Run</button>
+            <button id="stepBtn" class="small">Step</button>
+            <button id="resetBtn" class="small">Reset</button>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="kicker">Visual Toggles</div>
+          <label><input id="showVectors" type="checkbox" checked /> Force / Velocity vectors</label>
+          <label><input id="showTrails" type="checkbox" checked /> Trajectory trails</label>
+          <label><input id="comFrame" type="checkbox" /> Center-of-mass frame</label>
+          <label><input id="view3d" type="checkbox" /> 3D projection (isometric)</label>
+          <label><input id="nonInertial" type="checkbox" /> Non-inertial rotating frame (Module 1)</label>
+        </div>
+
+        <div class="section">
+          <div class="kicker">Learning Layer</div>
+          <select id="learnMode">
+            <option value="intuition">Intuition mode</option>
+            <option value="math">Mathematical mode</option>
+            <option value="numerical">Numerical experiment mode</option>
+          </select>
+        </div>
+      </div>
+    </aside>
+
+    <main class="panel midPane">
+      <div class="simWrap">
+        <canvas id="simCanvas"></canvas>
+        <div id="overlay">
+          <div>Time: <span id="timeVal">0.00</span></div>
+          <div>Frames: <span id="frameVal">0</span></div>
+          <div>G_eff: <span id="gEffVal">1.00 G</span></div>
+        </div>
+      </div>
+      <div class="section" id="moduleContent"></div>
+      <div class="section" id="teachingPane"></div>
+    </main>
+
+    <aside class="panel rightPane">
+      <div class="section">
+        <div class="kicker">Diagnostics</div>
+        <canvas id="diagCanvas" style="height:240px"></canvas>
+      </div>
+      <div class="section">
+        <div class="kicker">Module 5: Python + NumPy + Matplotlib (Pyodide)</div>
+        <textarea id="pyCode"></textarea>
+        <div class="row" style="margin-top:8px">
+          <button id="runPy" class="small">Run Python</button>
+          <button id="loadExample" class="small">Load sample</button>
+        </div>
+        <div id="pyOutput"></div>
+      </div>
+    </aside>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+  <script>
+    const G_SI = 6.67430e-11;
+    const AU = 1.495978707e11;
+    const MSUN = 1.98847e30;
+
+    const U = {
+      add: (a,b)=>({x:a.x+b.x,y:a.y+b.y,z:(a.z||0)+(b.z||0)}),
+      sub: (a,b)=>({x:a.x-b.x,y:a.y-b.y,z:(a.z||0)-(b.z||0)}),
+      mul: (a,s)=>({x:a.x*s,y:a.y*s,z:(a.z||0)*s}),
+      len: (a)=>Math.sqrt(a.x*a.x + a.y*a.y + (a.z||0)*(a.z||0)),
+      norm: (a)=>{
+        const L = Math.sqrt(a.x*a.x + a.y*a.y + (a.z||0)*(a.z||0)) || 1;
+        return {x:a.x/L,y:a.y/L,z:(a.z||0)/L};
+      },
+      crossZ: (r,v)=>r.x*v.y - r.y*v.x
+    };
+
+    class Body {
+      constructor(name, m, r, v, color) {
+        this.name = name;
+        this.m = m;
+        this.r = {...r};
+        this.v = {...v};
+        this.color = color || "#9fdcff";
+        this.trail = [];
+      }
+    }
+
+    class NBodySystem {
+      constructor() {
+        this.bodies = [];
+        this.G = G_SI;
+        this.soft = 1e8;
+      }
+      clear() { this.bodies = []; }
+      add(b) { this.bodies.push(b); }
+      centerOfMass() {
+        let M=0, rx=0, ry=0, rz=0;
+        this.bodies.forEach(b=>{ M += b.m; rx += b.m*b.r.x; ry += b.m*b.r.y; rz += b.m*(b.r.z||0); });
+        if (M === 0) return {x:0,y:0,z:0};
+        return {x:rx/M,y:ry/M,z:rz/M};
+      }
+      forcesFromState(stateR) {
+        const n = this.bodies.length;
+        const F = Array.from({length:n}, ()=>({x:0,y:0,z:0}));
+        for (let i=0;i<n;i++) {
+          for (let j=i+1;j<n;j++) {
+            const dx = stateR[j].x - stateR[i].x;
+            const dy = stateR[j].y - stateR[i].y;
+            const dz = (stateR[j].z||0) - (stateR[i].z||0);
+            const r2 = dx*dx + dy*dy + dz*dz + this.soft*this.soft;
+            const r = Math.sqrt(r2);
+            const f = this.G * this.bodies[i].m * this.bodies[j].m / r2;
+            const fx = f * dx / r;
+            const fy = f * dy / r;
+            const fz = f * dz / r;
+            F[i].x += fx; F[i].y += fy; F[i].z += fz;
+            F[j].x -= fx; F[j].y -= fy; F[j].z -= fz;
+          }
+        }
+        return F;
+      }
+      forces() {
+        return this.forcesFromState(this.bodies.map(b=>b.r));
+      }
+      kinetic() {
+        let K = 0;
+        this.bodies.forEach(b=>{
+          const v2 = b.v.x*b.v.x + b.v.y*b.v.y + (b.v.z||0)*(b.v.z||0);
+          K += 0.5*b.m*v2;
+        });
+        return K;
+      }
+      potential() {
+        let Ue = 0;
+        const n = this.bodies.length;
+        for (let i=0;i<n;i++) {
+          for (let j=i+1;j<n;j++) {
+            const dr = U.sub(this.bodies[i].r, this.bodies[j].r);
+            const r = Math.sqrt(dr.x*dr.x + dr.y*dr.y + (dr.z||0)*(dr.z||0) + this.soft*this.soft);
+            Ue += -this.G*this.bodies[i].m*this.bodies[j].m/r;
+          }
+        }
+        return Ue;
+      }
+      angularMomentumZ() {
+        return this.bodies.reduce((acc,b)=>acc + b.m*U.crossZ(b.r,b.v), 0);
+      }
+      linearMomentum() {
+        return this.bodies.reduce((p,b)=>({x:p.x+b.m*b.v.x,y:p.y+b.m*b.v.y,z:p.z+b.m*(b.v.z||0)}), {x:0,y:0,z:0});
+      }
+      step(dt, method) {
+        if (this.bodies.length === 0) return;
+
+        if (method === "Euler") {
+          const F = this.forces();
+          for (let i=0;i<this.bodies.length;i++) {
+            const b = this.bodies[i];
+            const a = {x:F[i].x/b.m, y:F[i].y/b.m, z:(F[i].z||0)/b.m};
+            b.v.x += a.x*dt; b.v.y += a.y*dt; b.v.z = (b.v.z||0) + a.z*dt;
+            b.r.x += b.v.x*dt; b.r.y += b.v.y*dt; b.r.z = (b.r.z||0) + (b.v.z||0)*dt;
+          }
+          return;
+        }
+
+        if (method === "VelocityVerlet") {
+          const F0 = this.forces();
+          const a0 = F0.map((f,i)=>({x:f.x/this.bodies[i].m, y:f.y/this.bodies[i].m, z:(f.z||0)/this.bodies[i].m}));
+          for (let i=0;i<this.bodies.length;i++) {
+            const b = this.bodies[i];
+            b.r.x += b.v.x*dt + 0.5*a0[i].x*dt*dt;
+            b.r.y += b.v.y*dt + 0.5*a0[i].y*dt*dt;
+            b.r.z = (b.r.z||0) + (b.v.z||0)*dt + 0.5*(a0[i].z||0)*dt*dt;
+          }
+          const F1 = this.forces();
+          const a1 = F1.map((f,i)=>({x:f.x/this.bodies[i].m, y:f.y/this.bodies[i].m, z:(f.z||0)/this.bodies[i].m}));
+          for (let i=0;i<this.bodies.length;i++) {
+            const b = this.bodies[i];
+            b.v.x += 0.5*(a0[i].x + a1[i].x)*dt;
+            b.v.y += 0.5*(a0[i].y + a1[i].y)*dt;
+            b.v.z = (b.v.z||0) + 0.5*((a0[i].z||0)+(a1[i].z||0))*dt;
+          }
+          return;
+        }
+
+        if (method === "RK4") {
+          const n = this.bodies.length;
+          const y0 = [];
+          for (let i=0;i<n;i++) {
+            const b = this.bodies[i];
+            y0.push(b.r.x,b.r.y,b.r.z||0,b.v.x,b.v.y,b.v.z||0);
+          }
+          const deriv = (y) => {
+            const dydt = new Array(6*n).fill(0);
+            const rs = [];
+            for (let i=0;i<n;i++) {
+              rs.push({x:y[6*i], y:y[6*i+1], z:y[6*i+2]});
+              dydt[6*i] = y[6*i+3];
+              dydt[6*i+1] = y[6*i+4];
+              dydt[6*i+2] = y[6*i+5];
+            }
+            const F = this.forcesFromState(rs);
+            for (let i=0;i<n;i++) {
+              dydt[6*i+3] = F[i].x / this.bodies[i].m;
+              dydt[6*i+4] = F[i].y / this.bodies[i].m;
+              dydt[6*i+5] = (F[i].z||0) / this.bodies[i].m;
+            }
+            return dydt;
+          };
+          const k1 = deriv(y0);
+          const y1 = y0.map((v,i)=>v + 0.5*dt*k1[i]);
+          const k2 = deriv(y1);
+          const y2 = y0.map((v,i)=>v + 0.5*dt*k2[i]);
+          const k3 = deriv(y2);
+          const y3 = y0.map((v,i)=>v + dt*k3[i]);
+          const k4 = deriv(y3);
+          const yN = y0.map((v,i)=>v + (dt/6)*(k1[i]+2*k2[i]+2*k3[i]+k4[i]));
+          for (let i=0;i<n;i++) {
+            const b = this.bodies[i];
+            b.r.x = yN[6*i]; b.r.y = yN[6*i+1]; b.r.z = yN[6*i+2];
+            b.v.x = yN[6*i+3]; b.v.y = yN[6*i+4]; b.v.z = yN[6*i+5];
+          }
+        }
+      }
+    }
+
+    const state = {
+      activeTab: "module1",
+      playing: true,
+      t: 0,
+      frame: 0,
+      scalePxPerMeter: 2.5e-9,
+      timeScale: 5e6,
+      moduleData: {},
+      challengeText: "",
+      teachText: ""
+    };
+
+    const sim = new NBodySystem();
+
+    const canvas = document.getElementById("simCanvas");
+    const ctx = canvas.getContext("2d");
+    const diagCanvas = document.getElementById("diagCanvas");
+    const diagCtx = diagCanvas.getContext("2d");
+
+    function resizeCanvas() {
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.floor(canvas.clientWidth*dpr);
+      canvas.height = Math.floor(canvas.clientHeight*dpr);
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+
+      diagCanvas.width = Math.floor(diagCanvas.clientWidth*dpr);
+      diagCanvas.height = Math.floor(diagCanvas.clientHeight*dpr);
+      diagCtx.setTransform(dpr,0,0,dpr,0,0);
+    }
+    window.addEventListener("resize", resizeCanvas);
+    setTimeout(resizeCanvas, 60);
+
+    function drawDiagnostics(lines) {
+      const w = diagCanvas.clientWidth;
+      const h = diagCanvas.clientHeight;
+      diagCtx.clearRect(0,0,w,h);
+      diagCtx.fillStyle = "#071722";
+      diagCtx.fillRect(0,0,w,h);
+      diagCtx.strokeStyle = "rgba(255,255,255,0.1)";
+      for (let i=1;i<4;i++) {
+        const y = (h/4)*i;
+        diagCtx.beginPath(); diagCtx.moveTo(0,y); diagCtx.lineTo(w,y); diagCtx.stroke();
+      }
+      lines.forEach((line, idx)=>{
+        const arr = line.data;
+        if (!arr || arr.length < 2) return;
+        let min = Math.min(...arr), max = Math.max(...arr);
+        if (Math.abs(max-min) < 1e-30) { max += 1; min -= 1; }
+        diagCtx.strokeStyle = line.color;
+        diagCtx.beginPath();
+        for (let i=0;i<arr.length;i++) {
+          const x = (i/(arr.length-1))*w;
+          const y = h - ((arr[i]-min)/(max-min))*h;
+          if (i===0) diagCtx.moveTo(x,y); else diagCtx.lineTo(x,y);
+        }
+        diagCtx.stroke();
+      });
+    }
+
+    function setTeach(text) {
+      document.getElementById("teachingPane").innerHTML = text;
+    }
+
+    function setModuleHtml(html) {
+      document.getElementById("moduleContent").innerHTML = html;
+    }
+
+    function resetGlobalMetrics() {
+      state.t = 0;
+      state.frame = 0;
+      document.getElementById("timeVal").textContent = "0.00";
+      document.getElementById("frameVal").textContent = "0";
+    }
+
+    function module1Setup() {
+      sim.clear();
+      const m1 = 5.972e24;
+      const m2 = 7.348e22;
+      const d = 384400000;
+      const x1 = -d*m2/(m1+m2);
+      const x2 = d*m1/(m1+m2);
+      const v2 = 1022;
+      const v1 = -v2*m2/m1;
+      sim.add(new Body("Earth", m1, {x:x1,y:0,z:0}, {x:0,y:v1,z:0}, "#66afff"));
+      sim.add(new Body("Moon",  m2, {x:x2,y:0,z:0}, {x:0,y:v2,z:0}, "#dff5ff"));
+      state.scalePxPerMeter = 2.4e-9;
+      state.timeScale = 5e6;
+      state.moduleData.series = {E:[], L:[], F:[], A:[]};
+
+      setModuleHtml(`
+        <div class="kicker">Module 1: Newtonian Motion and Universal Gravitation</div>
+        <div class="section">
+          <div class="field"><label>Mass 1 (kg)</label><input id="m1" type="number" value="${m1}" /></div>
+          <div class="field"><label>Mass 2 (kg)</label><input id="m2" type="number" value="${m2}" /></div>
+          <div class="field"><label>Initial distance (m)</label><input id="dist" type="number" value="${d}" /></div>
+          <div class="field"><label>Initial v2,y (m/s)</label><input id="v2" type="number" value="${v2}" /></div>
+          <div class="row">
+            <button id="applyM1" class="small">Apply</button>
+            <button id="presetM1" class="small">Preset circular</button>
+          </div>
+        </div>
+        <div class="metric-grid">
+          <div>Force <div id="m1F" class="value">-</div></div>
+          <div>Acceleration <div id="m1A" class="value">-</div></div>
+          <div>Total energy <div id="m1E" class="value">-</div></div>
+          <div>Angular momentum <div id="m1L" class="value">-</div></div>
+        </div>
+        <div class="section">
+          <div class="kicker">Live equation</div>
+          <div class="mono">F = G m1 m2 / r^2</div>
+        </div>
+      `);
+
+      setTeach(`
+        <div class="kicker">Concept first</div>
+        <div>As masses increase, gravitational attraction strengthens and trajectories curve more sharply.</div>
+        <div class="kicker" style="margin-top:8px">Guided inquiry</div>
+        <div>1. Double m2 while keeping d fixed. How do force and acceleration change?</div>
+        <div>2. Turn on center-of-mass frame and compare apparent paths.</div>
+        <div class="kicker" style="margin-top:8px">Challenge</div>
+        <div>Find initial velocity that gives near-escape and classify bound vs unbound behavior.</div>
+      `);
+
+      document.getElementById("applyM1").onclick = () => {
+        const M1 = parseFloat(document.getElementById("m1").value);
+        const M2 = parseFloat(document.getElementById("m2").value);
+        const D = parseFloat(document.getElementById("dist").value);
+        const V2 = parseFloat(document.getElementById("v2").value);
+        const X1 = -D*M2/(M1+M2);
+        const X2 = D*M1/(M1+M2);
+        const V1 = -V2*M2/M1;
+        sim.clear();
+        sim.add(new Body("Body1", M1, {x:X1,y:0,z:0}, {x:0,y:V1,z:0}, "#ffd07d"));
+        sim.add(new Body("Body2", M2, {x:X2,y:0,z:0}, {x:0,y:V2,z:0}, "#dff5ff"));
+        sim.bodies.forEach(b=>b.trail=[]);
+        resetGlobalMetrics();
+      };
+
+      document.getElementById("presetM1").onclick = () => {
+        const b1 = sim.bodies[0], b2 = sim.bodies[1];
+        const r = U.len(U.sub(b2.r,b1.r));
+        const w = Math.sqrt(sim.G*(b1.m+b2.m)/(r*r*r));
+        const r1 = U.len(b1.r), r2 = U.len(b2.r);
+        b1.v = {x:0,y:-w*r1,z:0};
+        b2.v = {x:0,y:w*r2,z:0};
+      };
+    }
+
+    function sphereProfileDensity(profile, x) {
+      if (profile === "uniform") return 1;
+      if (profile === "polytrope") {
+        const xx = Math.max(1e-6, Math.PI*x);
+        return Math.sin(xx)/xx;
+      }
+      return 1/(1 + 15*x*x);
+    }
+
+    function module2Setup() {
+      sim.clear();
+      state.timeScale = 1;
+      state.scalePxPerMeter = 2.4e-9;
+      state.moduleData.series = {phi:[], r:[], shellFrac: 1, sphereR: 6.96e8};
+      setModuleHtml(`
+        <div class="kicker">Module 2: Gravitational Potential Energy of a Sphere</div>
+        <div class="section">
+          <div class="field"><label>Mass M (kg)</label><input id="sM" type="number" value="1.989e30" /></div>
+          <div class="field"><label>Radius R (m)</label><input id="sR" type="number" value="6.96e8" /></div>
+          <div class="field"><label>Density profile</label>
+            <select id="sProfile"><option value="uniform">Uniform</option><option value="polytrope">Polytropic approximation</option><option value="central">Centrally condensed</option></select>
+          </div>
+          <div class="row"><button id="plotS" class="small">Plot potential</button><button id="shellS" class="small">Animate shells</button></div>
+        </div>
+        <div class="metric-grid">
+          <div>Analytic uniform binding<div id="uAna" class="value">-</div></div>
+          <div>Numerical binding<div id="uNum" class="value">-</div></div>
+        </div>
+        <div class="section"><div class="mono">U_uniform = -3GM^2/(5R)</div></div>
+      `);
+
+      setTeach(`
+        <div class="kicker">Physical meaning</div>
+        <div>Binding energy is the work needed to disperse a self-gravitating object to infinity.</div>
+        <div class="kicker" style="margin-top:8px">Inquiry</div>
+        <div>How does binding energy scale with mass and radius? Infer power-law dependence from repeated runs.</div>
+      `);
+
+      const recalc = () => {
+        const M = parseFloat(document.getElementById("sM").value);
+        const R = parseFloat(document.getElementById("sR").value);
+        const profile = document.getElementById("sProfile").value;
+        state.moduleData.series.sphereR = R;
+
+        const N = 300;
+        const rs = [];
+        const rhoRaw = [];
+        for (let i=0;i<=N;i++) {
+          const r = R*i/N;
+          rs.push(r);
+          rhoRaw.push(sphereProfileDensity(profile, r/R));
+        }
+
+        let massNorm = 0;
+        for (let i=1;i<=N;i++) {
+          const shellVol = 4*Math.PI*(Math.pow(rs[i],3)-Math.pow(rs[i-1],3))/3;
+          massNorm += rhoRaw[i-1]*shellVol;
+        }
+        const rho = rhoRaw.map(v=>v*M/massNorm);
+
+        let mEnc = 0;
+        const phi = [];
+        let Ubind = 0;
+        for (let i=1;i<=N;i++) {
+          const shellMass = 4*Math.PI*(Math.pow(rs[i],3)-Math.pow(rs[i-1],3))/3 * rho[i-1];
+          const rmid = 0.5*(rs[i]+rs[i-1]);
+          Ubind += -G_SI*mEnc*shellMass/Math.max(rmid,1);
+          mEnc += shellMass;
+        }
+
+        mEnc = 0;
+        for (let i=0;i<=N;i++) {
+          if (i>0) {
+            const shellMass = 4*Math.PI*(Math.pow(rs[i],3)-Math.pow(rs[i-1],3))/3 * rho[i-1];
+            mEnc += shellMass;
+          }
+          const r = rs[i];
+          let p;
+          if (profile === "uniform") {
+            if (r <= R) p = -G_SI*M*(3*R*R - r*r)/(2*Math.pow(R,3));
+            else p = -G_SI*M/r;
+          } else {
+            if (r <= R) p = -G_SI*mEnc/Math.max(r, 0.01*R) - G_SI*(M-mEnc)/R;
+            else p = -G_SI*M/r;
+          }
+          phi.push(p);
+        }
+
+        state.moduleData.series = {
+          r: rs.map(v=>v/R),
+          phi: phi.map(v=>v/(G_SI*M/R)),
+          shellFrac: 1,
+          sphereR: R
+        };
+
+        document.getElementById("uAna").textContent = (-3*G_SI*M*M/(5*R)).toExponential(4) + " J";
+        document.getElementById("uNum").textContent = Ubind.toExponential(4) + " J";
+      };
+
+      document.getElementById("plotS").onclick = recalc;
+      document.getElementById("shellS").onclick = () => {
+        recalc();
+        const M = parseFloat(document.getElementById("sM").value);
+        const R = parseFloat(document.getElementById("sR").value);
+        const N = 80;
+        let i = 1;
+        let mEnc = 0;
+        let ub = 0;
+        const timer = setInterval(()=>{
+          if (i>N) { clearInterval(timer); return; }
+          const r0 = R*(i-1)/N;
+          const r1 = R*i/N;
+          const shellMass = M/N;
+          ub += -G_SI*mEnc*shellMass/Math.max(0.5*(r0+r1), 1);
+          mEnc += shellMass;
+          state.moduleData.series.shellFrac = i/N;
+          document.getElementById("uNum").textContent = ub.toExponential(4) + " J";
+          i++;
+        }, 70);
+      };
+
+      recalc();
+    }
+
+    function module3Setup() {
+      state.scalePxPerMeter = 2.4e-13;
+      state.timeScale = 1.2e11;
+      setModuleHtml(`
+        <div class="kicker">Module 3: Virial Theorem Interactive Demonstration</div>
+        <div class="section">
+          <div class="field"><label>N particles</label><input id="vN" type="range" min="20" max="220" step="1" value="80" /></div>
+          <div class="row"><button id="coldV" class="small">Cold start cluster</button><button id="warmV" class="small">Equilibrium setup</button><button id="collapseV" class="small">Run virial collapse</button></div>
+        </div>
+        <div class="metric-grid">
+          <div>K<div id="vK" class="value">-</div></div>
+          <div>U<div id="vU" class="value">-</div></div>
+          <div>2K+U<div id="vVU" class="value">-</div></div>
+          <div>2K/|U|<div id="vRatio" class="value">-</div></div>
+        </div>
+      `);
+
+      setTeach(`
+        <div class="kicker">Interpretation</div>
+        <div>Bound systems tend toward <span class="mono">2K + U = 0</span>. During collapse, potential energy deepens and kinetic energy rises.</div>
+        <div class="kicker" style="margin-top:8px">Challenge</div>
+        <div>Find a dt and integrator that preserve the virial trend without excessive numerical heating.</div>
+      `);
+
+      state.moduleData.series = {K:[], U:[], V:[]};
+
+      const build = (warm, collapse) => {
+        const N = parseInt(document.getElementById("vN").value,10);
+        sim.clear();
+        const R = 1.6e15;
+        for (let i=0;i<N;i++) {
+          const rr = R*Math.sqrt(Math.random());
+          const th = Math.random()*Math.PI*2;
+          const x = rr*Math.cos(th);
+          const y = rr*Math.sin(th);
+          const m = 0.8e30 + Math.random()*0.4e30;
+          const speed = warm ? (200 + Math.random()*500) : (10 + Math.random()*40);
+          const ph = Math.random()*Math.PI*2;
+          const v = {x:speed*Math.cos(ph), y:speed*Math.sin(ph), z:0};
+          sim.add(new Body("s"+i,m,{x,y,z:0},v,"#9be7a2"));
+        }
+
+        if (warm) {
+          // scale velocities so that K ~ |U|/2
+          const U0 = sim.potential();
+          const K0 = sim.kinetic();
+          const targetK = Math.abs(U0)/2;
+          const scale = Math.sqrt(targetK/Math.max(K0,1e-20));
+          sim.bodies.forEach(b=>{ b.v.x*=scale; b.v.y*=scale; });
+        }
+
+        if (collapse) {
+          sim.bodies.forEach(b=>{ b.v.x*=0.02; b.v.y*=0.02; });
+        }
+
+        sim.bodies.forEach(b=>b.trail=[]);
+      };
+
+      document.getElementById("coldV").onclick = ()=>build(false,false);
+      document.getElementById("warmV").onclick = ()=>build(true,false);
+      document.getElementById("collapseV").onclick = ()=>build(false,true);
+      build(false,true);
+    }
+
+    function module4Setup() {
+      sim.clear();
+      state.scalePxPerMeter = 1.8e-9;
+      state.timeScale = 8e6;
+      setModuleHtml(`
+        <div class="kicker">Module 4: Conservation Laws and Orbits</div>
+        <div class="section">
+          <div class="field"><label>Central mass M (kg)</label><input id="oM" type="number" value="1.98847e30" /></div>
+          <div class="field"><label>Semi-major axis a (m)</label><input id="oa" type="number" value="1.495978707e11" /></div>
+          <div class="field"><label>Eccentricity e</label><input id="oe" type="range" min="0" max="1.4" step="0.001" value="0.0167" /></div>
+          <div class="row"><button id="applyO" class="small">Apply orbit</button><button id="circO" class="small">Circular</button><button id="parO" class="small">Parabolic</button></div>
+        </div>
+        <div class="metric-grid">
+          <div>Specific energy<div id="oE" class="value">-</div></div>
+          <div>Lz<div id="oL" class="value">-</div></div>
+          <div>Areal rate dA/dt<div id="oA" class="value">-</div></div>
+          <div>Class<div id="oC" class="value">-</div></div>
+        </div>
+      `);
+
+      setTeach(`
+        <div class="kicker">Kepler connection</div>
+        <div>Constant areal velocity reflects angular momentum conservation. Vary eccentricity and inspect periapsis speed changes.</div>
+        <div class="kicker" style="margin-top:8px">Challenge</div>
+        <div>Tune to near-parabolic and test which integrator best preserves invariants over long runs.</div>
+      `);
+
+      state.moduleData.series = {effR:[], effV:[]};
+
+      const apply = (forceType=null) => {
+        const M = parseFloat(document.getElementById("oM").value);
+        const a = parseFloat(document.getElementById("oa").value);
+        let e = parseFloat(document.getElementById("oe").value);
+        if (forceType === "circ") e = 0;
+        if (forceType === "para") e = 1;
+        document.getElementById("oe").value = String(e);
+
+        const m = 1e20;
+        const rp = Math.max(a*(1-e), 1e9);
+        let v;
+        if (e < 1) {
+          v = Math.sqrt(G_SI*(M+m)*(2/rp - 1/a));
+        } else if (Math.abs(e-1) < 1e-6) {
+          v = Math.sqrt(2*G_SI*(M+m)/rp);
+        } else {
+          // hyperbolic with equivalent positive specific energy
+          const ah = a;
+          v = Math.sqrt(G_SI*(M+m)*(2/rp + 1/Math.max(ah,1e9)));
+        }
+
+        sim.clear();
+        sim.add(new Body("Star", M, {x:0,y:0,z:0}, {x:0,y:0,z:0}, "#ffd27f"));
+        sim.add(new Body("Probe", m, {x:rp,y:0,z:0}, {x:0,y:v,z:0}, "#7ee7ff"));
+
+        const mu = G_SI*(M+m);
+        const hz = rp*v;
+        const rs = [];
+        const Ve = [];
+        const rMin = 5e9;
+        const rMax = 4e11;
+        for (let i=0;i<220;i++) {
+          const r = rMin + (rMax-rMin)*i/219;
+          rs.push(r/AU);
+          Ve.push((hz*hz)/(2*r*r) - mu/r);
+        }
+        state.moduleData.series = {effR:rs, effV:Ve};
+      };
+
+      document.getElementById("applyO").onclick = ()=>apply(null);
+      document.getElementById("circO").onclick = ()=>apply("circ");
+      document.getElementById("parO").onclick = ()=>apply("para");
+      apply(null);
+    }
+
+    let pyodide = null;
+    function module5Setup() {
+      setModuleHtml(`
+        <div class="kicker">Module 5: AI coding component (Pyodide)</div>
+        <div class="section">
+          <div>Editable Python environment for two-body integration and integrator error comparison.</div>
+          <div class="mono" style="margin-top:8px">Try: Euler vs Verlet vs RK4 angular momentum drift.</div>
+        </div>
+      `);
+
+      setTeach(`
+        <div class="kicker">Code-as-lab</div>
+        <div>Students can alter dt and integrator and directly see conservation error scaling.</div>
+      `);
+
+      document.getElementById("pyCode").value =
+`import numpy as np
+from matplotlib import pyplot as plt
+
+G = 4*np.pi**2
+
+def deriv(y):
+    x,yc,vx,vy = y
+    r = np.sqrt(x*x + yc*yc)
+    ax = -G*x/r**3
+    ay = -G*yc/r**3
+    return np.array([vx,vy,ax,ay])
+
+def rk4(y0,dt,n):
+    y = y0.copy()
+    out = [y.copy()]
+    for _ in range(n):
+        k1 = deriv(y)
+        k2 = deriv(y + 0.5*dt*k1)
+        k3 = deriv(y + 0.5*dt*k2)
+        k4 = deriv(y + dt*k3)
+        y = y + (dt/6)*(k1 + 2*k2 + 2*k3 + k4)
+        out.append(y.copy())
+    return np.array(out)
+
+y0 = np.array([1.0,0.0,0.0,2*np.pi])
+traj = rk4(y0,0.001,5000)
+plt.plot(traj[:,0], traj[:,1])
+plt.gca().set_aspect('equal')
+plt.title('Two-body orbit with RK4')
+plt.show()
+print('Done. Modify dt to inspect numerical error.')`;
+
+      document.getElementById("loadExample").onclick = () => module5Setup();
+
+      document.getElementById("runPy").onclick = async () => {
+        const out = document.getElementById("pyOutput");
+        out.textContent = "Loading Python runtime...";
+        try {
+          if (!pyodide) {
+            pyodide = await loadPyodide({ indexURL: "https://cdn.jsdelivr.net/pyodide/v0.23.4/full/" });
+            await pyodide.loadPackage(["numpy", "matplotlib"]);
+          }
+          out.textContent = "Running script...";
+          await pyodide.runPythonAsync(document.getElementById("pyCode").value);
+          out.textContent = "Run complete. Use print statements and plots in the script to extend this experiment.";
+        } catch (e) {
+          out.textContent = "Python error: " + String(e);
+        }
+      };
+    }
+
+    function moduleSolarSetup() {
+      setModuleHtml(`
+        <div class="kicker">Interactive Solar System Sandbox</div>
+        <div class="section">
+          <div class="row" style="flex-wrap:wrap">
+            <button id="solReal" class="small">Real Solar System</button>
+            <button id="solKepler" class="small">Kepler compact</button>
+            <button id="solBinary" class="small">Binary star</button>
+            <button id="solUnstable" class="small">Unstable config</button>
+            <button id="solL4" class="small">Lagrange visualization</button>
+          </div>
+          <div class="row" style="margin-top:8px"><button id="solAdd" class="small">Add exoplanet</button></div>
+        </div>
+        <div class="metric-grid">
+          <div>Total energy<div id="sE" class="value">-</div></div>
+          <div>Total Lz<div id="sL" class="value">-</div></div>
+          <div>Linear momentum |P|<div id="sP" class="value">-</div></div>
+          <div>Stability index<div id="sS" class="value">-</div></div>
+        </div>
+      `);
+
+      setTeach(`
+        <div class="kicker">Experiment ideas</div>
+        <div>1. Increase stellar mass and compare period scaling.</div>
+        <div>2. Add exoplanets near resonances and inspect long-term stability.</div>
+        <div>3. Run unstable preset and identify close encounters.</div>
+      `);
+
+      state.moduleData.series = {E:[], L:[]};
+      state.scalePxPerMeter = 1.2e-10;
+      state.timeScale = 1.2e7;
+
+      const presets = {
+        real: () => {
+          sim.clear();
+          sim.add(new Body("Sun", MSUN, {x:0,y:0,z:0}, {x:0,y:0,z:0}, "#ffd27f"));
+          const p = [
+            ["Mercury",0.387,3.3e23,"#bbb"],
+            ["Venus",0.723,4.87e24,"#f5d98c"],
+            ["Earth",1.0,5.97e24,"#66afff"],
+            ["Mars",1.524,6.4e23,"#ff8f70"],
+            ["Jupiter",5.204,1.898e27,"#f2ddb3"],
+            ["Saturn",9.58,5.68e26,"#ebd9b9"],
+            ["Uranus",19.2,8.68e25,"#bdefff"],
+            ["Neptune",30.05,1.02e26,"#8adfff"]
+          ];
+          p.forEach(([name,a,m,color])=>{
+            const r = a*AU;
+            const v = Math.sqrt(sim.G*MSUN/r);
+            sim.add(new Body(name,m,{x:r,y:0,z:0},{x:0,y:v,z:0},color));
+          });
+        },
+        kepler: () => {
+          sim.clear();
+          const star = 0.8*MSUN;
+          sim.add(new Body("Star", star, {x:0,y:0,z:0}, {x:0,y:0,z:0}, "#ffd27f"));
+          for (let i=0;i<5;i++) {
+            const a = (0.06 + i*0.05)*AU;
+            const m = 5e24;
+            const v = Math.sqrt(sim.G*star/a);
+            sim.add(new Body("K"+(i+1),m,{x:a,y:0,z:0},{x:0,y:v*(1+0.05*(i%2)),z:0},"#9be7a2"));
+          }
+        },
+        binary: () => {
+          sim.clear();
+          const m1 = 1.1*MSUN, m2 = 0.8*MSUN;
+          const d = 0.2*AU;
+          const x1 = -d*m2/(m1+m2), x2 = d*m1/(m1+m2);
+          const w = Math.sqrt(sim.G*(m1+m2)/(d*d*d));
+          sim.add(new Body("A",m1,{x:x1,y:0,z:0},{x:0,y:-w*Math.abs(x1),z:0},"#ffd27f"));
+          sim.add(new Body("B",m2,{x:x2,y:0,z:0},{x:0,y:w*Math.abs(x2),z:0},"#ffc39b"));
+          const ap = 1.8*AU;
+          const v = Math.sqrt(sim.G*(m1+m2)/ap);
+          sim.add(new Body("P",5e24,{x:ap,y:0,z:0},{x:0,y:v,z:0},"#8be7ff"));
+        },
+        unstable: () => {
+          sim.clear();
+          const star = MSUN;
+          sim.add(new Body("Sun",star,{x:0,y:0,z:0},{x:0,y:0,z:0},"#ffd27f"));
+          for (let i=0;i<5;i++) {
+            const a = (0.7 + 0.08*i)*AU;
+            const m = 2e26;
+            const v = Math.sqrt(sim.G*star/a);
+            sim.add(new Body("U"+i,m,{x:a,y:0,z:0},{x:0,y:v*(0.85+0.3*Math.random()),z:0},"#ff9f9f"));
+          }
+        },
+        l4: () => {
+          sim.clear();
+          const M = MSUN;
+          const m = 5.97e24;
+          const a = AU;
+          const v = Math.sqrt(sim.G*(M+m)/a);
+          sim.add(new Body("Sun",M,{x:0,y:0,z:0},{x:0,y:0,z:0},"#ffd27f"));
+          sim.add(new Body("Earth",m,{x:a,y:0,z:0},{x:0,y:v,z:0},"#66afff"));
+          const x = a*Math.cos(Math.PI/3);
+          const y = a*Math.sin(Math.PI/3);
+          sim.add(new Body("L4 test",1e15,{x,y,z:0},{x:-v*Math.sin(Math.PI/3),y:v*Math.cos(Math.PI/3),z:0},"#9be7a2"));
+        }
+      };
+
+      document.getElementById("solReal").onclick = presets.real;
+      document.getElementById("solKepler").onclick = presets.kepler;
+      document.getElementById("solBinary").onclick = presets.binary;
+      document.getElementById("solUnstable").onclick = presets.unstable;
+      document.getElementById("solL4").onclick = presets.l4;
+      document.getElementById("solAdd").onclick = () => {
+        if (sim.bodies.length === 0) return;
+        const aAU = parseFloat(prompt("Semi-major axis AU", "1.2"));
+        const mass = parseFloat(prompt("Planet mass kg", "5.97e24"));
+        if (!Number.isFinite(aAU) || !Number.isFinite(mass)) return;
+        const star = sim.bodies[0];
+        const r = aAU*AU;
+        const v = Math.sqrt(sim.G*star.m/r);
+        sim.add(new Body("X"+sim.bodies.length,mass,{x:r,y:0,z:0},{x:0,y:v,z:0},"#9be7a2"));
+      };
+
+      presets.real();
+    }
+
+    function switchModule(tab) {
+      state.activeTab = tab;
+      resetGlobalMetrics();
+      if (tab === "module1") module1Setup();
+      else if (tab === "module2") module2Setup();
+      else if (tab === "module3") module3Setup();
+      else if (tab === "module4") module4Setup();
+      else if (tab === "module5") module5Setup();
+      else if (tab === "solar") moduleSolarSetup();
+    }
+
+    document.querySelectorAll(".tab").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        document.querySelectorAll(".tab").forEach(b=>b.classList.remove("active"));
+        btn.classList.add("active");
+        switchModule(btn.dataset.tab);
+      });
+    });
+
+    function project3D(p) {
+      const alpha = 0.62;
+      return { x: p.x + alpha*(p.z||0), y: p.y - alpha*(p.z||0) };
+    }
+
+    function drawArrow(x1,y1,x2,y2,color) {
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+      const ang = Math.atan2(y2-y1, x2-x1);
+      const s = 6;
+      ctx.beginPath();
+      ctx.moveTo(x2,y2);
+      ctx.lineTo(x2 - s*Math.cos(ang-0.4), y2 - s*Math.sin(ang-0.4));
+      ctx.lineTo(x2 - s*Math.cos(ang+0.4), y2 - s*Math.sin(ang+0.4));
+      ctx.closePath();
+      ctx.fillStyle = color;
+      ctx.fill();
+    }
+
+    function drawScene() {
+      const w = canvas.clientWidth;
+      const h = canvas.clientHeight;
+      ctx.clearRect(0,0,w,h);
+      ctx.fillStyle = "#061722";
+      ctx.fillRect(0,0,w,h);
+
+      const showTrails = document.getElementById("showTrails").checked;
+      const showVectors = document.getElementById("showVectors").checked;
+      const comFrame = document.getElementById("comFrame").checked;
+      const view3d = document.getElementById("view3d").checked;
+      const nonInertial = document.getElementById("nonInertial").checked && state.activeTab === "module1";
+
+      let com = {x:0,y:0,z:0};
+      if (comFrame) com = sim.centerOfMass();
+
+      ctx.save();
+      ctx.translate(w/2, h/2);
+
+      if (state.activeTab === "module2") {
+        const frac = Math.max(0.01, Math.min(1, state.moduleData.series.shellFrac || 1));
+        const baseR = 140;
+        ctx.beginPath();
+        ctx.arc(0,0,baseR,0,Math.PI*2);
+        ctx.fillStyle = "rgba(120, 190, 255, 0.14)";
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(0,0,baseR*frac,0,Math.PI*2);
+        ctx.fillStyle = "rgba(255, 205, 130, 0.45)";
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(0,0,baseR*frac,0,Math.PI*2);
+        ctx.strokeStyle = "#ffd58f";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+
+      // approximate rotating frame for module1
+      let rotAng = 0;
+      if (nonInertial && sim.bodies.length >= 2) {
+        const dr = U.sub(sim.bodies[1].r, sim.bodies[0].r);
+        rotAng = -Math.atan2(dr.y, dr.x);
+        ctx.rotate(rotAng);
+      }
+
+      // trails
+      sim.bodies.forEach(b=>{
+        const rp0 = U.sub(b.r, com);
+        const rp = view3d ? project3D(rp0) : rp0;
+        if (showTrails) {
+          b.trail.push({x:rp.x,y:rp.y});
+          if (b.trail.length > 700) b.trail.shift();
+          ctx.beginPath();
+          b.trail.forEach((p,i)=>{
+            const x = p.x*state.scalePxPerMeter;
+            const y = p.y*state.scalePxPerMeter;
+            if (i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+          });
+          ctx.strokeStyle = b.color;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+      });
+
+      const F = sim.forces();
+      sim.bodies.forEach((b, i)=>{
+        const rp0 = U.sub(b.r, com);
+        const rp = view3d ? project3D(rp0) : rp0;
+        const x = rp.x*state.scalePxPerMeter;
+        const y = rp.y*state.scalePxPerMeter;
+        const rPix = Math.max(3, Math.min(9, 2.4 + Math.log10(b.m)/3));
+
+        ctx.beginPath();
+        ctx.fillStyle = b.color;
+        ctx.arc(x,y,rPix,0,Math.PI*2);
+        ctx.fill();
+
+        if (showVectors) {
+          const vv = U.mul(b.v, 3e-4*state.scalePxPerMeter*1e9);
+          drawArrow(x,y,x+vv.x,y+vv.y,"#ffffff");
+          const aa = U.mul({x:F[i].x/b.m,y:F[i].y/b.m,z:(F[i].z||0)/b.m}, 1.2e7*state.scalePxPerMeter);
+          drawArrow(x,y,x+aa.x,y+aa.y,"#ffb17a");
+        }
+      });
+
+      ctx.restore();
+    }
+
+    function pushSeries(arr, v, max=240) {
+      arr.push(v);
+      if (arr.length > max) arr.shift();
+    }
+
+    function updateModuleReadouts() {
+      if (state.activeTab === "module1" && sim.bodies.length >= 2) {
+        const b1 = sim.bodies[0], b2 = sim.bodies[1];
+        const dr = U.sub(b2.r,b1.r);
+        const r = Math.max(U.len(dr), 1);
+        const F = sim.G*b1.m*b2.m/(r*r);
+        const a = F/b2.m;
+        const E = sim.kinetic()+sim.potential();
+        const L = sim.angularMomentumZ();
+        document.getElementById("m1F").textContent = F.toExponential(3) + " N";
+        document.getElementById("m1A").textContent = a.toExponential(3) + " m/s^2";
+        document.getElementById("m1E").textContent = E.toExponential(3) + " J";
+        document.getElementById("m1L").textContent = L.toExponential(3);
+        pushSeries(state.moduleData.series.E, E);
+        pushSeries(state.moduleData.series.L, L);
+        pushSeries(state.moduleData.series.F, F);
+        pushSeries(state.moduleData.series.A, a);
+        drawDiagnostics([
+          {data:state.moduleData.series.E, color:"#7ee7ff"},
+          {data:state.moduleData.series.L, color:"#ffd07d"}
+        ]);
+      } else if (state.activeTab === "module2") {
+        if (state.moduleData.series.r && state.moduleData.series.r.length > 1) {
+          drawDiagnostics([{data:state.moduleData.series.phi, color:"#7ee7ff"}]);
+        }
+      } else if (state.activeTab === "module3") {
+        const K = sim.kinetic();
+        const Ue = sim.potential();
+        const V = 2*K + Ue;
+        document.getElementById("vK").textContent = K.toExponential(3);
+        document.getElementById("vU").textContent = Ue.toExponential(3);
+        document.getElementById("vVU").textContent = V.toExponential(3);
+        document.getElementById("vRatio").textContent = (2*K/Math.max(Math.abs(Ue),1e-20)).toFixed(3);
+        pushSeries(state.moduleData.series.K, K);
+        pushSeries(state.moduleData.series.U, Ue);
+        pushSeries(state.moduleData.series.V, V);
+        drawDiagnostics([
+          {data:state.moduleData.series.K, color:"#7ee7ff"},
+          {data:state.moduleData.series.U, color:"#ffcc7a"},
+          {data:state.moduleData.series.V, color:"#ff8a8a"}
+        ]);
+      } else if (state.activeTab === "module4" && sim.bodies.length >= 2) {
+        const star = sim.bodies[0], p = sim.bodies[1];
+        const rel = U.sub(p.r, star.r);
+        const relV = U.sub(p.v, star.v);
+        const r = U.len(rel);
+        const v2 = relV.x*relV.x + relV.y*relV.y + (relV.z||0)*(relV.z||0);
+        const eps = 0.5*v2 - sim.G*(star.m+p.m)/Math.max(r,1);
+        const Lz = U.crossZ(rel, relV);
+        const dA = 0.5*Math.abs(Lz);
+        let cls = "elliptic";
+        if (Math.abs(eps) < 1e-3) cls = "parabolic";
+        else if (eps > 0) cls = "hyperbolic";
+        else if (Math.abs(eps) < 1e-2) cls = "near-parabolic";
+        if (Math.abs(parseFloat(document.getElementById("oe").value)) < 1e-5) cls = "circular";
+
+        document.getElementById("oE").textContent = eps.toExponential(3);
+        document.getElementById("oL").textContent = Lz.toExponential(3);
+        document.getElementById("oA").textContent = dA.toExponential(3);
+        document.getElementById("oC").textContent = cls;
+
+        if (state.moduleData.series.effV && state.moduleData.series.effV.length > 1) {
+          drawDiagnostics([{data:state.moduleData.series.effV, color:"#7ee7ff"}]);
+        }
+      } else if (state.activeTab === "solar") {
+        const E = sim.kinetic()+sim.potential();
+        const L = sim.angularMomentumZ();
+        const P = sim.linearMomentum();
+        const pMag = Math.sqrt(P.x*P.x + P.y*P.y + P.z*P.z);
+        pushSeries(state.moduleData.series.E, E);
+        pushSeries(state.moduleData.series.L, L);
+        const eDrift = state.moduleData.series.E.length > 4
+          ? Math.abs((state.moduleData.series.E[state.moduleData.series.E.length-1]-state.moduleData.series.E[0]) / state.moduleData.series.E[0])
+          : 0;
+        document.getElementById("sE").textContent = E.toExponential(3);
+        document.getElementById("sL").textContent = L.toExponential(3);
+        document.getElementById("sP").textContent = pMag.toExponential(3);
+        document.getElementById("sS").textContent = (1/(1+1e4*eDrift)).toFixed(3);
+        drawDiagnostics([
+          {data:state.moduleData.series.E, color:"#7ee7ff"},
+          {data:state.moduleData.series.L, color:"#ffd07d"}
+        ]);
+      } else {
+        drawDiagnostics([]);
+      }
+    }
+
+    function stepSim(dt) {
+      const gScale = parseFloat(document.getElementById("gScale").value);
+      sim.G = G_SI * gScale;
+      document.getElementById("gEffVal").textContent = gScale.toFixed(2) + " G";
+
+      const dtPhysical = dt * state.timeScale;
+      sim.step(dtPhysical, document.getElementById("integrator").value);
+      state.t += dtPhysical;
+      state.frame += 1;
+      document.getElementById("timeVal").textContent = state.t.toFixed(2);
+      document.getElementById("frameVal").textContent = String(state.frame);
+      updateModuleReadouts();
+    }
+
+    let last = performance.now();
+    function animate(now) {
+      const elapsed = (now-last)/1000;
+      last = now;
+      if (state.playing) {
+        const dt = parseFloat(document.getElementById("dt").value) * parseFloat(document.getElementById("simSpeed").value);
+        const steps = Math.max(1, Math.min(8, Math.round(elapsed*60)));
+        for (let i=0;i<steps;i++) stepSim(dt);
+      }
+      drawScene();
+      requestAnimationFrame(animate);
+    }
+
+    document.getElementById("playBtn").onclick = () => {
+      state.playing = !state.playing;
+      document.getElementById("playBtn").textContent = state.playing ? "Pause" : "Run";
+    };
+
+    document.getElementById("stepBtn").onclick = () => {
+      const dt = parseFloat(document.getElementById("dt").value) * parseFloat(document.getElementById("simSpeed").value);
+      stepSim(dt);
+      drawScene();
+    };
+
+    document.getElementById("resetBtn").onclick = () => {
+      switchModule(state.activeTab);
+      state.playing = true;
+      document.getElementById("playBtn").textContent = "Pause";
+      drawScene();
+    };
+
+    switchModule("module1");
+    document.getElementById("playBtn").textContent = "Pause";
+    requestAnimationFrame(animate);
+  </script>
+</body>
+</html>

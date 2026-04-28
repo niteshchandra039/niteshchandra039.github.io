@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Simple 2-3-4 Body Orbit Simulator</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #070d1a;
+      --panel: rgba(13, 24, 46, 0.78);
+      --muted: #9bb7d9;
+      --text: #eaf2ff;
+      --accent: #59d0ff;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      height: 100%;
+      font-family: "Space Grotesk", system-ui, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 12% 18%, rgba(89, 208, 255, 0.16), transparent 35%),
+        radial-gradient(circle at 84% 82%, rgba(255, 173, 109, 0.14), transparent 34%),
+        linear-gradient(165deg, #030814, #081a36 56%, #0a2446);
+    }
+    .app {
+      height: 100vh;
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 12px;
+      padding: 12px;
+    }
+    .panel {
+      background: var(--panel);
+      border-radius: 10px;
+      padding: 10px;
+      overflow: auto;
+      box-shadow: 0 10px 34px rgba(1, 4, 12, 0.62);
+      backdrop-filter: blur(6px);
+    }
+    h1 { margin: 0 0 8px; font-size: 18px; }
+    .kicker { color: var(--muted); font-size: 12px; margin-bottom: 8px; }
+    .section {
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px;
+      padding: 8px;
+      margin-bottom: 8px;
+      background: rgba(255,255,255,0.02);
+    }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 4px; }
+    input, select {
+      width: 100%;
+      border-radius: 6px;
+      border: 1px solid #355b87;
+      background: #0a1730;
+      color: #eaf2ff;
+      padding: 6px;
+      font-size: 12px;
+    }
+    input[type="range"] {
+      accent-color: #1f9dc9;
+    }
+    button {
+      border: 0;
+      border-radius: 7px;
+      padding: 7px 10px;
+      background: linear-gradient(180deg, #2d9dd6, #1d6fa4);
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .value {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+      background: rgba(89, 208, 255, 0.12);
+      border-radius: 6px;
+      padding: 4px 6px;
+    }
+    #canvas { width: 100%; height: 100%; display: block; border-radius: 8px; background: #060f22; }
+    .simWrap { position: relative; height: 100%; min-height: 540px; }
+    #overlay {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      background: rgba(6, 14, 30, 0.68);
+      border-radius: 8px;
+      padding: 8px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    @media (max-width: 980px) {
+      .app { grid-template-columns: 1fr; grid-template-rows: auto 1fr; height: auto; min-height: 100vh; }
+      .simWrap { min-height: 420px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="panel">
+      <h1>Simple N-Body Orbit Lab</h1>
+      <div class="kicker">Sun-Earth-Moon baseline with optional 3rd and 4th body.</div>
+
+      <div class="section">
+        <div class="row">
+          <button id="presetSEM">Preset Sun-Earth-Moon</button>
+          <button id="presetSE">Preset Sun-Earth (2-body)</button>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="kicker">Global simulation settings</div>
+        <div class="grid2">
+          <div>
+            <label>Integrator</label>
+            <select id="integrator">
+              <option value="VelocityVerlet">VelocityVerlet</option>
+              <option value="RK4">RK4</option>
+              <option value="Euler">Euler</option>
+            </select>
+          </div>
+          <div>
+            <label>Simulation Rate (days per second)</label>
+            <input id="simDaysPerSec" type="range" min="0.1" max="400" step="0.1" value="40" />
+            <div class="value" id="simRateVal" style="margin-top:4px">40.0 days/s</div>
+          </div>
+          <div>
+            <label>Substeps per frame</label>
+            <input id="substeps" type="range" min="1" max="20" step="1" value="6" />
+          </div>
+          <div>
+            <label>G scale</label>
+            <input id="gScale" type="number" value="1" step="0.01" />
+          </div>
+        </div>
+        <div class="row" style="margin-top:8px">
+          <label><input id="showLabels" type="checkbox" checked /> Mark bodies with labels</label>
+          <label><input id="trackHeaviest" type="checkbox" checked /> Track heaviest body</label>
+        </div>
+        <div class="row" style="margin-top:8px">
+          <button id="playBtn">Pause</button>
+          <button id="stepBtn">Step</button>
+          <button id="resetBtn">Reset</button>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="kicker">Body 1 (Sun)</div>
+        <div class="grid2">
+          <div><label>Name</label><input id="n1" type="text" value="Sun" /></div>
+          <div><label>Mass value</label><input id="m1" type="number" value="1" /></div>
+          <div><label>Mass unit</label><select id="m1u"><option value="Msun">M_sun</option><option value="Mearth">M_earth</option><option value="Mjup">M_Jupiter</option></select></div>
+          <div><label>Distance from Sun (AU)</label><input id="r1" type="number" value="0" step="0.0001" /></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="kicker">Body 2 (Earth-like)</div>
+        <div class="grid2">
+          <div><label>Name</label><input id="n2" type="text" value="Earth" /></div>
+          <div><label>Mass value</label><input id="m2" type="number" value="1" /></div>
+          <div><label>Mass unit</label><select id="m2u"><option value="Mearth">M_earth</option><option value="Mjup">M_Jupiter</option><option value="Msun">M_sun</option></select></div>
+          <div><label>Distance from Sun (AU)</label><input id="r2" type="number" value="1" step="0.0001" /></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="kicker">Body 3 (Moon-like or custom)</div>
+        <label><input id="use3" type="checkbox" checked /> Include body 3</label>
+        <div class="grid2">
+          <div><label>Name</label><input id="n3" type="text" value="Moon" /></div>
+          <div><label>Mass value</label><input id="m3" type="number" value="0.0123" step="0.0001" /></div>
+          <div><label>Mass unit</label><select id="m3u"><option value="Mearth">M_earth</option><option value="Mjup">M_Jupiter</option><option value="Msun">M_sun</option></select></div>
+          <div><label>Distance from Sun (AU)</label><input id="r3" type="number" value="1.00257" step="0.00001" /></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="kicker">Body 4 (optional)</div>
+        <label><input id="use4" type="checkbox" /> Include body 4</label>
+        <div class="grid2">
+          <div><label>Name</label><input id="n4" type="text" value="Body4" /></div>
+          <div><label>Mass value</label><input id="m4" type="number" value="0.02" step="0.0001" /></div>
+          <div><label>Mass unit</label><select id="m4u"><option value="Mjup">M_Jupiter</option><option value="Mearth">M_earth</option><option value="Msun">M_sun</option></select></div>
+          <div><label>Distance from Sun (AU)</label><input id="r4" type="number" value="1.47" step="0.0001" /></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="row"><button id="applyBodies">Apply body settings</button></div>
+        <div style="margin-top:8px" class="value">Total energy: <span id="E">-</span></div>
+        <div style="margin-top:6px" class="value">Total angular momentum Lz: <span id="L">-</span></div>
+      </div>
+    </aside>
+
+    <main class="panel">
+      <div class="simWrap">
+        <canvas id="canvas"></canvas>
+        <div id="overlay">
+          <div>Time: <span id="time">0.00</span> s</div>
+          <div>Bodies: <span id="nBodies">0</span></div>
+          <div>Heaviest: <span id="heaviestInfo">-</span></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const G = 6.67430e-11;
+    const AU = 1.495978707e11;
+    const MSUN = 1.98847e30;
+    const MEARTH = 5.9722e24;
+    const MJUP = 1.89813e27;
+
+    const V = {
+      sub: (a,b)=>({x:a.x-b.x,y:a.y-b.y,z:(a.z||0)-(b.z||0)}),
+      len: (a)=>Math.sqrt(a.x*a.x+a.y*a.y+(a.z||0)*(a.z||0))
+    };
+
+    class Body {
+      constructor(name,m,r,v,c){
+        this.name=name;
+        this.m=m;
+        this.r={...r};
+        this.v={...v};
+        this.c=c;
+        this.trail=[];
+      }
+    }
+
+    class Sim {
+      constructor(){
+        this.b=[];
+        this.G = G;
+        this.soft = 1e8;
+      }
+      clear(){ this.b=[]; }
+      add(x){ this.b.push(x); }
+      forcesFromR(R){
+        const n=this.b.length;
+        const F=Array.from({length:n},()=>({x:0,y:0,z:0}));
+        for(let i=0;i<n;i++){
+          for(let j=i+1;j<n;j++){
+            const dx=R[j].x-R[i].x;
+            const dy=R[j].y-R[i].y;
+            const dz=(R[j].z||0)-(R[i].z||0);
+            const r2=dx*dx+dy*dy+dz*dz+this.soft*this.soft;
+            const r=Math.sqrt(r2);
+            const f=this.G*this.b[i].m*this.b[j].m/r2;
+            const fx=f*dx/r, fy=f*dy/r, fz=f*dz/r;
+            F[i].x+=fx; F[i].y+=fy; F[i].z+=fz;
+            F[j].x-=fx; F[j].y-=fy; F[j].z-=fz;
+          }
+        }
+        return F;
+      }
+      forces(){ return this.forcesFromR(this.b.map(x=>x.r)); }
+      step(dt, method){
+        if(this.b.length===0) return;
+        if(method==="Euler"){
+          const F=this.forces();
+          for(let i=0;i<this.b.length;i++){
+            const bi=this.b[i];
+            const ax=F[i].x/bi.m, ay=F[i].y/bi.m, az=(F[i].z||0)/bi.m;
+            bi.v.x+=ax*dt; bi.v.y+=ay*dt; bi.v.z=(bi.v.z||0)+az*dt;
+            bi.r.x+=bi.v.x*dt; bi.r.y+=bi.v.y*dt; bi.r.z=(bi.r.z||0)+(bi.v.z||0)*dt;
+          }
+          return;
+        }
+
+        if(method==="VelocityVerlet"){
+          const F0=this.forces();
+          const a0=F0.map((f,i)=>({x:f.x/this.b[i].m,y:f.y/this.b[i].m,z:(f.z||0)/this.b[i].m}));
+          for(let i=0;i<this.b.length;i++){
+            const bi=this.b[i];
+            bi.r.x += bi.v.x*dt + 0.5*a0[i].x*dt*dt;
+            bi.r.y += bi.v.y*dt + 0.5*a0[i].y*dt*dt;
+            bi.r.z = (bi.r.z||0) + (bi.v.z||0)*dt + 0.5*(a0[i].z||0)*dt*dt;
+          }
+          const F1=this.forces();
+          const a1=F1.map((f,i)=>({x:f.x/this.b[i].m,y:f.y/this.b[i].m,z:(f.z||0)/this.b[i].m}));
+          for(let i=0;i<this.b.length;i++){
+            const bi=this.b[i];
+            bi.v.x += 0.5*(a0[i].x+a1[i].x)*dt;
+            bi.v.y += 0.5*(a0[i].y+a1[i].y)*dt;
+            bi.v.z = (bi.v.z||0) + 0.5*((a0[i].z||0)+(a1[i].z||0))*dt;
+          }
+          return;
+        }
+
+        if(method==="RK4"){
+          const n=this.b.length;
+          const y0=[];
+          for(let i=0;i<n;i++){
+            const bi=this.b[i];
+            y0.push(bi.r.x,bi.r.y,bi.r.z||0,bi.v.x,bi.v.y,bi.v.z||0);
+          }
+          const deriv=(y)=>{
+            const d=new Array(6*n).fill(0);
+            const R=[];
+            for(let i=0;i<n;i++){
+              R.push({x:y[6*i],y:y[6*i+1],z:y[6*i+2]});
+              d[6*i]=y[6*i+3]; d[6*i+1]=y[6*i+4]; d[6*i+2]=y[6*i+5];
+            }
+            const F=this.forcesFromR(R);
+            for(let i=0;i<n;i++){
+              d[6*i+3]=F[i].x/this.b[i].m;
+              d[6*i+4]=F[i].y/this.b[i].m;
+              d[6*i+5]=(F[i].z||0)/this.b[i].m;
+            }
+            return d;
+          };
+          const k1=deriv(y0);
+          const y1=y0.map((v,i)=>v+0.5*dt*k1[i]);
+          const k2=deriv(y1);
+          const y2=y0.map((v,i)=>v+0.5*dt*k2[i]);
+          const k3=deriv(y2);
+          const y3=y0.map((v,i)=>v+dt*k3[i]);
+          const k4=deriv(y3);
+          const yn=y0.map((v,i)=>v+(dt/6)*(k1[i]+2*k2[i]+2*k3[i]+k4[i]));
+          for(let i=0;i<n;i++){
+            const bi=this.b[i];
+            bi.r.x=yn[6*i]; bi.r.y=yn[6*i+1]; bi.r.z=yn[6*i+2];
+            bi.v.x=yn[6*i+3]; bi.v.y=yn[6*i+4]; bi.v.z=yn[6*i+5];
+          }
+        }
+      }
+      kinetic(){
+        return this.b.reduce((s,bi)=>{
+          const v2=bi.v.x*bi.v.x+bi.v.y*bi.v.y+(bi.v.z||0)*(bi.v.z||0);
+          return s+0.5*bi.m*v2;
+        },0);
+      }
+      potential(){
+        let U=0;
+        for(let i=0;i<this.b.length;i++){
+          for(let j=i+1;j<this.b.length;j++){
+            const dr=V.sub(this.b[i].r,this.b[j].r);
+            const r=Math.sqrt(dr.x*dr.x+dr.y*dr.y+(dr.z||0)*(dr.z||0)+this.soft*this.soft);
+            U += -this.G*this.b[i].m*this.b[j].m/r;
+          }
+        }
+        return U;
+      }
+      Lz(){
+        return this.b.reduce((s,bi)=>s+bi.m*(bi.r.x*bi.v.y-bi.r.y*bi.v.x),0);
+      }
+    }
+
+    const sim = new Sim();
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    const state = {
+      playing: true,
+      t: 0,
+      pxPerM: 1.2e-10,
+      heaviestIndex: 0
+    };
+
+    function massToKg(value, unit){
+      if(unit==="Msun") return value*MSUN;
+      if(unit==="Mearth") return value*MEARTH;
+      return value*MJUP;
+    }
+
+    function updateHeaviestBodyIndex(){
+      if(sim.b.length===0){
+        state.heaviestIndex=0;
+        document.getElementById("heaviestInfo").textContent="-";
+        return;
+      }
+      let idx=0;
+      for(let i=1;i<sim.b.length;i++){
+        if(sim.b[i].m>sim.b[idx].m) idx=i;
+      }
+      state.heaviestIndex=idx;
+      const hb=sim.b[idx];
+      document.getElementById("heaviestInfo").textContent = `${hb.name} (${hb.m.toExponential(2)} kg)`;
+    }
+
+    function resize(){
+      const dpr=window.devicePixelRatio||1;
+      canvas.width=Math.floor(canvas.clientWidth*dpr);
+      canvas.height=Math.floor(canvas.clientHeight*dpr);
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+    }
+    window.addEventListener("resize",resize);
+    setTimeout(resize,50);
+
+    function configureBodiesFromInputs(){
+      const n1=(document.getElementById("n1").value||"Body1").trim() || "Body1";
+      const m1=massToKg(parseFloat(document.getElementById("m1").value), document.getElementById("m1u").value);
+      const r1=AU*parseFloat(document.getElementById("r1").value);
+      const n2=(document.getElementById("n2").value||"Body2").trim() || "Body2";
+      const m2=massToKg(parseFloat(document.getElementById("m2").value), document.getElementById("m2u").value);
+      const r2=AU*parseFloat(document.getElementById("r2").value);
+      const use3=document.getElementById("use3").checked;
+      const n3=(document.getElementById("n3").value||"Body3").trim() || "Body3";
+      const m3=massToKg(parseFloat(document.getElementById("m3").value), document.getElementById("m3u").value);
+      const r3=AU*parseFloat(document.getElementById("r3").value);
+      const use4=document.getElementById("use4").checked;
+      const n4=(document.getElementById("n4").value||"Body4").trim() || "Body4";
+      const m4=massToKg(parseFloat(document.getElementById("m4").value), document.getElementById("m4u").value);
+      const r4=AU*parseFloat(document.getElementById("r4").value);
+
+      const entries=[
+        {name:n1,m:m1,r:r1,c:"#ffd27f"},
+        {name:n2,m:m2,r:r2,c:"#66afff"}
+      ];
+      if(use3) entries.push({name:n3,m:m3,r:r3,c:"#dff5ff"});
+      if(use4) entries.push({name:n4,m:m4,r:r4,c:"#9be7a2"});
+
+      sim.clear();
+      if(entries.length===0) return;
+
+      // First body is reference star at its requested distance along +x.
+      entries.forEach((e,idx)=>{
+        const rr = e.r;
+        const pos={x:rr,y:0,z:0};
+        let vel={x:0,y:0,z:0};
+        if(idx>0){
+          const r=Math.max(Math.abs(rr-entries[0].r),1e7);
+          const v=Math.sqrt(sim.G*entries[0].m/r);
+          vel={x:0,y:v,z:0};
+        }
+        sim.add(new Body(e.name,e.m,pos,vel,e.c));
+      });
+
+      // Shift to center-of-mass frame for cleaner long runs.
+      let M=0, rx=0, ry=0, vx=0, vy=0;
+      sim.b.forEach(b=>{ M+=b.m; rx+=b.m*b.r.x; ry+=b.m*b.r.y; vx+=b.m*b.v.x; vy+=b.m*b.v.y; });
+      const cx=rx/M, cy=ry/M, cvx=vx/M, cvy=vy/M;
+      sim.b.forEach(b=>{ b.r.x-=cx; b.r.y-=cy; b.v.x-=cvx; b.v.y-=cvy; b.trail=[]; });
+
+      const maxR=Math.max(...sim.b.map(b=>Math.abs(b.r.x)),1e9);
+      state.pxPerM=Math.min(220/maxR, 1e-8);
+      state.t=0;
+      document.getElementById("nBodies").textContent=String(sim.b.length);
+      updateHeaviestBodyIndex();
+    }
+
+    function presetSEM(){
+      document.getElementById("n1").value="Sun";
+      document.getElementById("m1").value="1";
+      document.getElementById("m1u").value="Msun";
+      document.getElementById("r1").value="0";
+      document.getElementById("n2").value="Earth";
+      document.getElementById("m2").value="1";
+      document.getElementById("m2u").value="Mearth";
+      document.getElementById("r2").value="1";
+      document.getElementById("use3").checked=true;
+      document.getElementById("n3").value="Moon";
+      document.getElementById("m3").value="0.0123";
+      document.getElementById("m3u").value="Mearth";
+      document.getElementById("r3").value="1.00257";
+      document.getElementById("use4").checked=false;
+      document.getElementById("n4").value="Body4";
+      document.getElementById("m4").value="0.02";
+      document.getElementById("m4u").value="Mjup";
+      document.getElementById("r4").value="1.47";
+      configureBodiesFromInputs();
+    }
+
+    function presetSE(){
+      presetSEM();
+      document.getElementById("use3").checked=false;
+      document.getElementById("use4").checked=false;
+      configureBodiesFromInputs();
+    }
+
+    function draw(){
+      const w=canvas.clientWidth, h=canvas.clientHeight;
+      ctx.clearRect(0,0,w,h);
+      const grad=ctx.createLinearGradient(0,0,0,h);
+      grad.addColorStop(0,"#050d1f");
+      grad.addColorStop(0.55,"#0b1d3f");
+      grad.addColorStop(1,"#142c57");
+      ctx.fillStyle=grad;
+      ctx.fillRect(0,0,w,h);
+      for(let i=0;i<120;i++){
+        const x=(i*97)%w;
+        const y=(i*53)%h;
+        const a=(0.3 + (i%7)/10).toFixed(2);
+        ctx.fillStyle=`rgba(235,245,255,${a})`;
+        const r=(i%5===0)?2:1.2;
+        ctx.beginPath();
+        ctx.arc(x,y,r,0,Math.PI*2);
+        ctx.fill();
+      }
+      ctx.save();
+      ctx.translate(w/2,h/2);
+
+      updateHeaviestBodyIndex();
+      const track = document.getElementById("trackHeaviest").checked;
+      const showLabels = document.getElementById("showLabels").checked;
+      const ref = (track && sim.b.length>0) ? sim.b[state.heaviestIndex].r : {x:0,y:0,z:0};
+
+      sim.b.forEach(b=>{
+        b.trail.push({x:b.r.x,y:b.r.y});
+        if(b.trail.length>1000) b.trail.shift();
+        ctx.beginPath();
+        b.trail.forEach((p,i)=>{
+          const x=(p.x-ref.x)*state.pxPerM;
+          const y=(p.y-ref.y)*state.pxPerM;
+          if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+        });
+        ctx.strokeStyle=b.c;
+        ctx.lineWidth=1;
+        ctx.stroke();
+      });
+
+      sim.b.forEach((b,i)=>{
+        const x=(b.r.x-ref.x)*state.pxPerM;
+        const y=(b.r.y-ref.y)*state.pxPerM;
+        const rp=Math.max(3,Math.min(10,2+Math.log10(b.m)/3));
+        ctx.beginPath();
+        ctx.fillStyle=b.c;
+        ctx.arc(x,y,rp,0,Math.PI*2);
+        ctx.fill();
+
+        if(i===state.heaviestIndex){
+          ctx.beginPath();
+          ctx.strokeStyle="#ffe596";
+          ctx.lineWidth=2;
+          ctx.arc(x,y,rp+4,0,Math.PI*2);
+          ctx.stroke();
+        }
+
+        if(showLabels){
+          ctx.fillStyle="#eaf2ff";
+          ctx.font="12px Space Grotesk, sans-serif";
+          ctx.fillText(b.name, x+rp+6, y-6);
+        }
+      });
+
+      ctx.restore();
+
+      const E=sim.kinetic()+sim.potential();
+      const L=sim.Lz();
+      document.getElementById("E").textContent=E.toExponential(3);
+      document.getElementById("L").textContent=L.toExponential(3);
+      document.getElementById("time").textContent=state.t.toFixed(2);
+    }
+
+    function step(){
+      const gScale=parseFloat(document.getElementById("gScale").value);
+      sim.G = G*gScale;
+      const dphys=86400;
+      sim.step(dphys, document.getElementById("integrator").value);
+      state.t += dphys;
+    }
+
+    let last=performance.now();
+    function loop(now){
+      const elapsed=(now-last)/1000;
+      last=now;
+      const rate=parseFloat(document.getElementById("simDaysPerSec").value);
+      document.getElementById("simRateVal").textContent = rate.toFixed(1)+" days/s";
+      if(state.playing){
+        const n=parseInt(document.getElementById("substeps").value,10);
+        const dphys = elapsed*rate*86400/Math.max(1,n);
+        for(let i=0;i<n;i++){
+          const gScale=parseFloat(document.getElementById("gScale").value);
+          sim.G = G*gScale;
+          sim.step(dphys, document.getElementById("integrator").value);
+          state.t += dphys;
+        }
+      }
+      draw();
+      requestAnimationFrame(loop);
+    }
+
+    document.getElementById("presetSEM").onclick=presetSEM;
+    document.getElementById("presetSE").onclick=presetSE;
+    document.getElementById("applyBodies").onclick=configureBodiesFromInputs;
+    document.getElementById("playBtn").onclick=()=>{
+      state.playing=!state.playing;
+      document.getElementById("playBtn").textContent=state.playing?"Pause":"Run";
+    };
+    document.getElementById("stepBtn").onclick=()=>{ step(); draw(); };
+    document.getElementById("resetBtn").onclick=()=>{ configureBodiesFromInputs(); };
+
+    presetSEM();
+    requestAnimationFrame(loop);
+  </script>
+</body>
+</html>
