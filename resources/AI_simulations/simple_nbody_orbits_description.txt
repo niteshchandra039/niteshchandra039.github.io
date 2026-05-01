@@ -1,0 +1,9 @@
+Simple N-Body Orbit Simulator
+
+This interactive simulation models the gravitational dynamics of 2 to 4 
+celestial bodies in real time using classical Newtonian mechanics. 
+Users can configure each body's name, mass (in solar, Earth, or Jupiter mass units), 
+and initial distance from the primary star (in astronomical units, AU), then 
+choose from three numerical integration methods — Euler, Velocity Verlet, 
+and RK4 — to evolve the system forward in time. 
+The simulation rate is adjustable from a fraction of a day to hundreds of days per simulated second, and the number of substeps per frame can be increased for greater accuracy. Bodies are rendered on an HTML5 canvas with color-coded orbital trails, body labels, and a golden ring highlighting the heaviest body in the system. The canvas supports mouse-wheel zoom, allowing the user to inspect close interactions or zoom out to track long-range orbits, with a one-click reset to the auto-fitted default scale. Built-in presets include the Sun–Earth two-body system and the Sun–Earth–Moon three-body system, and a gravitational constant scaling factor allows exploration of non-physical regimes. The total mechanical energy and z-component of angular momentum are displayed live as conserved-quantity diagnostics.

@@ -1,625 +1,1299 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Simple 2-3-4 Body Orbit Simulator</title>
+  <meta name="description" content="N-Body Gravitational Orbit Simulator — Computational Astrophysics interactive learning module." />
+  <meta name="keywords" content="N-body, orbital mechanics, gravitation, numerical integration, computational astrophysics, physics simulation" />
+  <meta name="author" content="Developed with AI assistance (GitHub Copilot / Claude)" />
+  <!-- LMS: embed as an iframe or SCORM package wrapping this standalone HTML file -->
+  <title>N-Body Orbit Simulator | Computational Astrophysics</title>
+
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
   <style>
+    /* === Design tokens === */
     :root {
-      --bg: #070d1a;
-      --panel: rgba(13, 24, 46, 0.78);
-      --muted: #9bb7d9;
-      --text: #eaf2ff;
-      --accent: #59d0ff;
+      --bg:      #070d1a;
+      --surface: rgba(11,22,48,.88);
+      --card:    rgba(17,32,66,.72);
+      --border:  rgba(89,208,255,.15);
+      --muted:   #8fb5d9;
+      --text:    #e8f2ff;
+      --accent:  #59d0ff;
+      --accent2: #ffad6d;
+      --green:   #63e6a0;
+      --red:     #ff7070;
+      --tab-h:   48px;
     }
-    * { box-sizing: border-box; }
-    html, body {
-      margin: 0;
-      height: 100%;
-      font-family: "Space Grotesk", system-ui, sans-serif;
-      color: var(--text);
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html,body{
+      height:100%;
+      font-family:"Space Grotesk",system-ui,sans-serif;
+      color:var(--text);
       background:
-        radial-gradient(circle at 12% 18%, rgba(89, 208, 255, 0.16), transparent 35%),
-        radial-gradient(circle at 84% 82%, rgba(255, 173, 109, 0.14), transparent 34%),
-        linear-gradient(165deg, #030814, #081a36 56%, #0a2446);
+        radial-gradient(circle at 12% 18%,rgba(89,208,255,.18),transparent 35%),
+        radial-gradient(circle at 85% 80%,rgba(255,173,109,.15),transparent 34%),
+        linear-gradient(165deg,#030814,#081a36 55%,#0b2246);
+      overflow:hidden;
     }
-    .app {
-      height: 100vh;
-      display: grid;
-      grid-template-columns: 360px 1fr;
-      gap: 12px;
-      padding: 12px;
+
+    /* === Login modal === */
+    #loginOverlay{
+      position:fixed;inset:0;z-index:9999;
+      background:rgba(3,8,20,.92);
+      display:flex;align-items:center;justify-content:center;
+      backdrop-filter:blur(6px);
     }
-    .panel {
-      background: var(--panel);
-      border-radius: 10px;
-      padding: 10px;
-      overflow: auto;
-      box-shadow: 0 10px 34px rgba(1, 4, 12, 0.62);
-      backdrop-filter: blur(6px);
+    #loginOverlay.hidden{display:none}
+    .loginBox{
+      background:var(--card);border:1px solid var(--border);
+      border-radius:14px;padding:36px 40px;
+      max-width:420px;width:92%;
+      box-shadow:0 24px 64px rgba(0,0,0,.7);text-align:center;
     }
-    h1 { margin: 0 0 8px; font-size: 18px; }
-    .kicker { color: var(--muted); font-size: 12px; margin-bottom: 8px; }
-    .section {
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 8px;
-      padding: 8px;
-      margin-bottom: 8px;
-      background: rgba(255,255,255,0.02);
+    .loginBox h2{font-size:22px;color:var(--accent);margin-bottom:6px}
+    .loginBox p{font-size:13px;color:var(--muted);margin-bottom:24px}
+    .loginBox label{font-size:13px;color:var(--muted);text-align:left;display:block;margin-bottom:4px}
+    .loginBox input{
+      width:100%;padding:10px 12px;border-radius:8px;
+      border:1px solid #355b87;background:#0a1730;color:#eaf2ff;
+      font-size:14px;margin-bottom:14px;
     }
-    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-    label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 4px; }
-    input, select {
-      width: 100%;
-      border-radius: 6px;
-      border: 1px solid #355b87;
-      background: #0a1730;
-      color: #eaf2ff;
-      padding: 6px;
-      font-size: 12px;
+    .loginBox button{
+      width:100%;padding:12px;border-radius:8px;border:0;
+      background:linear-gradient(180deg,#2d9dd6,#1d6fa4);
+      color:#fff;font-weight:700;font-size:15px;cursor:pointer;transition:opacity .2s;
     }
-    input[type="range"] {
-      accent-color: #1f9dc9;
+    .loginBox button:hover{opacity:.88}
+    .loginBox .skip{margin-top:12px;font-size:12px;color:var(--muted);cursor:pointer}
+    .loginBox .skip:hover{color:var(--accent)}
+    .loginBox .aiCredit{
+      margin-top:18px;font-size:11px;color:rgba(143,181,217,.6);
+      border-top:1px solid var(--border);padding-top:10px;
     }
-    button {
-      border: 0;
-      border-radius: 7px;
-      padding: 7px 10px;
-      background: linear-gradient(180deg, #2d9dd6, #1d6fa4);
-      color: #fff;
-      font-weight: 600;
-      cursor: pointer;
-      font-size: 12px;
+
+    /* === App shell === */
+    .app{height:100vh;display:flex;flex-direction:column}
+
+    /* === Header === */
+    header{
+      flex-shrink:0;padding:8px 20px;
+      background:rgba(5,12,28,.82);border-bottom:1px solid var(--border);
+      display:flex;align-items:center;justify-content:space-between;
+      backdrop-filter:blur(6px);
     }
-    .row { display: flex; gap: 8px; flex-wrap: wrap; }
-    .value {
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 12px;
-      background: rgba(89, 208, 255, 0.12);
-      border-radius: 6px;
-      padding: 4px 6px;
+    header .titleBlock{display:flex;flex-direction:column}
+    header h1{font-size:16px;color:var(--accent);font-weight:700;line-height:1.2}
+    header .subtitle{font-size:11px;color:var(--muted)}
+    #studentBadge{
+      background:rgba(89,208,255,.1);border:1px solid var(--border);
+      border-radius:8px;padding:5px 12px;font-size:12px;color:var(--accent);cursor:pointer;
     }
-    #canvas { width: 100%; height: 100%; display: block; border-radius: 8px; background: #060f22; }
-    .simWrap { position: relative; height: 100%; min-height: 540px; }
-    #overlay {
-      position: absolute;
-      right: 10px;
-      top: 10px;
-      background: rgba(6, 14, 30, 0.68);
-      border-radius: 8px;
-      padding: 8px;
-      font-size: 12px;
-      color: var(--muted);
+    #studentBadge:hover{background:rgba(89,208,255,.2)}
+
+    /* === Tab bar === */
+    .tabBar{
+      flex-shrink:0;display:flex;align-items:stretch;
+      background:rgba(6,14,32,.7);border-bottom:1px solid var(--border);
+      padding:0 16px;gap:4px;overflow-x:auto;
     }
-    #overlay button {
-      margin-top: 6px;
-      width: 100%;
-      padding: 3px 6px;
-      font-size: 11px;
-      background: rgba(127,229,255,0.12);
-      border: 1px solid var(--accent);
-      border-radius: 4px;
-      color: var(--accent);
-      cursor: pointer;
+    .tabBar button{
+      background:none;border:none;border-bottom:3px solid transparent;
+      color:var(--muted);font-family:inherit;font-size:13px;font-weight:600;
+      padding:0 16px;height:var(--tab-h);cursor:pointer;white-space:nowrap;
+      transition:color .2s,border-color .2s;
     }
-    #overlay button:hover { background: rgba(127,229,255,0.25); }
-    @media (max-width: 980px) {
-      .app { grid-template-columns: 1fr; grid-template-rows: auto 1fr; height: auto; min-height: 100vh; }
-      .simWrap { min-height: 420px; }
+    .tabBar button:hover{color:var(--accent)}
+    .tabBar button.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+    /* === Tab panels === */
+    .tabContent{flex:1;overflow:hidden;position:relative}
+    .tabPanel{position:absolute;inset:0;display:none;overflow-y:auto;padding:20px}
+    .tabPanel.active{display:flex;flex-direction:column;gap:16px}
+    #tab-sim.active{
+      padding:12px;display:grid;
+      grid-template-columns:340px 1fr;gap:12px;
     }
+
+    /* === Shared card === */
+    .card{
+      background:var(--card);border:1px solid var(--border);
+      border-radius:12px;padding:18px 22px;backdrop-filter:blur(4px);
+    }
+    .card h2{font-size:16px;font-weight:700;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+    .card h2 .icon{font-size:18px}
+    .card h3{font-size:14px;color:var(--accent2);margin:14px 0 6px}
+    .card p,.card li{font-size:13.5px;color:var(--muted);line-height:1.75}
+    .card ul,.card ol{padding-left:20px}
+    .card ul li,.card ol li{margin-bottom:5px}
+    .card em{color:var(--text);font-style:normal;font-family:"IBM Plex Mono",monospace;font-size:12.5px}
+
+    .eqBox{
+      background:rgba(89,208,255,.07);border-left:3px solid var(--accent);
+      border-radius:6px;padding:10px 16px;margin:10px 0;
+      font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--text);line-height:1.8;
+    }
+    .theoryGrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    @media(max-width:900px){.theoryGrid{grid-template-columns:1fr}}
+
+    /* === Simulation panel === */
+    .simPanel{display:flex;flex-direction:column;gap:8px;overflow-y:auto}
+    .simSection{
+      background:var(--card);border:1px solid var(--border);
+      border-radius:10px;padding:10px 12px;
+    }
+    .simSection .kicker{
+      font-size:11px;color:var(--accent);font-weight:600;
+      text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;
+    }
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+    .simSection label{font-size:11.5px;color:var(--muted);display:block;margin-bottom:3px}
+    .simSection input,.simSection select{
+      width:100%;border-radius:6px;border:1px solid #355b87;
+      background:#0a1730;color:#eaf2ff;padding:6px 8px;font-size:12px;
+    }
+    input[type=range]{accent-color:var(--accent)}
+    .row{display:flex;gap:6px;flex-wrap:wrap}
+    .simBtn{
+      border:0;border-radius:7px;padding:7px 11px;
+      background:linear-gradient(180deg,#2d9dd6,#1d6fa4);
+      color:#fff;font-weight:600;cursor:pointer;font-size:12px;
+      font-family:inherit;transition:opacity .15s;
+    }
+    .simBtn:hover{opacity:.85}
+    .simBtn.danger{background:linear-gradient(180deg,#c94040,#8c2a2a)}
+    .mono{
+      font-family:"IBM Plex Mono",monospace;font-size:12px;
+      background:rgba(89,208,255,.1);border-radius:6px;padding:4px 7px;
+    }
+    .checkRow{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+    .checkRow input[type=checkbox]{accent-color:var(--accent)}
+
+    /* === Canvas === */
+    .simWrap{
+      position:relative;background:#060f22;
+      border-radius:10px;border:1px solid var(--border);
+      overflow:hidden;min-height:400px;
+    }
+    #canvas{width:100%;height:100%;display:block;cursor:default}
+    #overlay{
+      position:absolute;right:12px;top:12px;
+      background:rgba(4,10,26,.78);border:1px solid var(--border);
+      border-radius:8px;padding:10px 12px;font-size:12px;color:var(--muted);line-height:1.9;
+    }
+    #overlay button{
+      margin-top:6px;width:100%;padding:3px 6px;font-size:11px;
+      background:rgba(89,208,255,.1);border:1px solid var(--accent);
+      border-radius:4px;color:var(--accent);cursor:pointer;font-family:inherit;
+    }
+    #overlay button:hover{background:rgba(89,208,255,.25)}
+
+    /* === Data Export tab === */
+    .exportGrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    @media(max-width:800px){.exportGrid{grid-template-columns:1fr}}
+    .statBox{
+      background:rgba(89,208,255,.06);border:1px solid var(--border);
+      border-radius:8px;padding:14px 18px;text-align:center;
+    }
+    .statBox .statVal{font-family:"IBM Plex Mono",monospace;font-size:26px;color:var(--accent);font-weight:600}
+    .statBox .statLabel{font-size:12px;color:var(--muted);margin-top:4px}
+    .dlBtn{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:11px 20px;border-radius:9px;border:0;cursor:pointer;
+      font-family:inherit;font-size:14px;font-weight:600;transition:opacity .15s;
+    }
+    .dlBtn:hover{opacity:.85}
+    .dlBtn.primary  {background:linear-gradient(135deg,#1d9cd4,#115882);color:#fff}
+    .dlBtn.secondary{background:rgba(99,230,160,.15);border:1px solid var(--green);color:var(--green)}
+    .dlBtn.tertiary {background:rgba(255,173,109,.12);border:1px solid var(--accent2);color:var(--accent2)}
+
+    .tableWrap{max-height:260px;overflow-y:auto;border-radius:8px;border:1px solid var(--border);font-size:11px}
+    table{width:100%;border-collapse:collapse}
+    th{background:rgba(89,208,255,.12);color:var(--accent);padding:6px 10px;text-align:left;position:sticky;top:0;font-size:11px}
+    td{padding:5px 10px;border-top:1px solid rgba(255,255,255,.04);color:var(--muted)}
+    tr:hover td{background:rgba(255,255,255,.04)}
+
+    /* === Objectives tab === */
+    .objGrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    @media(max-width:800px){.objGrid{grid-template-columns:1fr}}
+    .badge{display:inline-block;font-size:11px;font-weight:600;padding:2px 9px;border-radius:20px;margin-bottom:10px}
+    .badge.blue {background:rgba(89,208,255,.15);color:var(--accent);border:1px solid rgba(89,208,255,.3)}
+    .badge.green{background:rgba(99,230,160,.15);color:var(--green);border:1px solid rgba(99,230,160,.3)}
+    .badge.amber{background:rgba(255,173,109,.15);color:var(--accent2);border:1px solid rgba(255,173,109,.3)}
+    .checkList{list-style:none;padding:0}
+    .checkList li{
+      display:flex;gap:10px;align-items:flex-start;
+      font-size:13.5px;color:var(--muted);line-height:1.6;
+      padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);
+    }
+    .checkList li:last-child{border-bottom:none}
+    .checkList li .tick{color:var(--green);font-size:14px;flex-shrink:0}
+
+    /* === References tab === */
+    .refItem{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+    .refNum{
+      width:28px;height:28px;border-radius:50%;
+      background:rgba(89,208,255,.12);color:var(--accent);
+      font-size:12px;font-weight:700;flex-shrink:0;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .refBody{flex:1}
+    .refBody .refTitle{font-size:14px;color:var(--text);font-weight:600}
+    .refBody .refMeta{font-size:12px;color:var(--muted);margin-top:3px}
+    .refBody a.refLink{
+      display:inline-flex;align-items:center;gap:5px;
+      font-size:12px;color:var(--accent);margin-top:5px;text-decoration:none;
+      border:1px solid rgba(89,208,255,.3);padding:3px 10px;border-radius:5px;transition:background .2s;
+    }
+    .refBody a.refLink:hover{background:rgba(89,208,255,.12)}
+
+    /* === Footer === */
+    footer{
+      flex-shrink:0;padding:7px 20px;
+      background:rgba(3,8,18,.82);border-top:1px solid var(--border);
+      display:flex;align-items:center;justify-content:space-between;
+      font-size:11px;color:var(--muted);backdrop-filter:blur(4px);
+    }
+    footer .aiTag{
+      background:rgba(255,173,109,.12);border:1px solid rgba(255,173,109,.3);
+      color:var(--accent2);padding:3px 10px;border-radius:20px;font-weight:600;font-size:11px;
+    }
+
+    @media(max-width:980px){
+      #tab-sim.active{grid-template-columns:1fr;grid-template-rows:auto 1fr;overflow-y:auto}
+      .simWrap{min-height:380px}
+    }
+    ::-webkit-scrollbar{width:6px;height:6px}
+    ::-webkit-scrollbar-track{background:transparent}
+    ::-webkit-scrollbar-thumb{background:rgba(89,208,255,.25);border-radius:3px}
+    .infoAlert{
+      background:rgba(89,208,255,.08);border:1px solid rgba(89,208,255,.25);
+      border-radius:8px;padding:10px 14px;font-size:13px;color:var(--muted);
+    }
+    .infoAlert strong{color:var(--accent)}
   </style>
 </head>
 <body>
-  <div class="app">
-    <aside class="panel">
-      <h1>Simple N-Body Orbit Lab</h1>
-      <div class="kicker">Sun-Earth-Moon baseline with optional 3rd and 4th body.</div>
 
-      <div class="section">
-        <div class="row">
-          <button id="presetSEM">Preset Sun-Earth-Moon</button>
-          <button id="presetSE">Preset Sun-Earth (2-body)</button>
-        </div>
-      </div>
-
-      <div class="section">
-        <div class="kicker">Global simulation settings</div>
-        <div class="grid2">
-          <div>
-            <label>Integrator</label>
-            <select id="integrator">
-              <option value="VelocityVerlet">VelocityVerlet</option>
-              <option value="RK4">RK4</option>
-              <option value="Euler">Euler</option>
-            </select>
-          </div>
-          <div>
-            <label>Simulation Rate (days per second)</label>
-            <input id="simDaysPerSec" type="range" min="0.1" max="400" step="0.1" value="40" />
-            <div class="value" id="simRateVal" style="margin-top:4px">40.0 days/s</div>
-          </div>
-          <div>
-            <label>Substeps per frame</label>
-            <input id="substeps" type="range" min="1" max="20" step="1" value="6" />
-          </div>
-          <div>
-            <label>G scale</label>
-            <input id="gScale" type="number" value="1" step="0.01" />
-          </div>
-        </div>
-        <div class="row" style="margin-top:8px">
-          <label><input id="showLabels" type="checkbox" checked /> Mark bodies with labels</label>
-          <label><input id="trackHeaviest" type="checkbox" checked /> Track heaviest body</label>
-        </div>
-        <div class="row" style="margin-top:8px">
-          <button id="playBtn">Pause</button>
-          <button id="stepBtn">Step</button>
-          <button id="resetBtn">Reset</button>
-        </div>
-      </div>
-
-      <div class="section">
-        <div class="kicker">Body 1 (Sun)</div>
-        <div class="grid2">
-          <div><label>Name</label><input id="n1" type="text" value="Sun" /></div>
-          <div><label>Mass value</label><input id="m1" type="number" value="1" /></div>
-          <div><label>Mass unit</label><select id="m1u"><option value="Msun">M_sun</option><option value="Mearth">M_earth</option><option value="Mjup">M_Jupiter</option></select></div>
-          <div><label>Distance from Sun (AU)</label><input id="r1" type="number" value="0" step="0.0001" /></div>
-        </div>
-      </div>
-
-      <div class="section">
-        <div class="kicker">Body 2 (Earth-like)</div>
-        <div class="grid2">
-          <div><label>Name</label><input id="n2" type="text" value="Earth" /></div>
-          <div><label>Mass value</label><input id="m2" type="number" value="1" /></div>
-          <div><label>Mass unit</label><select id="m2u"><option value="Mearth">M_earth</option><option value="Mjup">M_Jupiter</option><option value="Msun">M_sun</option></select></div>
-          <div><label>Distance from Sun (AU)</label><input id="r2" type="number" value="1" step="0.0001" /></div>
-        </div>
-      </div>
-
-      <div class="section">
-        <div class="kicker">Body 3 (Moon-like or custom)</div>
-        <label><input id="use3" type="checkbox" checked /> Include body 3</label>
-        <div class="grid2">
-          <div><label>Name</label><input id="n3" type="text" value="Moon" /></div>
-          <div><label>Mass value</label><input id="m3" type="number" value="0.0123" step="0.0001" /></div>
-          <div><label>Mass unit</label><select id="m3u"><option value="Mearth">M_earth</option><option value="Mjup">M_Jupiter</option><option value="Msun">M_sun</option></select></div>
-          <div><label>Distance from Sun (AU)</label><input id="r3" type="number" value="1.00257" step="0.00001" /></div>
-        </div>
-      </div>
-
-      <div class="section">
-        <div class="kicker">Body 4 (optional)</div>
-        <label><input id="use4" type="checkbox" /> Include body 4</label>
-        <div class="grid2">
-          <div><label>Name</label><input id="n4" type="text" value="Body4" /></div>
-          <div><label>Mass value</label><input id="m4" type="number" value="0.02" step="0.0001" /></div>
-          <div><label>Mass unit</label><select id="m4u"><option value="Mjup">M_Jupiter</option><option value="Mearth">M_earth</option><option value="Msun">M_sun</option></select></div>
-          <div><label>Distance from Sun (AU)</label><input id="r4" type="number" value="1.47" step="0.0001" /></div>
-        </div>
-      </div>
-
-      <div class="section">
-        <div class="row"><button id="applyBodies">Apply body settings</button></div>
-        <div style="margin-top:8px" class="value">Total energy: <span id="E">-</span></div>
-        <div style="margin-top:6px" class="value">Total angular momentum Lz: <span id="L">-</span></div>
-      </div>
-    </aside>
-
-    <main class="panel">
-      <div class="simWrap">
-        <canvas id="canvas" title="Scroll to zoom"></canvas>
-        <div id="overlay">
-          <div>Time: <span id="time">0.00</span> s</div>
-          <div>Bodies: <span id="nBodies">0</span></div>
-          <div>Heaviest: <span id="heaviestInfo">-</span></div>
-          <div>Zoom: <span id="zoomLevel">1.00×</span></div>
-          <button id="resetZoom" title="Reset zoom to default">Reset Zoom</button>
-        </div>
-      </div>
-    </main>
+<!-- LOGIN MODAL -->
+<div id="loginOverlay">
+  <div class="loginBox">
+    <h2>&#x269B; N-Body Orbit Simulator</h2>
+    <p>Computational Astrophysics &middot; Interactive Learning Module<br>Please enter your details to continue.</p>
+    <label for="loginName">Full Name</label>
+    <input id="loginName" type="text" placeholder="e.g. Priya Sharma" autocomplete="name" />
+    <label for="loginID">Student / Roll Number</label>
+    <input id="loginID" type="text" placeholder="e.g. 2023PHY042" autocomplete="off" />
+    <button id="loginBtn">Enter Simulator &#x2192;</button>
+    <div class="skip" id="skipLogin">Skip (Guest mode)</div>
+    <div class="aiCredit">Developed with the help of AI (GitHub Copilot &middot; Claude Sonnet)</div>
   </div>
+</div>
 
-  <script>
-    const G = 6.67430e-11;
-    const AU = 1.495978707e11;
-    const MSUN = 1.98847e30;
-    const MEARTH = 5.9722e24;
-    const MJUP = 1.89813e27;
+<!-- APP SHELL -->
+<div class="app" id="appShell" style="visibility:hidden">
 
-    const V = {
-      sub: (a,b)=>({x:a.x-b.x,y:a.y-b.y,z:(a.z||0)-(b.z||0)}),
-      len: (a)=>Math.sqrt(a.x*a.x+a.y*a.y+(a.z||0)*(a.z||0))
-    };
+  <header>
+    <div class="titleBlock">
+      <h1>N-Body Gravitational Orbit Simulator</h1>
+      <span class="subtitle">Computational Astrophysics &middot; 2-to-4 Body System &middot; Velocity Verlet / RK4 / Euler</span>
+    </div>
+    <div id="studentBadge" title="Click to switch user">&#x1F464; Guest</div>
+  </header>
 
-    class Body {
-      constructor(name,m,r,v,c){
-        this.name=name;
-        this.m=m;
-        this.r={...r};
-        this.v={...v};
-        this.c=c;
-        this.trail=[];
+  <nav class="tabBar" role="tablist" aria-label="Module tabs">
+    <button class="active" data-tab="tab-theory" role="tab">&#x1F4D6; Theory</button>
+    <button data-tab="tab-sim"    role="tab">&#x1F52D; Simulation</button>
+    <button data-tab="tab-data"   role="tab">&#x1F4CA; Data &amp; Export</button>
+    <button data-tab="tab-obj"    role="tab">&#x1F3AF; Objectives</button>
+    <button data-tab="tab-refs"   role="tab">&#x1F4DA; References</button>
+  </nav>
+
+  <div class="tabContent">
+
+    <!-- THEORY TAB -->
+    <section id="tab-theory" class="tabPanel active" role="tabpanel">
+
+      <div class="card">
+        <h2><span class="icon">&#x1F30C;</span>The N-Body Gravitational Problem</h2>
+        <p>
+          The <strong style="color:var(--text)">N-body problem</strong> asks: given N point masses interacting
+          solely through Newtonian gravity, how do their positions and velocities evolve with time?
+          For N &#x2265; 3 no general closed-form solution exists &mdash; numerical integration is required.
+          This simulator solves the equations of motion for up to <strong style="color:var(--text)">4 bodies</strong>
+          in real time using three user-selectable integrators.
+        </p>
+      </div>
+
+      <div class="theoryGrid">
+        <div class="card">
+          <h2><span class="icon">&#x2696;&#xFE0F;</span>Newton's Law of Gravitation</h2>
+          <p>The gravitational force on body <em>i</em> due to body <em>j</em>:</p>
+          <div class="eqBox">
+            F<sub>ij</sub> = G &middot; m<sub>i</sub> &middot; m<sub>j</sub> / |r<sub>ij</sub>|&sup2;<br><br>
+            F&#x20D7;<sub>ij</sub> = G &middot; m<sub>i</sub> &middot; m<sub>j</sub> &middot; (r&#x20D7;<sub>j</sub> &minus; r&#x20D7;<sub>i</sub>) / |r&#x20D7;<sub>j</sub> &minus; r&#x20D7;<sub>i</sub>|&sup3;
+          </div>
+          <p>where <em>G = 6.674 &times; 10&sup1;&sup1; N m&sup2; kg&sup2;</em> is the gravitational constant.</p>
+          <h3>Equations of Motion</h3>
+          <p>Summing over all pairs for body <em>i</em>:</p>
+          <div class="eqBox">
+            m<sub>i</sub> &middot; d&sup2;r&#x20D7;<sub>i</sub>/dt&sup2; = G &middot; &Sigma;<sub>j&ne;i</sub> [ m<sub>i</sub>&middot;m<sub>j</sub> &middot; (r&#x20D7;<sub>j</sub>&minus;r&#x20D7;<sub>i</sub>) / |r&#x20D7;<sub>j</sub>&minus;r&#x20D7;<sub>i</sub>|&sup3; ]
+          </div>
+          <p>This yields <em>6N</em> coupled first-order ODEs (3 position + 3 velocity per body).</p>
+        </div>
+
+        <div class="card">
+          <h2><span class="icon">&#x1F522;</span>Conservation Laws</h2>
+          <h3>Total Mechanical Energy</h3>
+          <div class="eqBox">
+            E = K + U<br><br>
+            K = &frac12; &middot; &Sigma;<sub>i</sub> m<sub>i</sub> |v&#x20D7;<sub>i</sub>|&sup2;<br><br>
+            U = &minus;G &middot; &Sigma;<sub>i&lt;j</sub> m<sub>i</sub>&middot;m<sub>j</sub> / |r&#x20D7;<sub>ij</sub>|
+          </div>
+          <p>For an isolated system <em>E = constant</em>. Energy drift is a key diagnostic of integrator accuracy.</p>
+          <h3>Angular Momentum (z-component)</h3>
+          <div class="eqBox">
+            L<sub>z</sub> = &Sigma;<sub>i</sub> m<sub>i</sub> &middot; (x<sub>i</sub>&middot;vy<sub>i</sub> &minus; y<sub>i</sub>&middot;vx<sub>i</sub>)
+          </div>
+          <p>Also conserved. Large drifts in <em>L<sub>z</sub></em> indicate numerical instability or a large timestep.</p>
+          <h3>Centre-of-Mass Frame</h3>
+          <p>The simulator shifts all bodies into the <strong style="color:var(--text)">CoM frame</strong> at initialisation &mdash; ensuring zero net linear momentum.</p>
+        </div>
+      </div>
+
+      <div class="theoryGrid">
+        <div class="card">
+          <h2><span class="icon">&#x1F9EE;</span>Numerical Integrators</h2>
+          <h3>1 &middot; Euler Method (1st order)</h3>
+          <div class="eqBox">
+            v<sub>n+1</sub> = v<sub>n</sub> + a(r<sub>n</sub>) &middot; &Delta;t<br>
+            r<sub>n+1</sub> = r<sub>n</sub> + v<sub>n</sub> &middot; &Delta;t
+          </div>
+          <p>Simple but <strong style="color:var(--red)">not symplectic</strong> &mdash; energy grows monotonically. Suitable only for qualitative demonstrations.</p>
+          <h3>2 &middot; Velocity Verlet (2nd order, symplectic)</h3>
+          <div class="eqBox">
+            r<sub>n+1</sub> = r<sub>n</sub> + v<sub>n</sub>&middot;&Delta;t + &frac12;&middot;a<sub>n</sub>&middot;&Delta;t&sup2;<br>
+            v<sub>n+1</sub> = v<sub>n</sub> + &frac12;&middot;(a<sub>n</sub> + a<sub>n+1</sub>)&middot;&Delta;t
+          </div>
+          <p><strong style="color:var(--green)">Recommended for long integrations.</strong> Symplectic &mdash; exhibits bounded rather than drifting energy error.</p>
+          <h3>3 &middot; Runge&ndash;Kutta 4th Order (RK4)</h3>
+          <div class="eqBox">
+            y<sub>n+1</sub> = y<sub>n</sub> + (&Delta;t/6)&middot;(k&#x2081; + 2k&#x2082; + 2k&#x2083; + k&#x2084;)
+          </div>
+          <p>4th-order accuracy per step. More accurate than Verlet for smooth orbits but <strong style="color:var(--red)">not symplectic</strong>. 4 force evaluations per step.</p>
+        </div>
+
+        <div class="card">
+          <h2><span class="icon">&#x1FA90;</span>Physical Units &amp; Scales</h2>
+          <div class="eqBox">
+            1 AU  = 1.496 &times; 10<sup>11</sup> m  (Earth&ndash;Sun distance)<br>
+            M&#x2609;  = 1.989 &times; 10<sup>30</sup> kg  (solar mass)<br>
+            M&#x2295;  = 5.972 &times; 10<sup>24</sup> kg  (Earth mass)<br>
+            M&#x2643;  = 1.898 &times; 10<sup>27</sup> kg  (Jupiter mass)<br>
+            G    = 6.674 &times; 10<sup>&minus;11</sup> N m&sup2; kg<sup>&minus;2</sup>
+          </div>
+          <h3>Circular Orbit Velocity</h3>
+          <div class="eqBox">v<sub>circ</sub> = &radic;(G&middot;M / r)</div>
+          <p>Initial velocities are set to <em>v<sub>circ</sub></em> around Body 1, producing approximately circular orbits.</p>
+          <h3>Kepler's 3rd Law</h3>
+          <div class="eqBox">T&sup2; = (4&pi;&sup2; / G&middot;M) &middot; a&sup3;</div>
+          <p>Earth's period: <em>T &asymp; 365.25 days</em> at <em>a = 1 AU</em>.</p>
+          <h3>Gravitational Softening</h3>
+          <div class="eqBox">F = G&middot;m<sub>i</sub>&middot;m<sub>j</sub> / (r&sup2; + &epsilon;&sup2;),&nbsp;&nbsp;&epsilon; = 10<sup>8</sup> m</div>
+          <p>Prevents numerical divergence at very close separations.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2><span class="icon">&#x1F50D;</span>Key Simulation Scenarios</h2>
+        <div class="theoryGrid" style="margin-top:0">
+          <div>
+            <h3>Sun&ndash;Earth (2-body)</h3>
+            <p>Perfectly integrable. Earth orbits in an ellipse; period &asymp; 365.25 days. Ideal for verifying energy and L<sub>z</sub> conservation.</p>
+            <h3>Sun&ndash;Earth&ndash;Moon (3-body)</h3>
+            <p>Moon orbits Earth at ~0.00257 AU. Demonstrates hierarchical three-body stability; Moon period &asymp; 27.3 days.</p>
+          </div>
+          <div>
+            <h3>Adding a 4th Body</h3>
+            <p>A 4th body near the inner system can cause orbital resonances, perturbations, or ejections &mdash; illustrating deterministic chaos sensitive to initial conditions.</p>
+            <h3>Integrator Comparison</h3>
+            <p>Run the same preset with all three integrators and compare energy drift over 10+ orbits to concretely see the impact of integrator choice.</p>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- SIMULATION TAB -->
+    <section id="tab-sim" class="tabPanel" role="tabpanel">
+
+      <aside class="simPanel">
+
+        <div class="simSection">
+          <div class="kicker">Presets</div>
+          <div class="row">
+            <button class="simBtn" id="presetSEM">Sun&ndash;Earth&ndash;Moon</button>
+            <button class="simBtn" id="presetSE">Sun&ndash;Earth (2-body)</button>
+          </div>
+        </div>
+
+        <div class="simSection">
+          <div class="kicker">Global settings</div>
+          <div class="grid2">
+            <div>
+              <label>Integrator</label>
+              <select id="integrator">
+                <option value="VelocityVerlet">Velocity Verlet &#x2605;</option>
+                <option value="RK4">RK4</option>
+                <option value="Euler">Euler</option>
+              </select>
+            </div>
+            <div>
+              <label>Sim rate (days / s)</label>
+              <input id="simDaysPerSec" type="range" min="0.1" max="400" step="0.1" value="40" />
+              <div class="mono" id="simRateVal" style="margin-top:4px">40.0 days/s</div>
+            </div>
+            <div>
+              <label>Substeps per frame</label>
+              <input id="substeps" type="range" min="1" max="20" step="1" value="6" />
+            </div>
+            <div>
+              <label>G scale factor</label>
+              <input id="gScale" type="number" value="1" step="0.01" />
+            </div>
+          </div>
+          <div class="row" style="margin-top:8px">
+            <label class="checkRow"><input id="showLabels" type="checkbox" checked /> Labels</label>
+            <label class="checkRow"><input id="trackHeaviest" type="checkbox" checked /> Track heaviest</label>
+            <label class="checkRow"><input id="logData" type="checkbox" checked /> Log data</label>
+          </div>
+          <div class="row" style="margin-top:8px">
+            <button class="simBtn" id="playBtn">&#x23F8; Pause</button>
+            <button class="simBtn" id="stepBtn">&#x23ED; Step</button>
+            <button class="simBtn danger" id="resetBtn">&#x21BA; Reset</button>
+          </div>
+        </div>
+
+        <div class="simSection">
+          <div class="kicker">Body 1 (star / primary)</div>
+          <div class="grid2">
+            <div><label>Name</label><input id="n1" type="text" value="Sun" /></div>
+            <div><label>Mass</label><input id="m1" type="number" value="1" /></div>
+            <div><label>Mass unit</label><select id="m1u"><option value="Msun">M&#x2609;</option><option value="Mearth">M&#x2295;</option><option value="Mjup">M&#x2643;</option></select></div>
+            <div><label>Distance (AU)</label><input id="r1" type="number" value="0" step="0.0001" /></div>
+          </div>
+        </div>
+
+        <div class="simSection">
+          <div class="kicker">Body 2 (planet / secondary)</div>
+          <div class="grid2">
+            <div><label>Name</label><input id="n2" type="text" value="Earth" /></div>
+            <div><label>Mass</label><input id="m2" type="number" value="1" /></div>
+            <div><label>Mass unit</label><select id="m2u"><option value="Mearth">M&#x2295;</option><option value="Mjup">M&#x2643;</option><option value="Msun">M&#x2609;</option></select></div>
+            <div><label>Distance (AU)</label><input id="r2" type="number" value="1" step="0.0001" /></div>
+          </div>
+        </div>
+
+        <div class="simSection">
+          <div class="kicker">Body 3 (moon / tertiary)</div>
+          <label class="checkRow" style="margin-bottom:8px"><input id="use3" type="checkbox" checked /> Include body 3</label>
+          <div class="grid2">
+            <div><label>Name</label><input id="n3" type="text" value="Moon" /></div>
+            <div><label>Mass</label><input id="m3" type="number" value="0.0123" step="0.0001" /></div>
+            <div><label>Mass unit</label><select id="m3u"><option value="Mearth">M&#x2295;</option><option value="Mjup">M&#x2643;</option><option value="Msun">M&#x2609;</option></select></div>
+            <div><label>Distance (AU)</label><input id="r3" type="number" value="1.00257" step="0.00001" /></div>
+          </div>
+        </div>
+
+        <div class="simSection">
+          <div class="kicker">Body 4 (optional)</div>
+          <label class="checkRow" style="margin-bottom:8px"><input id="use4" type="checkbox" /> Include body 4</label>
+          <div class="grid2">
+            <div><label>Name</label><input id="n4" type="text" value="Body4" /></div>
+            <div><label>Mass</label><input id="m4" type="number" value="0.02" step="0.0001" /></div>
+            <div><label>Mass unit</label><select id="m4u"><option value="Mjup">M&#x2643;</option><option value="Mearth">M&#x2295;</option><option value="Msun">M&#x2609;</option></select></div>
+            <div><label>Distance (AU)</label><input id="r4" type="number" value="1.47" step="0.0001" /></div>
+          </div>
+        </div>
+
+        <div class="simSection">
+          <div class="row"><button class="simBtn" id="applyBodies">&#x2713; Apply Body Settings</button></div>
+          <div style="margin-top:10px" class="mono">E<sub>total</sub>: <span id="E">&ndash;</span> J</div>
+          <div style="margin-top:6px"  class="mono">L<sub>z</sub>: <span id="L">&ndash;</span> kg&middot;m&sup2;/s</div>
+        </div>
+
+      </aside>
+
+      <div class="simWrap">
+        <canvas id="canvas" title="Scroll to zoom &middot; drag to pan"></canvas>
+        <div id="overlay">
+          <div>Time: <span id="time">0.00</span> days</div>
+          <div>Bodies: <span id="nBodies">0</span></div>
+          <div>Heaviest: <span id="heaviestInfo">&ndash;</span></div>
+          <div>Zoom: <span id="zoomLevel">1.00&times;</span></div>
+          <button id="resetZoom">Reset Zoom</button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- DATA & EXPORT TAB -->
+    <section id="tab-data" class="tabPanel" role="tabpanel">
+
+      <div class="infoAlert">
+        <strong>How data logging works:</strong> When the <em>Log data</em> checkbox is enabled in the
+        Simulation tab, the simulator records body positions and velocities at configurable intervals.
+        Download the data in standard formats for analysis in Python, MATLAB, or Excel.
+      </div>
+
+      <div class="exportGrid">
+        <div class="statBox"><div class="statVal" id="logCount">0</div><div class="statLabel">Recorded rows</div></div>
+        <div class="statBox"><div class="statVal" id="logBodies">0</div><div class="statLabel">Bodies tracked</div></div>
+        <div class="statBox"><div class="statVal" id="logTimeSpan">0.0</div><div class="statLabel">Time span (days)</div></div>
+        <div class="statBox"><div class="statVal" id="logInterval">Every 1 day</div><div class="statLabel">Sampling interval</div></div>
+      </div>
+
+      <div class="card">
+        <h2><span class="icon">&#x2699;&#xFE0F;</span>Logging Settings</h2>
+        <div style="display:flex;gap:24px;flex-wrap:wrap;align-items:center">
+          <div>
+            <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px">Sample every N simulation days</label>
+            <input id="sampleEvery" type="number" value="1" min="0.1" step="0.1"
+              style="width:140px;border-radius:6px;border:1px solid #355b87;background:#0a1730;color:#eaf2ff;padding:7px 10px;font-size:13px" />
+          </div>
+          <div>
+            <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px">Max rows (memory cap)</label>
+            <input id="maxRows" type="number" value="5000" min="100" max="50000" step="100"
+              style="width:140px;border-radius:6px;border:1px solid #355b87;background:#0a1730;color:#eaf2ff;padding:7px 10px;font-size:13px" />
+          </div>
+          <button class="simBtn danger" id="clearLogBtn" style="align-self:flex-end">&#x1F5D1; Clear Log</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2><span class="icon">&#x1F4BE;</span>Download Simulation Data</h2>
+        <div class="row" style="gap:12px;margin-bottom:14px">
+          <button class="dlBtn primary"   id="dlCSV">&#x2B07; Download CSV</button>
+          <button class="dlBtn secondary" id="dlJSON">&#x2B07; Download JSON</button>
+          <button class="dlBtn tertiary"  id="dlPython">&#x2B07; Python Starter Script</button>
+        </div>
+        <p style="font-size:12.5px;color:var(--muted)">
+          CSV columns: <em>time_days, body_name, x_AU, y_AU, vx_ms, vy_ms, mass_kg</em>.
+          JSON includes full metadata (integrator, G scale, body names).
+          The Python script uses matplotlib to reproduce the orbital plot from the exported CSV.
+        </p>
+      </div>
+
+      <div class="card">
+        <h2><span class="icon">&#x1F4CB;</span>Live Data Preview (last 20 rows)</h2>
+        <div class="tableWrap">
+          <table id="previewTable">
+            <thead><tr><th>Time (days)</th><th>Body</th><th>x (AU)</th><th>y (AU)</th><th>vx (m/s)</th><th>vy (m/s)</th><th>Mass (kg)</th></tr></thead>
+            <tbody id="previewBody">
+              <tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px">No data yet &mdash; run the simulation with "Log data" checked.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- OBJECTIVES TAB -->
+    <section id="tab-obj" class="tabPanel" role="tabpanel">
+
+      <div class="card">
+        <h2><span class="icon">&#x1F3AF;</span>Module: Gravitational N-Body Dynamics</h2>
+        <p>
+          This interactive module is part of the <strong style="color:var(--text)">Computational Astrophysics</strong>
+          curriculum. Students explore Newton's law of gravitation through hands-on numerical simulation,
+          compare integration algorithms, and analyse conservation laws in multi-body gravitational systems.
+        </p>
+      </div>
+
+      <div class="objGrid">
+        <div class="card">
+          <h2><span class="icon">&#x1F4CC;</span>Learning Objectives</h2>
+          <span class="badge blue">After completing this module, students will be able to:</span>
+          <ul class="checkList">
+            <li><span class="tick">&#x2713;</span>State Newton's universal law of gravitation and write the N-body equations of motion.</li>
+            <li><span class="tick">&#x2713;</span>Explain symplectic integrators and why they are preferred for long-term orbital integration.</li>
+            <li><span class="tick">&#x2713;</span>Distinguish between Euler, Velocity Verlet, and RK4 in accuracy and energy conservation.</li>
+            <li><span class="tick">&#x2713;</span>Identify conserved quantities (E, L<sub>z</sub>) and use them to assess numerical accuracy.</li>
+            <li><span class="tick">&#x2713;</span>Set up and simulate a Sun&ndash;Earth&ndash;Moon system with physically realistic parameters.</li>
+            <li><span class="tick">&#x2713;</span>Investigate chaotic behaviour by adding a perturbing fourth body.</li>
+            <li><span class="tick">&#x2713;</span>Export simulation data and perform basic analysis using Python/matplotlib.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h2><span class="icon">&#x1F4E6;</span>Deliverables</h2>
+          <span class="badge green">Students are expected to submit:</span>
+          <ol class="checkList">
+            <li><span class="tick">1.</span><strong style="color:var(--text)">Lab Report (PDF)</strong> &mdash; Screenshots of orbital traces for at least two integrators, energy/L<sub>z</sub> plots, discussion.</li>
+            <li><span class="tick">2.</span><strong style="color:var(--text)">Exported CSV file</strong> &mdash; Minimum 2 complete Earth orbits (~730 days) sampled at 0.5-day intervals.</li>
+            <li><span class="tick">3.</span><strong style="color:var(--text)">Python analysis script</strong> &mdash; Orbital plot and energy-vs-time plot with annotations.</li>
+            <li><span class="tick">4.</span><strong style="color:var(--text)">Comparison table</strong> &mdash; Energy drift (&Delta;E/E&#x2080;) for all three integrators over same duration.</li>
+            <li><span class="tick">5.</span><strong style="color:var(--text)">Chaos investigation (bonus)</strong> &mdash; Document conditions under which the 4-body system becomes unstable.</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="objGrid">
+        <div class="card">
+          <h2><span class="icon">&#x1F4C5;</span>Suggested Lab Workflow</h2>
+          <span class="badge amber">Step-by-step guide</span>
+          <ol class="checkList">
+            <li><span class="tick">1.</span>Read the <strong style="color:var(--text)">Theory</strong> tab carefully. Note equations and physical units.</li>
+            <li><span class="tick">2.</span>Load <em>Sun&ndash;Earth</em> preset; run ~5 orbits; record E and L<sub>z</sub>.</li>
+            <li><span class="tick">3.</span>Switch to <em>Sun&ndash;Earth&ndash;Moon</em>; observe the Moon's trajectory.</li>
+            <li><span class="tick">4.</span>Switch integrator to <em>Euler</em>; reset and observe energy growth.</li>
+            <li><span class="tick">5.</span>Compare with <em>Velocity Verlet</em> and <em>RK4</em>.</li>
+            <li><span class="tick">6.</span>Enable <em>Log data</em>, run 730 days, download CSV.</li>
+            <li><span class="tick">7.</span>Use the Python starter script to plot orbits and analyse conservation.</li>
+            <li><span class="tick">8.</span>Add Body 4 (Jupiter mass) and explore chaotic behaviour.</li>
+          </ol>
+        </div>
+
+        <div class="card">
+          <h2><span class="icon">&#x1F4D0;</span>Assessment Criteria</h2>
+          <ul class="checkList">
+            <li><span class="tick">&#x25C8;</span><strong style="color:var(--text)">Understanding (30%)</strong> &mdash; Accuracy of theoretical explanation in report.</li>
+            <li><span class="tick">&#x25C8;</span><strong style="color:var(--text)">Simulation (25%)</strong> &mdash; Correct physical parameters and orbital period verification.</li>
+            <li><span class="tick">&#x25C8;</span><strong style="color:var(--text)">Data Analysis (25%)</strong> &mdash; Quality of Python plots and quantitative energy analysis.</li>
+            <li><span class="tick">&#x25C8;</span><strong style="color:var(--text)">Integrator comparison (15%)</strong> &mdash; Complete table with correct interpretation.</li>
+            <li><span class="tick">&#x25C8;</span><strong style="color:var(--text)">Bonus &ndash; Chaos (5%)</strong> &mdash; Evidence of genuine investigation of chaotic dynamics.</li>
+          </ul>
+          <div class="infoAlert" style="margin-top:12px">
+            <strong>LMS Note:</strong> Submit your PDF, CSV, and Python script as a single ZIP to the course portal under <em>Lab 4 &mdash; N-Body Dynamics</em>.
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- REFERENCES TAB -->
+    <section id="tab-refs" class="tabPanel" role="tabpanel">
+
+      <div class="card">
+        <h2><span class="icon">&#x1F4DA;</span>Bibliography &amp; Further Reading</h2>
+        <p style="margin-bottom:16px">References used to ensure scientific accuracy of this module. Open-access links are provided where available.</p>
+
+        <div class="refItem">
+          <div class="refNum">1</div>
+          <div class="refBody">
+            <div class="refTitle">Murray, C. D. &amp; Dermott, S. F. &mdash; <em>Solar System Dynamics</em></div>
+            <div class="refMeta">Cambridge University Press, 1999. ISBN 978-0-521-57597-3.</div>
+            <div class="refMeta">The definitive graduate text on celestial mechanics, orbital resonances, and perturbation theory.</div>
+            <a class="refLink" href="https://www.cambridge.org/core/books/solar-system-dynamics/CC6A17B6B8E74C36C89EEE34B8C0779B" target="_blank" rel="noopener">&#x2197; Publisher page</a>
+          </div>
+        </div>
+
+        <div class="refItem">
+          <div class="refNum">2</div>
+          <div class="refBody">
+            <div class="refTitle">Press, W. H. et al. &mdash; <em>Numerical Recipes: The Art of Scientific Computing</em> (3rd ed.)</div>
+            <div class="refMeta">Cambridge University Press, 2007. ISBN 978-0-521-88068-8.</div>
+            <div class="refMeta">Chapters 17&ndash;18 cover ODE integration (Euler, RK4, symplectic methods) with worked examples.</div>
+            <a class="refLink" href="http://numerical.recipes/" target="_blank" rel="noopener">&#x2197; numerical.recipes</a>
+          </div>
+        </div>
+
+        <div class="refItem">
+          <div class="refNum">3</div>
+          <div class="refBody">
+            <div class="refTitle">Goldstein, H., Poole, C. &amp; Safko, J. &mdash; <em>Classical Mechanics</em> (3rd ed.)</div>
+            <div class="refMeta">Addison-Wesley, 2002. ISBN 978-0-201-65702-9. Chapters 3 and 8: two-body problem and Hamiltonian mechanics.</div>
+          </div>
+        </div>
+
+        <div class="refItem">
+          <div class="refNum">4</div>
+          <div class="refBody">
+            <div class="refTitle">Aarseth, S. J. &mdash; <em>Gravitational N-Body Simulations: Tools and Algorithms</em></div>
+            <div class="refMeta">Cambridge University Press, 2003. ISBN 978-0-521-43272-6.</div>
+            <a class="refLink" href="https://www.cambridge.org/core/books/gravitational-nbody-simulations/2BB5D6E54AF10DAFD2AAC6C41977A8CA" target="_blank" rel="noopener">&#x2197; Publisher page</a>
+          </div>
+        </div>
+
+        <div class="refItem">
+          <div class="refNum">5</div>
+          <div class="refBody">
+            <div class="refTitle">Hairer, E., Lubich, C. &amp; Wanner, G. &mdash; <em>Geometric Numerical Integration</em> (2nd ed.)</div>
+            <div class="refMeta">Springer, 2006. ISBN 978-3-540-30663-4. Authoritative treatment of symplectic integrators.</div>
+            <a class="refLink" href="https://link.springer.com/book/10.1007/3-540-30666-8" target="_blank" rel="noopener">&#x2197; Springer Link</a>
+          </div>
+        </div>
+
+        <div class="refItem">
+          <div class="refNum">6</div>
+          <div class="refBody">
+            <div class="refTitle">NASA JPL &mdash; <em>Solar System Ephemeris (DE440)</em></div>
+            <div class="refMeta">Mass values and orbital parameters for solar system bodies.</div>
+            <a class="refLink" href="https://ssd.jpl.nasa.gov/planets/phys_par.html" target="_blank" rel="noopener">&#x2197; JPL Solar System Dynamics</a>
+          </div>
+        </div>
+
+        <div class="refItem">
+          <div class="refNum">7</div>
+          <div class="refBody">
+            <div class="refTitle">CODATA 2018 &mdash; <em>NIST Reference on Constants, Units and Uncertainty</em></div>
+            <div class="refMeta">Newell, D. B. et al., <em>Metrologia</em> 56, 054001 (2019). Source for G = 6.67430 &times; 10<sup>&minus;11</sup> N m&sup2; kg<sup>&minus;2</sup>.</div>
+            <a class="refLink" href="https://physics.nist.gov/cgi-bin/cuu/Value?bg" target="_blank" rel="noopener">&#x2197; NIST CODATA G value</a>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="card">
+        <h2><span class="icon">&#x1F6E0;</span>Software &amp; Tools Used</h2>
+        <ul class="checkList">
+          <li><span class="tick">&#x25B8;</span><strong style="color:var(--text)">HTML5 Canvas API</strong> &mdash; Real-time 2D rendering of orbital trajectories.</li>
+          <li><span class="tick">&#x25B8;</span><strong style="color:var(--text)">Vanilla JavaScript (ES2020)</strong> &mdash; Simulation engine and UI logic. No external runtime dependencies.</li>
+          <li><span class="tick">&#x25B8;</span><strong style="color:var(--text)">Google Fonts (CDN)</strong> &mdash; Space Grotesk, IBM Plex Mono (falls back to system fonts offline).</li>
+          <li><span class="tick">&#x25B8;</span><strong style="color:var(--text)">GitHub Copilot / Claude Sonnet</strong> &mdash; AI-assisted development (code, physics verification, UI design).</li>
+        </ul>
+      </div>
+
+    </section>
+
+  </div><!-- tabContent -->
+
+  <footer>
+    <span>N-Body Orbit Simulator &middot; Computational Astrophysics Module &middot; v2.0</span>
+    <span class="aiTag">&#x1F916; Developed with the help of AI (GitHub Copilot &middot; Claude Sonnet)</span>
+    <span id="footerStudent">Guest session</span>
+  </footer>
+
+</div><!-- .app -->
+
+<script>
+"use strict";
+
+const G_SI   = 6.67430e-11;
+const AU     = 1.495978707e11;
+const MSUN   = 1.98847e30;
+const MEARTH = 5.9722e24;
+const MJUP   = 1.89813e27;
+const DAY    = 86400;
+
+class Body {
+  constructor(name,m,r,v,c){
+    this.name=name; this.m=m;
+    this.r={...r}; this.v={...v};
+    this.c=c; this.trail=[];
+  }
+}
+
+class Sim {
+  constructor(){ this.b=[]; this.G=G_SI; this.soft=1e8; }
+  clear(){ this.b=[]; }
+  add(body){ this.b.push(body); }
+  _forcesFromR(R){
+    const n=this.b.length;
+    const F=Array.from({length:n},()=>({x:0,y:0,z:0}));
+    for(let i=0;i<n;i++){
+      for(let j=i+1;j<n;j++){
+        const dx=R[j].x-R[i].x, dy=R[j].y-R[i].y, dz=(R[j].z||0)-(R[i].z||0);
+        const r2=dx*dx+dy*dy+dz*dz+this.soft*this.soft;
+        const r=Math.sqrt(r2);
+        const f=this.G*this.b[i].m*this.b[j].m/r2;
+        const fx=f*dx/r, fy=f*dy/r, fz=f*dz/r;
+        F[i].x+=fx; F[i].y+=fy; F[i].z+=fz;
+        F[j].x-=fx; F[j].y-=fy; F[j].z-=fz;
       }
     }
-
-    class Sim {
-      constructor(){
-        this.b=[];
-        this.G = G;
-        this.soft = 1e8;
+    return F;
+  }
+  _forces(){ return this._forcesFromR(this.b.map(b=>b.r)); }
+  step(dt,method){
+    if(!this.b.length) return;
+    if(method==="Euler"){
+      const F=this._forces();
+      for(let i=0;i<this.b.length;i++){
+        const b=this.b[i];
+        const ax=F[i].x/b.m, ay=F[i].y/b.m, az=(F[i].z||0)/b.m;
+        b.v.x+=ax*dt; b.v.y+=ay*dt; b.v.z=(b.v.z||0)+az*dt;
+        b.r.x+=b.v.x*dt; b.r.y+=b.v.y*dt; b.r.z=(b.r.z||0)+(b.v.z||0)*dt;
       }
-      clear(){ this.b=[]; }
-      add(x){ this.b.push(x); }
-      forcesFromR(R){
-        const n=this.b.length;
-        const F=Array.from({length:n},()=>({x:0,y:0,z:0}));
+      return;
+    }
+    if(method==="VelocityVerlet"){
+      const F0=this._forces();
+      const a0=F0.map((f,i)=>({x:f.x/this.b[i].m,y:f.y/this.b[i].m,z:(f.z||0)/this.b[i].m}));
+      for(let i=0;i<this.b.length;i++){
+        const b=this.b[i];
+        b.r.x+=b.v.x*dt+0.5*a0[i].x*dt*dt;
+        b.r.y+=b.v.y*dt+0.5*a0[i].y*dt*dt;
+        b.r.z=(b.r.z||0)+(b.v.z||0)*dt+0.5*(a0[i].z||0)*dt*dt;
+      }
+      const F1=this._forces();
+      const a1=F1.map((f,i)=>({x:f.x/this.b[i].m,y:f.y/this.b[i].m,z:(f.z||0)/this.b[i].m}));
+      for(let i=0;i<this.b.length;i++){
+        const b=this.b[i];
+        b.v.x+=0.5*(a0[i].x+a1[i].x)*dt;
+        b.v.y+=0.5*(a0[i].y+a1[i].y)*dt;
+        b.v.z=(b.v.z||0)+0.5*((a0[i].z||0)+(a1[i].z||0))*dt;
+      }
+      return;
+    }
+    if(method==="RK4"){
+      const n=this.b.length;
+      const y0=[];
+      for(let i=0;i<n;i++){
+        const b=this.b[i];
+        y0.push(b.r.x,b.r.y,b.r.z||0,b.v.x,b.v.y,b.v.z||0);
+      }
+      const deriv=(y)=>{
+        const d=new Array(6*n).fill(0);
+        const R=[];
         for(let i=0;i<n;i++){
-          for(let j=i+1;j<n;j++){
-            const dx=R[j].x-R[i].x;
-            const dy=R[j].y-R[i].y;
-            const dz=(R[j].z||0)-(R[i].z||0);
-            const r2=dx*dx+dy*dy+dz*dz+this.soft*this.soft;
-            const r=Math.sqrt(r2);
-            const f=this.G*this.b[i].m*this.b[j].m/r2;
-            const fx=f*dx/r, fy=f*dy/r, fz=f*dz/r;
-            F[i].x+=fx; F[i].y+=fy; F[i].z+=fz;
-            F[j].x-=fx; F[j].y-=fy; F[j].z-=fz;
-          }
+          R.push({x:y[6*i],y:y[6*i+1],z:y[6*i+2]});
+          d[6*i]=y[6*i+3]; d[6*i+1]=y[6*i+4]; d[6*i+2]=y[6*i+5];
         }
-        return F;
-      }
-      forces(){ return this.forcesFromR(this.b.map(x=>x.r)); }
-      step(dt, method){
-        if(this.b.length===0) return;
-        if(method==="Euler"){
-          const F=this.forces();
-          for(let i=0;i<this.b.length;i++){
-            const bi=this.b[i];
-            const ax=F[i].x/bi.m, ay=F[i].y/bi.m, az=(F[i].z||0)/bi.m;
-            bi.v.x+=ax*dt; bi.v.y+=ay*dt; bi.v.z=(bi.v.z||0)+az*dt;
-            bi.r.x+=bi.v.x*dt; bi.r.y+=bi.v.y*dt; bi.r.z=(bi.r.z||0)+(bi.v.z||0)*dt;
-          }
-          return;
-        }
-
-        if(method==="VelocityVerlet"){
-          const F0=this.forces();
-          const a0=F0.map((f,i)=>({x:f.x/this.b[i].m,y:f.y/this.b[i].m,z:(f.z||0)/this.b[i].m}));
-          for(let i=0;i<this.b.length;i++){
-            const bi=this.b[i];
-            bi.r.x += bi.v.x*dt + 0.5*a0[i].x*dt*dt;
-            bi.r.y += bi.v.y*dt + 0.5*a0[i].y*dt*dt;
-            bi.r.z = (bi.r.z||0) + (bi.v.z||0)*dt + 0.5*(a0[i].z||0)*dt*dt;
-          }
-          const F1=this.forces();
-          const a1=F1.map((f,i)=>({x:f.x/this.b[i].m,y:f.y/this.b[i].m,z:(f.z||0)/this.b[i].m}));
-          for(let i=0;i<this.b.length;i++){
-            const bi=this.b[i];
-            bi.v.x += 0.5*(a0[i].x+a1[i].x)*dt;
-            bi.v.y += 0.5*(a0[i].y+a1[i].y)*dt;
-            bi.v.z = (bi.v.z||0) + 0.5*((a0[i].z||0)+(a1[i].z||0))*dt;
-          }
-          return;
-        }
-
-        if(method==="RK4"){
-          const n=this.b.length;
-          const y0=[];
-          for(let i=0;i<n;i++){
-            const bi=this.b[i];
-            y0.push(bi.r.x,bi.r.y,bi.r.z||0,bi.v.x,bi.v.y,bi.v.z||0);
-          }
-          const deriv=(y)=>{
-            const d=new Array(6*n).fill(0);
-            const R=[];
-            for(let i=0;i<n;i++){
-              R.push({x:y[6*i],y:y[6*i+1],z:y[6*i+2]});
-              d[6*i]=y[6*i+3]; d[6*i+1]=y[6*i+4]; d[6*i+2]=y[6*i+5];
-            }
-            const F=this.forcesFromR(R);
-            for(let i=0;i<n;i++){
-              d[6*i+3]=F[i].x/this.b[i].m;
-              d[6*i+4]=F[i].y/this.b[i].m;
-              d[6*i+5]=(F[i].z||0)/this.b[i].m;
-            }
-            return d;
-          };
-          const k1=deriv(y0);
-          const y1=y0.map((v,i)=>v+0.5*dt*k1[i]);
-          const k2=deriv(y1);
-          const y2=y0.map((v,i)=>v+0.5*dt*k2[i]);
-          const k3=deriv(y2);
-          const y3=y0.map((v,i)=>v+dt*k3[i]);
-          const k4=deriv(y3);
-          const yn=y0.map((v,i)=>v+(dt/6)*(k1[i]+2*k2[i]+2*k3[i]+k4[i]));
-          for(let i=0;i<n;i++){
-            const bi=this.b[i];
-            bi.r.x=yn[6*i]; bi.r.y=yn[6*i+1]; bi.r.z=yn[6*i+2];
-            bi.v.x=yn[6*i+3]; bi.v.y=yn[6*i+4]; bi.v.z=yn[6*i+5];
-          }
-        }
-      }
-      kinetic(){
-        return this.b.reduce((s,bi)=>{
-          const v2=bi.v.x*bi.v.x+bi.v.y*bi.v.y+(bi.v.z||0)*(bi.v.z||0);
-          return s+0.5*bi.m*v2;
-        },0);
-      }
-      potential(){
-        let U=0;
-        for(let i=0;i<this.b.length;i++){
-          for(let j=i+1;j<this.b.length;j++){
-            const dr=V.sub(this.b[i].r,this.b[j].r);
-            const r=Math.sqrt(dr.x*dr.x+dr.y*dr.y+(dr.z||0)*(dr.z||0)+this.soft*this.soft);
-            U += -this.G*this.b[i].m*this.b[j].m/r;
-          }
-        }
-        return U;
-      }
-      Lz(){
-        return this.b.reduce((s,bi)=>s+bi.m*(bi.r.x*bi.v.y-bi.r.y*bi.v.x),0);
-      }
-    }
-
-    const sim = new Sim();
-    const canvas = document.getElementById("canvas");
-    const ctx = canvas.getContext("2d");
-
-    const state = {
-      playing: true,
-      t: 0,
-      pxPerM: 1.2e-10,
-      basePxPerM: 1.2e-10,
-      heaviestIndex: 0
-    };
-
-    function massToKg(value, unit){
-      if(unit==="Msun") return value*MSUN;
-      if(unit==="Mearth") return value*MEARTH;
-      return value*MJUP;
-    }
-
-    function updateHeaviestBodyIndex(){
-      if(sim.b.length===0){
-        state.heaviestIndex=0;
-        document.getElementById("heaviestInfo").textContent="-";
-        return;
-      }
-      let idx=0;
-      for(let i=1;i<sim.b.length;i++){
-        if(sim.b[i].m>sim.b[idx].m) idx=i;
-      }
-      state.heaviestIndex=idx;
-      const hb=sim.b[idx];
-      document.getElementById("heaviestInfo").textContent = `${hb.name} (${hb.m.toExponential(2)} kg)`;
-    }
-
-    function resize(){
-      const dpr=window.devicePixelRatio||1;
-      canvas.width=Math.floor(canvas.clientWidth*dpr);
-      canvas.height=Math.floor(canvas.clientHeight*dpr);
-      ctx.setTransform(dpr,0,0,dpr,0,0);
-    }
-    window.addEventListener("resize",resize);
-    setTimeout(resize,50);
-
-    canvas.addEventListener("wheel", function(e){
-      e.preventDefault();
-      const factor = e.deltaY < 0 ? 1.15 : 1/1.15;
-      state.pxPerM = Math.max(1e-12, Math.min(1e-6, state.pxPerM * factor));
-      updateZoomDisplay();
-    }, { passive: false });
-
-    function updateZoomDisplay(){
-      const zoom = state.pxPerM / state.basePxPerM;
-      document.getElementById("zoomLevel").textContent = zoom.toFixed(2) + "×";
-    }
-
-    function configureBodiesFromInputs(){
-      const n1=(document.getElementById("n1").value||"Body1").trim() || "Body1";
-      const m1=massToKg(parseFloat(document.getElementById("m1").value), document.getElementById("m1u").value);
-      const r1=AU*parseFloat(document.getElementById("r1").value);
-      const n2=(document.getElementById("n2").value||"Body2").trim() || "Body2";
-      const m2=massToKg(parseFloat(document.getElementById("m2").value), document.getElementById("m2u").value);
-      const r2=AU*parseFloat(document.getElementById("r2").value);
-      const use3=document.getElementById("use3").checked;
-      const n3=(document.getElementById("n3").value||"Body3").trim() || "Body3";
-      const m3=massToKg(parseFloat(document.getElementById("m3").value), document.getElementById("m3u").value);
-      const r3=AU*parseFloat(document.getElementById("r3").value);
-      const use4=document.getElementById("use4").checked;
-      const n4=(document.getElementById("n4").value||"Body4").trim() || "Body4";
-      const m4=massToKg(parseFloat(document.getElementById("m4").value), document.getElementById("m4u").value);
-      const r4=AU*parseFloat(document.getElementById("r4").value);
-
-      const entries=[
-        {name:n1,m:m1,r:r1,c:"#ffd27f"},
-        {name:n2,m:m2,r:r2,c:"#66afff"}
-      ];
-      if(use3) entries.push({name:n3,m:m3,r:r3,c:"#dff5ff"});
-      if(use4) entries.push({name:n4,m:m4,r:r4,c:"#9be7a2"});
-
-      sim.clear();
-      if(entries.length===0) return;
-
-      // First body is reference star at its requested distance along +x.
-      entries.forEach((e,idx)=>{
-        const rr = e.r;
-        const pos={x:rr,y:0,z:0};
-        let vel={x:0,y:0,z:0};
-        if(idx>0){
-          const r=Math.max(Math.abs(rr-entries[0].r),1e7);
-          const v=Math.sqrt(sim.G*entries[0].m/r);
-          vel={x:0,y:v,z:0};
-        }
-        sim.add(new Body(e.name,e.m,pos,vel,e.c));
-      });
-
-      // Shift to center-of-mass frame for cleaner long runs.
-      let M=0, rx=0, ry=0, vx=0, vy=0;
-      sim.b.forEach(b=>{ M+=b.m; rx+=b.m*b.r.x; ry+=b.m*b.r.y; vx+=b.m*b.v.x; vy+=b.m*b.v.y; });
-      const cx=rx/M, cy=ry/M, cvx=vx/M, cvy=vy/M;
-      sim.b.forEach(b=>{ b.r.x-=cx; b.r.y-=cy; b.v.x-=cvx; b.v.y-=cvy; b.trail=[]; });
-
-      const maxR=Math.max(...sim.b.map(b=>Math.abs(b.r.x)),1e9);
-      state.pxPerM=Math.min(220/maxR, 1e-8);
-      state.basePxPerM=state.pxPerM;
-      state.t=0;
-      document.getElementById("nBodies").textContent=String(sim.b.length);
-      updateHeaviestBodyIndex();
-      updateZoomDisplay();
-    }
-
-    function presetSEM(){
-      document.getElementById("n1").value="Sun";
-      document.getElementById("m1").value="1";
-      document.getElementById("m1u").value="Msun";
-      document.getElementById("r1").value="0";
-      document.getElementById("n2").value="Earth";
-      document.getElementById("m2").value="1";
-      document.getElementById("m2u").value="Mearth";
-      document.getElementById("r2").value="1";
-      document.getElementById("use3").checked=true;
-      document.getElementById("n3").value="Moon";
-      document.getElementById("m3").value="0.0123";
-      document.getElementById("m3u").value="Mearth";
-      document.getElementById("r3").value="1.00257";
-      document.getElementById("use4").checked=false;
-      document.getElementById("n4").value="Body4";
-      document.getElementById("m4").value="0.02";
-      document.getElementById("m4u").value="Mjup";
-      document.getElementById("r4").value="1.47";
-      configureBodiesFromInputs();
-    }
-
-    function presetSE(){
-      presetSEM();
-      document.getElementById("use3").checked=false;
-      document.getElementById("use4").checked=false;
-      configureBodiesFromInputs();
-    }
-
-    function draw(){
-      const w=canvas.clientWidth, h=canvas.clientHeight;
-      ctx.clearRect(0,0,w,h);
-      const grad=ctx.createLinearGradient(0,0,0,h);
-      grad.addColorStop(0,"#050d1f");
-      grad.addColorStop(0.55,"#0b1d3f");
-      grad.addColorStop(1,"#142c57");
-      ctx.fillStyle=grad;
-      ctx.fillRect(0,0,w,h);
-      for(let i=0;i<120;i++){
-        const x=(i*97)%w;
-        const y=(i*53)%h;
-        const a=(0.3 + (i%7)/10).toFixed(2);
-        ctx.fillStyle=`rgba(235,245,255,${a})`;
-        const r=(i%5===0)?2:1.2;
-        ctx.beginPath();
-        ctx.arc(x,y,r,0,Math.PI*2);
-        ctx.fill();
-      }
-      ctx.save();
-      ctx.translate(w/2,h/2);
-
-      updateHeaviestBodyIndex();
-      const track = document.getElementById("trackHeaviest").checked;
-      const showLabels = document.getElementById("showLabels").checked;
-      const ref = (track && sim.b.length>0) ? sim.b[state.heaviestIndex].r : {x:0,y:0,z:0};
-
-      sim.b.forEach(b=>{
-        b.trail.push({x:b.r.x,y:b.r.y});
-        if(b.trail.length>1000) b.trail.shift();
-        ctx.beginPath();
-        b.trail.forEach((p,i)=>{
-          const x=(p.x-ref.x)*state.pxPerM;
-          const y=(p.y-ref.y)*state.pxPerM;
-          if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
-        });
-        ctx.strokeStyle=b.c;
-        ctx.lineWidth=1;
-        ctx.stroke();
-      });
-
-      sim.b.forEach((b,i)=>{
-        const x=(b.r.x-ref.x)*state.pxPerM;
-        const y=(b.r.y-ref.y)*state.pxPerM;
-        const rp=Math.max(3,Math.min(10,2+Math.log10(b.m)/3));
-        ctx.beginPath();
-        ctx.fillStyle=b.c;
-        ctx.arc(x,y,rp,0,Math.PI*2);
-        ctx.fill();
-
-        if(i===state.heaviestIndex){
-          ctx.beginPath();
-          ctx.strokeStyle="#ffe596";
-          ctx.lineWidth=2;
-          ctx.arc(x,y,rp+4,0,Math.PI*2);
-          ctx.stroke();
-        }
-
-        if(showLabels){
-          ctx.fillStyle="#eaf2ff";
-          ctx.font="12px Space Grotesk, sans-serif";
-          ctx.fillText(b.name, x+rp+6, y-6);
-        }
-      });
-
-      ctx.restore();
-
-      const E=sim.kinetic()+sim.potential();
-      const L=sim.Lz();
-      document.getElementById("E").textContent=E.toExponential(3);
-      document.getElementById("L").textContent=L.toExponential(3);
-      document.getElementById("time").textContent=state.t.toFixed(2);
-    }
-
-    function step(){
-      const gScale=parseFloat(document.getElementById("gScale").value);
-      sim.G = G*gScale;
-      const dphys=86400;
-      sim.step(dphys, document.getElementById("integrator").value);
-      state.t += dphys;
-    }
-
-    let last=performance.now();
-    function loop(now){
-      const elapsed=(now-last)/1000;
-      last=now;
-      const rate=parseFloat(document.getElementById("simDaysPerSec").value);
-      document.getElementById("simRateVal").textContent = rate.toFixed(1)+" days/s";
-      if(state.playing){
-        const n=parseInt(document.getElementById("substeps").value,10);
-        const dphys = elapsed*rate*86400/Math.max(1,n);
+        const F=this._forcesFromR(R);
         for(let i=0;i<n;i++){
-          const gScale=parseFloat(document.getElementById("gScale").value);
-          sim.G = G*gScale;
-          sim.step(dphys, document.getElementById("integrator").value);
-          state.t += dphys;
+          d[6*i+3]=F[i].x/this.b[i].m;
+          d[6*i+4]=F[i].y/this.b[i].m;
+          d[6*i+5]=(F[i].z||0)/this.b[i].m;
         }
+        return d;
+      };
+      const k1=deriv(y0);
+      const y1=y0.map((v,i)=>v+0.5*dt*k1[i]);
+      const k2=deriv(y1);
+      const y2=y0.map((v,i)=>v+0.5*dt*k2[i]);
+      const k3=deriv(y2);
+      const y3=y0.map((v,i)=>v+dt*k3[i]);
+      const k4=deriv(y3);
+      const yn=y0.map((v,i)=>v+(dt/6)*(k1[i]+2*k2[i]+2*k3[i]+k4[i]));
+      for(let i=0;i<n;i++){
+        const b=this.b[i];
+        b.r.x=yn[6*i]; b.r.y=yn[6*i+1]; b.r.z=yn[6*i+2];
+        b.v.x=yn[6*i+3]; b.v.y=yn[6*i+4]; b.v.z=yn[6*i+5];
       }
-      draw();
-      requestAnimationFrame(loop);
     }
+  }
+  kinetic(){
+    return this.b.reduce((s,b)=>{
+      const v2=b.v.x*b.v.x+b.v.y*b.v.y+(b.v.z||0)*(b.v.z||0);
+      return s+0.5*b.m*v2;
+    },0);
+  }
+  potential(){
+    let U=0;
+    for(let i=0;i<this.b.length;i++){
+      for(let j=i+1;j<this.b.length;j++){
+        const dx=this.b[i].r.x-this.b[j].r.x;
+        const dy=this.b[i].r.y-this.b[j].r.y;
+        const dz=(this.b[i].r.z||0)-(this.b[j].r.z||0);
+        const r=Math.sqrt(dx*dx+dy*dy+dz*dz+this.soft*this.soft);
+        U+=-this.G*this.b[i].m*this.b[j].m/r;
+      }
+    }
+    return U;
+  }
+  Lz(){
+    return this.b.reduce((s,b)=>s+b.m*(b.r.x*b.v.y-b.r.y*b.v.x),0);
+  }
+}
 
-    document.getElementById("presetSEM").onclick=presetSEM;
-    document.getElementById("presetSE").onclick=presetSE;
-    document.getElementById("applyBodies").onclick=configureBodiesFromInputs;
-    document.getElementById("playBtn").onclick=()=>{
-      state.playing=!state.playing;
-      document.getElementById("playBtn").textContent=state.playing?"Pause":"Run";
-    };
-    document.getElementById("stepBtn").onclick=()=>{ step(); draw(); };
-    document.getElementById("resetBtn").onclick=()=>{ configureBodiesFromInputs(); };
-    document.getElementById("resetZoom").onclick=()=>{
-      state.pxPerM=state.basePxPerM;
-      updateZoomDisplay();
-    };
+const sim    = new Sim();
+const canvas = document.getElementById("canvas");
+const ctx    = canvas.getContext("2d");
+const state  = {
+  playing:true, t:0,
+  pxPerM:1.2e-10, basePxPerM:1.2e-10,
+  heaviestIdx:0,
+  isPanning:false, panStart:{x:0,y:0}, panOffset:{x:0,y:0}
+};
 
-    presetSEM();
-    requestAnimationFrame(loop);
-  </script>
+let dataLog=[], lastLogTimeDays=-Infinity;
+
+function massToKg(val,unit){
+  if(unit==="Msun")  return val*MSUN;
+  if(unit==="Mearth") return val*MEARTH;
+  return val*MJUP;
+}
+
+function updateHeaviestIdx(){
+  if(!sim.b.length){state.heaviestIdx=0;return;}
+  let idx=0;
+  for(let i=1;i<sim.b.length;i++) if(sim.b[i].m>sim.b[idx].m) idx=i;
+  state.heaviestIdx=idx;
+  const hb=sim.b[idx];
+  document.getElementById("heaviestInfo").textContent=hb.name+" ("+hb.m.toExponential(2)+" kg)";
+}
+
+function resize(){
+  const dpr=window.devicePixelRatio||1;
+  canvas.width=Math.floor(canvas.clientWidth*dpr);
+  canvas.height=Math.floor(canvas.clientHeight*dpr);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+window.addEventListener("resize",resize);
+setTimeout(resize,50);
+
+canvas.addEventListener("wheel",(e)=>{
+  e.preventDefault();
+  const f=e.deltaY<0?1.15:1/1.15;
+  state.pxPerM=Math.max(1e-12,Math.min(1e-6,state.pxPerM*f));
+  updateZoom();
+},{passive:false});
+
+canvas.addEventListener("mousedown",(e)=>{
+  state.isPanning=true;
+  state.panStart={x:e.clientX-state.panOffset.x,y:e.clientY-state.panOffset.y};
+  canvas.style.cursor="grabbing";
+});
+canvas.addEventListener("mousemove",(e)=>{
+  if(!state.isPanning) return;
+  state.panOffset.x=e.clientX-state.panStart.x;
+  state.panOffset.y=e.clientY-state.panStart.y;
+});
+canvas.addEventListener("mouseup",()=>{state.isPanning=false;canvas.style.cursor="default";});
+canvas.addEventListener("mouseleave",()=>{state.isPanning=false;canvas.style.cursor="default";});
+
+function updateZoom(){
+  document.getElementById("zoomLevel").textContent=(state.pxPerM/state.basePxPerM).toFixed(2)+"x";
+}
+
+function configureBodiesFromInputs(){
+  const rb=(i)=>({
+    name:(document.getElementById("n"+i).value||"Body"+i).trim(),
+    m:massToKg(parseFloat(document.getElementById("m"+i).value),document.getElementById("m"+i+"u").value),
+    r:AU*parseFloat(document.getElementById("r"+i).value),
+    c:["#ffd27f","#66afff","#dff5ff","#9be7a2"][i-1]
+  });
+  const entries=[rb(1),rb(2)];
+  if(document.getElementById("use3").checked) entries.push(rb(3));
+  if(document.getElementById("use4").checked) entries.push(rb(4));
+  sim.clear();
+  entries.forEach((e,idx)=>{
+    const pos={x:e.r,y:0,z:0};
+    let vel={x:0,y:0,z:0};
+    if(idx>0){
+      const dr=Math.max(Math.abs(e.r-entries[0].r),1e7);
+      vel={x:0,y:Math.sqrt(sim.G*entries[0].m/dr),z:0};
+    }
+    sim.add(new Body(e.name,e.m,pos,vel,e.c));
+  });
+  let M=0,rx=0,ry=0,vx=0,vy=0;
+  sim.b.forEach(b=>{M+=b.m;rx+=b.m*b.r.x;ry+=b.m*b.r.y;vx+=b.m*b.v.x;vy+=b.m*b.v.y;});
+  const cx=rx/M,cy=ry/M,cvx=vx/M,cvy=vy/M;
+  sim.b.forEach(b=>{b.r.x-=cx;b.r.y-=cy;b.v.x-=cvx;b.v.y-=cvy;b.trail=[];});
+  const maxR=Math.max(...sim.b.map(b=>Math.sqrt(b.r.x*b.r.x+b.r.y*b.r.y)),1e9);
+  state.pxPerM=Math.min(220/maxR,1e-8);
+  state.basePxPerM=state.pxPerM;
+  state.t=0;
+  state.panOffset={x:0,y:0};
+  dataLog=[]; lastLogTimeDays=-Infinity;
+  document.getElementById("nBodies").textContent=String(sim.b.length);
+  updateHeaviestIdx();
+  updateZoom();
+}
+
+function presetSEM(){
+  document.getElementById("n1").value="Sun";    document.getElementById("m1").value="1";      document.getElementById("m1u").value="Msun";
+  document.getElementById("r1").value="0";
+  document.getElementById("n2").value="Earth";  document.getElementById("m2").value="1";      document.getElementById("m2u").value="Mearth";
+  document.getElementById("r2").value="1";
+  document.getElementById("use3").checked=true;
+  document.getElementById("n3").value="Moon";   document.getElementById("m3").value="0.0123"; document.getElementById("m3u").value="Mearth";
+  document.getElementById("r3").value="1.00257";
+  document.getElementById("use4").checked=false;
+  document.getElementById("n4").value="Body4";  document.getElementById("m4").value="0.02";   document.getElementById("m4u").value="Mjup";
+  document.getElementById("r4").value="1.47";
+  configureBodiesFromInputs();
+}
+function presetSE(){
+  presetSEM();
+  document.getElementById("use3").checked=false;
+  document.getElementById("use4").checked=false;
+  configureBodiesFromInputs();
+}
+
+function draw(){
+  const w=canvas.clientWidth, h=canvas.clientHeight;
+  ctx.clearRect(0,0,w,h);
+  const grad=ctx.createLinearGradient(0,0,0,h);
+  grad.addColorStop(0,"#050d1f"); grad.addColorStop(0.55,"#0b1d3f"); grad.addColorStop(1,"#142c57");
+  ctx.fillStyle=grad; ctx.fillRect(0,0,w,h);
+  for(let i=0;i<140;i++){
+    const sx=(i*97+13)%w, sy=(i*53+7)%h;
+    const a=(0.28+(i%7)/14).toFixed(2);
+    ctx.fillStyle="rgba(220,240,255,"+a+")";
+    ctx.beginPath(); ctx.arc(sx,sy,i%5===0?1.8:1.1,0,Math.PI*2); ctx.fill();
+  }
+  ctx.save();
+  ctx.translate(w/2+state.panOffset.x,h/2+state.panOffset.y);
+  updateHeaviestIdx();
+  const trackH=document.getElementById("trackHeaviest").checked;
+  const showL=document.getElementById("showLabels").checked;
+  const ref=(trackH&&sim.b.length>0)?sim.b[state.heaviestIdx].r:{x:0,y:0};
+  sim.b.forEach(b=>{
+    b.trail.push({x:b.r.x,y:b.r.y});
+    if(b.trail.length>1200) b.trail.shift();
+    if(b.trail.length<2) return;
+    ctx.beginPath();
+    b.trail.forEach((p,i)=>{
+      const px=(p.x-ref.x)*state.pxPerM, py=(p.y-ref.y)*state.pxPerM;
+      i===0?ctx.moveTo(px,py):ctx.lineTo(px,py);
+    });
+    ctx.strokeStyle=b.c+"aa"; ctx.lineWidth=1.2; ctx.stroke();
+  });
+  sim.b.forEach((b,i)=>{
+    const bx=(b.r.x-ref.x)*state.pxPerM, by=(b.r.y-ref.y)*state.pxPerM;
+    const rp=Math.max(3,Math.min(10,2+Math.log10(b.m)/3));
+    const grd=ctx.createRadialGradient(bx,by,0,bx,by,rp*3);
+    grd.addColorStop(0,b.c+"66"); grd.addColorStop(1,"transparent");
+    ctx.beginPath(); ctx.arc(bx,by,rp*3,0,Math.PI*2); ctx.fillStyle=grd; ctx.fill();
+    ctx.beginPath(); ctx.arc(bx,by,rp,0,Math.PI*2); ctx.fillStyle=b.c; ctx.fill();
+    if(i===state.heaviestIdx){
+      ctx.beginPath(); ctx.arc(bx,by,rp+5,0,Math.PI*2);
+      ctx.strokeStyle="#ffe596cc"; ctx.lineWidth=2; ctx.stroke();
+    }
+    if(showL){
+      ctx.fillStyle="#eaf2ff";
+      ctx.font="12px 'Space Grotesk',sans-serif";
+      ctx.fillText(b.name,bx+rp+7,by-5);
+    }
+  });
+  ctx.restore();
+  const E=sim.kinetic()+sim.potential();
+  const Lv=sim.Lz();
+  document.getElementById("E").textContent=isFinite(E)?E.toExponential(4):"--";
+  document.getElementById("L").textContent=isFinite(Lv)?Lv.toExponential(4):"--";
+  document.getElementById("time").textContent=(state.t/DAY).toFixed(2);
+}
+
+function maybeLog(){
+  if(!document.getElementById("logData").checked) return;
+  const maxR=parseInt(document.getElementById("maxRows").value,10)||5000;
+  if(dataLog.length>=maxR) return;
+  const se=parseFloat(document.getElementById("sampleEvery").value)||1;
+  const tD=state.t/DAY;
+  if(tD-lastLogTimeDays<se) return;
+  lastLogTimeDays=tD;
+  sim.b.forEach(b=>{
+    dataLog.push({
+      time_days:tD.toFixed(4),
+      body_name:b.name,
+      x_AU:(b.r.x/AU).toFixed(8),
+      y_AU:(b.r.y/AU).toFixed(8),
+      vx_ms:b.v.x.toFixed(4),
+      vy_ms:b.v.y.toFixed(4),
+      mass_kg:b.m.toExponential(6)
+    });
+  });
+}
+
+let lastFrame=performance.now();
+function loop(now){
+  const elapsed=Math.min((now-lastFrame)/1000,0.1);
+  lastFrame=now;
+  const rate=parseFloat(document.getElementById("simDaysPerSec").value);
+  document.getElementById("simRateVal").textContent=rate.toFixed(1)+" days/s";
+  if(state.playing){
+    const n=parseInt(document.getElementById("substeps").value,10);
+    const dphys=elapsed*rate*DAY/Math.max(1,n);
+    const gSc=parseFloat(document.getElementById("gScale").value)||1;
+    sim.G=G_SI*gSc;
+    for(let i=0;i<n;i++){sim.step(dphys,document.getElementById("integrator").value);state.t+=dphys;}
+    maybeLog();
+  }
+  draw();
+  updateDataTab();
+  requestAnimationFrame(loop);
+}
+
+function singleStep(){
+  const gSc=parseFloat(document.getElementById("gScale").value)||1;
+  sim.G=G_SI*gSc;
+  sim.step(DAY,document.getElementById("integrator").value);
+  state.t+=DAY;
+  maybeLog(); draw();
+}
+
+let lastPrev=0;
+function updateDataTab(){
+  const now=performance.now();
+  if(now-lastPrev<800) return;
+  lastPrev=now;
+  document.getElementById("logCount").textContent=dataLog.length;
+  document.getElementById("logBodies").textContent=sim.b.length;
+  const ts=dataLog.length>0?(parseFloat(dataLog[dataLog.length-1].time_days)-parseFloat(dataLog[0].time_days)).toFixed(1):"0.0";
+  document.getElementById("logTimeSpan").textContent=ts;
+  const sv=parseFloat(document.getElementById("sampleEvery").value)||1;
+  document.getElementById("logInterval").textContent="Every "+sv+" day"+(sv!==1?"s":"");
+  const tbody=document.getElementById("previewBody");
+  if(!dataLog.length){
+    tbody.innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px">No data yet.</td></tr>';
+    return;
+  }
+  const prev=dataLog.slice(-20);
+  tbody.innerHTML=prev.map(r=>"<tr><td>"+r.time_days+"</td><td>"+r.body_name+"</td><td>"+r.x_AU+"</td><td>"+r.y_AU+"</td><td>"+r.vx_ms+"</td><td>"+r.vy_ms+"</td><td>"+r.mass_kg+"</td></tr>").join("");
+}
+
+function dlBlob(content,fname,mime){
+  const blob=new Blob([content],{type:mime});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url; a.download=fname;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+function exportCSV(){
+  if(!dataLog.length){alert("No data logged yet.");return;}
+  const h=["time_days","body_name","x_AU","y_AU","vx_ms","vy_ms","mass_kg"];
+  const rows=dataLog.map(r=>h.map(k=>r[k]).join(","));
+  dlBlob([h.join(","),...rows].join("\n"),"nbody_simulation_data.csv","text/csv");
+}
+
+function exportJSON(){
+  if(!dataLog.length){alert("No data logged yet.");return;}
+  const meta={
+    module:"N-Body Orbit Simulator",version:"2.0",
+    generated:new Date().toISOString(),
+    integrator:document.getElementById("integrator").value,
+    gScale:parseFloat(document.getElementById("gScale").value),
+    bodies:sim.b.map(b=>({name:b.name,mass_kg:b.m})),
+    data:dataLog
+  };
+  dlBlob(JSON.stringify(meta,null,2),"nbody_simulation_data.json","application/json");
+}
+
+function exportPython(){
+  const py=`#!/usr/bin/env python3
+"""
+N-Body Orbit Simulator - Analysis Starter Script
+Generated by: N-Body Orbit Simulator v2.0 (AI-assisted module)
+Requirements: pip install pandas matplotlib numpy
+Usage:        python analyse_orbits.py
+"""
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+
+df = pd.read_csv("nbody_simulation_data.csv")
+bodies = df["body_name"].unique()
+print(f"Bodies: {list(bodies)}")
+print(f"Time range: {df['time_days'].min():.1f} - {df['time_days'].max():.1f} days")
+print(f"Total rows: {len(df)}")
+
+colors = ["#ffd27f","#66afff","#dff5ff","#9be7a2"]
+fig, axes = plt.subplots(1, 2, figsize=(14, 6), facecolor="#070d1a")
+
+ax1 = axes[0]
+ax1.set_facecolor("#0b1d3f")
+ax1.set_title("Orbital Trajectories", color="white", fontsize=13)
+ax1.set_xlabel("x (AU)", color="#8fb5d9")
+ax1.set_ylabel("y (AU)", color="#8fb5d9")
+ax1.tick_params(colors="#8fb5d9")
+for spine in ax1.spines.values(): spine.set_edgecolor("#355b87")
+for i, body in enumerate(bodies):
+    bd = df[df["body_name"] == body]
+    ax1.plot(pd.to_numeric(bd["x_AU"]), pd.to_numeric(bd["y_AU"]),
+             label=body, color=colors[i % len(colors)], linewidth=1.2)
+    ax1.scatter(pd.to_numeric(bd["x_AU"]).iloc[-1], pd.to_numeric(bd["y_AU"]).iloc[-1],
+                color=colors[i % len(colors)], s=40, zorder=5)
+ax1.legend(facecolor="#0b1d3f", labelcolor="white", fontsize=9)
+ax1.set_aspect("equal")
+ax1.grid(True, alpha=0.15)
+
+ax2 = axes[1]
+ax2.set_facecolor("#0b1d3f")
+ax2.set_title("Speed vs Time", color="white", fontsize=13)
+ax2.set_xlabel("Time (days)", color="#8fb5d9")
+ax2.set_ylabel("Speed (m/s)", color="#8fb5d9")
+ax2.tick_params(colors="#8fb5d9")
+for spine in ax2.spines.values(): spine.set_edgecolor("#355b87")
+for i, body in enumerate(bodies):
+    bd = df[df["body_name"] == body].copy()
+    bd["speed"] = np.sqrt(pd.to_numeric(bd["vx_ms"])**2 + pd.to_numeric(bd["vy_ms"])**2)
+    ax2.plot(pd.to_numeric(bd["time_days"]), bd["speed"],
+             label=body, color=colors[i % len(colors)], linewidth=1.0)
+ax2.legend(facecolor="#0b1d3f", labelcolor="white", fontsize=9)
+ax2.grid(True, alpha=0.15)
+
+plt.tight_layout()
+plt.savefig("nbody_orbits.png", dpi=150, bbox_inches="tight", facecolor="#070d1a")
+plt.show()
+print("Plot saved to nbody_orbits.png")
+
+if len(bodies) >= 2:
+    earth = df[df["body_name"] == bodies[1]].copy()
+    earth["y"] = pd.to_numeric(earth["y_AU"])
+    earth["t"] = pd.to_numeric(earth["time_days"])
+    crossings = earth[(earth["y"].shift(1) < 0) & (earth["y"] >= 0)]["t"].values
+    if len(crossings) >= 2:
+        period = np.mean(np.diff(crossings))
+        print(f"Estimated orbital period of {bodies[1]}: {period:.2f} days (Earth = 365.25 days)")
+`;
+  dlBlob(py,"analyse_orbits.py","text/plain");
+}
+
+// Tab switching
+document.querySelectorAll(".tabBar button").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll(".tabBar button").forEach(b=>b.classList.remove("active"));
+    document.querySelectorAll(".tabPanel").forEach(p=>p.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById(btn.dataset.tab).classList.add("active");
+    if(btn.dataset.tab==="tab-sim") setTimeout(resize,30);
+  });
+});
+
+// Login
+function setStudent(name,id){
+  const label=name?(name+(id?" - "+id:"")):"Guest";
+  document.getElementById("studentBadge").textContent="[User] "+label;
+  document.getElementById("footerStudent").textContent=label+" - session active";
+  try{localStorage.setItem("nbody_sn",name);localStorage.setItem("nbody_si",id);}catch(e){}
+}
+function showApp(){
+  document.getElementById("loginOverlay").classList.add("hidden");
+  document.getElementById("appShell").style.visibility="visible";
+}
+document.getElementById("loginBtn").addEventListener("click",()=>{
+  const name=document.getElementById("loginName").value.trim();
+  if(!name){document.getElementById("loginName").focus();return;}
+  setStudent(name,document.getElementById("loginID").value.trim());
+  showApp();
+});
+document.getElementById("loginName").addEventListener("keydown",e=>{if(e.key==="Enter") document.getElementById("loginID").focus();});
+document.getElementById("loginID").addEventListener("keydown",e=>{if(e.key==="Enter") document.getElementById("loginBtn").click();});
+document.getElementById("skipLogin").addEventListener("click",()=>{setStudent("","");showApp();});
+document.getElementById("studentBadge").addEventListener("click",()=>{
+  document.getElementById("loginOverlay").classList.remove("hidden");
+});
+try{
+  const sn=localStorage.getItem("nbody_sn"),si=localStorage.getItem("nbody_si");
+  if(sn){document.getElementById("loginName").value=sn||"";document.getElementById("loginID").value=si||"";}
+}catch(e){}
+
+// Bindings
+document.getElementById("presetSEM").addEventListener("click",presetSEM);
+document.getElementById("presetSE").addEventListener("click",presetSE);
+document.getElementById("applyBodies").addEventListener("click",configureBodiesFromInputs);
+document.getElementById("playBtn").addEventListener("click",()=>{
+  state.playing=!state.playing;
+  document.getElementById("playBtn").textContent=state.playing?"[||] Pause":"[>] Run";
+});
+document.getElementById("stepBtn").addEventListener("click",singleStep);
+document.getElementById("resetBtn").addEventListener("click",configureBodiesFromInputs);
+document.getElementById("resetZoom").addEventListener("click",()=>{
+  state.pxPerM=state.basePxPerM;state.panOffset={x:0,y:0};updateZoom();
+});
+document.getElementById("dlCSV").addEventListener("click",exportCSV);
+document.getElementById("dlJSON").addEventListener("click",exportJSON);
+document.getElementById("dlPython").addEventListener("click",exportPython);
+document.getElementById("clearLogBtn").addEventListener("click",()=>{dataLog=[];lastLogTimeDays=-Infinity;});
+
+presetSEM();
+requestAnimationFrame(loop);
+</script>
 </body>
 </html>
