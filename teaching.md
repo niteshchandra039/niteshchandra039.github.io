@@ -5,421 +5,316 @@ permalink: /teaching/
 ---
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Manrope:wght@400;500;600;700;800&display=swap');
+  @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap");
 
   :root {
-    --bg: #f6f8fc;
+    --bg: #f4f7fc;
     --surface: #ffffff;
-    --surface-soft: #eef3fb;
-    --text: #1d2a3d;
-    --muted: #5f6f84;
-    --line: #d7e1ee;
-    --brand: #10448f;
-    --brand-2: #0f766e;
-    --accent: #da8f1d;
-    --radius: 14px;
-    --shadow: 0 10px 25px rgba(15, 39, 73, 0.08);
+    --surface-soft: #f6faff;
+    --text: #1e2e45;
+    --muted: #5e7188;
+    --line: #d9e4f2;
+    --brand: #1d4d99;
+    --brand-soft: #e8f0ff;
+    --teal: #2f857e;
+    --teal-soft: #ebfbf8;
+    --violet: #6b46c1;
+    --violet-soft: #f6f0ff;
+    --gold-soft: #fff9eb;
+    --gold-line: #f1dda4;
+    --radius: 12px;
+    --shadow: 0 10px 24px rgba(14, 42, 84, 0.08);
   }
 
   .page-wrapper {
-    max-width: 1120px;
-    margin: 0 auto;
-    padding: 14px 0 30px;
-    font-family: "Manrope", "Segoe UI", sans-serif;
+    font-family: "Manrope", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     color: var(--text);
+    line-height: 1.65;
     font-size: 16px;
-    line-height: 1.66;
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 10px 0 30px;
+    background:
+      radial-gradient(circle at 10% 4%, rgba(29, 77, 153, 0.08), transparent 30%),
+      radial-gradient(circle at 90% 12%, rgba(47, 133, 126, 0.08), transparent 28%);
   }
 
-  .hero {
-    position: relative;
-    overflow: hidden;
-    border-radius: 22px;
-    border: 1px solid #c9d8ea;
-    background:
-      radial-gradient(circle at 12% 12%, rgba(16, 68, 143, 0.16), transparent 42%),
-      radial-gradient(circle at 88% 78%, rgba(218, 143, 29, 0.22), transparent 38%),
-      linear-gradient(140deg, #ffffff, #edf3fb);
-    padding: 28px;
+  .intro-box {
+    background: linear-gradient(140deg, #f9fcff 0%, #edf4ff 100%);
+    border: 1px solid #d4e2f6;
+    border-left: 5px solid var(--brand);
+    padding: 26px;
+    border-radius: var(--radius);
+    margin-bottom: 18px;
     box-shadow: var(--shadow);
   }
 
-  .brand-kicker {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 12px;
+  .section-nav {
+    position: sticky;
+    top: 10px;
+    z-index: 8;
+    margin-bottom: 20px;
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid var(--line);
     border-radius: 999px;
-    border: 1px solid #c4d8f1;
-    color: #1f4f8b;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    background: rgba(16, 68, 143, 0.07);
-  }
-
-  .hero h1 {
-    font-family: "DM Serif Display", Georgia, serif;
-    font-size: clamp(2rem, 4.6vw, 3rem);
-    line-height: 1.15;
-    margin: 12px 0 8px;
-    color: #10253f;
-    border-bottom: none;
-  }
-
-  .hero p {
-    margin: 0;
-    max-width: 760px;
-    color: #344965;
-    font-size: 1.03rem;
-  }
-
-  .hero-grid {
-    margin-top: 18px;
-    display: grid;
-    grid-template-columns: 1.6fr 1fr;
-    gap: 14px;
-  }
-
-  .hero-card {
-    border: 1px solid #d4deec;
-    background: var(--surface);
-    border-radius: 12px;
-    padding: 14px;
-  }
-
-  .hero-card h3 {
-    margin: 0 0 8px;
-    font-size: 0.95rem;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: var(--brand);
-  }
-
-  .quick-actions {
+    padding: 8px;
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+    justify-content: center;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 8px 20px rgba(14, 42, 84, 0.07);
+  }
+
+  .quick-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    padding: 8px 12px;
+    font-size: 0.82em;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: #26446f;
+    border: 1px solid #c8d8ef;
+    background: #f6faff;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .quick-pill:hover {
+    text-decoration: none;
+    color: #fff;
+    background: var(--brand);
+    border-color: var(--brand);
+    transform: translateY(-1px);
+  }
+
+  .section-header {
+    color: var(--brand);
+    border-bottom: 2px solid #e9eff9;
+    padding-bottom: 9px;
+    margin-top: 38px;
+    margin-bottom: 16px;
+    font-size: clamp(1.35rem, 2.4vw, 1.75rem);
+    line-height: 1.25;
+  }
+
+  .interactive-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .interactive-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(14, 42, 84, 0.04);
+    transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+  }
+
+  .interactive-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 24px rgba(14, 42, 84, 0.08);
+    border-color: #c8d7ed;
+  }
+
+  .card-title {
+    font-size: 1.17em;
+    font-weight: 800;
+    color: #172c47;
+    margin-bottom: 12px;
+    display: block;
   }
 
   .btn-link {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 8px 13px;
-    border-radius: 999px;
-    border: 1px solid #cad8eb;
-    color: #18457d;
-    font-weight: 700;
-    font-size: 0.86rem;
+    justify-content: center;
+    padding: 7px 13px;
+    margin: 4px 6px 4px 0;
+    background: var(--brand-soft);
+    color: var(--brand);
     text-decoration: none;
-    background: #f5f9ff;
-    transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+    border-radius: 8px;
+    border: 1px solid #c7d7f1;
+    font-size: 0.86em;
+    font-weight: 700;
+    transition: all 0.2s ease;
   }
 
   .btn-link:hover {
-    text-decoration: none;
-    background: #0f4d9d;
+    background: var(--brand);
     color: #fff;
-    transform: translateY(-1px);
-    box-shadow: 0 8px 15px rgba(16, 68, 143, 0.24);
-  }
-
-  .btn-link.secondary {
-    background: #f8f3e8;
-    border-color: #efd7ad;
-    color: #815619;
-  }
-
-  .sticky-nav {
-    position: sticky;
-    top: 8px;
-    z-index: 20;
-    margin: 16px 0;
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.92);
-    backdrop-filter: blur(8px);
-    box-shadow: 0 8px 18px rgba(13, 36, 71, 0.08);
-    overflow-x: auto;
-  }
-
-  .sticky-nav ul {
-    list-style: none;
-    margin: 0;
-    padding: 8px;
-    display: flex;
-    gap: 8px;
-    min-width: max-content;
-  }
-
-  .sticky-nav a {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px 12px;
-    border-radius: 999px;
+    border-color: var(--brand);
     text-decoration: none;
-    color: #284362;
-    font-size: 0.84rem;
-    font-weight: 700;
+    transform: translateY(-1px);
   }
 
-  .sticky-nav a:hover,
-  .sticky-nav a.active {
-    background: rgba(16, 68, 143, 0.11);
-    color: #0f4d9d;
-  }
-
-  .stats-grid {
+  .grid-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-    gap: 10px;
-    margin-top: 14px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 15px;
+    padding: 0;
+    list-style: none;
   }
 
-  .stat {
-    border-radius: 12px;
-    border: 1px solid #d5e1f1;
-    background: var(--surface);
-    padding: 10px 12px;
+  .grid-card-tech {
+    background: linear-gradient(180deg, #f2fcfa, #ffffff);
+    border: 1px solid #d6ebe8;
+    border-left: 4px solid var(--teal);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 3px 8px rgba(14, 42, 84, 0.04);
+    transition: transform 0.2s ease;
   }
 
-  .stat b {
-    display: block;
-    font-size: 1.35rem;
-    color: #123e7a;
-    line-height: 1.1;
+  .grid-card-tech:hover {
+    transform: translateX(4px);
   }
 
-  .stat span {
-    color: var(--muted);
-    font-size: 0.8rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-  }
-
-  .section {
-    margin-top: 26px;
-    border-radius: 16px;
-    border: 1px solid var(--line);
-    background: var(--surface);
+  .grid-card-mentor {
+    background: linear-gradient(180deg, var(--violet-soft), #ffffff);
+    border: 1px solid #e2d7f5;
+    border-left: 4px solid var(--violet);
     padding: 20px;
-    box-shadow: 0 6px 18px rgba(16, 42, 80, 0.05);
+    border-radius: 8px;
+    box-shadow: 0 3px 8px rgba(14, 42, 84, 0.04);
   }
 
-  .section h2 {
-    margin: 0 0 10px;
-    font-family: "DM Serif Display", Georgia, serif;
-    font-size: clamp(1.45rem, 3.6vw, 2rem);
-    line-height: 1.2;
-    color: #10253f;
+  details {
+    background: var(--surface-soft);
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid #dde8f7;
+    margin-top: 10px;
+  }
+
+  summary {
+    font-weight: 700;
+    color: #345278;
+    cursor: pointer;
+    outline: none;
+  }
+
+  summary:hover {
+    color: var(--brand);
+  }
+
+  .sub-list {
+    margin-top: 15px;
+    padding-left: 0;
+    list-style: none;
+  }
+
+  .sub-list li {
+    padding: 10px 0;
+    border-bottom: 1px dashed #d7e3f2;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .sub-list li:last-child {
     border-bottom: none;
   }
 
-  .section-intro {
-    margin: 0 0 14px;
-    color: var(--muted);
-    max-width: 820px;
-  }
-
-  .resource-controls {
-    border: 1px solid #d8e3f2;
-    background: #f2f7ff;
-    border-radius: 12px;
-    padding: 12px;
-    margin-bottom: 12px;
-  }
-
-  .resource-controls input {
-    width: 100%;
-    box-sizing: border-box;
-    border-radius: 10px;
-    border: 1px solid #c3d3e9;
-    padding: 10px 12px;
-    margin-bottom: 10px;
-    font: inherit;
-    color: #183457;
-    background: #fff;
-  }
-
-  .filter-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 7px;
-  }
-
-  .chip {
-    border: 1px solid #c5d7ee;
-    background: #fff;
-    color: #274c7f;
-    border-radius: 999px;
-    padding: 7px 11px;
-    font-size: 0.78rem;
-    font-weight: 800;
-    letter-spacing: 0.02em;
-    cursor: pointer;
-  }
-
-  .chip.active,
-  .chip:hover {
-    background: #0f4d9d;
-    color: #fff;
-    border-color: #0f4d9d;
-  }
-
-  .meta-line {
-    margin-top: 8px;
-    color: #60748f;
-    font-size: 0.83rem;
+  .lecture-title {
+    flex: 1 1 200px;
     font-weight: 600;
+    color: #243a5c;
   }
 
-  .course-grid,
-  .topic-grid,
-  .mentor-grid {
+  .tech-stack-box {
+    background: linear-gradient(140deg, var(--teal-soft), #f3fffd);
+    border: 1px solid #c8e9e5;
+    padding: 16px;
+    border-radius: 10px;
+    margin-top: 25px;
+    color: #1f5c56;
+  }
+
+  .contact-note {
+    background: linear-gradient(140deg, var(--gold-soft), #fffef6);
+    border: 1px solid var(--gold-line);
+    padding: 22px;
+    border-radius: 10px;
+    text-align: center;
+    margin-top: 40px;
+    font-size: 1.05em;
+    color: #694e1f;
+  }
+
+  .sim-course-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 12px;
+    margin-top: 10px;
   }
 
-  .course-card,
-  .topic-card,
-  .mentor-card {
-    border-radius: 12px;
-    border: 1px solid #d8e2ef;
+  .sim-course-box {
     background: #fbfdff;
+    border: 1px solid #d8e4f3;
+    border-left: 4px solid var(--brand);
+    border-radius: 10px;
     padding: 14px;
-    transition: transform .2s ease, box-shadow .2s ease;
-  }
-
-  .course-card:hover,
-  .topic-card:hover,
-  .mentor-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 18px rgba(16, 44, 84, 0.08);
   }
 
   .course-pill {
     display: inline-block;
-    padding: 5px 11px;
+    padding: 3px 10px;
     margin-bottom: 8px;
     border-radius: 999px;
-    border: 1px solid #bfd0e8;
-    background: #e9f1fc;
-    color: #1b4880;
-    font-size: 0.74rem;
-    letter-spacing: 0.02em;
-    font-weight: 800;
-    text-transform: uppercase;
-  }
-
-  .resource-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  .resource-item {
-    border-top: 1px dashed #d6dfec;
-    padding: 10px 0;
-  }
-
-  .resource-item:first-child {
-    border-top: none;
-    padding-top: 4px;
-  }
-
-  .resource-title {
-    display: block;
+    font-size: 0.75em;
     font-weight: 700;
-    color: #1d3656;
-    margin-bottom: 6px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    background: #eaf2ff;
+    color: var(--brand);
+    border: 1px solid #c8daf8;
   }
 
-  .resource-actions {
-    display: flex;
-    gap: 7px;
-    flex-wrap: wrap;
+  a:focus-visible,
+  button:focus-visible,
+  summary:focus-visible {
+    outline: 2px solid #ff9d2a;
+    outline-offset: 2px;
+    border-radius: 6px;
   }
 
-  details.modern {
-    margin-top: 10px;
-    border: 1px solid #d2deed;
-    border-radius: 12px;
-    background: #f8fbff;
-    padding: 8px 12px;
-  }
+  @media (max-width: 720px) {
+    .page-wrapper {
+      font-size: 15px;
+    }
 
-  details.modern summary {
-    cursor: pointer;
-    font-weight: 800;
-    color: #1d4374;
-    outline: none;
-  }
-
-  .topic-card {
-    background: linear-gradient(180deg, #f3fbfa, #ffffff);
-    border-left: 4px solid var(--brand-2);
-  }
-
-  .mentor-card {
-    background: linear-gradient(180deg, #fbf8ff, #ffffff);
-    border-left: 4px solid #7a4bb1;
-  }
-
-  .mentor-card h3,
-  .topic-card h3,
-  .course-card h3 {
-    margin: 0 0 8px;
-    color: #203958;
-    font-size: 1.05rem;
-  }
-
-  .mentor-card ul,
-  .topic-card ul {
-    margin: 0;
-    padding-left: 18px;
-  }
-
-  .final-cta {
-    margin-top: 24px;
-    border-radius: 16px;
-    padding: 24px;
-    border: 1px solid #f1d8a9;
-    background: linear-gradient(135deg, #fff8ea, #fffdf7);
-    text-align: center;
-  }
-
-  .final-cta h2 {
-    margin: 0 0 8px;
-    border-bottom: none;
-    color: #5f4214;
-    font-family: "DM Serif Display", Georgia, serif;
-  }
-
-  .final-cta p {
-    margin: 0 0 12px;
-    color: #6a5530;
-  }
-
-  .is-hidden {
-    display: none !important;
-  }
-
-  @media (max-width: 860px) {
-    .hero {
+    .intro-box {
       padding: 20px;
+      margin-bottom: 14px;
     }
 
-    .hero-grid {
-      grid-template-columns: 1fr;
+    .section-nav {
+      justify-content: flex-start;
+      overflow-x: auto;
+      flex-wrap: nowrap;
+      padding: 8px;
     }
 
-    .section {
+    .quick-pill {
+      white-space: nowrap;
+      font-size: 0.8em;
+    }
+
+    .interactive-card,
+    .grid-card-mentor {
       padding: 16px;
+    }
+
+    .btn-link {
+      min-height: 38px;
     }
   }
 
@@ -434,387 +329,369 @@ permalink: /teaching/
 
 <div class="page__content page-wrapper">
 
-  <section class="hero" id="top">
-    <span class="brand-kicker">Professor Brand Studio · Physics + Computation</span>
-    <h1>Teaching, Simulations, and Mentorship by Nitesh Kumar</h1>
-    <p>
-      This page is designed as a live academic workspace: fast access to classroom-ready simulations,
-      structured course resources, and guided pathways for students and collaborators.
+  <div class="intro-box">
+    <h1 style="margin-top: 0; border-bottom: none;">Teaching & Student Resources</h1>
+    <p style="margin-bottom: 0;">
+      As an Assistant Professor at <strong>UPES, Dehradun</strong>, I actively teach and mentor undergraduate and postgraduate students. 
+      My teaching philosophy emphasizes clarity, experimentation, and the integration of computation into modern physics education.
     </p>
+  </div>
 
-    <div class="hero-grid">
-      <div class="hero-card">
-        <h3>Quick Start</h3>
-        <div class="quick-actions">
-          <a href="/resources/AI_simulations/phys4022p_llm_sim_hub.html" class="btn-link" target="_blank">Launch Astrophysics Hub</a>
-          <a href="#resources" class="btn-link">Find Course Resources</a>
-          <a href="#mentorship" class="btn-link secondary">Apply for Mentorship</a>
-        </div>
-      </div>
-      <div class="hero-card">
-        <h3>Teaching Focus</h3>
-        <p style="margin:0;color:#49607f;font-size:0.95rem">
-          Concept-first physics teaching with computational thinking, data literacy,
-          and simulation-led understanding.
-        </p>
-      </div>
-    </div>
-
-    <div class="stats-grid">
-      <div class="stat"><b>5+</b><span>Astrophysics lab modules</span></div>
-      <div class="stat"><b>25+</b><span>Computational notebooks</span></div>
-      <div class="stat"><b>10+</b><span>Courses taught</span></div>
-      <div class="stat"><b>Research-led</b><span>Mentorship ecosystem</span></div>
-    </div>
-  </section>
-
-  <nav class="sticky-nav" aria-label="Teaching page sections">
-    <ul>
-      <li><a href="#resources" class="nav-link active">Resources</a></li>
-      <li><a href="#simulations" class="nav-link">Simulations</a></li>
-      <li><a href="#courses" class="nav-link">Courses Taught</a></li>
-      <li><a href="#mentorship" class="nav-link">Mentorship</a></li>
-      <li><a href="#contact" class="nav-link">Contact</a></li>
-    </ul>
+  <nav class="section-nav" aria-label="Teaching quick navigation">
+    <a class="quick-pill" href="#courses-resources">Courses & Resources</a>
+    <a class="quick-pill" href="#simulations">AI Simulations</a>
+    <a class="quick-pill" href="#courses-taught">Courses Taught</a>
+    <a class="quick-pill" href="#mentorship">Mentorship</a>
   </nav>
 
-  <section class="section" id="resources">
-    <h2>Structured Resource Library</h2>
-    <p class="section-intro">
-      Search and filter resources instantly. Use this during class for quick retrieval,
-      or after class for deeper study.
-    </p>
+  <h2 id="courses-resources" class="section-header">📘 Courses & Resources</h2>
 
-    <div class="resource-controls">
-      <input id="resourceSearch" type="text" placeholder="Search by topic, course, module, or keyword (e.g. Monte Carlo, Hubble, Python)" aria-label="Search resources" />
-      <div class="filter-row">
-        <button class="chip active" type="button" data-filter="all">All</button>
-        <button class="chip" type="button" data-filter="simulation">Simulations</button>
-        <button class="chip" type="button" data-filter="notebook">Notebooks</button>
-        <button class="chip" type="button" data-filter="pdf">PDF Notes</button>
-        <button class="chip" type="button" data-filter="lab">Lab Manuals</button>
+  <h2 id="simulations" class="section-header">🤖 AI & Interactive Simulations in Teaching</h2>
+  <ul class="interactive-list">
+    <li class="interactive-card">
+      <span class="card-title">Course-wise AI Simulation Library</span>
+      <p style="margin-bottom: 12px; color: #4a5568; font-size: 0.95em;">
+        Simulations are organized below by course/module for quicker access during lecture and lab sessions.
+      </p>
+
+      <div class="sim-course-grid">
+        <div class="sim-course-box">
+          <span class="course-pill">PHYS4022P · Fundamentals of Astrophysics</span>
+          <ul class="sub-list" style="margin-top: 8px;">
+            <li>
+              <span class="lecture-title">Simulation Hub (all Unit modules)</span>
+              <a href="/resources/AI_simulations/phys4022p_llm_sim_hub.html" class="btn-link" target="_blank">🌐 Open Hub</a>
+            </li>
+            <li>
+              <span class="lecture-title">Unit 1: N-Body Orbits</span>
+              <a href="/resources/AI_simulations/simple_nbody_orbits.html" class="btn-link" target="_blank">🌐 Lab</a>
+            </li>
+            <li>
+              <span class="lecture-title">Unit 2: Blackbody Radiation</span>
+              <a href="/resources/AI_simulations/blackbody_radiation_ai_lab.html" class="btn-link" target="_blank">🌐 Lab</a>
+              <a href="/resources/AI_simulations/blackbody_radiation_ai_core.html" class="btn-link" target="_blank">🧩 Core</a>
+            </li>
+            <li>
+              <span class="lecture-title">Unit 3: H-R Diagram</span>
+              <a href="/resources/AI_simulations/hr_diagram_socratic_lab.html" class="btn-link" target="_blank">🌐 Lab</a>
+              <a href="/resources/AI_simulations/hr_diagram_socratic_core.html" class="btn-link" target="_blank">🧩 Core</a>
+            </li>
+            <li>
+              <span class="lecture-title">Unit 4: Optical Depth & Dust</span>
+              <a href="/resources/AI_simulations/optical_depth_ai_lab.html" class="btn-link" target="_blank">🌐 Lab</a>
+              <a href="/resources/AI_simulations/optical_depth_ai_core.html" class="btn-link" target="_blank">🧩 Core</a>
+            </li>
+            <li>
+              <span class="lecture-title">Unit 5: Hubble Law & Cosmology</span>
+              <a href="/resources/AI_simulations/hubble_law_debate_lab.html" class="btn-link" target="_blank">🌐 Lab</a>
+              <a href="/resources/AI_simulations/hubble_law_debate_core.html" class="btn-link" target="_blank">🧩 Core</a>
+            </li>
+            <li>
+              <span class="lecture-title">Motion Gravity Lab (Bridge Activity)</span>
+              <a href="/resources/AI_simulations/motion_gravity_lab.html" class="btn-link" target="_blank">🌐 Open</a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="sim-course-box">
+          <span class="course-pill">B.Sc. Physics · Semiconductor / Solid-State Concepts</span>
+          <ul class="sub-list" style="margin-top: 8px;">
+            <li>
+              <span class="lecture-title">PN Junction Diode</span>
+              <a href="/resources/AI_simulations/pn-diode.html" class="btn-link" target="_blank">🌐 Open Simulation</a>
+            </li>
+            <li>
+              <span class="lecture-title">Hall Effect</span>
+              <a href="/resources/AI_simulations/hall-effect.html" class="btn-link" target="_blank">🌐 Open Simulation</a>
+            </li>
+            <li>
+              <span class="lecture-title">Quantum Hall Effect</span>
+              <a href="/resources/AI_simulations/quantum-hall-effect.html" class="btn-link" target="_blank">🌐 Open Simulation</a>
+            </li>
+            <li>
+              <span class="lecture-title">Gravity Module (General Interactive Physics)</span>
+              <a href="/resources/AI_simulations/gravity_module.html" class="btn-link" target="_blank">🌐 Open Module</a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="sim-course-box">
+          <span class="course-pill">Computational Astrophysics (M.Sc.) · Visual Explainers</span>
+          <ul class="sub-list" style="margin-top: 8px;">
+            <li>
+              <span class="lecture-title">Lagrangian vs Eulerian Animation</span>
+              <a href="/resources/computational_astrophysics/lag_vs_eul.html" class="btn-link" target="_blank">🌐 Open Simulation</a>
+            </li>
+            <li>
+              <span class="lecture-title">Supernova Shockwave Animation</span>
+              <a href="/resources/computational_astrophysics/supernova_shockwave.html" class="btn-link" target="_blank">🌐 Open Simulation</a>
+            </li>
+            <li>
+              <span class="lecture-title">Supernova Shockwave Animation 1</span>
+              <a href="/resources/computational_astrophysics/shockwave_1.html" class="btn-link" target="_blank">🌐 Open Simulation</a>
+            </li>
+          </ul>
+        </div>
       </div>
-      <div class="meta-line">Showing <span id="resourceCount">0</span> resources</div>
+
+      <p style="font-size: 0.85em; color: #718096; margin-top: 10px; margin-bottom: 0;">
+        <em>*These AI-powered and interactive simulations are grouped course-wise to support concept-first teaching and guided lab activities.*</em>
+      </p>
+    </li>
+  </ul>
+
+  <ul class="interactive-list">
+    <li class="interactive-card">
+      <span class="card-title">Computational Astrophysics (M.Sc.)</span>
+      <details>
+        <summary>View Lecture Notebooks & Materials</summary>
+        <ul class="sub-list">
+          <li>
+            <span class="lecture-title">Lecture 1</span>
+            <div>
+              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational%20Astrophysics%20-%20Lect%201.ipynb" class="btn-link" target="_blank">🌐 View in Browser</a>
+              <a href="/resources/computational_astrophysics/Computational%20Astrophysics%20-%20Lect%201.ipynb" class="btn-link" target="_blank">⬇️ Download .ipynb</a>
+            </div>
+          </li>
+          <li>
+            <span class="lecture-title">Lecture 2: Data Sorting Algorithms</span>
+            <div>
+              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational%20Astrophysics%20Lecture%202_%20Data%20Sorting%20Algorithms%20in%20Python.ipynb" class="btn-link" target="_blank">🌐 View in Browser</a>
+              <a href="/resources/computational_astrophysics/Computational%20Astrophysics%20Lecture%202_%20Data%20Sorting%20Algorithms%20in%20Python.ipynb" class="btn-link" target="_blank">⬇️ Download .ipynb</a>
+            </div>
+          </li>
+          <li>
+            <span class="lecture-title">Lecture 3</span>
+            <div>
+              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational%20Astrophysics%20-%20Lecture%203.ipynb" class="btn-link" target="_blank">🌐 View in Browser</a>
+              <a href="/resources/computational_astrophysics/Computational%20Astrophysics%20-%20Lecture%203.ipynb" class="btn-link" target="_blank">⬇️ Download .ipynb</a>
+            </div>
+          </li>
+          <li>
+            <span class="lecture-title">Lecture 4 & 5</span>
+            <div>
+              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational%20Astrophysics%20-%20Lecture%204%20%26%205.ipynb" class="btn-link" target="_blank">🌐 View in Browser</a>
+              <a href="/resources/computational_astrophysics/Computational%20Astrophysics%20-%20Lecture%204%20%26%205.ipynb" class="btn-link" target="_blank">⬇️ Download .ipynb</a>
+            </div>
+          </li>
+          <li>
+            <span class="lecture-title">Lecture 6</span>
+            <div>
+              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational%20Astrophysics%20Lecture%206.ipynb" class="btn-link" target="_blank">🌐 View in Browser</a>
+              <a href="/resources/computational_astrophysics/Computational%20Astrophysics%20Lecture%206.ipynb" class="btn-link" target="_blank">⬇️ Download .ipynb</a>
+            </div>
+          </li>
+          <li>
+            <span class="lecture-title">Lecture 7</span>
+            <div>
+              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational%20Astrophysics%20Lecture%207.ipynb" class="btn-link" target="_blank">🌐 View in Browser</a>
+              <a href="/resources/computational_astrophysics/Computational%20Astrophysics%20Lecture%207.ipynb" class="btn-link" target="_blank">⬇️ Download .ipynb</a>
+            </div>
+          </li>
+          <li>
+            <span class="lecture-title">Lecture 11: Error Analysis</span>
+            <div>
+              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational%20Astrophysics%20Lect%2011_%20Error%20Analysis.ipynb" class="btn-link" target="_blank">🌐 View in Browser</a>
+              <a href="/resources/computational_astrophysics/Computational%20Astrophysics%20Lect%2011_%20Error%20Analysis.ipynb" class="btn-link" target="_blank">⬇️ Download .ipynb</a>
+            </div>
+          </li>
+          <li>
+            <span class="lecture-title">Lecture 13: ODEs and Euler's Method</span>
+            <div>
+              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational%20Astrophysics%20Lect%2013_%20ODEs%20and%20Euler_s%20Method%20Lecture.ipynb" class="btn-link" target="_blank">🌐 View in Browser</a>
+              <a href="/resources/computational_astrophysics/Computational%20Astrophysics%20Lect%2013_%20ODEs%20and%20Euler_s%20Method%20Lecture.ipynb" class="btn-link" target="_blank">⬇️ Download .ipynb</a>
+            </div>
+          </li>
+          <li>
+            <span class="lecture-title">Lecture 17: PDEs</span>
+            <div>
+              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational_Astrophysics_lecture_17_PDE_.ipynb" class="btn-link" target="_blank">🌐 View in Browser</a>
+              <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_17_PDE_.ipynb" class="btn-link" target="_blank">⬇️ Download .ipynb</a>
+            </div>
+          </li>
+          <li>
+            <span class="lecture-title">Lecture 19</span>
+            <div>
+              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational_Astrophysics_lecture_19.ipynb" class="btn-link" target="_blank">🌐 View in Browser</a>
+              <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_19.ipynb" class="btn-link" target="_blank">⬇️ Download .ipynb</a>
+            </div>
+          </li>
+          <li>
+            <span class="lecture-title">Lecture 20</span>
+            <div>
+              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational_Astrophysics_lecture_20.ipynb" class="btn-link" target="_blank">🌐 View in Browser</a>
+              <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_20.ipynb" class="btn-link" target="_blank">⬇️ Download .ipynb</a>
+            </div>
+          </li>
+          <li>
+            <span class="lecture-title">Lecture 21: Curve Fitting</span>
+            <div>
+              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational_Astrophysics_lecture_21.ipynb" class="btn-link" target="_blank">🌐 View in Browser</a>
+              <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_21.ipynb" class="btn-link" target="_blank">⬇️ Download .ipynb</a>
+            </div>
+          </li>
+          <li>
+            <span class="lecture-title">Lecture 22: Fourier Transforms</span>
+            <div>
+              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational_Astrophysics_lecture_22.ipynb" class="btn-link" target="_blank">🌐 View in Browser</a>
+              <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_22.ipynb" class="btn-link" target="_blank">⬇️ Download .ipynb</a>
+            </div>
+          </li>
+          <li>
+            <span class="lecture-title">Lecture 23: 2 Body Problem</span>
+            <div>
+              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational_Astrophysics_lecture_23.ipynb" class="btn-link" target="_blank">🌐 View in Browser</a>
+              <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_23.ipynb" class="btn-link" target="_blank">⬇️ Download .ipynb</a>
+            </div>
+          </li>
+          <li>
+            <span class="lecture-title">Lecture 24: N Body Problem</span>
+            <div>
+              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational_Astrophysics_lecture_24.ipynb" class="btn-link" target="_blank">🌐 View in Browser</a>
+              <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_24.ipynb" class="btn-link" target="_blank">⬇️ Download .ipynb</a>
+            </div>
+          </li>
+          <li>
+            <span class="lecture-title">Lecture 25A: Monte Carlo Methods</span>
+            <div>
+              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational_Astrophysics_lecture_25A.ipynb" class="btn-link" target="_blank">🌐 View in Browser</a>
+              <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_25A.ipynb" class="btn-link" target="_blank">⬇️ Download .ipynb</a>
+            </div>
+          </li>
+          <li>
+            <span class="lecture-title">Lecture 25B: Monte Carlo Methods</span>
+            <div>
+              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational_Astrophysics_lecture_25.ipynb" class="btn-link" target="_blank">🌐 View in Browser</a>
+              <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_25.ipynb" class="btn-link" target="_blank">⬇️ Download .ipynb</a>
+            </div>
+          </li>
+          <li>
+            <span class="lecture-title">Lecture 26: Shockwave Propagation</span>
+            <div>
+              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational_Astrophysics_lecture_26.ipynb" class="btn-link" target="_blank">🌐 View in Browser</a>
+              <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_26.ipynb" class="btn-link" target="_blank">⬇️ Download .ipynb</a>
+            </div>
+          </li>
+          <li>
+            <span class="lecture-title">Lagrangian vs Eulerian </span>
+            <div>
+              <a href="/resources/computational_astrophysics/lag_vs_eul.html" class="btn-link" target="_blank"> Animation Page</a>
+            </div>
+          </li>
+
+          <li>
+            <span class="lecture-title">Supernova Shockwave Animation</span>
+            <div>
+              <a href="/resources/computational_astrophysics/supernova_shockwave.html" class="btn-link" target="_blank"> Supernova Shockwave Animation</a>
+            </div>
+          </li>
+
+          <li>
+            <span class="lecture-title">Supernova Shockwave Animation 1 </span>
+            <div>
+              <a href="/resources/computational_astrophysics/shockwave_1.html" class="btn-link" target="_blank"> Animation Page</a>
+            </div>
+          </li>
+
+        
+
+
+
+        </ul>
+      </details>
+    </li>
+
+    <li class="interactive-card">
+      <span class="card-title">Computational Techniques (B.Sc. Physics)</span>
+      <div>
+        <a href="/resources/computational_techniques/python_notes.pdf" class="btn-link" target="_blank">📄 Python Notes (PDF)</a>
+        <a href="/resources/computational_techniques/Python_learning/python_notes_updated.ipynb" class="btn-link" target="_blank">📓 Jupyter Notebooks</a>
+        <a href="https://colab.research.google.com/drive/1W0J-ll0QylMYLvjRHqHGANBbj2ApXnIr?usp=sharing" class="btn-link" target="_blank">☁️ Google Colab Link</a>
+      </div>
+      <p style="font-size: 0.85em; color: #718096; margin-top: 10px; margin-bottom: 0;">
+        <em>*Use ctrl+s to save and open Notebooks in Jupyter Lab or VS Code.*</em>
+      </p>
+    </li>
+
+    <li class="interactive-card">
+      <span class="card-title">Laboratory & Specialized Courses</span>
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <div>
+          <strong>Intro to Computational Physics Lab (Int. B.Sc. + M.Sc.):</strong>
+          <a href="/resources/computational_physics_lab/lab_manual_1.pdf" class="btn-link" target="_blank">📄 Lab Manual (PDF)</a>
+        </div>
+        <div>
+          <strong>Learning LaTeX:</strong>
+          <a href="/resources/LearnLaTeX.pdf" class="btn-link" target="_blank">📄 LaTeX Tutorial (PDF)</a>
+        </div>
+        <div>
+          <strong>Computational Physics (M.Sc. Level):</strong>
+          <a href="/resources/computational_physics/Introduction_to_computational_physics_23_May.pdf" class="btn-link" target="_blank">📄 Intro to Computational Physics (PDF)</a>
+        </div>
+        <div>
+          <strong>Observational Astronomy Lab (B.Sc. Physics):</strong>
+          <a href="/resources/observational_astronomy_lab/Observational_Astronomy_Handbook.pdf" class="btn-link" target="_blank">📄 Lab Manual (PDF)</a>
+        </div>
+      </div>
+    </li>
+
+    <li class="interactive-card">
+      <span class="card-title">Fundamentals of Astronomy (B.Sc. Physics)</span>
+      <div>
+        <a href="/resources/fundamentals_of_astronomy/Astronomy_Notes.pdf" class="btn-link" target="_blank">📄 Lecture Notes (PDF)</a>
+        <a href="/resources/fundamentals_of_astronomy/assignment.pdf" class="btn-link" target="_blank">📝 Problem Sets (PDF)</a>
+      </div>
+    </li>
+  </ul>
+
+  <div class="tech-stack-box">
+    💡 <strong>Key Topics Covered:</strong> Numerical integration, solving differential equations, Monte Carlo simulations, and the use of <strong>Linux, Fortran, C++, Gnuplot</strong>, and <strong>LaTeX</strong>.
+  </div>
+
+  <h2 id="courses-taught" class="section-header">📚 Courses Taught</h2>
+  <ul class="grid-container">
+    <li class="grid-card-tech"><strong>Python Programming:</strong> Data structures, logic building, and scientific computing</li>
+    <li class="grid-card-tech"><strong>Fortran Programming:</strong> Fundamentals and numerical applications</li>
+    <li class="grid-card-tech"><strong>C++ Programming:</strong> OOP and scientific modeling</li>
+    <li class="grid-card-tech"><strong>LaTeX for Science:</strong> Scientific writing and document preparation</li>
+    <li class="grid-card-tech"><strong>Computational Physics:</strong> Numerical techniques in physics simulations</li>
+    <li class="grid-card-tech"><strong>Machine Learning in Astronomy:</strong> Hands-on projects using real datasets</li>
+    <li class="grid-card-tech"><strong>Astrophysics:</strong> Stellar evolution, variable stars, cosmology</li>
+    <li class="grid-card-tech"><strong>Astronomy Laboratory:</strong> Observational techniques and simulations</li>
+    <li class="grid-card-tech"><strong>Planetary Science:</strong> Planet formation and solar system dynamics</li>
+    <li class="grid-card-tech"><strong>General Physics Labs:</strong> Mechanics, optics, electromagnetism experiments</li>
+  </ul>
+
+  <h2 id="mentorship" class="section-header">👨‍🏫 Mentorship & Dissertation Guidance</h2>
+  
+  <div class="grid-container" style="margin-bottom: 20px;">
+    <div class="grid-card-mentor">
+      <h3 style="margin-top: 0; color: #44337a; font-size: 1.1em;">Research Mentorship</h3>
+      <p style="margin-bottom: 10px; font-size: 0.9em; color: #553c9a;">Current projects with B.Sc. and M.Sc. students:</p>
+      <ul style="padding-left: 20px; margin-bottom: 0;">
+        <li>RR Lyrae and Cepheid variable star classification</li>
+        <li>Machine learning applications in astronomical time series</li>
+        <li>Photometric data analysis using Python & neural networks</li>
+      </ul>
     </div>
-
-    <div class="course-grid">
-      <article class="course-card">
-        <span class="course-pill">PHYS4022P · Fundamentals of Astrophysics</span>
-        <h3>Simulation-first Unit Modules</h3>
-        <ul class="resource-list">
-          <li class="resource-item resource" data-type="simulation" data-keywords="phys4022p hub astrophysics simulation lab unit modules">
-            <span class="resource-title">Simulation Hub (all units)</span>
-            <div class="resource-actions">
-              <a href="/resources/AI_simulations/phys4022p_llm_sim_hub.html" class="btn-link" target="_blank">Open Hub</a>
-            </div>
-          </li>
-          <li class="resource-item resource" data-type="simulation" data-keywords="n body orbits unit 1">
-            <span class="resource-title">Unit 1: N-Body Orbits</span>
-            <div class="resource-actions"><a href="/resources/AI_simulations/simple_nbody_orbits.html" class="btn-link" target="_blank">Lab</a></div>
-          </li>
-          <li class="resource-item resource" data-type="simulation" data-keywords="blackbody radiation unit 2 core">
-            <span class="resource-title">Unit 2: Blackbody Radiation</span>
-            <div class="resource-actions">
-              <a href="/resources/AI_simulations/blackbody_radiation_ai_lab.html" class="btn-link" target="_blank">Lab</a>
-              <a href="/resources/AI_simulations/blackbody_radiation_ai_core.html" class="btn-link" target="_blank">Core</a>
-            </div>
-          </li>
-          <li class="resource-item resource" data-type="simulation" data-keywords="hr diagram stellar evolution unit 3 core">
-            <span class="resource-title">Unit 3: H-R Diagram</span>
-            <div class="resource-actions">
-              <a href="/resources/AI_simulations/hr_diagram_socratic_lab.html" class="btn-link" target="_blank">Lab</a>
-              <a href="/resources/AI_simulations/hr_diagram_socratic_core.html" class="btn-link" target="_blank">Core</a>
-            </div>
-          </li>
-          <li class="resource-item resource" data-type="simulation" data-keywords="optical depth dust unit 4 core">
-            <span class="resource-title">Unit 4: Optical Depth & Dust</span>
-            <div class="resource-actions">
-              <a href="/resources/AI_simulations/optical_depth_ai_lab.html" class="btn-link" target="_blank">Lab</a>
-              <a href="/resources/AI_simulations/optical_depth_ai_core.html" class="btn-link" target="_blank">Core</a>
-            </div>
-          </li>
-          <li class="resource-item resource" data-type="simulation" data-keywords="hubble law cosmology unit 5 core">
-            <span class="resource-title">Unit 5: Hubble Law & Cosmology</span>
-            <div class="resource-actions">
-              <a href="/resources/AI_simulations/hubble_law_debate_lab.html" class="btn-link" target="_blank">Lab</a>
-              <a href="/resources/AI_simulations/hubble_law_debate_core.html" class="btn-link" target="_blank">Core</a>
-            </div>
-          </li>
-          <li class="resource-item resource" data-type="simulation" data-keywords="motion gravity bridge activity">
-            <span class="resource-title">Motion Gravity Lab (Bridge Activity)</span>
-            <div class="resource-actions"><a href="/resources/AI_simulations/motion_gravity_lab.html" class="btn-link" target="_blank">Open</a></div>
-          </li>
-        </ul>
-      </article>
-
-      <article class="course-card">
-        <span class="course-pill">Computational Astrophysics (M.Sc.)</span>
-        <h3>Lecture Notebooks + Visual Explainers</h3>
-        <details class="modern" open>
-          <summary>Core Lecture Notebook Series</summary>
-          <ul class="resource-list">
-            <li class="resource-item resource" data-type="notebook" data-keywords="lecture 1 notebook computational astrophysics">
-              <span class="resource-title">Lecture 1</span>
-              <div class="resource-actions">
-                <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational%20Astrophysics%20-%20Lect%201.ipynb" class="btn-link" target="_blank">View</a>
-                <a href="/resources/computational_astrophysics/Computational%20Astrophysics%20-%20Lect%201.ipynb" class="btn-link" target="_blank">Download</a>
-              </div>
-            </li>
-            <li class="resource-item resource" data-type="notebook" data-keywords="lecture 2 sorting algorithms python">
-              <span class="resource-title">Lecture 2: Data Sorting Algorithms</span>
-              <div class="resource-actions">
-                <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational%20Astrophysics%20Lecture%202_%20Data%20Sorting%20Algorithms%20in%20Python.ipynb" class="btn-link" target="_blank">View</a>
-                <a href="/resources/computational_astrophysics/Computational%20Astrophysics%20Lecture%202_%20Data%20Sorting%20Algorithms%20in%20Python.ipynb" class="btn-link" target="_blank">Download</a>
-              </div>
-            </li>
-            <li class="resource-item resource" data-type="notebook" data-keywords="lecture 3 lecture 4 lecture 5 lecture 6 lecture 7">
-              <span class="resource-title">Lecture 3-7 Series</span>
-              <div class="resource-actions">
-                <a href="/resources/computational_astrophysics/Computational%20Astrophysics%20-%20Lecture%203.ipynb" class="btn-link" target="_blank">L3</a>
-                <a href="/resources/computational_astrophysics/Computational%20Astrophysics%20-%20Lecture%204%20%26%205.ipynb" class="btn-link" target="_blank">L4-5</a>
-                <a href="/resources/computational_astrophysics/Computational%20Astrophysics%20Lecture%206.ipynb" class="btn-link" target="_blank">L6</a>
-                <a href="/resources/computational_astrophysics/Computational%20Astrophysics%20Lecture%207.ipynb" class="btn-link" target="_blank">L7</a>
-              </div>
-            </li>
-            <li class="resource-item resource" data-type="notebook" data-keywords="lecture 11 error analysis lecture 13 odes euler lecture 17 pde">
-              <span class="resource-title">Methods Series: Error, ODE, PDE</span>
-              <div class="resource-actions">
-                <a href="/resources/computational_astrophysics/Computational%20Astrophysics%20Lect%2011_%20Error%20Analysis.ipynb" class="btn-link" target="_blank">L11</a>
-                <a href="/resources/computational_astrophysics/Computational%20Astrophysics%20Lect%2013_%20ODEs%20and%20Euler_s%20Method%20Lecture.ipynb" class="btn-link" target="_blank">L13</a>
-                <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_17_PDE_.ipynb" class="btn-link" target="_blank">L17</a>
-              </div>
-            </li>
-            <li class="resource-item resource" data-type="notebook" data-keywords="lecture 19 lecture 20 lecture 21 lecture 22 lecture 23 lecture 24 lecture 25 lecture 26">
-              <span class="resource-title">Advanced Lecture Cluster (L19-L26)</span>
-              <div class="resource-actions">
-                <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_19.ipynb" class="btn-link" target="_blank">L19</a>
-                <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_20.ipynb" class="btn-link" target="_blank">L20</a>
-                <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_21.ipynb" class="btn-link" target="_blank">L21</a>
-                <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_22.ipynb" class="btn-link" target="_blank">L22</a>
-                <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_23.ipynb" class="btn-link" target="_blank">L23</a>
-                <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_24.ipynb" class="btn-link" target="_blank">L24</a>
-                <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_25A.ipynb" class="btn-link" target="_blank">L25A</a>
-                <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_25.ipynb" class="btn-link" target="_blank">L25B</a>
-                <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_26.ipynb" class="btn-link" target="_blank">L26</a>
-              </div>
-            </li>
-          </ul>
-        </details>
-
-        <details class="modern">
-          <summary>Visual Explainer Simulations</summary>
-          <ul class="resource-list">
-            <li class="resource-item resource" data-type="simulation" data-keywords="lagrangian eulerian animation">
-              <span class="resource-title">Lagrangian vs Eulerian Animation</span>
-              <div class="resource-actions"><a href="/resources/computational_astrophysics/lag_vs_eul.html" class="btn-link" target="_blank">Open</a></div>
-            </li>
-            <li class="resource-item resource" data-type="simulation" data-keywords="supernova shockwave">
-              <span class="resource-title">Supernova Shockwave Animation</span>
-              <div class="resource-actions"><a href="/resources/computational_astrophysics/supernova_shockwave.html" class="btn-link" target="_blank">Open</a></div>
-            </li>
-            <li class="resource-item resource" data-type="simulation" data-keywords="shockwave 1">
-              <span class="resource-title">Supernova Shockwave Animation 1</span>
-              <div class="resource-actions"><a href="/resources/computational_astrophysics/shockwave_1.html" class="btn-link" target="_blank">Open</a></div>
-            </li>
-          </ul>
-        </details>
-      </article>
-
-      <article class="course-card">
-        <span class="course-pill">B.Sc. Physics + Applied Labs</span>
-        <h3>Core Notes, Labs, and Module Resources</h3>
-        <ul class="resource-list">
-          <li class="resource-item resource" data-type="pdf" data-keywords="python notes computational techniques">
-            <span class="resource-title">Computational Techniques: Python Notes</span>
-            <div class="resource-actions">
-              <a href="/resources/computational_techniques/python_notes.pdf" class="btn-link" target="_blank">PDF</a>
-              <a href="/resources/computational_techniques/Python_learning/python_notes_updated.ipynb" class="btn-link" target="_blank">Notebook</a>
-              <a href="https://colab.research.google.com/drive/1W0J-ll0QylMYLvjRHqHGANBbj2ApXnIr?usp=sharing" class="btn-link" target="_blank">Colab</a>
-            </div>
-          </li>
-          <li class="resource-item resource" data-type="lab" data-keywords="lab manual computational physics lab">
-            <span class="resource-title">Intro to Computational Physics Lab Manual</span>
-            <div class="resource-actions"><a href="/resources/computational_physics_lab/lab_manual_1.pdf" class="btn-link" target="_blank">Open PDF</a></div>
-          </li>
-          <li class="resource-item resource" data-type="pdf" data-keywords="latex tutorial">
-            <span class="resource-title">Learning LaTeX Tutorial</span>
-            <div class="resource-actions"><a href="/resources/LearnLaTeX.pdf" class="btn-link" target="_blank">Open PDF</a></div>
-          </li>
-          <li class="resource-item resource" data-type="pdf" data-keywords="computational physics msc introduction">
-            <span class="resource-title">Computational Physics (M.Sc.) Intro Notes</span>
-            <div class="resource-actions"><a href="/resources/computational_physics/Introduction_to_computational_physics_23_May.pdf" class="btn-link" target="_blank">Open PDF</a></div>
-          </li>
-          <li class="resource-item resource" data-type="lab" data-keywords="observational astronomy handbook">
-            <span class="resource-title">Observational Astronomy Lab Handbook</span>
-            <div class="resource-actions"><a href="/resources/observational_astronomy_lab/Observational_Astronomy_Handbook.pdf" class="btn-link" target="_blank">Open PDF</a></div>
-          </li>
-          <li class="resource-item resource" data-type="pdf" data-keywords="fundamentals astronomy notes assignment">
-            <span class="resource-title">Fundamentals of Astronomy (Notes + Assignment)</span>
-            <div class="resource-actions">
-              <a href="/resources/fundamentals_of_astronomy/Astronomy_Notes.pdf" class="btn-link" target="_blank">Notes</a>
-              <a href="/resources/fundamentals_of_astronomy/assignment.pdf" class="btn-link" target="_blank">Assignment</a>
-            </div>
-          </li>
-          <li class="resource-item resource" data-type="simulation" data-keywords="pn diode hall quantum hall gravity module">
-            <span class="resource-title">Semiconductor / Solid-State Simulations</span>
-            <div class="resource-actions">
-              <a href="/resources/AI_simulations/pn-diode.html" class="btn-link" target="_blank">PN Diode</a>
-              <a href="/resources/AI_simulations/hall-effect.html" class="btn-link" target="_blank">Hall Effect</a>
-              <a href="/resources/AI_simulations/quantum-hall-effect.html" class="btn-link" target="_blank">Quantum Hall</a>
-              <a href="/resources/AI_simulations/gravity_module.html" class="btn-link" target="_blank">Gravity Module</a>
-            </div>
-          </li>
-        </ul>
-      </article>
+    
+    <div class="grid-card-mentor">
+      <h3 style="margin-top: 0; color: #44337a; font-size: 1.1em;">Dissertation Guidance</h3>
+      <ul style="padding-left: 20px; margin-bottom: 0;">
+        <li style="margin-bottom: 8px;"><strong>Madhumita Singh:</strong> Timing and Spectral Analysis of Low Mass X-ray Binaries</li>
+        <li style="margin-bottom: 8px;"><strong>Aniket Prakash:</strong> Theoretical Modelling of Variable stars using MESA</li>
+        <li style="margin-bottom: 8px;"><strong>Shagun Thakur:</strong> Analysis of variable stars in the Gaia DR3 Era</li>
+        <!-- <li style="margin-bottom: 8px;"><strong>Atharva Bhatele:</strong> Multiwavelength study of RR Lyrae stars</li> -->
+        <li style="margin-bottom: 8px;"><strong>Divya Krishna:</strong> Precision Distance Determination of the SMC via Multiphase P-L Relations using the LMC as a Calibrator Galaxy </li>
+        <li style="margin-bottom: 8px;"><strong>Rushil Soni:</strong> Age and Metallicity of the open cluster Berkely 6 </li>
+        <li style="margin-bottom: 8px;"><strong>Atharva Bhatele:</strong> Multiwavelength study of RR Lyrae stars</li>
+        <li><strong>Neelesh:</strong> Exoplanet parameter extraction using ExoFAST</li>
+      </ul>
     </div>
-  </section>
+  </div>
 
-  <section class="section" id="simulations">
-    <h2>Simulation-Driven Teaching Strategy</h2>
-    <p class="section-intro">
-      Simulations are integrated to move from passive observation to active reasoning. Each module connects
-      conceptual explanation, computational experiment, and assessment-oriented reflection.
-    </p>
-    <div class="topic-grid">
-      <article class="topic-card">
-        <h3>Concept-First Learning Path</h3>
-        <ul>
-          <li>Theory checkpoint before each interactive module</li>
-          <li>Prompt-driven exploration with scenario changes</li>
-          <li>Immediate reinforcement using adaptive quiz workflows</li>
-        </ul>
-      </article>
-      <article class="topic-card">
-        <h3>Computational Skills Embedded</h3>
-        <ul>
-          <li>Numerical integration and ODE/PDE intuition</li>
-          <li>Scientific plotting and interpretation</li>
-          <li>Error analysis and model comparison habits</li>
-        </ul>
-      </article>
-      <article class="topic-card">
-        <h3>Tools and Ecosystem</h3>
-        <ul>
-          <li>Python notebooks and cloud-first access paths</li>
-          <li>Simulation artifacts for classroom and self-study</li>
-          <li>Linux, Fortran, C++, Gnuplot, and LaTeX pipelines</li>
-        </ul>
-      </article>
-    </div>
-  </section>
-
-  <section class="section" id="courses">
-    <h2>Courses Taught</h2>
-    <p class="section-intro">Interdisciplinary coverage across foundational programming, computational methods, and astrophysical applications.</p>
-    <div class="topic-grid">
-      <article class="topic-card"><h3>Python Programming</h3><p>Data structures, logic building, and scientific computing.</p></article>
-      <article class="topic-card"><h3>Fortran Programming</h3><p>Fundamentals and numerical applications in scientific problems.</p></article>
-      <article class="topic-card"><h3>C++ Programming</h3><p>Object-oriented methods and modeling workflows.</p></article>
-      <article class="topic-card"><h3>LaTeX for Science</h3><p>Scientific writing and reproducible documentation practices.</p></article>
-      <article class="topic-card"><h3>Computational Physics</h3><p>Numerical methods applied to real physics systems.</p></article>
-      <article class="topic-card"><h3>Machine Learning in Astronomy</h3><p>Hands-on analysis using real observational datasets.</p></article>
-      <article class="topic-card"><h3>Astrophysics and Cosmology</h3><p>Stellar evolution, variable stars, and cosmic-scale structures.</p></article>
-      <article class="topic-card"><h3>Astronomy and Physics Labs</h3><p>Observation, experimentation, and simulation-enhanced interpretation.</p></article>
-    </div>
-  </section>
-
-  <section class="section" id="mentorship">
-    <h2>Mentorship and Dissertation Guidance</h2>
-    <p class="section-intro">Research supervision focused on rigorous analysis, computational pipelines, and publication-ready thinking.</p>
-    <div class="mentor-grid">
-      <article class="mentor-card">
-        <h3>Current Mentorship Themes</h3>
-        <ul>
-          <li>RR Lyrae and Cepheid variable star classification</li>
-          <li>Machine learning in astronomical time series</li>
-          <li>Photometric data analysis with neural-network tools</li>
-        </ul>
-      </article>
-      <article class="mentor-card">
-        <h3>Dissertation Guidance Portfolio</h3>
-        <ul>
-          <li><strong>Madhumita Singh:</strong> Timing and spectral analysis of low-mass X-ray binaries</li>
-          <li><strong>Aniket Prakash:</strong> Theoretical modelling of variable stars using MESA</li>
-          <li><strong>Shagun Thakur:</strong> Variable-star analysis in the Gaia DR3 era</li>
-          <li><strong>Divya Krishna:</strong> SMC distance calibration via multiphase P-L relations</li>
-          <li><strong>Rushil Soni:</strong> Age and metallicity of open cluster Berkeley 6</li>
-          <li><strong>Atharva Bhatele:</strong> Multiwavelength study of RR Lyrae stars</li>
-          <li><strong>Neelesh:</strong> Exoplanet parameter extraction with ExoFAST</li>
-        </ul>
-      </article>
-    </div>
-  </section>
-
-  <section class="final-cta" id="contact">
-    <h2>Let's Build Your Next Academic Project</h2>
-    <p>
-      Interested in thesis work or guided projects in astrophysics, computational science, or data-intensive astronomy?
-      Reach out to discuss scope, timeline, and technical direction.
-    </p>
-    <div class="quick-actions" style="justify-content:center;">
-      <a href="/about/" class="btn-link">View Profile</a>
-      <a href="/" class="btn-link secondary">Back to Home</a>
-    </div>
-  </section>
+  <div class="contact-note">
+    🚀 If you’re a student interested in working on a project or thesis related to astrophysics, computation, or data science, feel free to get in touch!
+  </div>
 
 </div>
-
-<script>
-  (function () {
-    var searchInput = document.getElementById("resourceSearch");
-    var chips = Array.prototype.slice.call(document.querySelectorAll(".chip[data-filter]"));
-    var resources = Array.prototype.slice.call(document.querySelectorAll(".resource"));
-    var countNode = document.getElementById("resourceCount");
-    var activeFilter = "all";
-
-    function applyFilter() {
-      var query = (searchInput && searchInput.value ? searchInput.value : "").toLowerCase().trim();
-      var visible = 0;
-
-      resources.forEach(function (node) {
-        var type = (node.getAttribute("data-type") || "").toLowerCase();
-        var keywords = (node.getAttribute("data-keywords") || "").toLowerCase();
-        var title = (node.textContent || "").toLowerCase();
-
-        var typeMatch = activeFilter === "all" || type === activeFilter;
-        var textMatch = !query || keywords.indexOf(query) !== -1 || title.indexOf(query) !== -1;
-        var show = typeMatch && textMatch;
-
-        node.classList.toggle("is-hidden", !show);
-        if (show) visible += 1;
-      });
-
-      if (countNode) countNode.textContent = String(visible);
-    }
-
-    chips.forEach(function (chip) {
-      chip.addEventListener("click", function () {
-        activeFilter = chip.getAttribute("data-filter") || "all";
-        chips.forEach(function (c) { c.classList.remove("active"); });
-        chip.classList.add("active");
-        applyFilter();
-      });
-    });
-
-    if (searchInput) searchInput.addEventListener("input", applyFilter);
-    applyFilter();
-
-    var sections = Array.prototype.slice.call(document.querySelectorAll("section[id]"));
-    var navLinks = Array.prototype.slice.call(document.querySelectorAll(".nav-link"));
-
-    function activateNav() {
-      var y = window.scrollY + 120;
-      var current = sections[0] ? sections[0].id : "";
-      sections.forEach(function (section) {
-        if (section.offsetTop <= y) current = section.id;
-      });
-      navLinks.forEach(function (link) {
-        var href = link.getAttribute("href") || "";
-        link.classList.toggle("active", href === "#" + current);
-      });
-    }
-
-    window.addEventListener("scroll", activateNav, { passive: true });
-    activateNav();
-  })();
-</script>
