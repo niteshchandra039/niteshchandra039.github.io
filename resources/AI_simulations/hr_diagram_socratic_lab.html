@@ -1,0 +1,1360 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="H-R Diagram and Stellar Evolution Simulator - Fundamentals of Astrophysics interactive learning module." />
+  <meta name="keywords" content="H-R diagram, stellar evolution, main sequence, giant, astrophysics simulation" />
+  <meta name="author" content="Dr. Nitesh Kumar, UPES - Creator and Maintainer" />
+  <!-- LMS: embed as an iframe or SCORM package wrapping this standalone HTML file -->
+  <title>H-R Diagram Stellar Evolution Simulator | Fundamentals of Astrophysics</title>
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <script>
+    window.MathJax = { tex: { inlineMath: [['\\(','\\)'], ['$', '$']] } };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <style>
+    /* === Design tokens === */
+    :root {
+      --bg:      #070d1a;
+      --surface: rgba(11,22,48,.88);
+      --card:    rgba(17,32,66,.72);
+      --border:  rgba(89,208,255,.15);
+      --muted:   #8fb5d9;
+      --text:    #e8f2ff;
+      --accent:  #59d0ff;
+      --accent2: #ffad6d;
+      --green:   #63e6a0;
+      --red:     #ff7070;
+      --tab-h:   48px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html,body{
+      height:100%;
+      font-family:"Space Grotesk",system-ui,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 12% 18%,rgba(89,208,255,.18),transparent 35%),
+        radial-gradient(circle at 85% 80%,rgba(255,173,109,.15),transparent 34%),
+        linear-gradient(165deg,#030814,#081a36 55%,#0b2246);
+      overflow:hidden;
+    }
+
+    /* === Login modal === */
+    #loginOverlay{
+      position:fixed;inset:0;z-index:9999;
+      background:rgba(3,8,20,.92);
+      display:flex;align-items:center;justify-content:center;
+      backdrop-filter:blur(6px);
+    }
+    #loginOverlay.hidden{display:none}
+    .loginBox{
+      background:var(--card);border:1px solid var(--border);
+      border-radius:14px;padding:36px 40px;
+      max-width:420px;width:92%;
+      box-shadow:0 24px 64px rgba(0,0,0,.7);text-align:center;
+    }
+    .loginBox h2{font-size:22px;color:var(--accent);margin-bottom:6px}
+    .loginBox p{font-size:13px;color:var(--muted);margin-bottom:24px}
+    .loginBox label{font-size:13px;color:var(--muted);text-align:left;display:block;margin-bottom:4px}
+    .loginBox input{
+      width:100%;padding:10px 12px;border-radius:8px;
+      border:1px solid #355b87;background:#0a1730;color:#eaf2ff;
+      font-size:14px;margin-bottom:14px;
+    }
+    .loginBox button{
+      width:100%;padding:12px;border-radius:8px;border:0;
+      background:linear-gradient(180deg,#2d9dd6,#1d6fa4);
+      color:#fff;font-weight:700;font-size:15px;cursor:pointer;transition:opacity .2s;
+    }
+    .loginBox button:hover{opacity:.88}
+    .loginBox .skip{margin-top:12px;font-size:12px;color:var(--muted);cursor:pointer}
+    .loginBox .skip:hover{color:var(--accent)}
+    .loginBox .skip.disabled{opacity:.5;cursor:not-allowed}
+    .loginBox .skip.disabled:hover{color:var(--muted)}
+    .loginBox .aiCredit{
+      margin-top:18px;font-size:11px;color:rgba(143,181,217,.6);
+      border-top:1px solid var(--border);padding-top:10px;
+    }
+
+    /* === App shell === */
+    .app{height:100vh;display:flex;flex-direction:column}
+
+    /* === Header === */
+    header{
+      flex-shrink:0;padding:8px 20px;
+      background:rgba(5,12,28,.82);border-bottom:1px solid var(--border);
+      display:flex;align-items:center;justify-content:space-between;
+      backdrop-filter:blur(6px);
+    }
+    header .titleBlock{display:flex;flex-direction:column}
+    header h1{font-size:16px;color:var(--accent);font-weight:700;line-height:1.2}
+    header .subtitle{font-size:11px;color:var(--muted)}
+    #studentIdentityLine{
+      margin-top:2px;font-size:11px;color:var(--text);
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+      max-width:74vw;
+    }
+    #studentBadge{
+      background:rgba(89,208,255,.1);border:1px solid var(--border);
+      border-radius:8px;padding:5px 12px;font-size:12px;color:var(--accent);cursor:pointer;
+    }
+    #studentBadge:hover{background:rgba(89,208,255,.2)}
+
+    /* === Tab bar === */
+    .tabBar{
+      flex-shrink:0;display:flex;align-items:stretch;
+      background:rgba(6,14,32,.7);border-bottom:1px solid var(--border);
+      padding:0 16px;gap:4px;overflow-x:auto;
+    }
+    .tabBar button{
+      background:none;border:none;border-bottom:3px solid transparent;
+      color:var(--muted);font-family:inherit;font-size:13px;font-weight:600;
+      padding:0 16px;height:var(--tab-h);cursor:pointer;white-space:nowrap;
+      transition:color .2s,border-color .2s;
+    }
+    .tabBar button:hover{color:var(--accent)}
+    .tabBar button.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+    /* === Tab panels === */
+    .tabContent{flex:1;overflow:hidden;position:relative}
+    .tabPanel{position:absolute;inset:0;display:none;overflow-y:auto;padding:20px}
+    .tabPanel.active{display:flex;flex-direction:column;gap:16px}
+    #tab-sim.active{
+      padding:12px;display:grid;
+      grid-template-columns:330px minmax(0,1fr) 320px;gap:12px;
+    }
+
+    /* === Shared card === */
+    .card{
+      background:var(--card);border:1px solid var(--border);
+      border-radius:12px;padding:18px 22px;backdrop-filter:blur(4px);
+    }
+    .card h2{font-size:16px;font-weight:700;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+    .card h2 .icon{font-size:18px}
+    .card h3{font-size:14px;color:var(--accent2);margin:14px 0 6px}
+    .card p,.card li{font-size:13.5px;color:var(--muted);line-height:1.75}
+    .card ul,.card ol{padding-left:20px}
+    .card ul li,.card ol li{margin-bottom:5px}
+    .card em{color:var(--text);font-style:normal;font-family:"IBM Plex Mono",monospace;font-size:12.5px}
+
+    .eqBox{
+      background:rgba(89,208,255,.07);border-left:3px solid var(--accent);
+      border-radius:6px;padding:10px 16px;margin:10px 0;
+      font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--text);line-height:1.8;
+    }
+    .theoryGrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    @media(max-width:900px){.theoryGrid{grid-template-columns:1fr}}
+
+    /* === Simulation panel === */
+    .simPanel{display:flex;flex-direction:column;gap:8px;overflow-y:auto}
+    .simSection{
+      background:var(--card);border:1px solid var(--border);
+      border-radius:10px;padding:10px 12px;
+    }
+    .simSection .kicker{
+      font-size:11px;color:var(--accent);font-weight:600;
+      text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;
+    }
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+    .simSection label{font-size:11.5px;color:var(--muted);display:block;margin-bottom:3px}
+    .simSection input,.simSection select{
+      width:100%;border-radius:6px;border:1px solid #355b87;
+      background:#0a1730;color:#eaf2ff;padding:6px 8px;font-size:12px;
+    }
+    input[type=range]{accent-color:var(--accent)}
+    .row{display:flex;gap:6px;flex-wrap:wrap}
+    .simBtn{
+      border:0;border-radius:7px;padding:7px 11px;
+      background:linear-gradient(180deg,#2d9dd6,#1d6fa4);
+      color:#fff;font-weight:600;cursor:pointer;font-size:12px;
+      font-family:inherit;transition:opacity .15s;
+    }
+    .simBtn:hover{opacity:.85}
+    .simBtn.danger{background:linear-gradient(180deg,#c94040,#8c2a2a)}
+    .mono{
+      font-family:"IBM Plex Mono",monospace;font-size:12px;
+      background:rgba(89,208,255,.1);border-radius:6px;padding:4px 7px;
+    }
+    .checkRow{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+    .checkRow input[type=checkbox]{accent-color:var(--accent)}
+
+    /* === Canvas === */
+    .simWrap{
+      position:relative;background:#060f22;
+      border-radius:10px;border:1px solid var(--border);
+      overflow:hidden;min-height:400px;
+    }
+    #canvas{width:100%;height:100%;display:block;cursor:default}
+    #overlay{
+      position:absolute;right:12px;top:12px;
+      background:rgba(4,10,26,.78);border:1px solid var(--border);
+      border-radius:8px;padding:10px 12px;font-size:12px;color:var(--muted);line-height:1.9;
+    }
+    #overlay button{
+      margin-top:6px;width:100%;padding:3px 6px;font-size:11px;
+      background:rgba(89,208,255,.1);border:1px solid var(--accent);
+      border-radius:4px;color:var(--accent);cursor:pointer;font-family:inherit;
+    }
+    #overlay button:hover{background:rgba(89,208,255,.25)}
+
+    .simInsights{display:flex;flex-direction:column;gap:8px;overflow-y:auto}
+    .graphWrap{
+      background:rgba(6,15,34,.82);border:1px solid var(--border);
+      border-radius:8px;padding:10px;
+    }
+    #liveGraph{width:100%;height:190px;display:block;background:#081733;border-radius:6px}
+    .metricGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .metricBox{
+      border:1px solid var(--border);border-radius:7px;padding:8px;
+      background:rgba(89,208,255,.06);
+    }
+    .metricBox .k{font-size:11px;color:var(--muted)}
+    .metricBox .v{font-size:12px;color:var(--text);font-family:"IBM Plex Mono",monospace;margin-top:4px}
+
+    #tutorModal{
+      position:fixed;inset:0;z-index:10001;
+      display:none;align-items:center;justify-content:center;
+      background:rgba(2,8,20,.8);backdrop-filter:blur(4px);
+    }
+    #tutorModal.show{display:flex}
+    .tutorCard{
+      width:min(760px,94vw);max-height:86vh;overflow:auto;
+      background:var(--card);border:1px solid var(--border);border-radius:12px;
+      box-shadow:0 24px 64px rgba(0,0,0,.6);
+    }
+    .tutorHead{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:14px 16px;border-bottom:1px solid var(--border);
+    }
+    .tutorHead h3{font-size:15px;color:var(--accent)}
+    #closeTutor{
+      border:1px solid var(--border);background:rgba(89,208,255,.12);color:var(--accent);
+      border-radius:6px;padding:5px 8px;cursor:pointer;font-size:12px;
+    }
+    #tutorBody{padding:14px 16px;font-size:13px;color:var(--muted);line-height:1.7;white-space:pre-wrap}
+
+    /* === Data Export tab === */
+    .exportGrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    @media(max-width:800px){.exportGrid{grid-template-columns:1fr}}
+    .statBox{
+      background:rgba(89,208,255,.06);border:1px solid var(--border);
+      border-radius:8px;padding:14px 18px;text-align:center;
+    }
+    .statBox .statVal{font-family:"IBM Plex Mono",monospace;font-size:26px;color:var(--accent);font-weight:600}
+    .statBox .statLabel{font-size:12px;color:var(--muted);margin-top:4px}
+    .dlBtn{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:11px 20px;border-radius:9px;border:0;cursor:pointer;
+      font-family:inherit;font-size:14px;font-weight:600;transition:opacity .15s;
+    }
+    .dlBtn:hover{opacity:.85}
+    .dlBtn.primary  {background:linear-gradient(135deg,#1d9cd4,#115882);color:#fff}
+    .dlBtn.secondary{background:rgba(99,230,160,.15);border:1px solid var(--green);color:var(--green)}
+    .dlBtn.tertiary {background:rgba(255,173,109,.12);border:1px solid var(--accent2);color:var(--accent2)}
+
+    .tableWrap{max-height:260px;overflow-y:auto;border-radius:8px;border:1px solid var(--border);font-size:11px}
+    table{width:100%;border-collapse:collapse}
+    th{background:rgba(89,208,255,.12);color:var(--accent);padding:6px 10px;text-align:left;position:sticky;top:0;font-size:11px}
+    td{padding:5px 10px;border-top:1px solid rgba(255,255,255,.04);color:var(--muted)}
+    tr:hover td{background:rgba(255,255,255,.04)}
+
+    /* === Objectives tab === */
+    .objGrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    @media(max-width:800px){.objGrid{grid-template-columns:1fr}}
+    .badge{display:inline-block;font-size:11px;font-weight:600;padding:2px 9px;border-radius:20px;margin-bottom:10px}
+    .badge.blue {background:rgba(89,208,255,.15);color:var(--accent);border:1px solid rgba(89,208,255,.3)}
+    .badge.green{background:rgba(99,230,160,.15);color:var(--green);border:1px solid rgba(99,230,160,.3)}
+    .badge.amber{background:rgba(255,173,109,.15);color:var(--accent2);border:1px solid rgba(255,173,109,.3)}
+    .checkList{list-style:none;padding:0}
+    .checkList li{
+      display:flex;gap:10px;align-items:flex-start;
+      font-size:13.5px;color:var(--muted);line-height:1.6;
+      padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);
+    }
+    .checkList li:last-child{border-bottom:none}
+    .checkList li .tick{color:var(--green);font-size:14px;flex-shrink:0}
+
+    /* === Quiz tab === */
+    .quizCard h3{font-size:14px;color:var(--accent2);margin-bottom:8px}
+    .quizQ{padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+    .quizQ:last-child{border-bottom:none}
+    .quizQ p{font-size:13px;color:var(--text);margin-bottom:8px}
+    .quizQ label{display:block;font-size:12.5px;color:var(--muted);margin:4px 0;cursor:pointer}
+    .quizTools{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;margin:10px 0 12px}
+    .quizTools input{
+      width:100%;border-radius:6px;border:1px solid #355b87;
+      background:#0a1730;color:#eaf2ff;padding:8px 10px;font-size:13px;
+    }
+    .quizHint{font-size:12px;color:var(--muted);margin:6px 0 2px}
+    .quizResult{
+      margin-top:12px;padding:10px;border-radius:8px;
+      background:rgba(89,208,255,.1);border:1px solid var(--border);
+      font-size:13px;color:var(--text);
+    }
+
+    /* === References tab === */
+    .refItem{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+    .refNum{
+      width:28px;height:28px;border-radius:50%;
+      background:rgba(89,208,255,.12);color:var(--accent);
+      font-size:12px;font-weight:700;flex-shrink:0;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .refBody{flex:1}
+    .refBody .refTitle{font-size:14px;color:var(--text);font-weight:600}
+    .refBody .refMeta{font-size:12px;color:var(--muted);margin-top:3px}
+    .refBody a.refLink{
+      display:inline-flex;align-items:center;gap:5px;
+      font-size:12px;color:var(--accent);margin-top:5px;text-decoration:none;
+      border:1px solid rgba(89,208,255,.3);padding:3px 10px;border-radius:5px;transition:background .2s;
+    }
+    .refBody a.refLink:hover{background:rgba(89,208,255,.12)}
+
+    /* === Footer === */
+    footer{
+      flex-shrink:0;padding:7px 20px;
+      background:rgba(3,8,18,.82);border-top:1px solid var(--border);
+      display:flex;align-items:center;justify-content:space-between;
+      font-size:11px;color:var(--muted);backdrop-filter:blur(4px);
+    }
+    footer .aiTag{
+      background:rgba(255,173,109,.12);border:1px solid rgba(255,173,109,.3);
+      color:var(--accent2);padding:3px 10px;border-radius:20px;font-weight:600;font-size:11px;
+    }
+
+    @media(max-width:1280px){
+      #tab-sim.active{grid-template-columns:300px minmax(0,1fr);grid-template-rows:auto auto}
+      .simInsights{grid-column:1 / -1}
+    }
+    @media(max-width:980px){
+      #tab-sim.active{grid-template-columns:1fr;grid-template-rows:auto auto auto;overflow-y:auto}
+      .simWrap{min-height:380px}
+    }
+    ::-webkit-scrollbar{width:6px;height:6px}
+    ::-webkit-scrollbar-track{background:transparent}
+    ::-webkit-scrollbar-thumb{background:rgba(89,208,255,.25);border-radius:3px}
+    .infoAlert{
+      background:rgba(89,208,255,.08);border:1px solid rgba(89,208,255,.25);
+      border-radius:8px;padding:10px 14px;font-size:13px;color:var(--muted);
+    }
+    .infoAlert strong{color:var(--accent)}
+  </style>
+</head>
+<body>
+
+<!-- LOGIN MODAL -->
+<div id="loginOverlay">
+  <div class="loginBox">
+    <h2>&#x269B; H-R Diagram Stellar Evolution Simulator</h2>
+    <p>Computational Astrophysics &middot; Interactive Learning Module<br>Please enter your details to continue.</p>
+    <label for="loginName">Full Name</label>
+    <input id="loginName" type="text" placeholder="e.g. Priya Sharma" autocomplete="name" />
+    <label for="loginID">Student / Roll Number</label>
+    <input id="loginID" type="text" placeholder="e.g. 2023PHY042" autocomplete="off" />
+    <button id="loginBtn">Enter Simulator &#x2192;</button>
+    <div class="skip disabled" id="skipLogin">Guest mode disabled (student login required)</div>
+    <div class="aiCredit">Creator and Maintainer: Dr. Nitesh Kumar, UPES</div>
+  </div>
+</div>
+
+<!-- APP SHELL -->
+<div class="app" id="appShell" style="visibility:hidden">
+
+  <header>
+    <div class="titleBlock">
+      <h1>H-R Diagram Stellar Evolution Simulator</h1>
+      <span class="subtitle">Fundamentals of Astrophysics (PHYS4022P) &middot; Unit 3: Stellar Evolution &middot; Uniform Simulation Architecture</span>
+      <span id="studentIdentityLine">Student: Guest | SAPID: NA | Topic: Stellar Evolution and H-R Diagram</span>
+    </div>
+    <div id="studentBadge" title="Click to switch user">&#x1F464; Guest</div>
+  </header>
+
+  <nav class="tabBar" role="tablist" aria-label="Module tabs">
+    <button class="active" data-tab="tab-theory" role="tab">&#x1F4D6; Theory</button>
+    <button data-tab="tab-sim"    role="tab">&#x1F52D; Simulation</button>
+    <button data-tab="tab-data"   role="tab">&#x1F4CA; Data &amp; Export</button>
+    <button data-tab="tab-obj"    role="tab">&#x1F3AF; Objectives</button>
+    <button data-tab="tab-quiz"   role="tab">&#x1F9E0; Quiz</button>
+    <button data-tab="tab-refs"   role="tab">&#x1F4DA; References</button>
+  </nav>
+
+  <div class="tabContent">
+
+    <!-- THEORY TAB -->
+    <section id="tab-theory" class="tabPanel active" role="tabpanel">
+
+      <div class="card">
+        <h2><span class="icon">&#x1F30C;</span>Stellar Evolution and H-R Diagram</h2>
+        <p>This page uses the exact same architecture as the primary simulator (login, theory, formulas, simulation, data export, objectives, quiz, references) for course-wide uniformity. For the dedicated Unit 3: Stellar Evolution topic engine, open: <a class="refLink" href="hr_diagram_socratic_core.html" target="_blank" rel="noopener">H-R Diagram Stellar Evolution Simulator Core Module</a>.</p>
+      </div>
+
+      <div class="theoryGrid">
+        <div class="card">
+          <h2><span class="icon">&#x2696;&#xFE0F;</span>H-R Diagram Fundamentals</h2><p>The Hertzsprung-Russell diagram maps stellar luminosity against effective temperature (or spectral class).</p>
+<div class="eqBox">\( \log(L/L_\odot)\ \text{vs}\ \log(T_{\mathrm{eff}}) \)</div>
+<p>Main sequence, giants, and white dwarfs occupy distinct regions and encode stellar structure/evolution status.</p>
+<h3>Radius Relation</h3>
+<div class="eqBox">\( L = 4\pi R^2 \sigma T_{\mathrm{eff}}^4 \)</div>
+<p>At fixed luminosity, hotter stars are smaller; at fixed temperature, larger stars are more luminous.</p>
+        </div>
+
+        <div class="card">
+          <h2><span class="icon">&#x1F522;</span>Stellar Structure and Lifetime Scaling</h2><h3>Mass-Luminosity Approximation</h3>
+<div class="eqBox">\( L \propto M^{3\text{ to }4} \)</div>
+<p>Higher mass stars burn fuel rapidly due to steep luminosity dependence.</p>
+<h3>Main-Sequence Lifetime</h3>
+<div class="eqBox">\( t_{\mathrm{MS}} \propto \frac{M}{L} \approx M^{-2.5} \)</div>
+<p>Massive stars evolve faster despite larger fuel reservoirs.</p>
+<h3>Compact Remnant Thresholds</h3>
+<p>Low/intermediate masses tend toward white dwarfs; higher masses can produce neutron stars/black holes after core collapse pathways.</p>
+        </div>
+      </div>
+
+      <div class="theoryGrid">
+        <div class="card">
+          <h2><span class="icon">&#x1F9EE;</span>Astrophysical Diagnostics in Unit 3</h2><h3>Saha Ionization Context</h3>
+<div class="eqBox">\( \frac{n_{i+1}n_e}{n_i} \propto T^{3/2}e^{-\chi/(kT)} \)</div>
+<p>Ionization balance links spectra to atmospheric temperature and electron pressure.</p>
+<h3>Distance Indicators</h3>
+<p>Use calibrated relationships (e.g., Wilson-Bappu style trends) with caution regarding scatter and metallicity dependence.</p>
+<h3>Evolutionary Tracks</h3>
+<p>Track motion in HR space from protostar through giant phases to compact remnant outcomes.</p>
+        </div>
+
+        <div class="card">
+          <h2><span class="icon">&#x1FA90;</span>Formula Sheet and Physical Constants</h2><div class="eqBox">Use SI units unless stated. Constants and relations shown above are preloaded for lab work.</div><p>Switch to the Simulation tab to explore the same relationships numerically under this unit topic.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2><span class="icon">&#x1F50D;</span>Unit 3 Guided Scenarios</h2>
+        <div class="theoryGrid" style="margin-top:0">
+          <div>
+            <h3>Mass Track Comparison</h3>
+            <p>Compare low-mass and high-mass tracks on the HR plane and identify divergence points.</p>
+            <h3>Lifetime Contrast</h3>
+            <p>Estimate relative main-sequence lifetimes for 1, 5, and 15 solar-mass stars.</p>
+          </div>
+          <div>
+            <h3>Remnant Outcomes</h3>
+            <p>Map initial mass bins to expected final states and discuss physical uncertainties.</p>
+            <h3>Socratic Reflection</h3>
+            <p>Use the quiz and tutor to justify each phase transition with core-physics arguments.</p>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- SIMULATION TAB -->
+    <section id="tab-sim" class="tabPanel" role="tabpanel">
+
+      <aside class="simPanel">
+
+        <div class="simSection">
+          <div class="kicker">Presets</div>
+          <div class="row">
+            <button class="simBtn" id="presetLow">Low-mass Star</button>
+            <button class="simBtn" id="presetSolar">Solar-type Star</button>
+          </div>
+          <div class="row" style="margin-top:6px">
+            <button class="simBtn" id="presetHigh">High-mass Star</button>
+          </div>
+        </div>
+
+        <div class="simSection">
+          <div class="kicker">Inputs</div>
+          <div class="grid2">
+            <div>
+              <label>Mass (M&#x2609;)</label>
+              <input id="massSlider" type="range" min="0.2" max="40" step="0.1" value="1.0" />
+              <div class="mono" id="massVal" style="margin-top:4px">1.0 M&#x2609;</div>
+            </div>
+            <div>
+              <label>Age (Gyr)</label>
+              <input id="ageSlider" type="range" min="0" max="13.5" step="0.01" value="4.6" />
+              <div class="mono" id="ageVal" style="margin-top:4px">4.60 Gyr</div>
+            </div>
+            <div>
+              <label>Metallicity Z</label>
+              <input id="metalSlider" type="range" min="0.0001" max="0.04" step="0.0001" value="0.014" />
+              <div class="mono" id="metalVal" style="margin-top:4px">0.0140</div>
+            </div>
+            <div>
+              <label>Phase mode</label>
+              <select id="phaseMode">
+                <option value="auto">Auto (from age/mass)</option>
+                <option value="ms">Main Sequence</option>
+                <option value="giant">Giant Branch</option>
+                <option value="wd">White Dwarf</option>
+              </select>
+            </div>
+          </div>
+          <div class="row" style="margin-top:8px">
+            <label class="checkRow"><input id="showTrack" type="checkbox" checked /> Show track</label>
+            <label class="checkRow"><input id="logData" type="checkbox" checked /> Log data</label>
+          </div>
+          <div class="row" style="margin-top:8px">
+            <button class="simBtn" id="playBtn">&#x23F8; Pause</button>
+            <button class="simBtn" id="stepBtn">&#x23ED; Step +0.1 Gyr</button>
+            <button class="simBtn danger" id="resetBtn">&#x21BA; Reset</button>
+            <button class="simBtn" id="helpBtn">? Help</button>
+          </div>
+        </div>
+
+        <div class="simSection">
+          <div class="kicker">Evolution</div>
+          <label>Evolution speed (Gyr / s)</label>
+          <input id="simRate" type="range" min="0" max="2" step="0.01" value="0.2" />
+          <div class="mono" id="simRateVal" style="margin-top:4px">0.20 Gyr/s</div>
+        </div>
+
+      </aside>
+
+      <div class="simWrap">
+        <canvas id="canvas" title="H-R Diagram Evolution"></canvas>
+        <div id="overlay">
+          <div>Age: <span id="time">4.60</span> Gyr</div>
+          <div>Phase: <span id="nBodies">Main Sequence</span></div>
+          <div>Star: <span id="heaviestInfo">1.0 M&#x2609;</span></div>
+          <button id="resetZoom">Reset View</button>
+        </div>
+      </div>
+
+      <aside class="simInsights">
+        <div class="simSection">
+          <div class="kicker">Output values</div>
+          <div class="metricGrid">
+            <div class="metricBox"><div class="k">Effective Temperature (K)</div><div class="v" id="outEnergy">--</div></div>
+            <div class="metricBox"><div class="k">Luminosity (L/L&#x2609;)</div><div class="v" id="outLz">--</div></div>
+            <div class="metricBox"><div class="k">Radius (R/R&#x2609;)</div><div class="v" id="outMeanSpeed">--</div></div>
+            <div class="metricBox"><div class="k">MS Lifetime estimate (Gyr)</div><div class="v" id="outSpread">--</div></div>
+          </div>
+        </div>
+
+        <div class="simSection">
+          <div class="kicker">Output graph (Y vs X)</div>
+          <label>Y-axis metric</label>
+          <select id="graphMetric">
+            <option value="logL">log10(L/L&#x2609;)</option>
+            <option value="teff">Temperature (K)</option>
+            <option value="radius">Radius (R/R&#x2609;)</option>
+          </select>
+          <div class="graphWrap" style="margin-top:8px">
+            <canvas id="liveGraph" title="Realtime graph: selected Y metric vs age"></canvas>
+          </div>
+          <div class="mono" style="margin-top:8px">X-axis: age (Gyr) | Y-axis: selected metric</div>
+        </div>
+      </aside>
+
+    </section>
+
+    <!-- DATA & EXPORT TAB -->
+    <section id="tab-data" class="tabPanel" role="tabpanel">
+
+      <div class="infoAlert">
+        <strong>How data logging works:</strong> When the <em>Log data</em> checkbox is enabled in the
+        Simulation tab, the simulator records stellar evolutionary state at configurable intervals.
+        Download the data in standard formats for analysis in Python, MATLAB, or Excel.
+      </div>
+
+      <div class="exportGrid">
+        <div class="statBox"><div class="statVal" id="logCount">0</div><div class="statLabel">Recorded rows</div></div>
+        <div class="statBox"><div class="statVal" id="logBodies">0</div><div class="statLabel">Stars tracked</div></div>
+        <div class="statBox"><div class="statVal" id="logTimeSpan">0.0</div><div class="statLabel">Time span (Gyr)</div></div>
+        <div class="statBox"><div class="statVal" id="logInterval">Every 1 step</div><div class="statLabel">Sampling interval</div></div>
+      </div>
+
+      <div class="card">
+        <h2><span class="icon">&#x2699;&#xFE0F;</span>Logging Settings</h2>
+        <div style="display:flex;gap:24px;flex-wrap:wrap;align-items:center">
+          <div>
+            <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px">Sample every N simulation steps</label>
+            <input id="sampleEvery" type="number" value="1" min="1" step="1"
+              style="width:140px;border-radius:6px;border:1px solid #355b87;background:#0a1730;color:#eaf2ff;padding:7px 10px;font-size:13px" />
+          </div>
+          <div>
+            <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px">Max rows (memory cap)</label>
+            <input id="maxRows" type="number" value="5000" min="100" max="50000" step="100"
+              style="width:140px;border-radius:6px;border:1px solid #355b87;background:#0a1730;color:#eaf2ff;padding:7px 10px;font-size:13px" />
+          </div>
+          <button class="simBtn danger" id="clearLogBtn" style="align-self:flex-end">&#x1F5D1; Clear Log</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2><span class="icon">&#x1F4BE;</span>Download Simulation Data</h2>
+        <div class="row" style="gap:12px;margin-bottom:14px">
+          <button class="dlBtn primary"   id="dlCSV">&#x2B07; Download CSV</button>
+          <button class="dlBtn secondary" id="dlJSON">&#x2B07; Download JSON</button>
+          <button class="dlBtn tertiary"  id="dlPython">&#x2B07; Python Starter Script</button>
+        </div>
+        <p style="font-size:12.5px;color:var(--muted)">
+          CSV columns: <em>sapid, student_name, age_gyr, phase, log10_teff, log10_lum, teff_k, lum_lsun, radius_rsun, metallicity_z, mass_msun, timestamp_iso</em>.
+          JSON includes full metadata and full evolutionary log.
+          The Python script uses matplotlib to reproduce an H-R track from the exported data.
+        </p>
+      </div>
+
+      <div class="card">
+        <h2><span class="icon">&#x1F4CB;</span>Live Data Preview (last 20 rows)</h2>
+        <div class="tableWrap">
+          <table id="previewTable">
+            <thead><tr><th>Age (Gyr)</th><th>Phase</th><th>log10(Teff)</th><th>log10(L)</th><th>Teff (K)</th><th>L/L&#x2609;</th><th>R/R&#x2609;</th></tr></thead>
+            <tbody id="previewBody">
+              <tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px">No data yet &mdash; run the simulation with "Log data" checked.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2><span class="icon">&#x1F512;</span>Student Login Audit</h2>
+        <div class="row" style="margin-bottom:10px;align-items:center;justify-content:space-between">
+          <div class="mono">Total recorded logins: <span id="loginLogCount">0</span></div>
+          <button class="dlBtn primary" id="dlLoginCSV" type="button">&#x2B07; Download Login Logs CSV</button>
+        </div>
+        <div class="tableWrap">
+          <table>
+            <thead><tr><th>Timestamp (ISO)</th><th>Name</th><th>SAPID</th></tr></thead>
+            <tbody id="loginLogBody">
+              <tr><td colspan="3" style="text-align:center;color:var(--muted);padding:20px">No login records yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- OBJECTIVES TAB -->
+    <section id="tab-obj" class="tabPanel" role="tabpanel">
+
+      <div class="card">
+        <h2><span class="icon">&#x1F3AF;</span>Module: Stellar Evolution</h2>
+        <p>
+          This interactive module targets Unit 3 of PHYS4022P. Students connect H-R diagram structure, stellar lifetimes, and final evolutionary outcomes through computational exploration.
+        </p>
+      </div>
+
+      <div class="objGrid">
+        <div class="card">
+          <h2><span class="icon">&#x1F4CC;</span>Learning Objectives</h2>
+          <span class="badge blue">After completing this module, students will be able to:</span>
+          <ul class="checkList">
+            <li><span class="tick">&#x2713;</span>Interpret H-R diagram axes and major stellar populations.</li>
+            <li><span class="tick">&#x2713;</span>Relate mass, luminosity, and lifetime using approximate scaling laws.</li>
+            <li><span class="tick">&#x2713;</span>Explain transitions from main sequence to giant and remnant phases.</li>
+            <li><span class="tick">&#x2713;</span>Use diagnostic relations to infer stellar parameters from observables.</li>
+            <li><span class="tick">&#x2713;</span>Compare low-mass and high-mass evolutionary pathways.</li>
+            <li><span class="tick">&#x2713;</span>Use LLM prompts for Socratic self-testing on stellar evolution.</li>
+            <li><span class="tick">&#x2713;</span>Export data/figures and present evidence-based evolutionary interpretations.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h2><span class="icon">&#x1F4E6;</span>Deliverables</h2>
+          <span class="badge green">Students are expected to submit:</span>
+          <ol class="checkList">
+            <li><span class="tick">1.</span><strong style="color:var(--text)">Lab Report (PDF)</strong> &mdash; Annotated H-R screenshots showing at least three evolutionary stages.</li>
+            <li><span class="tick">2.</span><strong style="color:var(--text)">Exported Data File</strong> &mdash; Exported dataset from track exploration with parameter notes.</li>
+            <li><span class="tick">3.</span><strong style="color:var(--text)">Python analysis script</strong> &mdash; Python script plotting HR points/tracks and labeled regions.</li>
+            <li><span class="tick">4.</span><strong style="color:var(--text)">Comparison table</strong> &mdash; Comparison table of mass bins, lifetimes, and probable remnants.</li>
+            <li><span class="tick">5.</span><strong style="color:var(--text)">Bonus investigation</strong> &mdash; Short Socratic transcript summarizing conceptual corrections.</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="objGrid">
+        <div class="card">
+          <h2><span class="icon">&#x1F4C5;</span>Suggested Lab Workflow</h2>
+          <span class="badge amber">Step-by-step guide</span>
+          <ol class="checkList">
+            <li><span class="tick">1.</span>Review theory blocks and identify the governing scaling laws.</li>
+            <li><span class="tick">2.</span>Set multiple mass cases and observe HR position changes.</li>
+            <li><span class="tick">3.</span>Estimate lifetime trends using mass-luminosity relations.</li>
+            <li><span class="tick">4.</span>Trace transitions toward giant branch and remnant outcomes.</li>
+            <li><span class="tick">5.</span>Record key diagnostics that support each interpretation.</li>
+            <li><span class="tick">6.</span>Export run data for at least three mass cases.</li>
+            <li><span class="tick">7.</span>Reproduce HR trends with a Python plotting workflow.</li>
+            <li><span class="tick">8.</span>Use AI tutor prompts to challenge and refine your explanations.</li>
+          </ol>
+        </div>
+
+        <div class="card">
+          <h2><span class="icon">&#x1F4D0;</span>Assessment Criteria</h2>
+          <ul class="checkList">
+            <li><span class="tick">&#x25C8;</span><strong style="color:var(--text)">Understanding (30%)</strong> &mdash; Correct interpretation of HR and stellar-evolution theory.</li>
+            <li><span class="tick">&#x25C8;</span><strong style="color:var(--text)">Simulation (25%)</strong> &mdash; Parameter exploration and methodological rigor.</li>
+            <li><span class="tick">&#x25C8;</span><strong style="color:var(--text)">Data Analysis (25%)</strong> &mdash; Quality of quantitative tables and plotted evidence.</li>
+            <li><span class="tick">&#x25C8;</span><strong style="color:var(--text)">Method comparison (15%)</strong> &mdash; Consistency of physical reasoning across scenarios.</li>
+            <li><span class="tick">&#x25C8;</span><strong style="color:var(--text)">Bonus (5%)</strong> &mdash; Depth of reflective AI-assisted learning.</li>
+          </ul>
+          <div class="infoAlert" style="margin-top:12px">
+            <strong>LMS Note:</strong> Submit PDF, exported data, and analysis script under Lab 3 &mdash; Stellar Evolution.
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- QUIZ TAB -->
+    <section id="tab-quiz" class="tabPanel" role="tabpanel">
+
+      <div class="card quizCard">
+        <h2><span class="icon">&#x1F9E0;</span>Concept Check Quiz</h2>
+        <p>This quiz is interactive and generates a new question set whenever a student asks for one.</p>
+
+        <form id="quizForm">
+          <div class="quizTools">
+            <input id="quizPrompt" type="text" placeholder="Ask for topic focus (e.g. main sequence, lifetimes, remnant paths)" />
+            <button class="simBtn" id="askQuizBtn" type="button">Ask New Quiz</button>
+            <button class="simBtn" id="newQuizBtn" type="button">Regenerate</button>
+          </div>
+          <div class="quizHint">Adaptive mode: after high scores, the next generated set becomes more challenging.</div>
+
+          <div id="quizQuestionsWrap"></div>
+
+          <div class="row" style="margin-top:12px">
+            <button class="simBtn" id="submitQuizBtn" type="submit">Submit Quiz</button>
+            <button class="simBtn danger" id="resetQuizBtn" type="button">Reset Quiz</button>
+          </div>
+        </form>
+
+        <div class="quizResult" id="quizResult">No attempts yet.</div>
+      </div>
+
+      <div class="card">
+        <h2><span class="icon">&#x1F4DD;</span>Quiz Attempt Log</h2>
+        <div class="row" style="margin-bottom:10px;align-items:center;justify-content:space-between">
+          <div class="mono">Attempts: <span id="quizAttemptCount">0</span></div>
+          <button class="dlBtn secondary" id="dlQuizCSV" type="button">&#x2B07; Download Quiz Attempts CSV</button>
+        </div>
+        <div class="tableWrap">
+          <table>
+            <thead><tr><th>Timestamp (ISO)</th><th>Name</th><th>SAPID</th><th>Score</th></tr></thead>
+            <tbody id="quizAttemptBody">
+              <tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px">No quiz attempts yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- REFERENCES TAB -->
+    <section id="tab-refs" class="tabPanel" role="tabpanel">
+
+      <div class="card">
+        <h2><span class="icon">&#x1F4DA;</span>Bibliography &amp; Further Reading</h2>
+        <p style="margin-bottom:16px">References used to ensure scientific accuracy of this module. Open-access links are provided where available.</p>
+
+        <div class="refItem">
+          <div class="refNum">1</div>
+          <div class="refBody">
+            <div class="refTitle">Kippenhahn, R., Weigert, A., Weiss, A. &mdash; <em>Stellar Structure and Evolution</em></div>
+            <div class="refMeta">Springer, 2nd ed. Comprehensive framework for stellar interiors and evolutionary tracks.</div>
+            <a class="refLink" href="https://link.springer.com/book/10.1007/978-3-642-30304-3" target="_blank" rel="noopener">&#x2197; Source link</a>
+          </div>
+        </div>
+
+        <div class="refItem">
+          <div class="refNum">2</div>
+          <div class="refBody">
+            <div class="refTitle">Hansen, C. J., Kawaler, S. D., Trimble, V. &mdash; <em>Stellar Interiors</em></div>
+            <div class="refMeta">Springer, 2004. Core principles of stellar structure, transport, and evolutionary behavior.</div>
+            <a class="refLink" href="https://link.springer.com/book/10.1007/978-1-4757-3985-4" target="_blank" rel="noopener">&#x2197; Source link</a>
+          </div>
+        </div>
+
+        <div class="refItem">
+          <div class="refNum">3</div>
+          <div class="refBody">
+            <div class="refTitle">Carroll, B. W. &amp; Ostlie, D. A. &mdash; <em>An Introduction to Modern Astrophysics</em></div>
+            <div class="refMeta">Cambridge University Press. Detailed treatment of H-R diagrams and stellar populations.</div>
+          </div>
+        </div>
+
+        <div class="refItem">
+          <div class="refNum">4</div>
+          <div class="refBody">
+            <div class="refTitle">Salaris, M. &amp; Cassisi, S. &mdash; <em>Evolution of Stars and Stellar Populations</em></div>
+            <div class="refMeta">Wiley, 2005. Practical interpretation of isochrones and stellar evolution diagnostics.</div>
+            <a class="refLink" href="https://ui.adsabs.harvard.edu/abs/2005essp.book.....S/abstract" target="_blank" rel="noopener">&#x2197; Source link</a>
+          </div>
+        </div>
+
+        <div class="refItem">
+          <div class="refNum">5</div>
+          <div class="refBody">
+            <div class="refTitle">Gray, D. F. &mdash; <em>The Observation and Analysis of Stellar Photospheres</em></div>
+            <div class="refMeta">Cambridge University Press, 3rd ed. Links spectra, atmosphere parameters, and stellar classification.</div>
+          </div>
+        </div>
+
+        <div class="refItem">
+          <div class="refNum">6</div>
+          <div class="refBody">
+            <div class="refTitle">Gaia Collaboration (DR3)</div>
+            <div class="refMeta">High-precision astrometric and photometric catalog widely used for empirical H-R diagrams.</div>
+            <a class="refLink" href="https://gea.esac.esa.int/archive/" target="_blank" rel="noopener">&#x2197; Source link</a>
+          </div>
+        </div>
+
+        <div class="refItem">
+          <div class="refNum">7</div>
+          <div class="refBody">
+            <div class="refTitle">Saha, M. N. (1920) &mdash; <em>Ionization in the Solar Chromosphere</em></div>
+            <div class="refMeta">Classic reference underlying ionization-balance diagnostics used in stellar atmosphere interpretation.</div>
+            <a class="refLink" href="https://ui.adsabs.harvard.edu/abs/1920PhM....40..472S/abstract" target="_blank" rel="noopener">&#x2197; Source link</a>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="card">
+        <h2><span class="icon">&#x1F6E0;</span>Software &amp; Tools Used</h2>
+        <ul class="checkList">
+          <li><span class="tick">&#x25B8;</span><strong style="color:var(--text)">HTML5 Canvas API</strong> &mdash; Interactive HR-plane exploration and stellar evolutionary diagnostics.</li>
+          <li><span class="tick">&#x25B8;</span><strong style="color:var(--text)">Vanilla JavaScript (ES2020)</strong> &mdash; Simulation engine and UI logic. No external runtime dependencies.</li>
+          <li><span class="tick">&#x25B8;</span><strong style="color:var(--text)">Google Fonts (CDN)</strong> &mdash; Space Grotesk, IBM Plex Mono (falls back to system fonts offline).</li>
+          <li><span class="tick">&#x25B8;</span><strong style="color:var(--text)">Project Leadership</strong> &mdash; Created and maintained by Dr. Nitesh Kumar, UPES.</li>
+        </ul>
+      </div>
+
+    </section>
+
+  </div><!-- tabContent -->
+
+  <footer>
+    <span>H-R Diagram Stellar Evolution Simulator &middot; Fundamentals of Astrophysics (PHYS4022P) &middot; v3.0</span>
+    <span class="aiTag">Creator and Maintainer: Dr. Nitesh Kumar, UPES</span>
+    <span id="footerStudent">Guest session</span>
+  </footer>
+
+</div><!-- .app -->
+
+<div id="tutorModal" role="dialog" aria-modal="true" aria-label="AI tutor guidance">
+  <div class="tutorCard">
+    <div class="tutorHead">
+      <h3>AI Tutor - Contextual Guidance</h3>
+      <button id="closeTutor" type="button">Close</button>
+    </div>
+    <div id="tutorBody">Tutor is preparing guidance...</div>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+const state = { playing:true, authenticated:false, stepCount:0 };
+const student = { name:"Guest", sapid:"" };
+
+let dataLog = [];
+let trendLog = [];
+let lastLogStep = -Infinity;
+let loginAudit = [];
+let quizAttempts = [];
+let currentQuizQuestions = [];
+
+const QUESTION_BANK=[
+  {id:"q01",difficulty:"easy",tags:["hr"],q:"The H-R diagram primarily plots luminosity against:",options:["Distance","Temperature/spectral class","Metallicity only"],answer:1},
+  {id:"q02",difficulty:"easy",tags:["main-sequence"],q:"Most stable hydrogen-burning stars are found on the:",options:["Main sequence","White dwarf cooling line","Supernova remnant shell"],answer:0},
+  {id:"q03",difficulty:"medium",tags:["mass-luminosity"],q:"A rough main-sequence scaling is:",options:["L proportional to M^3 to M^4","L proportional to M^-2","L independent of M"],answer:0},
+  {id:"q04",difficulty:"medium",tags:["lifetime"],q:"Massive stars generally have shorter lifetimes because they:",options:["Burn fuel faster","Contain no hydrogen","Radiate no photons"],answer:0},
+  {id:"q05",difficulty:"hard",tags:["saha"],q:"Saha ionization equation links spectral ionization balance mainly to:",options:["Temperature and electron pressure","Orbital eccentricity","Dust grain size only"],answer:0},
+  {id:"q06",difficulty:"hard",tags:["remnants"],q:"A typical low/intermediate-mass stellar remnant is:",options:["White dwarf","Quasar","Globular cluster"],answer:0}
+];
+
+function q(id){ return document.getElementById(id); }
+function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
+
+function resizeCanvas(){
+  const dpr = window.devicePixelRatio || 1;
+  const w = Math.max(300, canvas.clientWidth);
+  const h = Math.max(250, canvas.clientHeight);
+  canvas.width = Math.floor(w*dpr);
+  canvas.height = Math.floor(h*dpr);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+window.addEventListener("resize", ()=>{ resizeCanvas(); draw(); drawLiveGraph(); });
+
+function estimateStar(mass, ageGyr, metallicity, forcedPhase){
+  const tMs = 10*Math.pow(mass,-2.5);
+  let phase = forcedPhase;
+  if(phase==="auto"){
+    const f = ageGyr/Math.max(0.2,tMs);
+    if(f < 1.0) phase = "ms";
+    else if(f < 1.25) phase = "giant";
+    else phase = "wd";
+  }
+
+  let L, Teff;
+  if(phase==="ms"){
+    const ageFrac = clamp(ageGyr/Math.max(0.2,tMs),0,1);
+    L = Math.pow(mass,3.5)*(0.85+0.30*ageFrac);
+    Teff = 5778*Math.pow(mass,0.5)*(1-0.06*ageFrac)*(1-0.15*(metallicity-0.014));
+  }else if(phase==="giant"){
+    const g = clamp((ageGyr - tMs)/Math.max(0.2,0.25*tMs),0,1);
+    L = Math.pow(mass,3.3)*(20 + 180*g);
+    Teff = 5200 - 2200*g;
+  }else{
+    const w = clamp((ageGyr - 1.25*tMs)/Math.max(0.4,2*tMs),0,1);
+    L = 0.02*Math.pow(1-w,1.2) + 0.0008;
+    Teff = 25000 - 17000*w;
+  }
+
+  Teff = clamp(Teff, 2500, 50000);
+  L = clamp(L, 1e-4, 1e6);
+  const R = Math.sqrt(L/Math.pow(Teff/5778,4));
+  return {
+    phase, Teff, L, R, tMs,
+    logT: Math.log10(Teff),
+    logL: Math.log10(L)
+  };
+}
+
+function hrToCanvas(logT, logL, w, h, pad){
+  const xMin=3.3, xMax=4.7, yMin=-4, yMax=6;
+  const x = pad + ((xMax-logT)/(xMax-xMin))*(w-2*pad);
+  const y = h-pad - ((logL-yMin)/(yMax-yMin))*(h-2*pad);
+  return {x,y};
+}
+
+function currentStar(){
+  const mass = parseFloat(q("massSlider").value);
+  const age = parseFloat(q("ageSlider").value);
+  const z = parseFloat(q("metalSlider").value);
+  return estimateStar(mass, age, z, q("phaseMode").value);
+}
+
+function draw(){
+  const w=canvas.clientWidth, h=canvas.clientHeight, pad=42;
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle="#081733";
+  ctx.fillRect(0,0,w,h);
+
+  ctx.strokeStyle="rgba(143,181,217,.35)";
+  ctx.lineWidth=1;
+  ctx.beginPath();
+  ctx.moveTo(pad,pad); ctx.lineTo(pad,h-pad); ctx.lineTo(w-pad,h-pad);
+  ctx.stroke();
+
+  ctx.fillStyle="#8fb5d9";
+  ctx.font="12px 'IBM Plex Mono', monospace";
+  ctx.fillText("log10(Teff/K)  (hotter \u2190)", pad, h-10);
+  ctx.save();
+  ctx.translate(14,h/2);
+  ctx.rotate(-Math.PI/2);
+  ctx.fillText("log10(L/L\u2609)",0,0);
+  ctx.restore();
+
+  for(let t=3.4;t<=4.6;t+=0.2){
+    const p = hrToCanvas(t,-4,w,h,pad);
+    ctx.fillText(t.toFixed(1), p.x-10, h-pad+14);
+  }
+  for(let l=-4;l<=6;l+=2){
+    const p = hrToCanvas(4.7,l,w,h,pad);
+    ctx.fillText(String(l), 8, p.y+4);
+  }
+
+  const star = currentStar();
+  if(q("showTrack").checked && trendLog.length>1){
+    ctx.beginPath();
+    trendLog.forEach((p,i)=>{
+      const c = hrToCanvas(p.logT,p.logL,w,h,pad);
+      if(i===0) ctx.moveTo(c.x,c.y); else ctx.lineTo(c.x,c.y);
+    });
+    ctx.strokeStyle="#59d0ff";
+    ctx.lineWidth=1.5;
+    ctx.stroke();
+  }
+
+  const p = hrToCanvas(star.logT, star.logL, w, h, pad);
+  const grad = ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,16);
+  grad.addColorStop(0,"rgba(255,173,109,.95)");
+  grad.addColorStop(1,"rgba(255,173,109,0)");
+  ctx.fillStyle=grad; ctx.beginPath(); ctx.arc(p.x,p.y,16,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle="#ffad6d"; ctx.beginPath(); ctx.arc(p.x,p.y,5,0,Math.PI*2); ctx.fill();
+
+  const mass = parseFloat(q("massSlider").value);
+  const age = parseFloat(q("ageSlider").value);
+  q("time").textContent = age.toFixed(2);
+  q("nBodies").textContent = star.phase==="ms"?"Main Sequence":(star.phase==="giant"?"Giant Branch":"White Dwarf");
+  q("heaviestInfo").textContent = mass.toFixed(1)+" M\u2609";
+  q("outEnergy").textContent = star.Teff.toFixed(0);
+  q("outLz").textContent = star.L.toExponential(3);
+  q("outMeanSpeed").textContent = star.R.toFixed(3);
+  q("outSpread").textContent = star.tMs.toFixed(2);
+}
+
+function drawLiveGraph(){
+  const g = q("liveGraph");
+  const gctx = g.getContext("2d");
+  const w = Math.max(200,g.clientWidth), h = Math.max(120,g.clientHeight);
+  const dpr = window.devicePixelRatio || 1;
+  g.width = Math.floor(w*dpr);
+  g.height = Math.floor(h*dpr);
+  gctx.setTransform(dpr,0,0,dpr,0,0);
+  gctx.clearRect(0,0,w,h);
+  gctx.fillStyle="#081733";
+  gctx.fillRect(0,0,w,h);
+
+  if(trendLog.length<2){
+    gctx.fillStyle="#8fb5d9";
+    gctx.font="12px sans-serif";
+    gctx.fillText("Run simulation to populate graph",12,20);
+    return;
+  }
+
+  const metric = q("graphMetric").value;
+  const xs = trendLog.map(p=>p.age);
+  const ys = trendLog.map(p=>metric==="logL"?p.logL:(metric==="teff"?p.teff:p.radius));
+  let xMin=Math.min(...xs), xMax=Math.max(...xs), yMin=Math.min(...ys), yMax=Math.max(...ys);
+  if(xMin===xMax) xMax=xMin+1;
+  if(yMin===yMax) yMax=yMin+1;
+
+  const pad=22;
+  gctx.strokeStyle="rgba(143,181,217,.35)";
+  gctx.beginPath();
+  gctx.moveTo(pad,h-pad); gctx.lineTo(w-pad,h-pad);
+  gctx.moveTo(pad,pad); gctx.lineTo(pad,h-pad);
+  gctx.stroke();
+
+  gctx.beginPath();
+  trendLog.forEach((p,i)=>{
+    const x = pad + ((p.age-xMin)/(xMax-xMin))*(w-2*pad);
+    const yv = metric==="logL"?p.logL:(metric==="teff"?p.teff:p.radius);
+    const y = h-pad - ((yv-yMin)/(yMax-yMin))*(h-2*pad);
+    if(i===0) gctx.moveTo(x,y); else gctx.lineTo(x,y);
+  });
+  gctx.strokeStyle="#59d0ff";
+  gctx.lineWidth=1.8;
+  gctx.stroke();
+}
+
+function maybeSample(){
+  const mass = parseFloat(q("massSlider").value);
+  const age = parseFloat(q("ageSlider").value);
+  const z = parseFloat(q("metalSlider").value);
+  const star = estimateStar(mass, age, z, q("phaseMode").value);
+
+  trendLog.push({ age:age, logL:star.logL, teff:star.Teff, radius:star.R, logT:star.logT });
+  if(trendLog.length>2000) trendLog.shift();
+
+  if(!state.authenticated || !q("logData").checked) return;
+  const every = Math.max(1, parseInt(q("sampleEvery").value || "1",10));
+  if(state.stepCount-lastLogStep < every) return;
+  lastLogStep = state.stepCount;
+
+  const row = {
+    sapid: student.sapid,
+    student_name: student.name,
+    age_gyr: age.toFixed(3),
+    phase: star.phase,
+    log10_teff: star.logT.toFixed(4),
+    log10_lum: star.logL.toFixed(4),
+    teff_k: star.Teff.toFixed(1),
+    lum_lsun: star.L.toExponential(5),
+    radius_rsun: star.R.toFixed(4),
+    metallicity_z: z.toFixed(4),
+    mass_msun: mass.toFixed(3),
+    timestamp_iso: new Date().toISOString()
+  };
+
+  const maxRows = Math.max(100, parseInt(q("maxRows").value || "5000",10));
+  if(dataLog.length < maxRows) dataLog.push(row);
+}
+
+function updateDataTab(){
+  q("logCount").textContent = String(dataLog.length);
+  q("logBodies").textContent = "1";
+  q("logTimeSpan").textContent = dataLog.length ? (parseFloat(dataLog[dataLog.length-1].age_gyr)-parseFloat(dataLog[0].age_gyr)).toFixed(2) : "0.0";
+  q("logInterval").textContent = "Every "+Math.max(1,parseInt(q("sampleEvery").value||"1",10))+" step(s)";
+
+  const body = q("previewBody");
+  if(!dataLog.length){
+    body.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px">No data yet.</td></tr>';
+    return;
+  }
+  body.innerHTML = dataLog.slice(-20).map(r=>
+    "<tr><td>"+r.age_gyr+"</td><td>"+r.phase+"</td><td>"+r.log10_teff+"</td><td>"+r.log10_lum+"</td><td>"+r.teff_k+"</td><td>"+r.lum_lsun+"</td><td>"+r.radius_rsun+"</td></tr>"
+  ).join("");
+}
+
+function dlBlob(content,name,type){
+  const b = new Blob([content],{type:type});
+  const u = URL.createObjectURL(b);
+  const a = document.createElement("a");
+  a.href=u; a.download=name; document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(u);
+}
+function exportCSV(){
+  if(!state.authenticated){ alert("Login required before export."); return; }
+  if(!dataLog.length){ alert("No data logged yet."); return; }
+  const h = Object.keys(dataLog[0]);
+  const rows = dataLog.map(r=>h.map(k=>r[k]).join(","));
+  dlBlob([h.join(","),...rows].join("\n"),"hr_diagram_data.csv","text/csv");
+}
+function exportJSON(){
+  if(!state.authenticated){ alert("Login required before export."); return; }
+  if(!dataLog.length){ alert("No data logged yet."); return; }
+  dlBlob(JSON.stringify({module:"H-R Diagram Stellar Evolution Simulator", data:dataLog},null,2),"hr_diagram_data.json","application/json");
+}
+function exportPython(){
+  const py = "import pandas as pd\\nimport matplotlib.pyplot as plt\\n\\ndf=pd.read_csv('hr_diagram_data.csv')\\nplt.figure(figsize=(7,5))\\nplt.plot(df['log10_teff'],df['log10_lum'],'.-')\\nplt.gca().invert_xaxis()\\nplt.xlabel('log10(Teff/K)')\\nplt.ylabel('log10(L/Lsun)')\\nplt.title('H-R Diagram Track')\\nplt.grid(alpha=0.3)\\nplt.show()\\n";
+  dlBlob(py,"analyse_hr_diagram.py","text/plain");
+}
+
+function loadPersistentLogs(){
+  try{
+    loginAudit = JSON.parse(localStorage.getItem("hr_login_audit")||"[]");
+    quizAttempts = JSON.parse(localStorage.getItem("hr_quiz_attempts")||"[]");
+  }catch(e){ loginAudit=[]; quizAttempts=[]; }
+}
+function savePersistentLogs(){
+  localStorage.setItem("hr_login_audit",JSON.stringify(loginAudit));
+  localStorage.setItem("hr_quiz_attempts",JSON.stringify(quizAttempts));
+}
+function updateLoginAuditUI(){
+  q("loginLogCount").textContent = String(loginAudit.length);
+  q("loginLogBody").innerHTML = loginAudit.length
+    ? loginAudit.slice(-30).reverse().map(r=>"<tr><td>"+r.timestamp+"</td><td>"+r.name+"</td><td>"+r.sapid+"</td></tr>").join("")
+    : '<tr><td colspan="3" style="text-align:center;color:var(--muted);padding:20px">No login records yet.</td></tr>';
+}
+function exportLoginCSV(){
+  if(!loginAudit.length){ alert("No login logs yet."); return; }
+  const rows = loginAudit.map(r=>r.timestamp+","+r.name+","+r.sapid);
+  dlBlob(["timestamp_iso,student_name,sapid",...rows].join("\n"),"hr_login_audit.csv","text/csv");
+}
+
+function pickRandom(arr,n){
+  const cp=[...arr];
+  for(let i=cp.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    const t=cp[i]; cp[i]=cp[j]; cp[j]=t;
+  }
+  return cp.slice(0,Math.min(n,cp.length));
+}
+function inferDifficultyTarget(){
+  if(!quizAttempts.length) return "easy";
+  const last=quizAttempts[quizAttempts.length-1];
+  const ratio=last.total>0?last.score/last.total:0;
+  if(ratio>=0.8) return "hard";
+  if(ratio>=0.5) return "medium";
+  return "easy";
+}
+function parsePromptTokens(text){ return String(text||"").toLowerCase().split(/[^a-z0-9]+/).filter(Boolean); }
+function generateQuizSet(){
+  const tokens=parsePromptTokens(q("quizPrompt").value.trim());
+  const target=inferDifficultyTarget();
+  let pool=QUESTION_BANK.filter(x=>x.difficulty===target);
+  if(tokens.length){
+    const tagged=QUESTION_BANK.filter(x=>x.tags.some(t=>tokens.includes(t)) || tokens.some(tok=>x.q.toLowerCase().includes(tok)));
+    if(tagged.length) pool=[...new Set([...tagged,...pool])];
+  }
+  if(pool.length<5) pool=[...QUESTION_BANK];
+  currentQuizQuestions=pickRandom(pool,5);
+}
+function renderQuizQuestions(){
+  const wrap=q("quizQuestionsWrap");
+  if(!currentQuizQuestions.length){
+    wrap.innerHTML='<div class="quizHint">Click "Ask New Quiz" to generate a fresh interactive quiz.</div>';
+    return;
+  }
+  wrap.innerHTML=currentQuizQuestions.map((it,i)=>
+    "<div class=\"quizQ\"><p>"+(i+1)+". "+it.q+"</p>"+
+    it.options.map((o,j)=>"<label><input type=\"radio\" name=\"q_"+i+"\" value=\""+j+"\"> "+o+"</label>").join("")+
+    "</div>"
+  ).join("");
+}
+function generateAndRenderQuiz(){
+  if(!state.authenticated){ alert("Please log in first."); q("loginOverlay").classList.remove("hidden"); return; }
+  generateQuizSet(); renderQuizQuestions();
+  q("quizResult").textContent="New quiz generated for "+student.name+". Difficulty profile: "+inferDifficultyTarget()+".";
+}
+function submitQuiz(ev){
+  ev.preventDefault();
+  if(!state.authenticated){ alert("Please log in first."); q("loginOverlay").classList.remove("hidden"); return; }
+  if(!currentQuizQuestions.length){ q("quizResult").textContent="Generate a quiz first using Ask New Quiz."; return; }
+  let score=0;
+  for(let i=0;i<currentQuizQuestions.length;i++){
+    const picked=q("quizForm").querySelector("input[name='q_"+i+"']:checked");
+    if(!picked){ q("quizResult").textContent="Please answer all questions before submission."; return; }
+    if(parseInt(picked.value,10)===currentQuizQuestions[i].answer) score++;
+  }
+  const total=currentQuizQuestions.length;
+  q("quizResult").textContent="Submitted. Score: "+score+"/"+total+" ("+Math.round(score*100/total)+"%).";
+  quizAttempts.push({timestamp:new Date().toISOString(),name:student.name,sapid:student.sapid||"NA",score:score,total:total});
+  if(quizAttempts.length>3000) quizAttempts=quizAttempts.slice(-3000);
+  savePersistentLogs();
+  updateQuizAttemptUI();
+}
+function resetQuizForm(){ q("quizForm").reset(); q("quizResult").textContent="Quiz selection reset. You can submit or generate a new set."; }
+function updateQuizAttemptUI(){
+  q("quizAttemptCount").textContent=String(quizAttempts.length);
+  q("quizAttemptBody").innerHTML = quizAttempts.length
+    ? quizAttempts.slice(-30).reverse().map(r=>"<tr><td>"+r.timestamp+"</td><td>"+r.name+"</td><td>"+r.sapid+"</td><td>"+r.score+"/"+r.total+"</td></tr>").join("")
+    : '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px">No quiz attempts yet.</td></tr>';
+}
+function exportQuizCSV(){
+  if(!quizAttempts.length){ alert("No quiz attempts yet."); return; }
+  const rows=quizAttempts.map(r=>r.timestamp+","+r.name+","+r.sapid+","+r.score+","+r.total);
+  dlBlob(["timestamp_iso,student_name,sapid,score,total",...rows].join("\n"),"hr_quiz_attempts.csv","text/csv");
+}
+
+function buildTutorMessage(){
+  const mass = parseFloat(q("massSlider").value);
+  const age = parseFloat(q("ageSlider").value);
+  const z = parseFloat(q("metalSlider").value);
+  const star = estimateStar(mass, age, z, q("phaseMode").value);
+  return "Topic: Stellar Evolution and H-R Diagram\n"+
+         "Mass: "+mass.toFixed(2)+" M\u2609\n"+
+         "Age: "+age.toFixed(2)+" Gyr\n"+
+         "Phase: "+star.phase+"\n"+
+         "Teff: "+star.Teff.toFixed(0)+" K\n"+
+         "L/L\u2609: "+star.L.toExponential(3)+"\n\n"+
+         "Suggested checks:\n"+
+         "1) Increase mass and compare MS lifetime drop.\n"+
+         "2) Move age across transition and observe H-R shift.\n"+
+         "3) Export CSV and reproduce H-R track in Python.";
+}
+function openTutor(){ q("tutorBody").textContent=buildTutorMessage(); q("tutorModal").classList.add("show"); }
+function closeTutor(){ q("tutorModal").classList.remove("show"); }
+
+function refreshLabels(){
+  q("massVal").textContent=parseFloat(q("massSlider").value).toFixed(1)+" M\u2609";
+  q("ageVal").textContent=parseFloat(q("ageSlider").value).toFixed(2)+" Gyr";
+  q("metalVal").textContent=parseFloat(q("metalSlider").value).toFixed(4);
+  q("simRateVal").textContent=parseFloat(q("simRate").value).toFixed(2)+" Gyr/s";
+}
+function setPreset(m,a,z){
+  q("massSlider").value=String(m);
+  q("ageSlider").value=String(a);
+  q("metalSlider").value=String(z);
+  refreshLabels();
+  maybeSample(); draw(); drawLiveGraph();
+}
+function resetAllToDefaults(){
+  q("phaseMode").value="auto";
+  q("showTrack").checked=true;
+  q("logData").checked=true;
+  q("graphMetric").value="logL";
+  q("sampleEvery").value="1";
+  q("maxRows").value="5000";
+  state.playing=true;
+  q("playBtn").textContent="\u23F8 Pause";
+  trendLog=[]; dataLog=[]; state.stepCount=0; lastLogStep=-Infinity;
+  setPreset(1.0,4.6,0.014);
+}
+
+function stepOnce(deltaGyr){
+  const age = clamp(parseFloat(q("ageSlider").value)+deltaGyr,0,13.5);
+  q("ageSlider").value = String(age);
+  refreshLabels();
+  state.stepCount++;
+  maybeSample();
+  draw(); drawLiveGraph(); updateDataTab();
+}
+
+let last = performance.now();
+function loop(now){
+  const dt = Math.min((now-last)/1000,0.1); last=now;
+  if(state.playing){
+    const rate=parseFloat(q("simRate").value);
+    if(rate>0) stepOnce(rate*dt);
+  }else{
+    draw(); drawLiveGraph(); updateDataTab();
+  }
+  requestAnimationFrame(loop);
+}
+
+document.querySelectorAll(".tabBar button").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    const panel=document.getElementById(btn.dataset.tab);
+    if(!panel) return;
+    document.querySelectorAll(".tabBar button").forEach(b=>b.classList.remove("active"));
+    document.querySelectorAll(".tabPanel").forEach(p=>p.classList.remove("active"));
+    btn.classList.add("active");
+    panel.classList.add("active");
+    if(btn.dataset.tab==="tab-sim") setTimeout(()=>{resizeCanvas();draw();drawLiveGraph();},20);
+  });
+});
+
+function setStudent(name,id){
+  student.name=name||"Guest";
+  student.sapid=id||"";
+  const label=student.name+(student.sapid?" - "+student.sapid:"");
+  q("studentBadge").textContent="User: "+label;
+  q("footerStudent").textContent=label+" - session active";
+  q("studentIdentityLine").textContent="Student: "+student.name+" | SAPID: "+(student.sapid||"NA")+" | Topic: Stellar Evolution and H-R Diagram";
+}
+function showApp(){ q("loginOverlay").classList.add("hidden"); q("appShell").style.visibility="visible"; }
+q("loginBtn").addEventListener("click",()=>{
+  const name=q("loginName").value.trim(), sapid=q("loginID").value.trim();
+  if(!name){ q("loginName").focus(); return; }
+  if(!sapid){ q("loginID").focus(); return; }
+  state.authenticated=true;
+  setStudent(name,sapid);
+  loginAudit.push({timestamp:new Date().toISOString(),name:name,sapid:sapid});
+  if(loginAudit.length>3000) loginAudit=loginAudit.slice(-3000);
+  savePersistentLogs();
+  updateLoginAuditUI();
+  showApp();
+});
+q("loginName").addEventListener("keydown",e=>{ if(e.key==="Enter") q("loginID").focus(); });
+q("loginID").addEventListener("keydown",e=>{ if(e.key==="Enter") q("loginBtn").click(); });
+q("skipLogin").addEventListener("click",()=>alert("Guest access is disabled. Please log in with Name and SAPID."));
+q("studentBadge").addEventListener("click",()=>q("loginOverlay").classList.remove("hidden"));
+
+["massSlider","ageSlider","metalSlider","phaseMode","graphMetric","simRate","showTrack"].forEach(id=>{
+  q(id).addEventListener("input",()=>{ refreshLabels(); maybeSample(); draw(); drawLiveGraph(); updateDataTab(); });
+});
+q("playBtn").addEventListener("click",()=>{ state.playing=!state.playing; q("playBtn").textContent=state.playing?"\u23F8 Pause":"\u25B6 Run"; });
+q("stepBtn").addEventListener("click",()=>stepOnce(0.1));
+q("resetBtn").addEventListener("click",resetAllToDefaults);
+q("resetZoom").addEventListener("click",()=>{ draw(); });
+q("helpBtn").addEventListener("click",openTutor);
+q("closeTutor").addEventListener("click",closeTutor);
+q("tutorModal").addEventListener("click",(e)=>{ if(e.target.id==="tutorModal") closeTutor(); });
+
+q("dlCSV").addEventListener("click",exportCSV);
+q("dlJSON").addEventListener("click",exportJSON);
+q("dlPython").addEventListener("click",exportPython);
+q("clearLogBtn").addEventListener("click",()=>{ dataLog=[]; updateDataTab(); });
+q("dlLoginCSV").addEventListener("click",exportLoginCSV);
+q("dlQuizCSV").addEventListener("click",exportQuizCSV);
+
+q("quizForm").addEventListener("submit",submitQuiz);
+q("resetQuizBtn").addEventListener("click",resetQuizForm);
+q("askQuizBtn").addEventListener("click",generateAndRenderQuiz);
+q("newQuizBtn").addEventListener("click",generateAndRenderQuiz);
+
+q("presetLow").addEventListener("click",()=>setPreset(0.6,8.0,0.012));
+q("presetSolar").addEventListener("click",()=>setPreset(1.0,4.6,0.014));
+q("presetHigh").addEventListener("click",()=>setPreset(12.0,0.02,0.010));
+
+loadPersistentLogs();
+updateLoginAuditUI();
+updateQuizAttemptUI();
+renderQuizQuestions();
+resetAllToDefaults();
+resizeCanvas();
+if(window.MathJax && window.MathJax.typesetPromise){ window.MathJax.typesetPromise(); }
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+

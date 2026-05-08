@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>PHYS4022P Astrophysics LLM Simulation Hub</title>
+  <meta name="description" content="Fundamentals of Astrophysics (PHYS4022P) interactive simulation and AI learning hub." />
+  <style>
+    :root{
+      --bg:#08121f;
+      --bg2:#10263e;
+      --card:#112844;
+      --line:#2f5b86;
+      --text:#eaf4ff;
+      --muted:#9fc3e6;
+      --a:#4ec2ff;
+      --b:#ffd06b;
+      --ok:#78e6a6;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:"Segoe UI",Tahoma,Geneva,Verdana,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 10% 10%,rgba(78,194,255,.17),transparent 30%),
+        radial-gradient(circle at 90% 80%,rgba(255,208,107,.15),transparent 35%),
+        linear-gradient(170deg,var(--bg),var(--bg2));
+      min-height:100vh;
+    }
+    .wrap{max-width:1200px;margin:0 auto;padding:26px 18px 40px}
+    .hero{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:18px;
+      background:rgba(17,40,68,.75);
+      box-shadow:0 18px 45px rgba(0,0,0,.35);
+    }
+    .k{font-size:12px;color:var(--a);text-transform:uppercase;letter-spacing:.09em}
+    h1{margin:.2rem 0 .4rem;font-size:28px}
+    .meta{font-size:13px;color:var(--muted);line-height:1.7}
+    .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:14px}
+    .card{
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:14px;
+      background:rgba(17,40,68,.7);
+    }
+    .card h2{margin:0 0 8px;font-size:18px;color:var(--a)}
+    .card p{margin:0 0 10px;font-size:13px;color:var(--muted);line-height:1.65}
+    .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+    .chip{font-size:11px;border:1px solid var(--line);border-radius:14px;padding:3px 8px;color:var(--text);background:rgba(78,194,255,.1)}
+    .btnRow{display:flex;gap:8px;flex-wrap:wrap}
+    a.btn{
+      text-decoration:none;
+      border-radius:8px;
+      border:1px solid var(--line);
+      background:linear-gradient(180deg,#2f97ce,#1f628f);
+      color:#fff;
+      font-weight:600;
+      font-size:12px;
+      padding:7px 11px;
+      display:inline-block;
+    }
+    .note{margin-top:14px;font-size:12px;color:var(--muted);border-left:3px solid var(--ok);padding-left:10px}
+    @media(max-width:900px){.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="k">Course Hub</div>
+      <h1>PHYS4022P Fundamentals of Astrophysics</h1>
+      <div class="meta">
+        Creator and Maintainer: Dr. Nitesh Kumar, UPES<br>
+        L T P C: 4 0 0 4 | Units: 5 | Contact Hours: 60 | Prerequisite: Mechanics | Syllabus version: 3.0 (LLM & Simulator Integrated)
+      </div>
+      <div class="note">
+        This hub maps each unit to interactive simulations and AI-enabled learning tools aligned with CO1-CO5.
+      </div>
+    </section>
+
+    <section class="grid">
+      <article class="card">
+        <h2>Unit 1: Gravity and Orbits</h2>
+        <div class="chips"><span class="chip">2-body/N-body</span><span class="chip">Conservation laws</span><span class="chip">Computational methods</span></div>
+        <p>Simulate orbits and inspect energy/angular momentum conservation. Includes logged student activity and AI tutor support.</p>
+        <div class="btnRow">
+          <a class="btn" href="simple_nbody_orbits.html">Open Orbit Simulator</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>Unit 2: Radiation in Astrophysics</h2>
+        <div class="chips"><span class="chip">Blackbody curve</span><span class="chip">Wien peak</span><span class="chip">Luminosity scaling</span></div>
+        <p>Interactive blackbody simulator with real-time curve rendering and AI prompt suggestions for coding/literature exploration.</p>
+        <div class="btnRow">
+          <a class="btn" href="blackbody_radiation_ai_lab.html">Open Blackbody AI Lab</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>Unit 3: Stellar Evolution</h2>
+        <div class="chips"><span class="chip">H-R diagram</span><span class="chip">Evolutionary tracks</span><span class="chip">Socratic tutor</span></div>
+        <p>Explore temperature-luminosity spaces and mass-dependent tracks, then test understanding via adaptive Socratic prompts.</p>
+        <div class="btnRow">
+          <a class="btn" href="hr_diagram_socratic_lab.html">Open H-R Socratic Lab</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>Unit 4: Interstellar Space</h2>
+        <div class="chips"><span class="chip">Optical depth</span><span class="chip">Dust extinction</span><span class="chip">Radiative transfer intuition</span></div>
+        <p>Model transmission through dusty media and generate AI-ready summaries of the observed attenuation behavior.</p>
+        <div class="btnRow">
+          <a class="btn" href="optical_depth_ai_lab.html">Open Optical Depth AI Lab</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>Unit 5: Cosmology</h2>
+        <div class="chips"><span class="chip">Hubble law</span><span class="chip">Linear fit</span><span class="chip">Final fate debate tools</span></div>
+        <p>Generate synthetic galaxy data, estimate H0, infer age scales, and use AI-guided argument templates for cosmic fate discussions.</p>
+        <div class="btnRow">
+          <a class="btn" href="hubble_law_debate_lab.html">Open Hubble AI Lab</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>AI Course Material Toolkit</h2>
+        <div class="chips"><span class="chip">Prompt engineering</span><span class="chip">Coding assistant usage</span><span class="chip">Paper summarization</span></div>
+        <p>Use each simulator's built-in AI prompt builder to support CO5: constructing simple simulations, interpreting results, and writing scientific summaries.</p>
+      </article>
+    </section>
+  </div>
+</body>
+</html>

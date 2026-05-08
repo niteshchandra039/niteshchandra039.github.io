@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Blackbody Radiation AI Lab</title>
+  <style>
+    :root{--bg:#070f1d;--card:#13243b;--line:#2e557d;--text:#e8f2ff;--muted:#9fc2e5;--a:#58c6ff;--b:#ffd36e}
+    *{box-sizing:border-box} body{margin:0;font-family:"Segoe UI",Tahoma,sans-serif;color:var(--text);background:linear-gradient(155deg,#050d18,#10223a)}
+    .wrap{max-width:1100px;margin:0 auto;padding:20px}
+    .top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+    .title{font-size:24px;font-weight:700;color:var(--a)} .sub{font-size:13px;color:var(--muted)}
+    .grid{display:grid;grid-template-columns:330px 1fr;gap:12px;margin-top:12px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}
+    label{font-size:12px;color:var(--muted);display:block;margin-bottom:4px}
+    input,textarea{width:100%;background:#0b1b30;color:var(--text);border:1px solid #345e8c;border-radius:7px;padding:7px 9px}
+    textarea{min-height:110px;resize:vertical}
+    .btn{border:1px solid var(--line);border-radius:7px;padding:7px 10px;background:linear-gradient(180deg,#2f9cd4,#1f638f);color:#fff;font-weight:600;cursor:pointer;font-size:12px}
+    .row{display:flex;gap:8px;flex-wrap:wrap}
+    .mono{font-family:Consolas,monospace;background:rgba(88,198,255,.11);padding:5px 7px;border-radius:6px;font-size:12px}
+    #plot{width:100%;height:420px;display:block;background:#0a1528;border-radius:10px;border:1px solid var(--line)}
+    .stat{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:8px}
+    .box{border:1px solid var(--line);border-radius:8px;padding:8px;background:rgba(88,198,255,.08)}
+    .k{font-size:11px;color:var(--muted)} .v{font-size:13px;margin-top:4px}
+    @media(max-width:940px){.grid{grid-template-columns:1fr}.stat{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div>
+        <div class="title">Unit 2: Blackbody Radiation AI Lab</div>
+        <div class="sub">Creator and Maintainer: Dr. Nitesh Kumar, UPES</div>
+      </div>
+      <a class="btn" href="phys4022p_llm_sim_hub.html" style="text-decoration:none">Back to PHYS4022P Hub</a>
+    </div>
+
+    <div class="grid">
+      <section class="card">
+        <label>Temperature (K)</label>
+        <input id="temp" type="range" min="1500" max="12000" step="50" value="5800" />
+        <div class="mono" id="tempVal" style="margin:6px 0 10px">5800 K</div>
+
+        <label>Display wavelength max (nm)</label>
+        <input id="wmax" type="number" min="800" max="4000" step="50" value="3000" />
+
+        <div class="row" style="margin-top:10px">
+          <button class="btn" id="reset">Reset</button>
+          <button class="btn" id="promptBtn">Generate LLM Prompt</button>
+        </div>
+
+        <div class="stat">
+          <div class="box"><div class="k">Wien Peak</div><div class="v" id="peak">-</div></div>
+          <div class="box"><div class="k">Relative Luminosity</div><div class="v" id="lum">-</div></div>
+          <div class="box"><div class="k">Flux Ratio vs Sun</div><div class="v" id="ratio">-</div></div>
+        </div>
+
+        <label style="margin-top:10px">AI Assistant Prompt (editable)</label>
+        <textarea id="promptText"></textarea>
+      </section>
+
+      <section class="card">
+        <canvas id="plot"></canvas>
+      </section>
+    </div>
+  </div>
+
+<script>
+"use strict";
+const h=6.62607015e-34,c=2.99792458e8,k=1.380649e-23,sigma=5.670374419e-8;
+const SUN_T=5778;
+const cv=document.getElementById("plot");
+const ctx=cv.getContext("2d");
+
+function planck(lambda_m,T){
+  const x=(h*c)/(lambda_m*k*T);
+  const den=Math.exp(Math.min(700,x))-1;
+  return (2*h*c*c)/Math.pow(lambda_m,5)/den;
+}
+
+function resize(){
+  const dpr=window.devicePixelRatio||1;
+  cv.width=Math.floor(cv.clientWidth*dpr);
+  cv.height=Math.floor(cv.clientHeight*dpr);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+
+function draw(){
+  const T=parseFloat(document.getElementById("temp").value);
+  const wmax=Math.max(800,Math.min(4000,parseFloat(document.getElementById("wmax").value)||3000));
+  document.getElementById("tempVal").textContent=T.toFixed(0)+" K";
+  const w=cv.clientWidth,hp=cv.clientHeight;
+  ctx.clearRect(0,0,w,hp);
+  ctx.fillStyle="#0a1528"; ctx.fillRect(0,0,w,hp);
+
+  const x0=54,y0=hp-36,pw=w-76,ph=hp-58;
+  ctx.strokeStyle="rgba(159,194,229,.25)";ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x0,y0-ph);ctx.lineTo(x0+pw,y0-ph);ctx.stroke();
+
+  const n=500;
+  const xs=[], ys=[];
+  let ymax=0;
+  for(let i=0;i<n;i++){
+    const lamNm=100 + (wmax-100)*i/(n-1);
+    const lamM=lamNm*1e-9;
+    const y=planck(lamM,T);
+    xs.push(lamNm); ys.push(y);
+    if(y>ymax) ymax=y;
+  }
+  ymax*=1.06;
+
+  ctx.beginPath();
+  for(let i=0;i<n;i++){
+    const x=x0 + (xs[i]-100)/(wmax-100)*pw;
+    const y=y0 - (ys[i]/ymax)*ph;
+    i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+  }
+  ctx.strokeStyle="#58c6ff";ctx.lineWidth=2;ctx.stroke();
+
+  const peakNm=(2.897771955e6/T);
+  const pX=x0 + (Math.max(100,Math.min(wmax,peakNm))-100)/(wmax-100)*pw;
+  ctx.beginPath();ctx.moveTo(pX,y0);ctx.lineTo(pX,y0-ph);ctx.strokeStyle="rgba(255,211,110,.8)";ctx.lineWidth=1.4;ctx.stroke();
+
+  ctx.fillStyle="#9fc2e5";ctx.font="12px Segoe UI";
+  ctx.fillText("Wavelength (nm)",x0+pw-110,y0+24);
+  ctx.fillText("B_lambda (relative)",8,y0-ph+8);
+  ctx.fillText("100",x0-8,y0+16);
+  ctx.fillText(String(wmax),x0+pw-18,y0+16);
+
+  const lumRel=Math.pow(T/SUN_T,4);
+  document.getElementById("peak").textContent=peakNm.toFixed(1)+" nm";
+  document.getElementById("lum").textContent=lumRel.toFixed(3)+" Lsun";
+  document.getElementById("ratio").textContent=lumRel.toFixed(3);
+}
+
+function buildPrompt(){
+  const T=parseFloat(document.getElementById("temp").value);
+  const peak=(2.897771955e6/T).toFixed(1);
+  const lum=Math.pow(T/SUN_T,4).toFixed(3);
+  const txt=[
+    "You are my astrophysics coding assistant.",
+    "I am analyzing blackbody radiation for T = "+T.toFixed(0)+" K.",
+    "Observed Wien peak is near "+peak+" nm and relative luminosity is "+lum+" Lsun.",
+    "1) Explain this shift physically in 5 concise bullet points.",
+    "2) Provide NumPy/Matplotlib code to compare this star with the Sun on one plot.",
+    "3) Add one approximation-based reasoning check for undergraduate students."
+  ].join("\n");
+  document.getElementById("promptText").value=txt;
+}
+
+document.getElementById("temp").addEventListener("input",draw);
+document.getElementById("wmax").addEventListener("input",draw);
+document.getElementById("promptBtn").addEventListener("click",buildPrompt);
+document.getElementById("reset").addEventListener("click",()=>{
+  document.getElementById("temp").value="5800";
+  document.getElementById("wmax").value="3000";
+  draw();
+  buildPrompt();
+});
+window.addEventListener("resize",()=>{resize();draw();});
+resize();
+draw();
+buildPrompt();
+</script>
+</body>
+</html>

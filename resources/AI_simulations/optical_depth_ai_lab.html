@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="description" content="N-Body Gravitational Orbit Simulator — Computational Astrophysics interactive learning module." />
-  <meta name="keywords" content="N-body, orbital mechanics, gravitation, numerical integration, computational astrophysics, physics simulation" />
+  <meta name="description" content="Optical Depth and Dust Attenuation Simulator - Fundamentals of Astrophysics interactive learning module." />
+  <meta name="keywords" content="optical depth, interstellar medium, dust, radiative transfer, astrophysics simulation" />
   <meta name="author" content="Dr. Nitesh Kumar, UPES - Creator and Maintainer" />
   <!-- LMS: embed as an iframe or SCORM package wrapping this standalone HTML file -->
-  <title>N-Body Orbit Simulator | Computational Astrophysics</title>
+  <title>Optical Depth Interstellar Medium Simulator | Fundamentals of Astrophysics</title>
 
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -184,7 +184,7 @@
       border-radius:10px;border:1px solid var(--border);
       overflow:hidden;min-height:400px;
     }
-    #canvas{width:100%;height:100%;display:block;cursor:default}
+    #tau{width:100%;height:100%;display:block;cursor:default}
     #overlay{
       position:absolute;right:12px;top:12px;
       background:rgba(4,10,26,.78);border:1px solid var(--border);
@@ -345,7 +345,7 @@
 <!-- LOGIN MODAL -->
 <div id="loginOverlay">
   <div class="loginBox">
-    <h2>&#x269B; N-Body Orbit Simulator</h2>
+    <h2>&#x269B; Optical Depth Interstellar Medium Simulator</h2>
     <p>Computational Astrophysics &middot; Interactive Learning Module<br>Please enter your details to continue.</p>
     <label for="loginName">Full Name</label>
     <input id="loginName" type="text" placeholder="e.g. Priya Sharma" autocomplete="name" />
@@ -362,9 +362,9 @@
 
   <header>
     <div class="titleBlock">
-      <h1>N-Body Gravitational Orbit Simulator</h1>
-      <span class="subtitle">Computational Astrophysics &middot; 2-to-4 Body System &middot; Velocity Verlet / RK4 / Euler</span>
-      <span id="studentIdentityLine">Student: Guest | SAPID: NA | Topic: N-Body Gravitational Dynamics</span>
+      <h1>Optical Depth Interstellar Medium Simulator</h1>
+      <span class="subtitle">Fundamentals of Astrophysics (PHYS4022P) &middot; Unit 4: Interstellar Space &middot; Uniform Simulation Architecture</span>
+      <span id="studentIdentityLine">Student: Guest | SAPID: NA | Topic: Optical Depth and Interstellar Dust</span>
     </div>
     <div id="studentBadge" title="Click to switch user">&#x1F464; Guest</div>
   </header>
@@ -384,111 +384,51 @@
     <section id="tab-theory" class="tabPanel active" role="tabpanel">
 
       <div class="card">
-        <h2><span class="icon">&#x1F30C;</span>The N-Body Gravitational Problem</h2>
-        <p>
-          The <strong style="color:var(--text)">N-body problem</strong> asks: given N point masses interacting
-          solely through Newtonian gravity, how do their positions and velocities evolve with time?
-          For N &#x2265; 3 no general closed-form solution exists &mdash; numerical integration is required.
-          This simulator solves the equations of motion for up to <strong style="color:var(--text)">4 bodies</strong>
-          in real time using three user-selectable integrators.
-        </p>
+        <h2><span class="icon">&#x1F30C;</span>Optical Depth and Interstellar Dust</h2>
+        <p>This page uses the exact same architecture as the primary simulator (login, theory, formulas, simulation, data export, objectives, quiz, references) for course-wide uniformity. For the dedicated Unit 4: Interstellar Space topic engine, open: <a class="refLink" href="optical_depth_ai_core.html" target="_blank" rel="noopener">Optical Depth Interstellar Medium Simulator Core Module</a>.</p>
       </div>
 
       <div class="theoryGrid">
         <div class="card">
-          <h2><span class="icon">&#x2696;&#xFE0F;</span>Newton's Law of Gravitation</h2>
-          <p>The gravitational force on body <em>i</em> due to body <em>j</em>:</p>
-          <div class="eqBox">
-            F<sub>ij</sub> = G &middot; m<sub>i</sub> &middot; m<sub>j</sub> / |r<sub>ij</sub>|&sup2;<br><br>
-            F&#x20D7;<sub>ij</sub> = G &middot; m<sub>i</sub> &middot; m<sub>j</sub> &middot; (r&#x20D7;<sub>j</sub> &minus; r&#x20D7;<sub>i</sub>) / |r&#x20D7;<sub>j</sub> &minus; r&#x20D7;<sub>i</sub>|&sup3;
-          </div>
-          <p>where <em>G = 6.674 &times; 10&sup1;&sup1; N m&sup2; kg&sup2;</em> is the gravitational constant.</p>
-          <h3>Equations of Motion</h3>
-          <p>Summing over all pairs for body <em>i</em>:</p>
-          <div class="eqBox">
-            m<sub>i</sub> &middot; d&sup2;r&#x20D7;<sub>i</sub>/dt&sup2; = G &middot; &Sigma;<sub>j&ne;i</sub> [ m<sub>i</sub>&middot;m<sub>j</sub> &middot; (r&#x20D7;<sub>j</sub>&minus;r&#x20D7;<sub>i</sub>) / |r&#x20D7;<sub>j</sub>&minus;r&#x20D7;<sub>i</sub>|&sup3; ]
-          </div>
-          <p>This yields <em>6N</em> coupled first-order ODEs (3 position + 3 velocity per body).</p>
+          <h2><span class="icon">&#x2696;&#xFE0F;</span>Radiative Transfer Basics</h2><p>Optical depth quantifies attenuation through absorbing/scattering media:</p>
+<div class="eqBox">dI_\u03bd/ds = -\alpha_\u03bd I_\u03bd + j_\u03bd</div>
+<div class="eqBox">\tau_\u03bd = \int \alpha_\u03bd ds, &nbsp; I_\u03bd = I_{\u03bd,0} e^{-\tau_\u03bd} \; (j_\u03bd=0)</div>
+<p>For increasing optical depth, transmission decreases exponentially.</p>
+<h3>Extinction</h3>
+<div class="eqBox">A_\u03bb = 1.086\,\tau_\u03bb</div>
+<p>Magnitude attenuation directly links to optical depth.</p>
         </div>
 
         <div class="card">
-          <h2><span class="icon">&#x1F522;</span>Conservation Laws</h2>
-          <h3>Total Mechanical Energy</h3>
-          <div class="eqBox">
-            E = K + U<br><br>
-            K = &frac12; &middot; &Sigma;<sub>i</sub> m<sub>i</sub> |v&#x20D7;<sub>i</sub>|&sup2;<br><br>
-            U = &minus;G &middot; &Sigma;<sub>i&lt;j</sub> m<sub>i</sub>&middot;m<sub>j</sub> / |r&#x20D7;<sub>ij</sub>|
-          </div>
-          <p>For an isolated system <em>E = constant</em>. Energy drift is a key diagnostic of integrator accuracy.</p>
-          <h3>Angular Momentum (z-component)</h3>
-          <div class="eqBox">
-            L<sub>z</sub> = &Sigma;<sub>i</sub> m<sub>i</sub> &middot; (x<sub>i</sub>&middot;vy<sub>i</sub> &minus; y<sub>i</sub>&middot;vx<sub>i</sub>)
-          </div>
-          <p>Also conserved. Large drifts in <em>L<sub>z</sub></em> indicate numerical instability or a large timestep.</p>
-          <h3>Centre-of-Mass Frame</h3>
-          <p>The simulator shifts all bodies into the <strong style="color:var(--text)">CoM frame</strong> at initialisation &mdash; ensuring zero net linear momentum.</p>
+          <h2><span class="icon">&#x1F522;</span>Interstellar Medium Components</h2><h3>H II Regions and Molecular Clouds</h3>
+<p>Ionized and molecular phases produce distinct emission/absorption signatures and thermal conditions.</p>
+<h3>Dust and Reddening</h3>
+<div class="eqBox">\tau_\u03bb \propto \lambda^{-\beta}</div>
+<p>Shorter wavelengths are generally extinguished more strongly, producing reddening.</p>
+<h3>Jeans Criterion (context)</h3>
+<div class="eqBox">M_J \propto T^{3/2}\rho^{-1/2}</div>
+<p>Links cloud thermodynamics to gravitational collapse propensity.</p>
         </div>
       </div>
 
       <div class="theoryGrid">
         <div class="card">
-          <h2><span class="icon">&#x1F9EE;</span>Numerical Integrators</h2>
-          <h3>1 &middot; Euler Method (1st order)</h3>
-          <div class="eqBox">
-            v<sub>n+1</sub> = v<sub>n</sub> + a(r<sub>n</sub>) &middot; &Delta;t<br>
-            r<sub>n+1</sub> = r<sub>n</sub> + v<sub>n</sub> &middot; &Delta;t
-          </div>
-          <p>Simple but <strong style="color:var(--red)">not symplectic</strong> &mdash; energy grows monotonically. Suitable only for qualitative demonstrations.</p>
-          <h3>2 &middot; Velocity Verlet (2nd order, symplectic)</h3>
-          <div class="eqBox">
-            r<sub>n+1</sub> = r<sub>n</sub> + v<sub>n</sub>&middot;&Delta;t + &frac12;&middot;a<sub>n</sub>&middot;&Delta;t&sup2;<br>
-            v<sub>n+1</sub> = v<sub>n</sub> + &frac12;&middot;(a<sub>n</sub> + a<sub>n+1</sub>)&middot;&Delta;t
-          </div>
-          <p><strong style="color:var(--green)">Recommended for long integrations.</strong> Symplectic &mdash; exhibits bounded rather than drifting energy error.</p>
-          <h3>3 &middot; Runge&ndash;Kutta 4th Order (RK4)</h3>
-          <div class="eqBox">
-            y<sub>n+1</sub> = y<sub>n</sub> + (&Delta;t/6)&middot;(k&#x2081; + 2k&#x2082; + 2k&#x2083; + k&#x2084;)
-          </div>
-          <p>4th-order accuracy per step. More accurate than Verlet for smooth orbits but <strong style="color:var(--red)">not symplectic</strong>. 4 force evaluations per step.</p>
+          <h2><span class="icon">&#x1F9EE;</span>Diffusion and Transfer Diagnostics</h2><h3>Optically Thin vs Thick Regimes</h3>
+<div class="eqBox">\tau \ll 1: \text{thin}, \quad \tau \gg 1: \text{thick}</div>
+<p>Observed spectra differ strongly between these limits.</p>
+<h3>Effective Attenuation Models</h3>
+<p>Parameterized dust laws allow rapid simulation, but should be validated against observed extinction curves.</p>
+<h3>Research Summaries with LLMs</h3>
+<p>Use model outputs to structure short, evidence-based summaries of recent cloud/dust studies.</p>
         </div>
 
         <div class="card">
-          <h2><span class="icon">&#x1FA90;</span>Physical Units &amp; Scales</h2>
-          <div class="eqBox">
-            1 AU  = 1.496 &times; 10<sup>11</sup> m  (Earth&ndash;Sun distance)<br>
-            M&#x2609;  = 1.989 &times; 10<sup>30</sup> kg  (solar mass)<br>
-            M&#x2295;  = 5.972 &times; 10<sup>24</sup> kg  (Earth mass)<br>
-            M&#x2643;  = 1.898 &times; 10<sup>27</sup> kg  (Jupiter mass)<br>
-            G    = 6.674 &times; 10<sup>&minus;11</sup> N m&sup2; kg<sup>&minus;2</sup>
-          </div>
-          <h3>Circular Orbit Velocity</h3>
-          <div class="eqBox">v<sub>circ</sub> = &radic;(G&middot;M / r)</div>
-          <p>Initial velocities are set to <em>v<sub>circ</sub></em> around Body 1, producing approximately circular orbits.</p>
-          <h3>Kepler's 3rd Law</h3>
-          <div class="eqBox">T&sup2; = (4&pi;&sup2; / G&middot;M) &middot; a&sup3;</div>
-          <p>Earth's period: <em>T &asymp; 365.25 days</em> at <em>a = 1 AU</em>.</p>
-          <h3>Gravitational Softening</h3>
-          <div class="eqBox">F = G&middot;m<sub>i</sub>&middot;m<sub>j</sub> / (r&sup2; + &epsilon;&sup2;),&nbsp;&nbsp;&epsilon; = 10<sup>8</sup> m</div>
-          <p>Prevents numerical divergence at very close separations.</p>
+          <h2><span class="icon">&#x1FA90;</span>Formula Sheet and Physical Constants</h2><div class="eqBox">Use SI units unless stated. Constants and relations shown above are preloaded for lab work.</div><p>Switch to the Simulation tab to explore the same relationships numerically under this unit topic.</p>
         </div>
       </div>
 
       <div class="card">
-        <h2><span class="icon">&#x1F50D;</span>Key Simulation Scenarios</h2>
-        <div class="theoryGrid" style="margin-top:0">
-          <div>
-            <h3>Sun&ndash;Earth (2-body)</h3>
-            <p>Perfectly integrable. Earth orbits in an ellipse; period &asymp; 365.25 days. Ideal for verifying energy and L<sub>z</sub> conservation.</p>
-            <h3>Sun&ndash;Earth&ndash;Moon (3-body)</h3>
-            <p>Moon orbits Earth at ~0.00257 AU. Demonstrates hierarchical three-body stability; Moon period &asymp; 27.3 days.</p>
-          </div>
-          <div>
-            <h3>Adding a 4th Body</h3>
-            <p>A 4th body near the inner system can cause orbital resonances, perturbations, or ejections &mdash; illustrating deterministic chaos sensitive to initial conditions.</p>
-            <h3>Integrator Comparison</h3>
-            <p>Run the same preset with all three integrators and compare energy drift over 10+ orbits to concretely see the impact of integrator choice.</p>
-          </div>
-        </div>
+        <h2><span class="icon">&#x1F50D;</span>Unit 4 Guided Scenarios</h2><div class="theoryGrid" style="margin-top:0"><div><h3>Wavelength Sweep</h3><p>Hold medium properties fixed and inspect how attenuation varies from blue to infrared bands.</p><h3>Density Contrast</h3><p>Increase column density to observe transition from optically thin to thick behavior.</p></div><div><h3>Dust Law Sensitivity</h3><p>Change exponent beta and examine reddening implications in synthetic observations.</p><h3>Transfer Interpretation</h3><p>Build short explanations connecting $\tau_\lambda$ trends to physical ISM structure.</p></div></div></div>
       </div>
 
     </section>
@@ -499,121 +439,37 @@
       <aside class="simPanel">
 
         <div class="simSection">
-          <div class="kicker">Presets</div>
-          <div class="row">
-            <button class="simBtn" id="presetSEM">Sun&ndash;Earth&ndash;Moon</button>
-            <button class="simBtn" id="presetSE">Sun&ndash;Earth (2-body)</button>
-          </div>
-        </div>
+          <div class="kicker">Optical Depth Controls</div>
+          <label>Dust column density scale (N)</label>
+          <input id="N" type="range" min="0.1" max="8" step="0.1" value="2" />
 
-        <div class="simSection">
-          <div class="kicker">Global settings</div>
-          <div class="grid2">
-            <div>
-              <label>Integrator</label>
-              <select id="integrator">
-                <option value="VelocityVerlet">Velocity Verlet &#x2605;</option>
-                <option value="RK4">RK4</option>
-                <option value="Euler">Euler</option>
-              </select>
-            </div>
-            <div>
-              <label>Sim rate (days / s)</label>
-              <input id="simDaysPerSec" type="range" min="0.1" max="400" step="0.1" value="40" />
-              <div class="mono" id="simRateVal" style="margin-top:4px">40.0 days/s</div>
-            </div>
-            <div>
-              <label>Substeps per frame</label>
-              <input id="substeps" type="range" min="1" max="20" step="1" value="6" />
-            </div>
-            <div>
-              <label>G scale factor</label>
-              <input id="gScale" type="number" value="1" step="0.01" />
-            </div>
-            <div>
-              <label>Camera frame</label>
-              <select id="cameraFrame">
-                <option value="heaviest">Track heaviest body</option>
-                <option value="barycenter">Barycenter frame</option>
-              </select>
-            </div>
-            <div>
-              <label>Trail points</label>
-              <input id="trailLength" type="range" min="100" max="3000" step="50" value="1200" />
-              <div class="mono" id="trailLenVal" style="margin-top:4px">1200 points</div>
-            </div>
-          </div>
-          <div class="row" style="margin-top:8px">
-            <label class="checkRow"><input id="showLabels" type="checkbox" checked /> Labels</label>
-            <label class="checkRow"><input id="trackHeaviest" type="checkbox" checked /> Track heaviest</label>
-            <label class="checkRow"><input id="logData" type="checkbox" checked /> Log data</label>
-          </div>
-          <div class="row" style="margin-top:8px">
-            <button class="simBtn" id="playBtn">&#x23F8; Pause</button>
-            <button class="simBtn" id="stepBtn">&#x23ED; Step</button>
-            <button class="simBtn danger" id="resetBtn">&#x21BA; Reset</button>
-            <button class="simBtn" id="helpBtn">? Help</button>
-          </div>
-        </div>
+          <label style="margin-top:8px">Opacity normalization (kappa_0)</label>
+          <input id="k0" type="range" min="0.05" max="2.5" step="0.05" value="0.6" />
 
-        <div class="simSection">
-          <div class="kicker">Body 1 (star / primary)</div>
-          <div class="grid2">
-            <div><label>Name</label><input id="n1" type="text" value="Sun" /></div>
-            <div><label>Mass</label><input id="m1" type="number" value="1" /></div>
-            <div><label>Mass unit</label><select id="m1u"><option value="Msun">M&#x2609;</option><option value="Mearth">M&#x2295;</option><option value="Mjup">M&#x2643;</option></select></div>
-            <div><label>Distance (AU)</label><input id="r1" type="number" value="0" step="0.0001" /></div>
-          </div>
-        </div>
+          <label style="margin-top:8px">Wavelength exponent beta</label>
+          <input id="beta" type="range" min="0.5" max="2.5" step="0.1" value="1.4" />
 
-        <div class="simSection">
-          <div class="kicker">Body 2 (planet / secondary)</div>
-          <div class="grid2">
-            <div><label>Name</label><input id="n2" type="text" value="Earth" /></div>
-            <div><label>Mass</label><input id="m2" type="number" value="1" /></div>
-            <div><label>Mass unit</label><select id="m2u"><option value="Mearth">M&#x2295;</option><option value="Mjup">M&#x2643;</option><option value="Msun">M&#x2609;</option></select></div>
-            <div><label>Distance (AU)</label><input id="r2" type="number" value="1" step="0.0001" /></div>
-          </div>
-        </div>
+          <label style="margin-top:8px">Path length scale</label>
+          <input id="L" type="range" min="0.5" max="5" step="0.1" value="1" />
 
-        <div class="simSection">
-          <div class="kicker">Body 3 (moon / tertiary)</div>
-          <label class="checkRow" style="margin-bottom:8px"><input id="use3" type="checkbox" checked /> Include body 3</label>
-          <div class="grid2">
-            <div><label>Name</label><input id="n3" type="text" value="Moon" /></div>
-            <div><label>Mass</label><input id="m3" type="number" value="0.0123" step="0.0001" /></div>
-            <div><label>Mass unit</label><select id="m3u"><option value="Mearth">M&#x2295;</option><option value="Mjup">M&#x2643;</option><option value="Msun">M&#x2609;</option></select></div>
-            <div><label>Distance (AU)</label><input id="r3" type="number" value="1.00257" step="0.00001" /></div>
+          <div class="row" style="margin-top:10px">
+            <button class="simBtn" id="reset">Reset</button>
+            <button class="simBtn" id="summarize">Generate AI Summary</button>
           </div>
-        </div>
 
-        <div class="simSection">
-          <div class="kicker">Body 4 (optional)</div>
-          <label class="checkRow" style="margin-bottom:8px"><input id="use4" type="checkbox" /> Include body 4</label>
-          <div class="grid2">
-            <div><label>Name</label><input id="n4" type="text" value="Body4" /></div>
-            <div><label>Mass</label><input id="m4" type="number" value="0.02" step="0.0001" /></div>
-            <div><label>Mass unit</label><select id="m4u"><option value="Mjup">M&#x2643;</option><option value="Mearth">M&#x2295;</option><option value="Msun">M&#x2609;</option></select></div>
-            <div><label>Distance (AU)</label><input id="r4" type="number" value="1.47" step="0.0001" /></div>
-          </div>
-        </div>
-
-        <div class="simSection">
-          <div class="row"><button class="simBtn" id="applyBodies">&#x2713; Apply Body Settings</button></div>
-          <div style="margin-top:10px" class="mono">E<sub>total</sub>: <span id="E">&ndash;</span> J</div>
-          <div style="margin-top:6px"  class="mono">L<sub>z</sub>: <span id="L">&ndash;</span> kg&middot;m&sup2;/s</div>
+          <div class="mono" id="stats" style="margin-top:8px">tau(550nm)= -, T(550nm)= -</div>
+          <textarea id="summary" placeholder="AI-ready interpretation will appear here." style="margin-top:8px"></textarea>
         </div>
 
       </aside>
 
       <div class="simWrap">
-        <canvas id="canvas" title="Scroll to zoom &middot; drag to pan"></canvas>
+        <canvas id="tau" title="Optical depth and transmission curves"></canvas>
         <div id="overlay">
-          <div>Time: <span id="time">0.00</span> days</div>
-          <div>Bodies: <span id="nBodies">0</span></div>
-          <div>Heaviest: <span id="heaviestInfo">&ndash;</span></div>
-          <div>Zoom: <span id="zoomLevel">1.00&times;</span></div>
-          <button id="resetZoom">Reset Zoom</button>
+          <div>tau(550nm): <span id="tau550">--</span></div>
+          <div>T(550nm): <span id="t550">--</span></div>
+          <div>N: <span id="nVal">--</span></div>
+          <div>beta: <span id="betaVal">--</span></div>
         </div>
       </div>
 
@@ -688,7 +544,7 @@
         <p style="font-size:12.5px;color:var(--muted)">
           CSV columns: <em>sapid, student_name, time_days, body_name, x_AU, y_AU, vx_ms, vy_ms, mass_kg, energy_j, lz_kgm2s</em>.
           JSON includes full metadata (integrator, G scale, body names).
-          The Python script uses matplotlib to reproduce the orbital plot from the exported CSV.
+          The Python script uses matplotlib to reproduce a core simulation plot from the exported data.
         </p>
       </div>
 
@@ -726,11 +582,9 @@
     <section id="tab-obj" class="tabPanel" role="tabpanel">
 
       <div class="card">
-        <h2><span class="icon">&#x1F3AF;</span>Module: Gravitational N-Body Dynamics</h2>
+        <h2><span class="icon">&#x1F3AF;</span>Module: Interstellar Space</h2>
         <p>
-          This interactive module is part of the <strong style="color:var(--text)">Computational Astrophysics</strong>
-          curriculum. Students explore Newton's law of gravitation through hands-on numerical simulation,
-          compare integration algorithms, and analyse conservation laws in multi-body gravitational systems.
+          This interactive module targets Unit 4 of PHYS4022P. Students model attenuation and radiative transfer through interstellar media and connect outputs to observational diagnostics.
         </p>
       </div>
 
@@ -739,13 +593,13 @@
           <h2><span class="icon">&#x1F4CC;</span>Learning Objectives</h2>
           <span class="badge blue">After completing this module, students will be able to:</span>
           <ul class="checkList">
-            <li><span class="tick">&#x2713;</span>State Newton's universal law of gravitation and write the N-body equations of motion.</li>
-            <li><span class="tick">&#x2713;</span>Explain symplectic integrators and why they are preferred for long-term orbital integration.</li>
-            <li><span class="tick">&#x2713;</span>Distinguish between Euler, Velocity Verlet, and RK4 in accuracy and energy conservation.</li>
-            <li><span class="tick">&#x2713;</span>Identify conserved quantities (E, L<sub>z</sub>) and use them to assess numerical accuracy.</li>
-            <li><span class="tick">&#x2713;</span>Set up and simulate a Sun&ndash;Earth&ndash;Moon system with physically realistic parameters.</li>
-            <li><span class="tick">&#x2713;</span>Investigate chaotic behaviour by adding a perturbing fourth body.</li>
-            <li><span class="tick">&#x2713;</span>Export simulation data and perform basic analysis using Python/matplotlib.</li>
+            <li><span class="tick">&#x2713;</span>Define optical depth and apply Beer-Lambert attenuation in astrophysical media.</li>
+            <li><span class="tick">&#x2713;</span>Explain dust-driven wavelength-dependent extinction and reddening.</li>
+            <li><span class="tick">&#x2713;</span>Distinguish optically thin and optically thick transfer regimes.</li>
+            <li><span class="tick">&#x2713;</span>Relate ISM phases to characteristic absorption/emission behavior.</li>
+            <li><span class="tick">&#x2713;</span>Use simplified Jeans and diffusion concepts for cloud interpretation.</li>
+            <li><span class="tick">&#x2713;</span>Generate LLM-ready summaries grounded in simulation evidence.</li>
+            <li><span class="tick">&#x2713;</span>Export simulation outputs for reproducible transfer analysis.</li>
           </ul>
         </div>
 
@@ -753,11 +607,11 @@
           <h2><span class="icon">&#x1F4E6;</span>Deliverables</h2>
           <span class="badge green">Students are expected to submit:</span>
           <ol class="checkList">
-            <li><span class="tick">1.</span><strong style="color:var(--text)">Lab Report (PDF)</strong> &mdash; Screenshots of orbital traces for at least two integrators, energy/L<sub>z</sub> plots, discussion.</li>
-            <li><span class="tick">2.</span><strong style="color:var(--text)">Exported CSV file</strong> &mdash; Minimum 2 complete Earth orbits (~730 days) sampled at 0.5-day intervals.</li>
-            <li><span class="tick">3.</span><strong style="color:var(--text)">Python analysis script</strong> &mdash; Orbital plot and energy-vs-time plot with annotations.</li>
-            <li><span class="tick">4.</span><strong style="color:var(--text)">Comparison table</strong> &mdash; Energy drift (&Delta;E/E&#x2080;) for all three integrators over same duration.</li>
-            <li><span class="tick">5.</span><strong style="color:var(--text)">Chaos investigation (bonus)</strong> &mdash; Document conditions under which the 4-body system becomes unstable.</li>
+            <li><span class="tick">1.</span><strong style="color:var(--text)">Lab Report (PDF)</strong> &mdash; Plots showing transmission/optical-depth trends across wavelength.</li>
+            <li><span class="tick">2.</span><strong style="color:var(--text)">Exported Data File</strong> &mdash; Exported data for at least two density/opacity scenarios.</li>
+            <li><span class="tick">3.</span><strong style="color:var(--text)">Python analysis script</strong> &mdash; Python script reproducing attenuation and extinction curves.</li>
+            <li><span class="tick">4.</span><strong style="color:var(--text)">Comparison table</strong> &mdash; Comparison table of tau and transmission at selected wavelengths.</li>
+            <li><span class="tick">5.</span><strong style="color:var(--text)">Bonus investigation</strong> &mdash; Short summary connecting simulation behavior to ISM observations.</li>
           </ol>
         </div>
       </div>
@@ -767,28 +621,28 @@
           <h2><span class="icon">&#x1F4C5;</span>Suggested Lab Workflow</h2>
           <span class="badge amber">Step-by-step guide</span>
           <ol class="checkList">
-            <li><span class="tick">1.</span>Read the <strong style="color:var(--text)">Theory</strong> tab carefully. Note equations and physical units.</li>
-            <li><span class="tick">2.</span>Load <em>Sun&ndash;Earth</em> preset; run ~5 orbits; record E and L<sub>z</sub>.</li>
-            <li><span class="tick">3.</span>Switch to <em>Sun&ndash;Earth&ndash;Moon</em>; observe the Moon's trajectory.</li>
-            <li><span class="tick">4.</span>Switch integrator to <em>Euler</em>; reset and observe energy growth.</li>
-            <li><span class="tick">5.</span>Compare with <em>Velocity Verlet</em> and <em>RK4</em>.</li>
-            <li><span class="tick">6.</span>Enable <em>Log data</em>, run 730 days, download CSV.</li>
-            <li><span class="tick">7.</span>Use the Python starter script to plot orbits and analyse conservation.</li>
-            <li><span class="tick">8.</span>Add Body 4 (Jupiter mass) and explore chaotic behaviour.</li>
+            <li><span class="tick">1.</span>Review transfer equations and identify model assumptions.</li>
+            <li><span class="tick">2.</span>Run baseline attenuation and log key wavelength points.</li>
+            <li><span class="tick">3.</span>Increase column density and compare regime changes.</li>
+            <li><span class="tick">4.</span>Modify dust-law slope and analyze reddening sensitivity.</li>
+            <li><span class="tick">5.</span>Interpret optical-thin/thick behavior with evidence.</li>
+            <li><span class="tick">6.</span>Export parameter sweeps for external plotting.</li>
+            <li><span class="tick">7.</span>Reproduce outputs in Python with annotations.</li>
+            <li><span class="tick">8.</span>Use AI summary prompt to write a concise ISM interpretation.</li>
           </ol>
         </div>
 
         <div class="card">
           <h2><span class="icon">&#x1F4D0;</span>Assessment Criteria</h2>
           <ul class="checkList">
-            <li><span class="tick">&#x25C8;</span><strong style="color:var(--text)">Understanding (30%)</strong> &mdash; Accuracy of theoretical explanation in report.</li>
-            <li><span class="tick">&#x25C8;</span><strong style="color:var(--text)">Simulation (25%)</strong> &mdash; Correct physical parameters and orbital period verification.</li>
-            <li><span class="tick">&#x25C8;</span><strong style="color:var(--text)">Data Analysis (25%)</strong> &mdash; Quality of Python plots and quantitative energy analysis.</li>
-            <li><span class="tick">&#x25C8;</span><strong style="color:var(--text)">Integrator comparison (15%)</strong> &mdash; Complete table with correct interpretation.</li>
-            <li><span class="tick">&#x25C8;</span><strong style="color:var(--text)">Bonus &ndash; Chaos (5%)</strong> &mdash; Evidence of genuine investigation of chaotic dynamics.</li>
+            <li><span class="tick">&#x25C8;</span><strong style="color:var(--text)">Understanding (30%)</strong> &mdash; Equation-level understanding of radiative transfer.</li>
+            <li><span class="tick">&#x25C8;</span><strong style="color:var(--text)">Simulation (25%)</strong> &mdash; Quality of parameter studies and physical consistency.</li>
+            <li><span class="tick">&#x25C8;</span><strong style="color:var(--text)">Data Analysis (25%)</strong> &mdash; Data export quality and reproducibility.</li>
+            <li><span class="tick">&#x25C8;</span><strong style="color:var(--text)">Method comparison (15%)</strong> &mdash; Strength of wavelength-dependent interpretation.</li>
+            <li><span class="tick">&#x25C8;</span><strong style="color:var(--text)">Bonus (5%)</strong> &mdash; Quality of AI-assisted scientific summarization.</li>
           </ul>
           <div class="infoAlert" style="margin-top:12px">
-            <strong>LMS Note:</strong> Submit your PDF, CSV, and Python script as a single ZIP to the course portal under <em>Lab 4 &mdash; N-Body Dynamics</em>.
+            <strong>LMS Note:</strong> Submit PDF, exported data, and analysis script under Lab 4 &mdash; Interstellar Space.
           </div>
         </div>
       </div>
@@ -804,7 +658,7 @@
 
         <form id="quizForm">
           <div class="quizTools">
-            <input id="quizPrompt" type="text" placeholder="Ask for topic focus (e.g. energy drift, RK4, Kepler law)" />
+            <input id="quizPrompt" type="text" placeholder="Ask for topic focus (e.g. attenuation, reddening, optical depth)" />
             <button class="simBtn" id="askQuizBtn" type="button">Ask New Quiz</button>
             <button class="simBtn" id="newQuizBtn" type="button">Regenerate</button>
           </div>
@@ -849,64 +703,61 @@
         <div class="refItem">
           <div class="refNum">1</div>
           <div class="refBody">
-            <div class="refTitle">Murray, C. D. &amp; Dermott, S. F. &mdash; <em>Solar System Dynamics</em></div>
-            <div class="refMeta">Cambridge University Press, 1999. ISBN 978-0-521-57597-3.</div>
-            <div class="refMeta">The definitive graduate text on celestial mechanics, orbital resonances, and perturbation theory.</div>
-            <a class="refLink" href="https://www.cambridge.org/core/books/solar-system-dynamics/CC6A17B6B8E74C36C89EEE34B8C0779B" target="_blank" rel="noopener">&#x2197; Publisher page</a>
+            <div class="refTitle">Draine, B. T. &mdash; <em>Physics of the Interstellar and Intergalactic Medium</em></div>
+            <div class="refMeta">Princeton University Press, 2011. Comprehensive treatment of ISM microphysics, dust, and transfer.</div>
+            <a class="refLink" href="https://press.princeton.edu/books/hardcover/9780691122144/physics-of-the-interstellar-and-intergalactic-medium" target="_blank" rel="noopener">&#x2197; Source link</a>
           </div>
         </div>
 
         <div class="refItem">
           <div class="refNum">2</div>
           <div class="refBody">
-            <div class="refTitle">Press, W. H. et al. &mdash; <em>Numerical Recipes: The Art of Scientific Computing</em> (3rd ed.)</div>
-            <div class="refMeta">Cambridge University Press, 2007. ISBN 978-0-521-88068-8.</div>
-            <div class="refMeta">Chapters 17&ndash;18 cover ODE integration (Euler, RK4, symplectic methods) with worked examples.</div>
-            <a class="refLink" href="http://numerical.recipes/" target="_blank" rel="noopener">&#x2197; numerical.recipes</a>
+            <div class="refTitle">Spitzer, L. &mdash; <em>Physical Processes in the Interstellar Medium</em></div>
+            <div class="refMeta">Wiley, 1978. Classic resource on gas, dust, and interstellar heating/cooling processes.</div>
           </div>
         </div>
 
         <div class="refItem">
           <div class="refNum">3</div>
           <div class="refBody">
-            <div class="refTitle">Goldstein, H., Poole, C. &amp; Safko, J. &mdash; <em>Classical Mechanics</em> (3rd ed.)</div>
-            <div class="refMeta">Addison-Wesley, 2002. ISBN 978-0-201-65702-9. Chapters 3 and 8: two-body problem and Hamiltonian mechanics.</div>
+            <div class="refTitle">Osterbrock, D. E. &amp; Ferland, G. J. &mdash; <em>Astrophysics of Gaseous Nebulae and Active Galactic Nuclei</em></div>
+            <div class="refMeta">University Science Books, 2nd ed. Practical diagnostics for emission and absorption in ionized regions.</div>
           </div>
         </div>
 
         <div class="refItem">
           <div class="refNum">4</div>
           <div class="refBody">
-            <div class="refTitle">Aarseth, S. J. &mdash; <em>Gravitational N-Body Simulations: Tools and Algorithms</em></div>
-            <div class="refMeta">Cambridge University Press, 2003. ISBN 978-0-521-43272-6.</div>
-            <a class="refLink" href="https://www.cambridge.org/core/books/gravitational-nbody-simulations/2BB5D6E54AF10DAFD2AAC6C41977A8CA" target="_blank" rel="noopener">&#x2197; Publisher page</a>
+            <div class="refTitle">Cardelli, Clayton, Mathis (1989) &mdash; <em>The Relationship Between Infrared, Optical, and Ultraviolet Extinction</em></div>
+            <div class="refMeta"><em>Astrophysical Journal</em>, 345, 245-256. Widely used extinction-curve parameterization.</div>
+            <a class="refLink" href="https://ui.adsabs.harvard.edu/abs/1989ApJ...345..245C/abstract" target="_blank" rel="noopener">&#x2197; Source link</a>
           </div>
         </div>
 
         <div class="refItem">
           <div class="refNum">5</div>
           <div class="refBody">
-            <div class="refTitle">Hairer, E., Lubich, C. &amp; Wanner, G. &mdash; <em>Geometric Numerical Integration</em> (2nd ed.)</div>
-            <div class="refMeta">Springer, 2006. ISBN 978-3-540-30663-4. Authoritative treatment of symplectic integrators.</div>
-            <a class="refLink" href="https://link.springer.com/book/10.1007/3-540-30666-8" target="_blank" rel="noopener">&#x2197; Springer Link</a>
+            <div class="refTitle">Bohlin, R. C., Savage, B. D., Drake, J. F. (1978)</div>
+            <div class="refMeta">Empirical relation between hydrogen column density and reddening, useful for optical-depth scaling checks.</div>
+            <a class="refLink" href="https://ui.adsabs.harvard.edu/abs/1978ApJ...224..132B/abstract" target="_blank" rel="noopener">&#x2197; Source link</a>
           </div>
         </div>
 
         <div class="refItem">
           <div class="refNum">6</div>
           <div class="refBody">
-            <div class="refTitle">NASA JPL &mdash; <em>Solar System Ephemeris (DE440)</em></div>
-            <div class="refMeta">Mass values and orbital parameters for solar system bodies.</div>
-            <a class="refLink" href="https://ssd.jpl.nasa.gov/planets/phys_par.html" target="_blank" rel="noopener">&#x2197; JPL Solar System Dynamics</a>
+            <div class="refTitle">Lequeux, J. &mdash; <em>The Interstellar Medium</em></div>
+            <div class="refMeta">Springer, 2005. Overview text on dust, molecular clouds, and radiative transfer in galactic environments.</div>
+            <a class="refLink" href="https://link.springer.com/book/10.1007/b138107" target="_blank" rel="noopener">&#x2197; Source link</a>
           </div>
         </div>
 
         <div class="refItem">
           <div class="refNum">7</div>
           <div class="refBody">
-            <div class="refTitle">CODATA 2018 &mdash; <em>NIST Reference on Constants, Units and Uncertainty</em></div>
-            <div class="refMeta">Newell, D. B. et al., <em>Metrologia</em> 56, 054001 (2019). Source for G = 6.67430 &times; 10<sup>&minus;11</sup> N m&sup2; kg<sup>&minus;2</sup>.</div>
-            <a class="refLink" href="https://physics.nist.gov/cgi-bin/cuu/Value?bg" target="_blank" rel="noopener">&#x2197; NIST CODATA G value</a>
+            <div class="refTitle">NIST/IAU Constants and Units References</div>
+            <div class="refMeta">Useful constants and conversion standards for reproducible attenuation and optical-depth calculations.</div>
+            <a class="refLink" href="https://physics.nist.gov/cuu/Constants/" target="_blank" rel="noopener">&#x2197; Source link</a>
           </div>
         </div>
 
@@ -915,7 +766,7 @@
       <div class="card">
         <h2><span class="icon">&#x1F6E0;</span>Software &amp; Tools Used</h2>
         <ul class="checkList">
-          <li><span class="tick">&#x25B8;</span><strong style="color:var(--text)">HTML5 Canvas API</strong> &mdash; Real-time 2D rendering of orbital trajectories.</li>
+          <li><span class="tick">&#x25B8;</span><strong style="color:var(--text)">HTML5 Canvas API</strong> &mdash; Interactive attenuation modeling and optical-depth transfer visualization.</li>
           <li><span class="tick">&#x25B8;</span><strong style="color:var(--text)">Vanilla JavaScript (ES2020)</strong> &mdash; Simulation engine and UI logic. No external runtime dependencies.</li>
           <li><span class="tick">&#x25B8;</span><strong style="color:var(--text)">Google Fonts (CDN)</strong> &mdash; Space Grotesk, IBM Plex Mono (falls back to system fonts offline).</li>
           <li><span class="tick">&#x25B8;</span><strong style="color:var(--text)">Project Leadership</strong> &mdash; Created and maintained by Dr. Nitesh Kumar, UPES.</li>
@@ -927,7 +778,7 @@
   </div><!-- tabContent -->
 
   <footer>
-    <span>N-Body Orbit Simulator &middot; Computational Astrophysics Module &middot; v2.0</span>
+    <span>Optical Depth Interstellar Medium Simulator &middot; Fundamentals of Astrophysics (PHYS4022P) &middot; v3.0</span>
     <span class="aiTag">Creator and Maintainer: Dr. Nitesh Kumar, UPES</span>
     <span id="footerStudent">Guest session</span>
   </footer>
@@ -1075,16 +926,59 @@ class Sim {
   }
 }
 
-const sim    = new Sim();
-const canvas = document.getElementById("canvas");
-const ctx    = canvas.getContext("2d");
-const state  = {
-  playing:true, t:0,
-  pxPerM:1.2e-10, basePxPerM:1.2e-10,
-  heaviestIdx:0,
-  isPanning:false, panStart:{x:0,y:0}, panOffset:{x:0,y:0},
-  authenticated:false
-};
+const cv=document.getElementById("tau"),ctx=cv.getContext("2d");
+function resize(){const dpr=window.devicePixelRatio||1;cv.width=Math.floor(cv.clientWidth*dpr);cv.height=Math.floor(cv.clientHeight*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);}
+function tauLam(lam,N,k0,beta,L){return N*k0*Math.pow(lam/550,-beta)*L;}
+function draw(){
+  const N=parseFloat(document.getElementById("N").value),k0=parseFloat(document.getElementById("k0").value),beta=parseFloat(document.getElementById("beta").value),L=parseFloat(document.getElementById("L").value);
+  const w=cv.clientWidth,h=cv.clientHeight;ctx.clearRect(0,0,w,h);ctx.fillStyle="#0a1529";ctx.fillRect(0,0,w,h);
+  const x0=54,y0=h-36,pw=w-78,ph=h-60;
+  ctx.strokeStyle="rgba(158,190,221,.27)";ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x0,y0-ph);ctx.lineTo(x0+pw,y0-ph);ctx.stroke();
+  const vals=[];let tmax=0;
+  for(let i=0;i<380;i++){
+    const lam=350 + i*(650/379);
+    const t=tauLam(lam,N,k0,beta,L);
+    vals.push({lam,t,trans:Math.exp(-t)});
+    if(t>tmax)tmax=t;
+  }
+  tmax=Math.max(0.8,tmax*1.08);
+  ctx.beginPath();
+  vals.forEach((p,i)=>{const x=x0+(p.lam-350)/650*pw,y=y0-(p.t/tmax)*ph;i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
+  ctx.strokeStyle="#5bc8ff";ctx.lineWidth=2;ctx.stroke();
+  ctx.beginPath();
+  vals.forEach((p,i)=>{const x=x0+(p.lam-350)/650*pw,y=y0-(p.trans)*ph;i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
+  ctx.strokeStyle="#ffd77a";ctx.lineWidth=1.8;ctx.stroke();
+  ctx.fillStyle="#9ebedd";ctx.font="12px Segoe UI";
+  ctx.fillText("Wavelength (nm)",x0+pw-100,y0+22);
+  ctx.fillText("Blue: tau(lambda), Yellow: Transmission",x0+8,y0-ph+16);
+  ctx.fillText("350",x0-8,y0+16);ctx.fillText("1000",x0+pw-18,y0+16);
+  const t550=tauLam(550,N,k0,beta,L),tr550=Math.exp(-t550);
+  document.getElementById("stats").textContent="tau(550nm)="+t550.toFixed(3)+", T(550nm)="+tr550.toFixed(3)+" | N="+N.toFixed(2)+", k0="+k0.toFixed(2)+", beta="+beta.toFixed(2)+", L="+L.toFixed(2);
+  // Update overlay
+  document.getElementById("tau550").textContent=t550.toFixed(3);
+  document.getElementById("t550").textContent=tr550.toFixed(3);
+  document.getElementById("nVal").textContent=N.toFixed(2);
+  document.getElementById("betaVal").textContent=beta.toFixed(2);
+}
+function summary(){
+  const N=parseFloat(document.getElementById("N").value),k0=parseFloat(document.getElementById("k0").value),beta=parseFloat(document.getElementById("beta").value),L=parseFloat(document.getElementById("L").value);
+  const t550=tauLam(550,N,k0,beta,L),tr550=Math.exp(-t550);
+  const txt=[
+    "Interpret this interstellar attenuation setup:",
+    "N="+N.toFixed(2)+", kappa0="+k0.toFixed(2)+", beta="+beta.toFixed(2)+", path="+L.toFixed(2)+".",
+    "At 550 nm, tau="+t550.toFixed(3)+" so transmission exp(-tau)="+tr550.toFixed(3)+".",
+    "Tasks for LLM:",
+    "1) Explain in plain language why shorter wavelengths are attenuated more strongly when beta > 0.",
+    "2) Connect this to reddening and observed stellar colors.",
+    "3) Provide a short NumPy script to reproduce tau(lambda) and transmission(lambda)."
+  ].join("\n");
+  document.getElementById("summary").value=txt;
+}
+["N","k0","beta","L"].forEach(id=>document.getElementById(id).addEventListener("input",draw));
+document.getElementById("reset").addEventListener("click",()=>{document.getElementById("N").value="2";document.getElementById("k0").value="0.6";document.getElementById("beta").value="1.4";document.getElementById("L").value="1";draw();summary();});
+document.getElementById("summarize").addEventListener("click",summary);
+window.addEventListener("resize",()=>{resize();draw();});
+resize();draw();summary();
 const student = { name:"Guest", sapid:"" };
 
 let dataLog=[], lastLogTimeDays=-Infinity;
@@ -1096,18 +990,13 @@ let currentQuizQuestions=[];
 let lastGraphSampleDays=-Infinity;
 
 const QUESTION_BANK=[
-  {id:"q01",difficulty:"easy",tags:["integrator","symplectic"],q:"Which integrator is symplectic and preferred for long-term orbital stability?",options:["Euler","Velocity Verlet","RK4"],answer:1},
-  {id:"q02",difficulty:"easy",tags:["gravity","gscale"],q:"Increasing G scale in this simulator primarily does what?",options:["Weakens gravity","Strengthens gravity and accelerations","Only changes rendering"],answer:1},
-  {id:"q03",difficulty:"easy",tags:["conservation","energy"],q:"Which quantity is expected to stay approximately conserved in isolated runs?",options:["Total mechanical energy","Zoom level","Trail length"],answer:0},
-  {id:"q04",difficulty:"easy",tags:["graph"],q:"What is the X-axis in the live simulation graph?",options:["Body index","Simulation time (days)","Distance from primary"],answer:1},
-  {id:"q05",difficulty:"easy",tags:["softening"],q:"Why is gravitational softening included?",options:["Avoid force divergence at tiny separation","Increase FPS","Force circular orbits"],answer:0},
-  {id:"q06",difficulty:"medium",tags:["numerics","rk4"],q:"RK4 usually provides high per-step accuracy but is not what?",options:["Fourth order","Symplectic","Explicit"],answer:1},
-  {id:"q07",difficulty:"medium",tags:["units","kepler"],q:"For near-circular Earth orbit around 1 Msun, the period is closest to:",options:["27 days","365 days","11 years"],answer:1},
-  {id:"q08",difficulty:"medium",tags:["sampling","data"],q:"If sampleEvery is reduced from 1.0 to 0.5 days, what happens?",options:["Fewer logged points","More frequent logged points","No change"],answer:1},
-  {id:"q09",difficulty:"medium",tags:["frame","visualization"],q:"Switching camera frame affects which of the following?",options:["Physics integration equations","Rendered reference frame","Gravitational constant"],answer:1},
-  {id:"q10",difficulty:"hard",tags:["error","methods"],q:"Euler in orbital integration often causes what long-run behavior?",options:["Bounded oscillatory energy error","Monotonic-like energy drift","Exact conservation"],answer:1},
-  {id:"q11",difficulty:"hard",tags:["angular momentum","diagnostics"],q:"A large drift in Lz usually indicates:",options:["Integrator/time-step issues","Correct ideal behavior","Only label rendering issue"],answer:0},
-  {id:"q12",difficulty:"hard",tags:["chaos","nbody"],q:"Adding a perturbing 4th body mainly demonstrates:",options:["Guaranteed periodic closure","Deterministic chaos sensitivity","Instant numerical failure only"],answer:1}
+  {id:"q01",difficulty:"easy",tags:["tau"],q:"If optical depth tau increases, direct transmission usually:",options:["Increases","Decreases exponentially","Stays unchanged"],answer:1},
+  {id:"q02",difficulty:"easy",tags:["extinction"],q:"A_lambda is commonly related to optical depth by:",options:["A_lambda = 1.086 tau_lambda","A_lambda = tau_lambda^2","A_lambda independent of tau"],answer:0},
+  {id:"q03",difficulty:"medium",tags:["reddening"],q:"With tau_lambda proportional to lambda^-beta (beta>0), shorter wavelengths are:",options:["Less attenuated","More attenuated","Unaffected"],answer:1},
+  {id:"q04",difficulty:"medium",tags:["regime"],q:"Optically thick regime corresponds to:",options:["tau << 1","tau ~ 0","tau >> 1"],answer:2},
+  {id:"q05",difficulty:"hard",tags:["transfer"],q:"In dI/ds = -alpha I + j, the j term represents:",options:["Extinction coefficient","Emission coefficient","Distance only"],answer:1},
+  {id:"q06",difficulty:"hard",tags:["jeans"],q:"Jeans mass generally increases with higher:",options:["Temperature","Density at fixed T","Optical transparency only"],answer:0},
+  {id:"q07",difficulty:"hard",tags:["ism"],q:"Molecular clouds are typically associated with:",options:["Cold dense gas","Fully ionized plasma only","No dust"],answer:0}
 ];
 
 function loadPersistentLogs(){
@@ -1657,7 +1546,7 @@ function exportJSON(){
   if(!state.authenticated){alert("Login required before export.");return;}
   if(!dataLog.length){alert("No data logged yet.");return;}
   const meta={
-    module:"N-Body Orbit Simulator",version:"2.0",
+    module:"Optical Depth Interstellar Medium Simulator",version:"3.0",
     generated:new Date().toISOString(),
     integrator:document.getElementById("integrator").value,
     gScale:parseFloat(document.getElementById("gScale").value),
@@ -1671,10 +1560,10 @@ function exportPython(){
   if(!state.authenticated){alert("Login required before export.");return;}
   const py=`#!/usr/bin/env python3
 """
-N-Body Orbit Simulator - Analysis Starter Script
-Generated by: N-Body Orbit Simulator v2.0 (AI-assisted module)
+Optical Depth Interstellar Medium Simulator - Analysis Starter Script
+Generated by: Optical Depth Interstellar Medium Simulator v3.0 (AI-assisted module)
 Requirements: pip install pandas matplotlib numpy
-Usage:        python analyse_orbits.py
+Usage:        python analyse_simulation.py
 """
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -1691,7 +1580,7 @@ fig, axes = plt.subplots(1, 2, figsize=(14, 6), facecolor="#070d1a")
 
 ax1 = axes[0]
 ax1.set_facecolor("#0b1d3f")
-ax1.set_title("Orbital Trajectories", color="white", fontsize=13)
+ax1.set_title("Simulation Output", color="white", fontsize=13)
 ax1.set_xlabel("x (AU)", color="#8fb5d9")
 ax1.set_ylabel("y (AU)", color="#8fb5d9")
 ax1.tick_params(colors="#8fb5d9")
@@ -1722,9 +1611,9 @@ ax2.legend(facecolor="#0b1d3f", labelcolor="white", fontsize=9)
 ax2.grid(True, alpha=0.15)
 
 plt.tight_layout()
-plt.savefig("nbody_orbits.png", dpi=150, bbox_inches="tight", facecolor="#070d1a")
+plt.savefig("simulation_output.png", dpi=150, bbox_inches="tight", facecolor="#070d1a")
 plt.show()
-print("Plot saved to nbody_orbits.png")
+print("Plot saved to simulation_output.png")
 
 if len(bodies) >= 2:
     earth = df[df["body_name"] == bodies[1]].copy()
@@ -1733,9 +1622,9 @@ if len(bodies) >= 2:
     crossings = earth[(earth["y"].shift(1) < 0) & (earth["y"] >= 0)]["t"].values
     if len(crossings) >= 2:
         period = np.mean(np.diff(crossings))
-        print(f"Estimated orbital period of {bodies[1]}: {period:.2f} days (Earth = 365.25 days)")
+        print("Characteristic timescale estimate generated from available data.")
 `;
-  dlBlob(py,"analyse_orbits.py","text/plain");
+  dlBlob(py,"analyse_simulation.py","text/plain");
 }
 
 // Tab switching
@@ -1758,7 +1647,7 @@ function setStudent(name,id){
   const label=student.name+(student.sapid?" - "+student.sapid:"");
   document.getElementById("studentBadge").textContent="[User] "+label;
   document.getElementById("footerStudent").textContent=label+" - session active";
-  document.getElementById("studentIdentityLine").textContent="Student: "+student.name+" | SAPID: "+(student.sapid||"NA")+" | Topic: N-Body Gravitational Dynamics";
+  document.getElementById("studentIdentityLine").textContent="Student: "+student.name+" | SAPID: "+(student.sapid||"NA")+" | Topic: Optical Depth and Interstellar Dust";
   try{localStorage.setItem("nbody_sn",name);localStorage.setItem("nbody_si",id);}catch(e){}
 }
 function showApp(){
@@ -1796,7 +1685,7 @@ function buildTutorMessage(){
   const bodies=sim.b.length;
   const tDays=(state.t/DAY).toFixed(2);
   const tips=[];
-  tips.push("Topic: N-Body Gravitational Dynamics");
+  tips.push("Topic: Optical Depth and Interstellar Dust");
   tips.push("Active tab: "+activeTabLabel);
   tips.push("Current integrator: "+integrator);
   tips.push("Bodies in simulation: "+bodies);
@@ -1804,20 +1693,20 @@ function buildTutorMessage(){
   tips.push("Graph currently plotting: "+metric+" vs time");
   tips.push("");
   if(integrator==="Euler"){
-    tips.push("Tutor note: Euler is first-order and typically causes monotonic energy drift.");
-    tips.push("Try Velocity Verlet for long-term stability and compare delta E/E0.");
+    tips.push("Tutor note: Euler is first-order and can accumulate numerical error over long runs.");
+    tips.push("Try a higher-accuracy method and compare stability metrics across runs.");
   }else if(integrator==="RK4"){
-    tips.push("Tutor note: RK4 is accurate per step but not symplectic.");
-    tips.push("For very long runs, compare RK4 with Velocity Verlet for conservation behavior.");
+    tips.push("Tutor note: RK4 is accurate per step but still requires consistency checks in long integrations.");
+    tips.push("For long runs, compare RK4 with your baseline method for drift behavior.");
   }else{
-    tips.push("Tutor note: Velocity Verlet is symplectic and well suited for orbital dynamics.");
-    tips.push("Use this as your reference method for energy and Lz checks.");
+    tips.push("Tutor note: Your baseline method should be the one showing the best stability for this unit task.");
+    tips.push("Use this as your reference method for consistency checks.");
   }
   tips.push("");
   tips.push("Suggested next actions:");
-  tips.push("1) Run Sun-Earth for at least 365 days.");
-  tips.push("2) Switch graph metric between energy and Lz.");
-  tips.push("3) Export CSV and verify student fields + conservation columns.");
+  tips.push("1) Run a full baseline scenario for sufficient duration.");
+  tips.push("2) Switch graph metric between available diagnostics.");
+  tips.push("3) Export CSV and verify student fields plus analysis columns.");
   return tips.join("\n");
 }
 
@@ -1865,7 +1754,15 @@ updateQuizAttemptUI();
 renderQuizQuestions();
 presetSEM();
 resizeGraph();
-requestAnimationFrame(loop);
+// removed loop start
 </script>
 </body>
 </html>
+
+
+
+
+
+
+
+

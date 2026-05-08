@@ -1,0 +1,1365 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Blackbody Radiation Simulator - Fundamentals of Astrophysics interactive learning module." />
+  <meta name="keywords" content="blackbody, Wien law, luminosity, radiation, astrophysics simulation" />
+  <meta name="author" content="Dr. Nitesh Kumar, UPES - Creator and Maintainer" />
+  <!-- LMS: embed as an iframe or SCORM package wrapping this standalone HTML file -->
+  <title>Blackbody Radiation Simulator | Fundamentals of Astrophysics</title>
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <script>
+    window.MathJax = { tex: { inlineMath: [['\\(','\\)'], ['$', '$']] } };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <style>
+    /* === Design tokens === */
+    :root {
+      --bg:      #070d1a;
+      --surface: rgba(11,22,48,.88);
+      --card:    rgba(17,32,66,.72);
+      --border:  rgba(89,208,255,.15);
+      --muted:   #8fb5d9;
+      --text:    #e8f2ff;
+      --accent:  #59d0ff;
+      --accent2: #ffad6d;
+      --green:   #63e6a0;
+      --red:     #ff7070;
+      --tab-h:   48px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html,body{
+      height:100%;
+      font-family:"Space Grotesk",system-ui,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 12% 18%,rgba(89,208,255,.18),transparent 35%),
+        radial-gradient(circle at 85% 80%,rgba(255,173,109,.15),transparent 34%),
+        linear-gradient(165deg,#030814,#081a36 55%,#0b2246);
+      overflow:hidden;
+    }
+
+    /* === Login modal === */
+    #loginOverlay{
+      position:fixed;inset:0;z-index:9999;
+      background:rgba(3,8,20,.92);
+      display:flex;align-items:center;justify-content:center;
+      backdrop-filter:blur(6px);
+    }
+    #loginOverlay.hidden{display:none}
+    .loginBox{
+      background:var(--card);border:1px solid var(--border);
+      border-radius:14px;padding:36px 40px;
+      max-width:420px;width:92%;
+      box-shadow:0 24px 64px rgba(0,0,0,.7);text-align:center;
+    }
+    .loginBox h2{font-size:22px;color:var(--accent);margin-bottom:6px}
+    .loginBox p{font-size:13px;color:var(--muted);margin-bottom:24px}
+    .loginBox label{font-size:13px;color:var(--muted);text-align:left;display:block;margin-bottom:4px}
+    .loginBox input{
+      width:100%;padding:10px 12px;border-radius:8px;
+      border:1px solid #355b87;background:#0a1730;color:#eaf2ff;
+      font-size:14px;margin-bottom:14px;
+    }
+    .loginBox button{
+      width:100%;padding:12px;border-radius:8px;border:0;
+      background:linear-gradient(180deg,#2d9dd6,#1d6fa4);
+      color:#fff;font-weight:700;font-size:15px;cursor:pointer;transition:opacity .2s;
+    }
+    .loginBox button:hover{opacity:.88}
+    .loginBox .skip{margin-top:12px;font-size:12px;color:var(--muted);cursor:pointer}
+    .loginBox .skip:hover{color:var(--accent)}
+    .loginBox .skip.disabled{opacity:.5;cursor:not-allowed}
+    .loginBox .skip.disabled:hover{color:var(--muted)}
+    .loginBox .aiCredit{
+      margin-top:18px;font-size:11px;color:rgba(143,181,217,.6);
+      border-top:1px solid var(--border);padding-top:10px;
+    }
+
+    /* === App shell === */
+    .app{height:100vh;display:flex;flex-direction:column}
+
+    /* === Header === */
+    header{
+      flex-shrink:0;padding:8px 20px;
+      background:rgba(5,12,28,.82);border-bottom:1px solid var(--border);
+      display:flex;align-items:center;justify-content:space-between;
+      backdrop-filter:blur(6px);
+    }
+    header .titleBlock{display:flex;flex-direction:column}
+    header h1{font-size:16px;color:var(--accent);font-weight:700;line-height:1.2}
+    header .subtitle{font-size:11px;color:var(--muted)}
+    #studentIdentityLine{
+      margin-top:2px;font-size:11px;color:var(--text);
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+      max-width:74vw;
+    }
+    #studentBadge{
+      background:rgba(89,208,255,.1);border:1px solid var(--border);
+      border-radius:8px;padding:5px 12px;font-size:12px;color:var(--accent);cursor:pointer;
+    }
+    #studentBadge:hover{background:rgba(89,208,255,.2)}
+
+    /* === Tab bar === */
+    .tabBar{
+      flex-shrink:0;display:flex;align-items:stretch;
+      background:rgba(6,14,32,.7);border-bottom:1px solid var(--border);
+      padding:0 16px;gap:4px;overflow-x:auto;
+    }
+    .tabBar button{
+      background:none;border:none;border-bottom:3px solid transparent;
+      color:var(--muted);font-family:inherit;font-size:13px;font-weight:600;
+      padding:0 16px;height:var(--tab-h);cursor:pointer;white-space:nowrap;
+      transition:color .2s,border-color .2s;
+    }
+    .tabBar button:hover{color:var(--accent)}
+    .tabBar button.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+    /* === Tab panels === */
+    .tabContent{flex:1;overflow:hidden;position:relative}
+    .tabPanel{position:absolute;inset:0;display:none;overflow-y:auto;padding:20px}
+    .tabPanel.active{display:flex;flex-direction:column;gap:16px}
+    #tab-sim.active{
+      padding:12px;display:grid;
+      grid-template-columns:330px minmax(0,1fr) 320px;gap:12px;
+    }
+
+    /* === Shared card === */
+    .card{
+      background:var(--card);border:1px solid var(--border);
+      border-radius:12px;padding:18px 22px;backdrop-filter:blur(4px);
+    }
+    .card h2{font-size:16px;font-weight:700;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+    .card h2 .icon{font-size:18px}
+    .card h3{font-size:14px;color:var(--accent2);margin:14px 0 6px}
+    .card p,.card li{font-size:13.5px;color:var(--muted);line-height:1.75}
+    .card ul,.card ol{padding-left:20px}
+    .card ul li,.card ol li{margin-bottom:5px}
+    .card em{color:var(--text);font-style:normal;font-family:"IBM Plex Mono",monospace;font-size:12.5px}
+
+    .eqBox{
+      background:rgba(89,208,255,.07);border-left:3px solid var(--accent);
+      border-radius:6px;padding:10px 16px;margin:10px 0;
+      font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--text);line-height:1.8;
+    }
+    .theoryGrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    @media(max-width:900px){.theoryGrid{grid-template-columns:1fr}}
+
+    /* === Simulation panel === */
+    .simPanel{display:flex;flex-direction:column;gap:8px;overflow-y:auto}
+    .simSection{
+      background:var(--card);border:1px solid var(--border);
+      border-radius:10px;padding:10px 12px;
+    }
+    .simSection .kicker{
+      font-size:11px;color:var(--accent);font-weight:600;
+      text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;
+    }
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+    .simSection label{font-size:11.5px;color:var(--muted);display:block;margin-bottom:3px}
+    .simSection input,.simSection select{
+      width:100%;border-radius:6px;border:1px solid #355b87;
+      background:#0a1730;color:#eaf2ff;padding:6px 8px;font-size:12px;
+    }
+    input[type=range]{accent-color:var(--accent)}
+    .row{display:flex;gap:6px;flex-wrap:wrap}
+    .simBtn{
+      border:0;border-radius:7px;padding:7px 11px;
+      background:linear-gradient(180deg,#2d9dd6,#1d6fa4);
+      color:#fff;font-weight:600;cursor:pointer;font-size:12px;
+      font-family:inherit;transition:opacity .15s;
+    }
+    .simBtn:hover{opacity:.85}
+    .simBtn.danger{background:linear-gradient(180deg,#c94040,#8c2a2a)}
+    .mono{
+      font-family:"IBM Plex Mono",monospace;font-size:12px;
+      background:rgba(89,208,255,.1);border-radius:6px;padding:4px 7px;
+    }
+    .checkRow{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+    .checkRow input[type=checkbox]{accent-color:var(--accent)}
+
+    /* === Canvas === */
+    .simWrap{
+      position:relative;background:#060f22;
+      border-radius:10px;border:1px solid var(--border);
+      overflow:hidden;min-height:400px;
+    }
+    #canvas{width:100%;height:100%;display:block;cursor:default}
+    #overlay{
+      position:absolute;right:12px;top:12px;
+      background:rgba(4,10,26,.78);border:1px solid var(--border);
+      border-radius:8px;padding:10px 12px;font-size:12px;color:var(--muted);line-height:1.9;
+    }
+    #overlay button{
+      margin-top:6px;width:100%;padding:3px 6px;font-size:11px;
+      background:rgba(89,208,255,.1);border:1px solid var(--accent);
+      border-radius:4px;color:var(--accent);cursor:pointer;font-family:inherit;
+    }
+    #overlay button:hover{background:rgba(89,208,255,.25)}
+
+    .simInsights{display:flex;flex-direction:column;gap:8px;overflow-y:auto}
+    .graphWrap{
+      background:rgba(6,15,34,.82);border:1px solid var(--border);
+      border-radius:8px;padding:10px;
+    }
+    #liveGraph{width:100%;height:190px;display:block;background:#081733;border-radius:6px}
+    .metricGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .metricBox{
+      border:1px solid var(--border);border-radius:7px;padding:8px;
+      background:rgba(89,208,255,.06);
+    }
+    .metricBox .k{font-size:11px;color:var(--muted)}
+    .metricBox .v{font-size:12px;color:var(--text);font-family:"IBM Plex Mono",monospace;margin-top:4px}
+
+    #tutorModal{
+      position:fixed;inset:0;z-index:10001;
+      display:none;align-items:center;justify-content:center;
+      background:rgba(2,8,20,.8);backdrop-filter:blur(4px);
+    }
+    #tutorModal.show{display:flex}
+    .tutorCard{
+      width:min(760px,94vw);max-height:86vh;overflow:auto;
+      background:var(--card);border:1px solid var(--border);border-radius:12px;
+      box-shadow:0 24px 64px rgba(0,0,0,.6);
+    }
+    .tutorHead{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:14px 16px;border-bottom:1px solid var(--border);
+    }
+    .tutorHead h3{font-size:15px;color:var(--accent)}
+    #closeTutor{
+      border:1px solid var(--border);background:rgba(89,208,255,.12);color:var(--accent);
+      border-radius:6px;padding:5px 8px;cursor:pointer;font-size:12px;
+    }
+    #tutorBody{padding:14px 16px;font-size:13px;color:var(--muted);line-height:1.7;white-space:pre-wrap}
+
+    /* === Data Export tab === */
+    .exportGrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    @media(max-width:800px){.exportGrid{grid-template-columns:1fr}}
+    .statBox{
+      background:rgba(89,208,255,.06);border:1px solid var(--border);
+      border-radius:8px;padding:14px 18px;text-align:center;
+    }
+    .statBox .statVal{font-family:"IBM Plex Mono",monospace;font-size:26px;color:var(--accent);font-weight:600}
+    .statBox .statLabel{font-size:12px;color:var(--muted);margin-top:4px}
+    .dlBtn{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:11px 20px;border-radius:9px;border:0;cursor:pointer;
+      font-family:inherit;font-size:14px;font-weight:600;transition:opacity .15s;
+    }
+    .dlBtn:hover{opacity:.85}
+    .dlBtn.primary  {background:linear-gradient(135deg,#1d9cd4,#115882);color:#fff}
+    .dlBtn.secondary{background:rgba(99,230,160,.15);border:1px solid var(--green);color:var(--green)}
+    .dlBtn.tertiary {background:rgba(255,173,109,.12);border:1px solid var(--accent2);color:var(--accent2)}
+
+    .tableWrap{max-height:260px;overflow-y:auto;border-radius:8px;border:1px solid var(--border);font-size:11px}
+    table{width:100%;border-collapse:collapse}
+    th{background:rgba(89,208,255,.12);color:var(--accent);padding:6px 10px;text-align:left;position:sticky;top:0;font-size:11px}
+    td{padding:5px 10px;border-top:1px solid rgba(255,255,255,.04);color:var(--muted)}
+    tr:hover td{background:rgba(255,255,255,.04)}
+
+    /* === Objectives tab === */
+    .objGrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    @media(max-width:800px){.objGrid{grid-template-columns:1fr}}
+    .badge{display:inline-block;font-size:11px;font-weight:600;padding:2px 9px;border-radius:20px;margin-bottom:10px}
+    .badge.blue {background:rgba(89,208,255,.15);color:var(--accent);border:1px solid rgba(89,208,255,.3)}
+    .badge.green{background:rgba(99,230,160,.15);color:var(--green);border:1px solid rgba(99,230,160,.3)}
+    .badge.amber{background:rgba(255,173,109,.15);color:var(--accent2);border:1px solid rgba(255,173,109,.3)}
+    .checkList{list-style:none;padding:0}
+    .checkList li{
+      display:flex;gap:10px;align-items:flex-start;
+      font-size:13.5px;color:var(--muted);line-height:1.6;
+      padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);
+    }
+    .checkList li:last-child{border-bottom:none}
+    .checkList li .tick{color:var(--green);font-size:14px;flex-shrink:0}
+
+    /* === Quiz tab === */
+    .quizCard h3{font-size:14px;color:var(--accent2);margin-bottom:8px}
+    .quizQ{padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+    .quizQ:last-child{border-bottom:none}
+    .quizQ p{font-size:13px;color:var(--text);margin-bottom:8px}
+    .quizQ label{display:block;font-size:12.5px;color:var(--muted);margin:4px 0;cursor:pointer}
+    .quizTools{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;margin:10px 0 12px}
+    .quizTools input{
+      width:100%;border-radius:6px;border:1px solid #355b87;
+      background:#0a1730;color:#eaf2ff;padding:8px 10px;font-size:13px;
+    }
+    .quizHint{font-size:12px;color:var(--muted);margin:6px 0 2px}
+    .quizResult{
+      margin-top:12px;padding:10px;border-radius:8px;
+      background:rgba(89,208,255,.1);border:1px solid var(--border);
+      font-size:13px;color:var(--text);
+    }
+
+    /* === References tab === */
+    .refItem{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+    .refNum{
+      width:28px;height:28px;border-radius:50%;
+      background:rgba(89,208,255,.12);color:var(--accent);
+      font-size:12px;font-weight:700;flex-shrink:0;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .refBody{flex:1}
+    .refBody .refTitle{font-size:14px;color:var(--text);font-weight:600}
+    .refBody .refMeta{font-size:12px;color:var(--muted);margin-top:3px}
+    .refBody a.refLink{
+      display:inline-flex;align-items:center;gap:5px;
+      font-size:12px;color:var(--accent);margin-top:5px;text-decoration:none;
+      border:1px solid rgba(89,208,255,.3);padding:3px 10px;border-radius:5px;transition:background .2s;
+    }
+    .refBody a.refLink:hover{background:rgba(89,208,255,.12)}
+
+    /* === Footer === */
+    footer{
+      flex-shrink:0;padding:7px 20px;
+      background:rgba(3,8,18,.82);border-top:1px solid var(--border);
+      display:flex;align-items:center;justify-content:space-between;
+      font-size:11px;color:var(--muted);backdrop-filter:blur(4px);
+    }
+    footer .aiTag{
+      background:rgba(255,173,109,.12);border:1px solid rgba(255,173,109,.3);
+      color:var(--accent2);padding:3px 10px;border-radius:20px;font-weight:600;font-size:11px;
+    }
+
+    @media(max-width:1280px){
+      #tab-sim.active{grid-template-columns:300px minmax(0,1fr);grid-template-rows:auto auto}
+      .simInsights{grid-column:1 / -1}
+    }
+    @media(max-width:980px){
+      #tab-sim.active{grid-template-columns:1fr;grid-template-rows:auto auto auto;overflow-y:auto}
+      .simWrap{min-height:380px}
+    }
+    ::-webkit-scrollbar{width:6px;height:6px}
+    ::-webkit-scrollbar-track{background:transparent}
+    ::-webkit-scrollbar-thumb{background:rgba(89,208,255,.25);border-radius:3px}
+    .infoAlert{
+      background:rgba(89,208,255,.08);border:1px solid rgba(89,208,255,.25);
+      border-radius:8px;padding:10px 14px;font-size:13px;color:var(--muted);
+    }
+    .infoAlert strong{color:var(--accent)}
+  </style>
+</head>
+<body>
+
+<!-- LOGIN MODAL -->
+<div id="loginOverlay">
+  <div class="loginBox">
+    <h2>&#x269B; Blackbody Radiation Simulator</h2>
+    <p>Computational Astrophysics &middot; Interactive Learning Module<br>Please enter your details to continue.</p>
+    <label for="loginName">Full Name</label>
+    <input id="loginName" type="text" placeholder="e.g. Priya Sharma" autocomplete="name" />
+    <label for="loginID">Student / Roll Number</label>
+    <input id="loginID" type="text" placeholder="e.g. 2023PHY042" autocomplete="off" />
+    <button id="loginBtn">Enter Simulator &#x2192;</button>
+    <div class="skip disabled" id="skipLogin">Guest mode disabled (student login required)</div>
+    <div class="aiCredit">Creator and Maintainer: Dr. Nitesh Kumar, UPES</div>
+  </div>
+</div>
+
+<!-- APP SHELL -->
+<div class="app" id="appShell" style="visibility:hidden">
+
+  <header>
+    <div class="titleBlock">
+      <h1>Blackbody Radiation Simulator</h1>
+      <span class="subtitle">Fundamentals of Astrophysics (PHYS4022P) &middot; Unit 2: Radiation in Astrophysics &middot; Uniform Simulation Architecture</span>
+      <span id="studentIdentityLine">Student: Guest | SAPID: NA | Topic: Blackbody Radiation and Wien Law</span>
+    </div>
+    <div id="studentBadge" title="Click to switch user">&#x1F464; Guest</div>
+  </header>
+
+  <nav class="tabBar" role="tablist" aria-label="Module tabs">
+    <button class="active" data-tab="tab-theory" role="tab">&#x1F4D6; Theory</button>
+    <button data-tab="tab-sim"    role="tab">&#x1F52D; Simulation</button>
+    <button data-tab="tab-data"   role="tab">&#x1F4CA; Data &amp; Export</button>
+    <button data-tab="tab-obj"    role="tab">&#x1F3AF; Objectives</button>
+    <button data-tab="tab-quiz"   role="tab">&#x1F9E0; Quiz</button>
+    <button data-tab="tab-refs"   role="tab">&#x1F4DA; References</button>
+  </nav>
+
+  <div class="tabContent">
+
+    <!-- THEORY TAB -->
+    <section id="tab-theory" class="tabPanel active" role="tabpanel">
+
+      <div class="card">
+        <h2><span class="icon">&#x1F30C;</span>Blackbody Radiation and Wien Law</h2>
+        <p>This page uses the exact same architecture as the primary simulator (login, theory, formulas, simulation, data export, objectives, quiz, references) for course-wide uniformity. For the dedicated Unit 2: Radiation in Astrophysics topic engine, open: <a class="refLink" href="blackbody_radiation_ai_core.html" target="_blank" rel="noopener">Blackbody Radiation Simulator Core Module</a>.</p>
+      </div>
+
+      <div class="theoryGrid">
+        <div class="card">
+          <h2><span class="icon">&#x2696;&#xFE0F;</span>Planck Radiation Law</h2><p>Spectral radiance of an ideal blackbody is given by:</p>
+<div class="eqBox">\( B_{\lambda}(T)=\frac{2hc^2}{\lambda^5}\cdot\frac{1}{e^{hc/(\lambda kT)}-1} \)</div>
+<p>Here \(\lambda\) is wavelength, \(T\) is temperature, \(h\) Planck constant, \(c\) speed of light, and \(k\) Boltzmann constant.</p>
+<h3>Wien Displacement Law</h3>
+<div class="eqBox">\( \lambda_{\max}T = 2.89777\times10^{-3}\ \text{m\u00b7K} \)</div>
+<p>The peak shifts to shorter wavelength as \(T\) increases.</p>
+        </div>
+
+        <div class="card">
+          <h2><span class="icon">&#x1F522;</span>Luminosity, Flux, and Radiation Pressure</h2><h3>Stefan-Boltzmann Law</h3>
+<div class="eqBox">\( F=\sigma T^4,\quad L=4\pi R^2\sigma T^4 \)</div>
+<p>Surface flux rises strongly with temperature (\(T^4\) scaling).</p>
+<h3>Flux-Luminosity Relation</h3>
+<div class="eqBox">\( f=\frac{L}{4\pi d^2} \)</div>
+<p>Observed flux decreases with distance squared.</p>
+<h3>Radiation Pressure</h3>
+<div class="eqBox">\( P_{\text{rad}}=\frac{u}{3},\quad u=aT^4 \)</div>
+<p>Important in stellar interiors and high-energy environments.</p>
+        </div>
+      </div>
+
+      <div class="theoryGrid">
+        <div class="card">
+          <h2><span class="icon">&#x1F9EE;</span>Spectral Diagnostics and Measurement</h2><h3>Color Index and Temperature</h3>
+<div class="eqBox">\( B-V \propto -2.5\log_{10}(F_B/F_V) \)</div>
+<p>Color indices map broad-band flux ratios to effective temperature trends.</p>
+<h3>Doppler Shift</h3>
+<div class="eqBox">\( \Delta\lambda/\lambda_0 \approx v/c \)</div>
+<p>Spectral line shift estimates radial velocity for \(|v| \ll c\).</p>
+<h3>Instrumental Context</h3>
+<p>Filters, detector response, and calibration modify measured spectra and should be modeled in analysis scripts.</p>
+        </div>
+
+        <div class="card">
+          <h2><span class="icon">&#x1FA90;</span>Formula Sheet and Physical Constants</h2><div class="eqBox">Use SI units unless stated. Constants and relations shown above are preloaded for lab work.</div><p>Switch to the Simulation tab to explore the same relationships numerically under this unit topic.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2><span class="icon">&#x1F50D;</span>Unit 2 Guided Scenarios</h2>
+        <div class="theoryGrid" style="margin-top:0">
+          <div>
+            <h3>Temperature Sweep</h3>
+            <p>Vary temperature from 2500 K to 10000 K and track peak migration from red/IR toward blue/UV.</p>
+            <h3>Luminosity Scaling</h3>
+            <p>Compare stars of identical radius while changing T to verify $L \propto T^4$.</p>
+          </div>
+          <div>
+            <h3>Flux at Distance</h3>
+            <p>Fix luminosity and vary distance to validate inverse-square dimming in observed flux.</p>
+            <h3>Doppler Context</h3>
+            <p>Overlay shifted spectral lines to connect blackbody continuum with line-based velocity diagnostics.</p>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- SIMULATION TAB -->
+    <section id="tab-sim" class="tabPanel" role="tabpanel">
+
+      <aside class="simPanel">
+        <div class="simSection">
+          <div class="kicker">Presets</div>
+          <div class="row">
+            <button class="simBtn" id="presetSEM">Cool Star (3500 K)</button>
+            <button class="simBtn" id="presetSE">Sun-like (5778 K)</button>
+          </div>
+          <div class="row" style="margin-top:6px">
+            <button class="simBtn" id="presetHot">Hot Star (12000 K)</button>
+          </div>
+        </div>
+
+        <div class="simSection">
+          <div class="kicker">Inputs</div>
+          <div class="grid2">
+            <div>
+              <label>Temperature (K)</label>
+              <input id="tempK" type="range" min="1000" max="30000" step="10" value="5778" />
+              <div class="mono" id="tempVal">5778 K</div>
+            </div>
+            <div>
+              <label>Radius (R&#x2609;)</label>
+              <input id="radiusRsun" type="range" min="0.1" max="20" step="0.1" value="1" />
+              <div class="mono" id="radiusVal">1.0 R&#x2609;</div>
+            </div>
+            <div>
+              <label>Distance (pc)</label>
+              <input id="distancePc" type="range" min="1" max="500" step="1" value="10" />
+              <div class="mono" id="distanceVal">10 pc</div>
+            </div>
+            <div>
+              <label>Emissivity (0-1)</label>
+              <input id="emissivity" type="range" min="0.1" max="1" step="0.01" value="1" />
+              <div class="mono" id="epsVal">1.00</div>
+            </div>
+          </div>
+          <div class="row" style="margin-top:8px">
+            <label class="checkRow"><input id="showWien" type="checkbox" checked /> Show Wien peak line</label>
+            <label class="checkRow"><input id="logData" type="checkbox" checked /> Log data</label>
+          </div>
+          <div class="row" style="margin-top:8px">
+            <button class="simBtn" id="playBtn">&#x23F8; Pause Sweep</button>
+            <button class="simBtn" id="stepBtn">&#x23ED; Step +100 K</button>
+            <button class="simBtn danger" id="resetBtn">&#x21BA; Reset</button>
+            <button class="simBtn" id="helpBtn">? Help</button>
+          </div>
+        </div>
+
+        <div class="simSection">
+          <div class="kicker">Sweep settings</div>
+          <label>Sweep rate (K/s)</label>
+          <input id="sweepRate" type="range" min="0" max="500" step="5" value="50" />
+          <div class="mono" id="sweepRateVal">50 K/s</div>
+          <label style="margin-top:8px">Wavelength range (nm)</label>
+          <div class="grid2">
+            <input id="lambdaMin" type="number" min="50" max="1000" step="10" value="100" />
+            <input id="lambdaMax" type="number" min="500" max="5000" step="10" value="3000" />
+          </div>
+        </div>
+      </aside>
+
+      <div class="simWrap">
+        <canvas id="canvas" title="Blackbody spectral plot"></canvas>
+        <div id="overlay">
+          <div>Mode: <span id="modeTxt">Blackbody Spectrum</span></div>
+          <div>Timestep: <span id="time">0.00</span> s</div>
+          <div>&lambda; range: <span id="rangeTxt">100-3000 nm</span></div>
+          <div>Peak: <span id="heaviestInfo">--</span></div>
+          <button id="resetZoom">Reset View</button>
+        </div>
+      </div>
+
+      <aside class="simInsights">
+        <div class="simSection">
+          <div class="kicker">Output values</div>
+          <div class="metricGrid">
+            <div class="metricBox"><div class="k">Peak wavelength &lambda;max (nm)</div><div class="v" id="outEnergy">--</div></div>
+            <div class="metricBox"><div class="k">Surface flux &sigma;T&#8308; (W/m&#178;)</div><div class="v" id="outLz">--</div></div>
+            <div class="metricBox"><div class="k">Luminosity (L/L&#x2609;)</div><div class="v" id="outMeanSpeed">--</div></div>
+            <div class="metricBox"><div class="k">Observed flux (W/m&#178;)</div><div class="v" id="outSpread">--</div></div>
+          </div>
+        </div>
+
+        <div class="simSection">
+          <div class="kicker">Output graph (Y vs X)</div>
+          <label>Y-axis metric</label>
+          <select id="graphMetric">
+            <option value="lambdaMax">&lambda;max (nm)</option>
+            <option value="surfaceFlux">Surface flux &sigma;T&#8308;</option>
+            <option value="luminosity">Luminosity (L/L&#x2609;)</option>
+            <option value="obsFlux">Observed flux</option>
+          </select>
+          <div class="graphWrap" style="margin-top:8px">
+            <canvas id="liveGraph" title="Realtime graph: selected Y metric vs temperature"></canvas>
+          </div>
+          <div class="mono" style="margin-top:8px">X-axis: Temperature (K) | Y-axis: selected metric</div>
+        </div>
+      </aside>
+
+    </section>
+
+    <!-- DATA & EXPORT TAB -->
+    <section id="tab-data" class="tabPanel" role="tabpanel">
+
+      <div class="infoAlert">
+        <strong>How data logging works:</strong> When the <em>Log data</em> checkbox is enabled in the
+        Simulation tab, the simulator records body positions and velocities at configurable intervals.
+        Download the data in standard formats for analysis in Python, MATLAB, or Excel.
+      </div>
+
+      <div class="exportGrid">
+        <div class="statBox"><div class="statVal" id="logCount">0</div><div class="statLabel">Recorded rows</div></div>
+        <div class="statBox"><div class="statVal" id="logBodies">0</div><div class="statLabel">Bodies tracked</div></div>
+        <div class="statBox"><div class="statVal" id="logTimeSpan">0.0</div><div class="statLabel">Time span (days)</div></div>
+        <div class="statBox"><div class="statVal" id="logInterval">Every 1 day</div><div class="statLabel">Sampling interval</div></div>
+      </div>
+
+      <div class="card">
+        <h2><span class="icon">&#x2699;&#xFE0F;</span>Logging Settings</h2>
+        <div style="display:flex;gap:24px;flex-wrap:wrap;align-items:center">
+          <div>
+            <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px">Sample every N Kelvin</label>
+            <input id="sampleEvery" type="number" value="100" min="1" step="1"
+              style="width:140px;border-radius:6px;border:1px solid #355b87;background:#0a1730;color:#eaf2ff;padding:7px 10px;font-size:13px" />
+          </div>
+          <div>
+            <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px">Max rows (memory cap)</label>
+            <input id="maxRows" type="number" value="5000" min="100" max="50000" step="100"
+              style="width:140px;border-radius:6px;border:1px solid #355b87;background:#0a1730;color:#eaf2ff;padding:7px 10px;font-size:13px" />
+          </div>
+          <button class="simBtn danger" id="clearLogBtn" style="align-self:flex-end">&#x1F5D1; Clear Log</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2><span class="icon">&#x1F4BE;</span>Download Simulation Data</h2>
+        <div class="row" style="gap:12px;margin-bottom:14px">
+          <button class="dlBtn primary"   id="dlCSV">&#x2B07; Download CSV</button>
+          <button class="dlBtn secondary" id="dlJSON">&#x2B07; Download JSON</button>
+          <button class="dlBtn tertiary"  id="dlPython">&#x2B07; Python Starter Script</button>
+        </div>
+        <p style="font-size:12.5px;color:var(--muted)">
+          CSV columns: <em>sapid, student_name, temperature_K, lambda_max_nm, surface_flux_Wm2, luminosity_W, luminosity_Lsun, distance_pc, observed_flux_Wm2, emissivity, timestamp_iso</em>.
+          JSON includes full metadata and blackbody run data.
+          The Python script uses matplotlib to reproduce a Wien shift trend plot from exported data.
+        </p>
+      </div>
+
+      <div class="card">
+        <h2><span class="icon">&#x1F4CB;</span>Live Data Preview (last 20 rows)</h2>
+        <div class="tableWrap">
+          <table id="previewTable">
+            <thead><tr><th>Temperature (K)</th><th>Peak \u03bb (nm)</th><th>Surface flux (W/m\u00b2)</th><th>Luminosity (L/L\u2609;)</th><th>Observed flux (W/m\u00b2)</th><th>Emissivity</th><th>Timestamp</th></tr></thead>
+            <tbody id="previewBody">
+              <tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px">No data yet &mdash; run the simulation with "Log data" checked.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2><span class="icon">&#x1F512;</span>Student Login Audit</h2>
+        <div class="row" style="margin-bottom:10px;align-items:center;justify-content:space-between">
+          <div class="mono">Total recorded logins: <span id="loginLogCount">0</span></div>
+          <button class="dlBtn primary" id="dlLoginCSV" type="button">&#x2B07; Download Login Logs CSV</button>
+        </div>
+        <div class="tableWrap">
+          <table>
+            <thead><tr><th>Timestamp (ISO)</th><th>Name</th><th>SAPID</th></tr></thead>
+            <tbody id="loginLogBody">
+              <tr><td colspan="3" style="text-align:center;color:var(--muted);padding:20px">No login records yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- OBJECTIVES TAB -->
+    <section id="tab-obj" class="tabPanel" role="tabpanel">
+
+      <div class="card">
+        <h2><span class="icon">&#x1F3AF;</span>Module: Radiation in Astrophysics</h2>
+        <p>
+          This interactive module targets Unit 2 of PHYS4022P. Students explore blackbody radiation, luminosity scaling, spectral diagnostics, and measurement principles using computational experiments.
+        </p>
+      </div>
+
+      <div class="objGrid">
+        <div class="card">
+          <h2><span class="icon">&#x1F4CC;</span>Learning Objectives</h2>
+          <span class="badge blue">After completing this module, students will be able to:</span>
+          <ul class="checkList">
+            <li><span class="tick">&#x2713;</span>State Planck, Wien, and Stefan-Boltzmann laws with correct physical meaning.</li>
+            <li><span class="tick">&#x2713;</span>Relate temperature changes to spectral peak shifts and broadband color trends.</li>
+            <li><span class="tick">&#x2713;</span>Use luminosity-flux-distance relations for astrophysical source comparison.</li>
+            <li><span class="tick">&#x2713;</span>Interpret Doppler shifts and radiation units in observational contexts.</li>
+            <li><span class="tick">&#x2713;</span>Run computational sweeps to test radiation scaling behavior.</li>
+            <li><span class="tick">&#x2713;</span>Build short LLM-assisted scripts for blackbody and flux analysis.</li>
+            <li><span class="tick">&#x2713;</span>Export and interpret simulation outputs for report-ready figures.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h2><span class="icon">&#x1F4E6;</span>Deliverables</h2>
+          <span class="badge green">Students are expected to submit:</span>
+          <ol class="checkList">
+            <li><span class="tick">1.</span><strong style="color:var(--text)">Lab Report (PDF)</strong> &mdash; Screenshots of at least three temperature curves with peak labels.</li>
+            <li><span class="tick">2.</span><strong style="color:var(--text)">Exported Data File</strong> &mdash; CSV/JSON export from a full parameter sweep with clear metadata.</li>
+            <li><span class="tick">3.</span><strong style="color:var(--text)">Python analysis script</strong> &mdash; Python script reproducing blackbody and flux-distance plots.</li>
+            <li><span class="tick">4.</span><strong style="color:var(--text)">Comparison table</strong> &mdash; Table comparing Wien peak and luminosity ratios for selected temperatures.</li>
+            <li><span class="tick">5.</span><strong style="color:var(--text)">Bonus investigation</strong> &mdash; Short note on observational uncertainty and detector/filter effects.</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="objGrid">
+        <div class="card">
+          <h2><span class="icon">&#x1F4C5;</span>Suggested Lab Workflow</h2>
+          <span class="badge amber">Step-by-step guide</span>
+          <ol class="checkList">
+            <li><span class="tick">1.</span>Read Theory and identify all radiation laws used in the module.</li>
+            <li><span class="tick">2.</span>Run temperature sweep and record peak wavelength migration.</li>
+            <li><span class="tick">3.</span>Evaluate luminosity scaling with controlled temperature changes.</li>
+            <li><span class="tick">4.</span>Connect simulated continua to observational filter/color intuition.</li>
+            <li><span class="tick">5.</span>Test Doppler relation with representative line shifts.</li>
+            <li><span class="tick">6.</span>Enable logging and export data for at least one full sweep.</li>
+            <li><span class="tick">7.</span>Recreate plots in Python and annotate physical interpretation.</li>
+            <li><span class="tick">8.</span>Use AI prompt output to summarize physical trends in <200 words.</li>
+          </ol>
+        </div>
+
+        <div class="card">
+          <h2><span class="icon">&#x1F4D0;</span>Assessment Criteria</h2>
+          <ul class="checkList">
+            <li><span class="tick">&#x25C8;</span><strong style="color:var(--text)">Understanding (30%)</strong> &mdash; Correct statement and interpretation of radiation laws.</li>
+            <li><span class="tick">&#x25C8;</span><strong style="color:var(--text)">Simulation (25%)</strong> &mdash; Parameter control and physically valid simulation setup.</li>
+            <li><span class="tick">&#x25C8;</span><strong style="color:var(--text)">Data Analysis (25%)</strong> &mdash; Quality of exported analysis and plotted trends.</li>
+            <li><span class="tick">&#x25C8;</span><strong style="color:var(--text)">Method comparison (15%)</strong> &mdash; Quantitative comparison table completeness.</li>
+            <li><span class="tick">&#x25C8;</span><strong style="color:var(--text)">Bonus (5%)</strong> &mdash; Depth of AI-assisted interpretation.</li>
+          </ul>
+          <div class="infoAlert" style="margin-top:12px">
+            <strong>LMS Note:</strong> Submit PDF, exported data, and analysis script under Lab 2 &mdash; Radiation in Astrophysics.
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- QUIZ TAB -->
+    <section id="tab-quiz" class="tabPanel" role="tabpanel">
+
+      <div class="card quizCard">
+        <h2><span class="icon">&#x1F9E0;</span>Concept Check Quiz</h2>
+        <p>This quiz is interactive and generates a new question set whenever a student asks for one.</p>
+
+        <form id="quizForm">
+          <div class="quizTools">
+            <input id="quizPrompt" type="text" placeholder="Ask for topic focus (e.g. Wien peak, flux scaling, color index)" />
+            <button class="simBtn" id="askQuizBtn" type="button">Ask New Quiz</button>
+            <button class="simBtn" id="newQuizBtn" type="button">Regenerate</button>
+          </div>
+          <div class="quizHint">Adaptive mode: after high scores, the next generated set becomes more challenging.</div>
+
+          <div id="quizQuestionsWrap"></div>
+
+          <div class="row" style="margin-top:12px">
+            <button class="simBtn" id="submitQuizBtn" type="submit">Submit Quiz</button>
+            <button class="simBtn danger" id="resetQuizBtn" type="button">Reset Quiz</button>
+          </div>
+        </form>
+
+        <div class="quizResult" id="quizResult">No attempts yet.</div>
+      </div>
+
+      <div class="card">
+        <h2><span class="icon">&#x1F4DD;</span>Quiz Attempt Log</h2>
+        <div class="row" style="margin-bottom:10px;align-items:center;justify-content:space-between">
+          <div class="mono">Attempts: <span id="quizAttemptCount">0</span></div>
+          <button class="dlBtn secondary" id="dlQuizCSV" type="button">&#x2B07; Download Quiz Attempts CSV</button>
+        </div>
+        <div class="tableWrap">
+          <table>
+            <thead><tr><th>Timestamp (ISO)</th><th>Name</th><th>SAPID</th><th>Score</th></tr></thead>
+            <tbody id="quizAttemptBody">
+              <tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px">No quiz attempts yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- REFERENCES TAB -->
+    <section id="tab-refs" class="tabPanel" role="tabpanel">
+
+      <div class="card">
+        <h2><span class="icon">&#x1F4DA;</span>Bibliography &amp; Further Reading</h2>
+        <p style="margin-bottom:16px">References used to ensure scientific accuracy of this module. Open-access links are provided where available.</p>
+
+        <div class="refItem">
+          <div class="refNum">1</div>
+          <div class="refBody">
+            <div class="refTitle">Planck, M. (1901) &mdash; <em>On the Law of Distribution of Energy in the Normal Spectrum</em></div>
+            <div class="refMeta">Foundational paper introducing quantized blackbody radiation.</div>
+            <a class="refLink" href="https://doi.org/10.1002/andp.19013090310" target="_blank" rel="noopener">&#x2197; Source link</a>
+          </div>
+        </div>
+
+        <div class="refItem">
+          <div class="refNum">2</div>
+          <div class="refBody">
+            <div class="refTitle">Rybicki, G. B. &amp; Lightman, A. P. &mdash; <em>Radiative Processes in Astrophysics</em></div>
+            <div class="refMeta">Wiley, 1979. Standard reference for continuum radiation, emissivity, and transfer.</div>
+            <a class="refLink" href="https://ui.adsabs.harvard.edu/abs/1979rpa..book.....R/abstract" target="_blank" rel="noopener">&#x2197; Source link</a>
+          </div>
+        </div>
+
+        <div class="refItem">
+          <div class="refNum">3</div>
+          <div class="refBody">
+            <div class="refTitle">Carroll, B. W. &amp; Ostlie, D. A. &mdash; <em>An Introduction to Modern Astrophysics</em></div>
+            <div class="refMeta">Cambridge University Press, 2nd ed. Chapters on stellar spectra, blackbody physics, and luminosity relations.</div>
+          </div>
+        </div>
+
+        <div class="refItem">
+          <div class="refNum">4</div>
+          <div class="refBody">
+            <div class="refTitle">Mihalas, D. &amp; Mihalas, B. W. &mdash; <em>Foundations of Radiation Hydrodynamics</em></div>
+            <div class="refMeta">Oxford University Press, 1984. Advanced treatment of radiation fields and matter coupling.</div>
+            <a class="refLink" href="https://ui.adsabs.harvard.edu/abs/1984frh..book.....M/abstract" target="_blank" rel="noopener">&#x2197; Source link</a>
+          </div>
+        </div>
+
+        <div class="refItem">
+          <div class="refNum">5</div>
+          <div class="refBody">
+            <div class="refTitle">Bessell, M. S. (2005) &mdash; <em>Standard Photometric Systems</em></div>
+            <div class="refMeta"><em>Annual Review of Astronomy and Astrophysics</em>, 43, 293-336. Useful for color-index interpretation.</div>
+            <a class="refLink" href="https://doi.org/10.1146/annurev.astro.41.082801.100251" target="_blank" rel="noopener">&#x2197; Source link</a>
+          </div>
+        </div>
+
+        <div class="refItem">
+          <div class="refNum">6</div>
+          <div class="refBody">
+            <div class="refTitle">SVO Filter Profile Service</div>
+            <div class="refMeta">Reference database for photometric filter transmission curves used in synthetic color studies.</div>
+            <a class="refLink" href="http://svo2.cab.inta-csic.es/theory/fps/" target="_blank" rel="noopener">&#x2197; Source link</a>
+          </div>
+        </div>
+
+        <div class="refItem">
+          <div class="refNum">7</div>
+          <div class="refBody">
+            <div class="refTitle">CODATA 2018 &mdash; <em>NIST Reference on Constants, Units and Uncertainty</em></div>
+            <div class="refMeta">Fundamental constants (h, c, k, sigma, etc.) used in Planck, Wien, and Stefan-Boltzmann calculations.</div>
+            <a class="refLink" href="https://physics.nist.gov/cuu/Constants/" target="_blank" rel="noopener">&#x2197; Source link</a>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="card">
+        <h2><span class="icon">&#x1F6E0;</span>Software &amp; Tools Used</h2>
+        <ul class="checkList">
+          <li><span class="tick">&#x25B8;</span><strong style="color:var(--text)">HTML5 Canvas API</strong> &mdash; Interactive plotting of blackbody spectra and diagnostic radiation curves.</li>
+          <li><span class="tick">&#x25B8;</span><strong style="color:var(--text)">Vanilla JavaScript (ES2020)</strong> &mdash; Simulation engine and UI logic. No external runtime dependencies.</li>
+          <li><span class="tick">&#x25B8;</span><strong style="color:var(--text)">Google Fonts (CDN)</strong> &mdash; Space Grotesk, IBM Plex Mono (falls back to system fonts offline).</li>
+          <li><span class="tick">&#x25B8;</span><strong style="color:var(--text)">Project Leadership</strong> &mdash; Created and maintained by Dr. Nitesh Kumar, UPES.</li>
+        </ul>
+      </div>
+
+    </section>
+
+  </div><!-- tabContent -->
+
+  <footer>
+    <span>Blackbody Radiation Simulator &middot; Fundamentals of Astrophysics (PHYS4022P) &middot; v3.0</span>
+    <span class="aiTag">Creator and Maintainer: Dr. Nitesh Kumar, UPES</span>
+    <span id="footerStudent">Guest session</span>
+  </footer>
+
+</div><!-- .app -->
+
+<div id="tutorModal" role="dialog" aria-modal="true" aria-label="AI tutor guidance">
+  <div class="tutorCard">
+    <div class="tutorHead">
+      <h3>AI Tutor - Contextual Guidance</h3>
+      <button id="closeTutor" type="button">Close</button>
+    </div>
+    <div id="tutorBody">Tutor is preparing guidance...</div>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+const h = 6.62607015e-34;
+const c = 2.99792458e8;
+const kB = 1.380649e-23;
+const sigma = 5.670374419e-8;
+const bWien = 2.897771955e-3;
+const R_SUN = 6.957e8;
+const L_SUN = 3.828e26;
+const PC = 3.085677581e16;
+
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+const state = { playing: true, t: 0, authenticated: false };
+const student = { name: "Guest", sapid: "" };
+
+let dataLog = [];
+let trendLog = [];
+let loginAudit = [];
+let quizAttempts = [];
+let currentQuizQuestions = [];
+let lastLogTemp = -Infinity;
+
+const QUESTION_BANK = [
+  {id:"q1",difficulty:"easy",tags:["planck"],q:"Which law gives full blackbody spectral distribution?",options:["Wien law","Planck law","Hubble law"],answer:1},
+  {id:"q2",difficulty:"easy",tags:["wien"],q:"As temperature rises, \u03bbmax:",options:["Increases","Decreases","Stays constant"],answer:1},
+  {id:"q3",difficulty:"medium",tags:["stefan"],q:"Surface flux scales as:",options:["T","T\u00b2","T\u2074"],answer:2},
+  {id:"q4",difficulty:"medium",tags:["flux"],q:"Observed flux varies with distance as:",options:["1/d","1/d\u00b2","d\u00b2"],answer:1},
+  {id:"q5",difficulty:"hard",tags:["units"],q:"Luminosity SI unit is:",options:["W","W/m\u00b2","J"],answer:0},
+  {id:"q6",difficulty:"hard",tags:["radiation"],q:"Radiation pressure for isotropic field:",options:["u/3","3u","u\u00b2"],answer:0}
+];
+
+function q(id){ return document.getElementById(id); }
+function clamp(v,a,b){ return Math.max(a,Math.min(b,v)); }
+
+function resizeCanvas(){
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.clientWidth || 800;
+  const hgt = canvas.clientHeight || 400;
+  canvas.width = Math.floor(w*dpr);
+  canvas.height = Math.floor(hgt*dpr);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+window.addEventListener("resize", resizeCanvas);
+
+function planckLambda(lambda_m, T, eps){
+  const x = (h*c)/(lambda_m*kB*T);
+  const denom = Math.exp(clamp(x, 1e-9, 700)) - 1;
+  return eps * (2*h*c*c) / (Math.pow(lambda_m,5) * denom);
+}
+function getInputs(){
+  return {
+    T: parseFloat(q("tempK").value),
+    R: parseFloat(q("radiusRsun").value)*R_SUN,
+    d: parseFloat(q("distancePc").value)*PC,
+    eps: parseFloat(q("emissivity").value),
+    lmin: parseFloat(q("lambdaMin").value)*1e-9,
+    lmax: parseFloat(q("lambdaMax").value)*1e-9
+  };
+}
+function computeOutputs(inp){
+  const lambdaMax = bWien / inp.T;
+  const surfaceFlux = inp.eps * sigma * Math.pow(inp.T,4);
+  const luminosity = 4*Math.PI*inp.R*inp.R*surfaceFlux;
+  const obsFlux = luminosity/(4*Math.PI*inp.d*inp.d);
+  return { lambdaMax, surfaceFlux, luminosity, obsFlux };
+}
+
+function drawSpectrum(inp, out){
+  const w = canvas.clientWidth, hgt = canvas.clientHeight;
+  ctx.clearRect(0,0,w,hgt);
+  const pad = 46;
+  ctx.fillStyle = "#081733";
+  ctx.fillRect(0,0,w,hgt);
+
+  const N = 500;
+  const ys = [];
+  let yMax = 0;
+  for(let i=0;i<N;i++){
+    const lam = inp.lmin + (i/(N-1))*(inp.lmax-inp.lmin);
+    const y = planckLambda(lam, inp.T, inp.eps);
+    ys.push(y);
+    if(y>yMax) yMax = y;
+  }
+  yMax = yMax || 1;
+
+  ctx.strokeStyle = "rgba(143,181,217,.35)";
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(pad,hgt-pad); ctx.lineTo(w-pad,hgt-pad);
+  ctx.moveTo(pad,pad); ctx.lineTo(pad,hgt-pad);
+  ctx.stroke();
+
+  ctx.beginPath();
+  for(let i=0;i<N;i++){
+    const x = pad + (i/(N-1))*(w-2*pad);
+    const y = hgt-pad - (ys[i]/yMax)*(hgt-2*pad);
+    if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+  }
+  ctx.strokeStyle="#59d0ff";
+  ctx.lineWidth=2;
+  ctx.stroke();
+
+  if(q("showWien").checked && out.lambdaMax>=inp.lmin && out.lambdaMax<=inp.lmax){
+    const xw = pad + ((out.lambdaMax-inp.lmin)/(inp.lmax-inp.lmin))*(w-2*pad);
+    ctx.strokeStyle="#ffad6d";
+    ctx.setLineDash([6,5]);
+    ctx.beginPath(); ctx.moveTo(xw,pad); ctx.lineTo(xw,hgt-pad); ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  ctx.fillStyle="#8fb5d9";
+  ctx.font="12px 'IBM Plex Mono', monospace";
+  ctx.fillText("\u03bb: " + (inp.lmin*1e9).toFixed(0) + "-" + (inp.lmax*1e9).toFixed(0) + " nm", pad, 20);
+  ctx.fillText("T: " + inp.T.toFixed(0) + " K", pad+220, 20);
+}
+
+function drawTrendGraph(){
+  const g = q("liveGraph");
+  if(!g) return;
+  const gctx = g.getContext("2d");
+  const w = g.clientWidth, hgt = g.clientHeight;
+  if(w<10||hgt<10) return;
+
+  const dpr = window.devicePixelRatio||1;
+  g.width = Math.floor(w*dpr);
+  g.height = Math.floor(hgt*dpr);
+  gctx.setTransform(dpr,0,0,dpr,0,0);
+  gctx.clearRect(0,0,w,hgt);
+  gctx.fillStyle="#081733";
+  gctx.fillRect(0,0,w,hgt);
+
+  if(trendLog.length<2){
+    gctx.fillStyle="#8fb5d9";
+    gctx.font="12px sans-serif";
+    gctx.fillText("Run/sweep to populate graph",12,22);
+    return;
+  }
+
+  const metric = q("graphMetric").value;
+  const xMin = Math.min(...trendLog.map(p=>p.T));
+  const xMax = Math.max(...trendLog.map(p=>p.T));
+  const ys = trendLog.map(p=>p[metric]);
+  let yMin = Math.min(...ys), yMax = Math.max(...ys);
+  if(yMin===yMax){ yMin-=1; yMax+=1; }
+
+  const pad=24;
+  gctx.strokeStyle="rgba(143,181,217,.3)";
+  gctx.beginPath();
+  gctx.moveTo(pad,hgt-pad); gctx.lineTo(w-pad,hgt-pad);
+  gctx.moveTo(pad,pad); gctx.lineTo(pad,hgt-pad);
+  gctx.stroke();
+
+  gctx.beginPath();
+  trendLog.forEach((p,i)=>{
+    const x = pad + ((p.T-xMin)/Math.max(1e-9,(xMax-xMin)))*(w-2*pad);
+    const y = hgt-pad - ((p[metric]-yMin)/(yMax-yMin))*(hgt-2*pad);
+    if(i===0) gctx.moveTo(x,y); else gctx.lineTo(x,y);
+  });
+  gctx.strokeStyle="#59d0ff";
+  gctx.lineWidth=1.8;
+  gctx.stroke();
+}
+
+function updateOutputAndOverlay(inp,out){
+  q("tempVal").textContent = inp.T.toFixed(0) + " K";
+  q("radiusVal").textContent = (inp.R/R_SUN).toFixed(1) + " R\u2609";
+  q("distanceVal").textContent = (inp.d/PC).toFixed(0) + " pc";
+  q("epsVal").textContent = inp.eps.toFixed(2);
+  q("rangeTxt").textContent = (inp.lmin*1e9).toFixed(0) + "-" + (inp.lmax*1e9).toFixed(0) + " nm";
+  q("sweepRateVal").textContent = parseFloat(q("sweepRate").value).toFixed(0) + " K/s";
+
+  q("outEnergy").textContent = (out.lambdaMax*1e9).toFixed(2);
+  q("outLz").textContent = out.surfaceFlux.toExponential(4);
+  q("outMeanSpeed").textContent = (out.luminosity/L_SUN).toExponential(4);
+  q("outSpread").textContent = out.obsFlux.toExponential(4);
+
+  q("heaviestInfo").textContent = (out.lambdaMax*1e9).toFixed(1) + " nm";
+  q("time").textContent = state.t.toFixed(2);
+}
+
+function maybeLog(inp,out){
+  if(!state.authenticated) return;
+  if(!q("logData").checked) return;
+  const sampleEvery = parseFloat(q("sampleEvery").value || "100");
+  const maxRows = parseInt(q("maxRows").value || "5000",10);
+
+  if(Math.abs(inp.T-lastLogTemp) < sampleEvery) return;
+  if(dataLog.length >= maxRows) return;
+  lastLogTemp = inp.T;
+
+  dataLog.push({
+    sapid: student.sapid,
+    student_name: student.name,
+    temperature_K: inp.T.toFixed(2),
+    lambda_max_nm: (out.lambdaMax*1e9).toFixed(4),
+    surface_flux_Wm2: out.surfaceFlux.toExponential(6),
+    luminosity_W: out.luminosity.toExponential(6),
+    luminosity_Lsun: (out.luminosity/L_SUN).toExponential(6),
+    distance_pc: (inp.d/PC).toFixed(2),
+    observed_flux_Wm2: out.obsFlux.toExponential(6),
+    emissivity: inp.eps.toFixed(3),
+    timestamp_iso: new Date().toISOString()
+  });
+  if(trendLog.length>2000) trendLog.shift();
+}
+
+function pushTrend(inp,out){
+  trendLog.push({
+    T: inp.T,
+    lambdaMax: out.lambdaMax*1e9,
+    surfaceFlux: out.surfaceFlux,
+    luminosity: out.luminosity/L_SUN,
+    obsFlux: out.obsFlux
+  });
+}
+
+function dlBlob(content,fname,mime){
+  const blob = new Blob([content],{type:mime});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href=url; a.download=fname; document.body.appendChild(a); a.click();
+  a.remove(); URL.revokeObjectURL(url);
+}
+function exportCSV(){
+  if(!state.authenticated){ alert("Login required before export."); return; }
+  if(!dataLog.length){ alert("No data logged yet."); return; }
+  const h = Object.keys(dataLog[0]);
+  const rows = dataLog.map(r=>h.map(k=>r[k]).join(","));
+  dlBlob([h.join(","),...rows].join("\n"),"blackbody_data.csv","text/csv");
+}
+function exportJSON(){
+  if(!state.authenticated){ alert("Login required before export."); return; }
+  if(!dataLog.length){ alert("No data logged yet."); return; }
+  dlBlob(JSON.stringify({
+    module:"Blackbody Radiation Simulator",
+    author:"Dr. Nitesh Kumar, UPES",
+    generated:new Date().toISOString(),
+    data:dataLog
+  },null,2),"blackbody_data.json","application/json");
+}
+function exportPython(){
+  const py = "import pandas as pd\\nimport matplotlib.pyplot as plt\\n\\ndf=pd.read_csv('blackbody_data.csv')\\nplt.figure(figsize=(8,5))\\nplt.plot(df['temperature_K'],df['lambda_max_nm'])\\nplt.xlabel('Temperature (K)')\\nplt.ylabel('Lambda max (nm)')\\nplt.title('Wien Shift')\\nplt.grid(True,alpha=.3)\\nplt.show()\\n";
+  dlBlob(py,"analyse_blackbody.py","text/plain");
+}
+
+function updateDataTab(){
+  q("logCount").textContent = String(dataLog.length);
+  q("logBodies").textContent = "1";
+  q("logTimeSpan").textContent = dataLog.length ? state.t.toFixed(1) : "0.0";
+  const sv = parseFloat(q("sampleEvery").value || "100");
+  q("logInterval").textContent = "Every " + sv + " K";
+
+  const body = q("previewBody");
+  if(!dataLog.length){
+    body.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px">No data yet.</td></tr>';
+    return;
+  }
+  const rows = dataLog.slice(-20).map(r=>"<tr>"+
+    "<td>"+r.temperature_K+"</td>"+
+    "<td>"+r.lambda_max_nm+"</td>"+
+    "<td>"+r.surface_flux_Wm2+"</td>"+
+    "<td>"+r.luminosity_Lsun+"</td>"+
+    "<td>"+r.observed_flux_Wm2+"</td>"+
+    "<td>"+r.emissivity+"</td>"+
+    "<td>"+r.timestamp_iso+"</td>"+
+  "</tr>").join("");
+  body.innerHTML = rows;
+}
+
+function loadPersistentLogs(){
+  try{
+    loginAudit = JSON.parse(localStorage.getItem("blackbody_login_audit") || "[]");
+    quizAttempts = JSON.parse(localStorage.getItem("blackbody_quiz_attempts") || "[]");
+  }catch(e){ loginAudit=[]; quizAttempts=[]; }
+}
+function savePersistentLogs(){
+  localStorage.setItem("blackbody_login_audit", JSON.stringify(loginAudit));
+  localStorage.setItem("blackbody_quiz_attempts", JSON.stringify(quizAttempts));
+}
+function updateLoginAuditUI(){
+  q("loginLogCount").textContent = String(loginAudit.length);
+  const body = q("loginLogBody");
+  if(!loginAudit.length){
+    body.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--muted);padding:20px">No login records yet.</td></tr>';
+    return;
+  }
+  body.innerHTML = loginAudit.slice(-30).reverse().map(r=>"<tr><td>"+r.timestamp+"</td><td>"+r.name+"</td><td>"+r.sapid+"</td></tr>").join("");
+}
+function recordLogin(name,sapid){
+  loginAudit.push({timestamp:new Date().toISOString(), name:name, sapid:sapid});
+  if(loginAudit.length>3000) loginAudit = loginAudit.slice(-3000);
+  savePersistentLogs();
+  updateLoginAuditUI();
+}
+function exportLoginCSV(){
+  if(!loginAudit.length){ alert("No login logs yet."); return; }
+  const rows = loginAudit.map(r=>r.timestamp+","+r.name+","+r.sapid);
+  dlBlob(["timestamp_iso,student_name,sapid",...rows].join("\n"),"blackbody_login_audit.csv","text/csv");
+}
+
+function pickRandom(arr,n){ return [...arr].sort(()=>Math.random()-0.5).slice(0,n); }
+function inferDifficultyTarget(){
+  if(!quizAttempts.length) return "easy";
+  const a=quizAttempts[quizAttempts.length-1], r=a.total? a.score/a.total : 0;
+  if(r>=0.8) return "hard";
+  if(r>=0.5) return "medium";
+  return "easy";
+}
+function parsePromptTokens(t){ return String(t||"").toLowerCase().split(/[^a-z0-9]+/).filter(Boolean); }
+function generateQuizSet(){
+  const tokens=parsePromptTokens(q("quizPrompt").value.trim());
+  const target=inferDifficultyTarget();
+  let pool=QUESTION_BANK.filter(x=>x.difficulty===target);
+  if(tokens.length){
+    const tagged=QUESTION_BANK.filter(x=>x.tags.some(t=>tokens.includes(t))||tokens.some(t=>x.q.toLowerCase().includes(t)));
+    if(tagged.length) pool=[...new Set([...tagged,...pool])];
+  }
+  if(pool.length<5) pool=[...QUESTION_BANK];
+  currentQuizQuestions = pickRandom(pool,Math.min(5,pool.length));
+}
+function renderQuizQuestions(){
+  const wrap=q("quizQuestionsWrap");
+  if(!currentQuizQuestions.length){
+    wrap.innerHTML='<div class="quizHint">Click "Ask New Quiz" to generate a fresh quiz.</div>'; return;
+  }
+  wrap.innerHTML = currentQuizQuestions.map((item,idx)=>
+    "<div class=\"quizQ\">"+
+      "<p>"+(idx+1)+". "+item.q+"</p>"+
+      item.options.map((opt,i)=>"<label><input type=\"radio\" name=\"q_"+idx+"\" value=\""+i+"\"> "+opt+"</label>").join("")+
+    "</div>"
+  ).join("");
+}
+function generateAndRenderQuiz(){
+  if(!state.authenticated){ alert("Please log in first."); return; }
+  generateQuizSet(); renderQuizQuestions();
+  q("quizResult").textContent = "New quiz generated (" + inferDifficultyTarget() + ").";
+}
+function submitQuiz(ev){
+  ev.preventDefault();
+  if(!state.authenticated){ alert("Please log in first."); return; }
+  const form=q("quizForm");
+  if(!currentQuizQuestions.length){ q("quizResult").textContent="Generate a quiz first."; return; }
+  let score=0;
+  for(let i=0;i<currentQuizQuestions.length;i++){
+    const picked=form.querySelector("input[name='q_"+i+"']:checked");
+    if(!picked){ q("quizResult").textContent="Please answer all questions."; return; }
+    if(parseInt(picked.value,10)===currentQuizQuestions[i].answer) score++;
+  }
+  const total=currentQuizQuestions.length;
+  q("quizResult").textContent="Submitted. Score: "+score+"/"+total+" ("+Math.round(score*100/total)+"%).";
+  quizAttempts.push({timestamp:new Date().toISOString(),name:student.name,sapid:student.sapid,score:score,total:total});
+  if(quizAttempts.length>3000) quizAttempts=quizAttempts.slice(-3000);
+  savePersistentLogs();
+  updateQuizAttemptUI();
+}
+function updateQuizAttemptUI(){
+  q("quizAttemptCount").textContent = String(quizAttempts.length);
+  const body=q("quizAttemptBody");
+  if(!quizAttempts.length){
+    body.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px">No quiz attempts yet.</td></tr>'; return;
+  }
+  body.innerHTML=quizAttempts.slice(-30).reverse().map(r=>"<tr><td>"+r.timestamp+"</td><td>"+r.name+"</td><td>"+r.sapid+"</td><td>"+r.score+"/"+r.total+"</td></tr>").join("");
+}
+function exportQuizCSV(){
+  if(!quizAttempts.length){ alert("No quiz attempts yet."); return; }
+  const rows=quizAttempts.map(r=>r.timestamp+","+r.name+","+r.sapid+","+r.score+","+r.total);
+  dlBlob(["timestamp_iso,student_name,sapid,score,total",...rows].join("\n"),"blackbody_quiz_attempts.csv","text/csv");
+}
+
+function buildTutorMessage(inp,out){
+  return [
+    "Topic: Blackbody Radiation and Wien Law",
+    "Current temperature: " + inp.T.toFixed(0) + " K",
+    "Peak wavelength: " + (out.lambdaMax*1e9).toFixed(2) + " nm",
+    "Surface flux \u03c3T\u2074: " + out.surfaceFlux.toExponential(3) + " W/m\u00b2",
+    "",
+    "Suggested tasks:",
+    "1) Increase T and verify \u03bbmax decreases (Wien shift).",
+    "2) Compare luminosity scaling with radius at fixed T.",
+    "3) Export CSV and recreate trend in Python."
+  ].join("\n");
+}
+function openTutor(){
+  const inp=getInputs(), out=computeOutputs(inp);
+  q("tutorBody").textContent = buildTutorMessage(inp,out);
+  q("tutorModal").classList.add("show");
+}
+function closeTutor(){ q("tutorModal").classList.remove("show"); }
+
+function setPreset(T,R,d,eps){
+  q("tempK").value = String(T);
+  q("radiusRsun").value = String(R);
+  q("distancePc").value = String(d);
+  q("emissivity").value = String(eps);
+}
+function resetDefaults(){
+  setPreset(5778,1,10,1);
+  q("lambdaMin").value="100"; q("lambdaMax").value="3000";
+  q("showWien").checked=true; q("logData").checked=true;
+  q("sweepRate").value="50"; state.playing=true; state.t=0;
+  q("playBtn").textContent="\u23F8 Pause Sweep";
+  trendLog=[]; dataLog=[]; lastLogTemp=-Infinity;
+}
+
+let last = performance.now();
+function loop(now){
+  const dt = Math.min((now-last)/1000,0.1); last=now;
+  if(state.playing){
+    const rate=parseFloat(q("sweepRate").value);
+    const T = clamp(parseFloat(q("tempK").value) + rate*dt, 1000, 30000);
+    q("tempK").value=String(T>=30000?1000:T);
+    state.t += dt;
+  }
+  const inp=getInputs();
+  if(inp.lmax<=inp.lmin){ inp.lmax=inp.lmin+1e-9; q("lambdaMax").value=((inp.lmax*1e9).toFixed(0)); }
+  const out=computeOutputs(inp);
+
+  drawSpectrum(inp,out);
+  updateOutputAndOverlay(inp,out);
+  pushTrend(inp,out);
+  maybeLog(inp,out);
+  drawTrendGraph();
+  updateDataTab();
+
+  requestAnimationFrame(loop);
+}
+
+q("presetSEM").addEventListener("click",()=>setPreset(3500,0.7,10,0.98));
+q("presetSE").addEventListener("click",()=>setPreset(5778,1.0,10,1.0));
+q("presetHot").addEventListener("click",()=>setPreset(12000,3.0,50,1.0));
+
+q("playBtn").addEventListener("click",()=>{
+  state.playing=!state.playing;
+  q("playBtn").textContent = state.playing ? "\u23F8 Pause Sweep" : "\u25B6 Run Sweep";
+});
+q("stepBtn").addEventListener("click",()=>{
+  q("tempK").value = String(clamp(parseFloat(q("tempK").value)+100,1000,30000));
+});
+q("resetBtn").addEventListener("click",resetDefaults);
+q("resetZoom").addEventListener("click",()=>{});
+
+q("helpBtn").addEventListener("click",openTutor);
+q("closeTutor").addEventListener("click",closeTutor);
+q("tutorModal").addEventListener("click",(e)=>{ if(e.target.id==="tutorModal") closeTutor(); });
+
+q("dlCSV").addEventListener("click",exportCSV);
+q("dlJSON").addEventListener("click",exportJSON);
+q("dlPython").addEventListener("click",exportPython);
+q("clearLogBtn").addEventListener("click",()=>{ dataLog=[]; lastLogTemp=-Infinity; });
+q("dlLoginCSV").addEventListener("click",exportLoginCSV);
+q("dlQuizCSV").addEventListener("click",exportQuizCSV);
+
+q("quizForm").addEventListener("submit",submitQuiz);
+q("resetQuizBtn").addEventListener("click",()=>{ q("quizForm").reset(); q("quizResult").textContent="Quiz reset."; });
+q("askQuizBtn").addEventListener("click",generateAndRenderQuiz);
+q("newQuizBtn").addEventListener("click",generateAndRenderQuiz);
+
+document.querySelectorAll(".tabBar button").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll(".tabBar button").forEach(b=>b.classList.remove("active"));
+    document.querySelectorAll(".tabPanel").forEach(p=>p.classList.remove("active"));
+    btn.classList.add("active");
+    const panel = q(btn.dataset.tab);
+    if (!panel) return;
+    panel.classList.add("active");
+    if(btn.dataset.tab==="tab-sim"){ setTimeout(()=>{resizeCanvas(); drawTrendGraph();}, 20); }
+  });
+});
+
+function setStudent(name,id){
+  student.name=name; student.sapid=id;
+  q("studentBadge").textContent = "User: " + name + " - " + id;
+  q("footerStudent").textContent = name + " - " + id + " session active";
+  q("studentIdentityLine").textContent = "Student: " + name + " | SAPID: " + id + " | Topic: Blackbody Radiation and Wien Law";
+}
+function showApp(){
+  q("loginOverlay").classList.add("hidden");
+  q("appShell").style.visibility="visible";
+}
+q("loginBtn").addEventListener("click",()=>{
+  const name=q("loginName").value.trim();
+  const sapid=q("loginID").value.trim();
+  if(!name){ q("loginName").focus(); return; }
+  if(!sapid){ q("loginID").focus(); return; }
+  state.authenticated=true;
+  setStudent(name,sapid);
+  recordLogin(name,sapid);
+  showApp();
+});
+q("skipLogin").addEventListener("click",()=>alert("Guest mode disabled. Login required."));
+q("studentBadge").addEventListener("click",()=>q("loginOverlay").classList.remove("hidden"));
+
+loadPersistentLogs();
+updateLoginAuditUI();
+updateQuizAttemptUI();
+renderQuizQuestions();
+resetDefaults();
+resizeCanvas();
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+

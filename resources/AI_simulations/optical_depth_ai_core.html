@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Optical Depth AI Lab</title>
+  <style>
+    :root{--bg:#09101e;--card:#17263f;--line:#355884;--text:#edf5ff;--muted:#9ebedd;--a:#5bc8ff;--b:#ffd77a}
+    *{box-sizing:border-box} body{margin:0;font-family:"Segoe UI",Tahoma,sans-serif;color:var(--text);background:linear-gradient(155deg,#060d18,#11233e)}
+    .wrap{max-width:1120px;margin:0 auto;padding:20px}
+    .head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+    .title{font-size:24px;font-weight:700;color:var(--a)} .sub{font-size:13px;color:var(--muted)}
+    .grid{display:grid;grid-template-columns:320px 1fr;gap:12px;margin-top:12px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}
+    label{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}
+    input,textarea{width:100%;border:1px solid #406694;border-radius:7px;background:#0f1c34;color:var(--text);padding:7px 9px}
+    textarea{min-height:120px;resize:vertical}
+    .btn{border:1px solid var(--line);border-radius:7px;padding:7px 10px;background:linear-gradient(180deg,#2f9bd0,#1f638d);color:#fff;font-weight:600;cursor:pointer;font-size:12px}
+    .row{display:flex;gap:8px;flex-wrap:wrap}
+    #tau{width:100%;height:430px;display:block;background:#0a1529;border:1px solid var(--line);border-radius:10px}
+    .mono{font-family:Consolas,monospace;background:rgba(91,200,255,.12);padding:5px 7px;border-radius:6px;font-size:12px;margin-top:8px}
+    @media(max-width:950px){.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="head">
+      <div>
+        <div class="title">Unit 4: Optical Depth and Dust Attenuation AI Lab</div>
+        <div class="sub">Creator and Maintainer: Dr. Nitesh Kumar, UPES</div>
+      </div>
+      <a class="btn" href="phys4022p_llm_sim_hub.html" style="text-decoration:none">Back to PHYS4022P Hub</a>
+    </div>
+
+    <div class="grid">
+      <section class="card">
+        <label>Dust column density scale (N)</label>
+        <input id="N" type="range" min="0.1" max="8" step="0.1" value="2" />
+
+        <label style="margin-top:8px">Opacity normalization (kappa_0)</label>
+        <input id="k0" type="range" min="0.05" max="2.5" step="0.05" value="0.6" />
+
+        <label style="margin-top:8px">Wavelength exponent beta</label>
+        <input id="beta" type="range" min="0.5" max="2.5" step="0.1" value="1.4" />
+
+        <label style="margin-top:8px">Path length scale</label>
+        <input id="L" type="range" min="0.5" max="5" step="0.1" value="1" />
+
+        <div class="row" style="margin-top:10px">
+          <button class="btn" id="reset">Reset</button>
+          <button class="btn" id="summarize">Generate AI Summary</button>
+        </div>
+
+        <div class="mono" id="stats">tau(550nm)= -, T(550nm)= -</div>
+        <textarea id="summary" placeholder="AI-ready interpretation will appear here."></textarea>
+      </section>
+
+      <section class="card">
+        <canvas id="tau"></canvas>
+      </section>
+    </div>
+  </div>
+
+<script>
+"use strict";
+const cv=document.getElementById("tau"),ctx=cv.getContext("2d");
+function resize(){const dpr=window.devicePixelRatio||1;cv.width=Math.floor(cv.clientWidth*dpr);cv.height=Math.floor(cv.clientHeight*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);}
+function tauLam(lam,N,k0,beta,L){return N*k0*Math.pow(lam/550,-beta)*L;}
+function draw(){
+  const N=parseFloat(document.getElementById("N").value),k0=parseFloat(document.getElementById("k0").value),beta=parseFloat(document.getElementById("beta").value),L=parseFloat(document.getElementById("L").value);
+  const w=cv.clientWidth,h=cv.clientHeight;ctx.clearRect(0,0,w,h);ctx.fillStyle="#0a1529";ctx.fillRect(0,0,w,h);
+  const x0=54,y0=h-36,pw=w-78,ph=h-60;
+  ctx.strokeStyle="rgba(158,190,221,.27)";ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x0,y0-ph);ctx.lineTo(x0+pw,y0-ph);ctx.stroke();
+
+  const vals=[];let tmax=0;
+  for(let i=0;i<380;i++){
+    const lam=350 + i*(650/379);
+    const t=tauLam(lam,N,k0,beta,L);
+    vals.push({lam,t,trans:Math.exp(-t)});
+    if(t>tmax)tmax=t;
+  }
+  tmax=Math.max(0.8,tmax*1.08);
+
+  ctx.beginPath();
+  vals.forEach((p,i)=>{const x=x0+(p.lam-350)/650*pw,y=y0-(p.t/tmax)*ph;i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
+  ctx.strokeStyle="#5bc8ff";ctx.lineWidth=2;ctx.stroke();
+
+  ctx.beginPath();
+  vals.forEach((p,i)=>{const x=x0+(p.lam-350)/650*pw,y=y0-(p.trans)*ph;i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
+  ctx.strokeStyle="#ffd77a";ctx.lineWidth=1.8;ctx.stroke();
+
+  ctx.fillStyle="#9ebedd";ctx.font="12px Segoe UI";
+  ctx.fillText("Wavelength (nm)",x0+pw-100,y0+22);
+  ctx.fillText("Blue: tau(lambda), Yellow: Transmission",x0+8,y0-ph+16);
+  ctx.fillText("350",x0-8,y0+16);ctx.fillText("1000",x0+pw-18,y0+16);
+
+  const t550=tauLam(550,N,k0,beta,L),tr550=Math.exp(-t550);
+  document.getElementById("stats").textContent="tau(550nm)="+t550.toFixed(3)+", T(550nm)="+tr550.toFixed(3)+" | N="+N.toFixed(2)+", k0="+k0.toFixed(2)+", beta="+beta.toFixed(2)+", L="+L.toFixed(2);
+}
+function summary(){
+  const N=parseFloat(document.getElementById("N").value),k0=parseFloat(document.getElementById("k0").value),beta=parseFloat(document.getElementById("beta").value),L=parseFloat(document.getElementById("L").value);
+  const t550=tauLam(550,N,k0,beta,L),tr550=Math.exp(-t550);
+  const txt=[
+    "Interpret this interstellar attenuation setup:",
+    "N="+N.toFixed(2)+", kappa0="+k0.toFixed(2)+", beta="+beta.toFixed(2)+", path="+L.toFixed(2)+".",
+    "At 550 nm, tau="+t550.toFixed(3)+" so transmission exp(-tau)="+tr550.toFixed(3)+".",
+    "Tasks for LLM:",
+    "1) Explain in plain language why shorter wavelengths are attenuated more strongly when beta > 0.",
+    "2) Connect this to reddening and observed stellar colors.",
+    "3) Provide a short NumPy script to reproduce tau(lambda) and transmission(lambda)."
+  ].join("\n");
+  document.getElementById("summary").value=txt;
+}
+["N","k0","beta","L"].forEach(id=>document.getElementById(id).addEventListener("input",draw));
+document.getElementById("reset").addEventListener("click",()=>{document.getElementById("N").value="2";document.getElementById("k0").value="0.6";document.getElementById("beta").value="1.4";document.getElementById("L").value="1";draw();summary();});
+document.getElementById("summarize").addEventListener("click",summary);
+window.addEventListener("resize",()=>{resize();draw();});
+resize();draw();summary();
+</script>
+</body>
+</html>

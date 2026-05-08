@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Hubble Law Debate AI Lab</title>
+  <style>
+    :root{--bg:#090f1b;--card:#17243a;--line:#35557c;--text:#edf5ff;--muted:#a3c0de;--a:#57c5ff;--b:#ffd376;--ok:#87ebb7}
+    *{box-sizing:border-box} body{margin:0;font-family:"Segoe UI",Tahoma,sans-serif;background:linear-gradient(155deg,#060c16,#11223b);color:var(--text)}
+    .wrap{max-width:1120px;margin:0 auto;padding:20px}
+    .head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+    .title{font-size:24px;color:var(--a);font-weight:700}.sub{font-size:13px;color:var(--muted)}
+    .grid{display:grid;grid-template-columns:330px 1fr;gap:12px;margin-top:12px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}
+    label{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}
+    input,textarea{width:100%;background:#0f1b30;border:1px solid #3f648f;border-radius:7px;color:var(--text);padding:7px 9px}
+    textarea{min-height:130px;resize:vertical}
+    .btn{border:1px solid var(--line);border-radius:7px;padding:7px 10px;background:linear-gradient(180deg,#309dd4,#1f648f);color:#fff;font-weight:600;cursor:pointer;font-size:12px}
+    .row{display:flex;gap:8px;flex-wrap:wrap}
+    #hub{width:100%;height:430px;display:block;background:#0a1527;border:1px solid var(--line);border-radius:10px}
+    .mono{font-family:Consolas,monospace;background:rgba(87,197,255,.11);padding:6px 7px;border-radius:6px;font-size:12px;margin-top:8px}
+    @media(max-width:960px){.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="head">
+      <div>
+        <div class="title">Unit 5: Hubble Law and Cosmic Fate Debate Lab</div>
+        <div class="sub">Creator and Maintainer: Dr. Nitesh Kumar, UPES</div>
+      </div>
+      <a class="btn" href="phys4022p_llm_sim_hub.html" style="text-decoration:none">Back to PHYS4022P Hub</a>
+    </div>
+
+    <div class="grid">
+      <section class="card">
+        <label>Input H0 (km/s/Mpc)</label>
+        <input id="H0" type="range" min="50" max="90" step="1" value="70" />
+
+        <label style="margin-top:8px">Noise level (km/s)</label>
+        <input id="noise" type="range" min="20" max="500" step="10" value="140" />
+
+        <label style="margin-top:8px">Omega_m</label>
+        <input id="om" type="range" min="0.05" max="1.2" step="0.01" value="0.31" />
+
+        <label style="margin-top:8px">Omega_Lambda</label>
+        <input id="ol" type="range" min="0" max="1.4" step="0.01" value="0.69" />
+
+        <div class="row" style="margin-top:10px">
+          <button class="btn" id="regen">Regenerate Galaxies</button>
+          <button class="btn" id="debate">Generate Debate Prompt</button>
+        </div>
+
+        <div class="mono" id="stats">Fitted H0: - | Age estimate: -</div>
+        <textarea id="debateText" placeholder="Debate prompt and argument structure will appear here."></textarea>
+      </section>
+
+      <section class="card">
+        <canvas id="hub"></canvas>
+      </section>
+    </div>
+  </div>
+
+<script>
+"use strict";
+const cv=document.getElementById("hub"),ctx=cv.getContext("2d");
+let data=[];
+
+function rndn(){
+  let u=0,v=0; while(u===0)u=Math.random(); while(v===0)v=Math.random();
+  return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);
+}
+function resize(){const dpr=window.devicePixelRatio||1;cv.width=Math.floor(cv.clientWidth*dpr);cv.height=Math.floor(cv.clientHeight*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);}
+
+function genData(){
+  const H0=parseFloat(document.getElementById("H0").value);
+  const noise=parseFloat(document.getElementById("noise").value);
+  data=[];
+  for(let i=0;i<45;i++){
+    const d=10 + Math.random()*390;
+    const v=H0*d + rndn()*noise;
+    data.push({d,v});
+  }
+}
+
+function fit(){
+  const n=data.length;
+  let sx=0,sy=0,sxx=0,sxy=0;
+  data.forEach(p=>{sx+=p.d;sy+=p.v;sxx+=p.d*p.d;sxy+=p.d*p.v;});
+  const m=(n*sxy-sx*sy)/(n*sxx-sx*sx);
+  const b=(sy-m*sx)/n;
+  return {m,b};
+}
+
+function draw(){
+  const w=cv.clientWidth,h=cv.clientHeight;
+  ctx.clearRect(0,0,w,h);ctx.fillStyle="#0a1527";ctx.fillRect(0,0,w,h);
+  const x0=54,y0=h-36,pw=w-78,ph=h-60;
+  ctx.strokeStyle="rgba(163,192,222,.25)";ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x0,y0-ph);ctx.lineTo(x0+pw,y0-ph);ctx.stroke();
+
+  const xmax=420,ymax=Math.max(18000,...data.map(d=>d.v*1.08));
+  const sx=x=>x0 + x/xmax*pw; const sy=y=>y0 - y/ymax*ph;
+
+  ctx.fillStyle="#57c5ff";
+  data.forEach(p=>{ctx.beginPath();ctx.arc(sx(p.d),sy(p.v),3,0,Math.PI*2);ctx.fill();});
+
+  const f=fit();
+  ctx.beginPath();ctx.moveTo(sx(0),sy(f.b));ctx.lineTo(sx(xmax),sy(f.m*xmax+f.b));
+  ctx.strokeStyle="#ffd376";ctx.lineWidth=2;ctx.stroke();
+
+  ctx.fillStyle="#a3c0de";ctx.font="12px Segoe UI";
+  ctx.fillText("Distance (Mpc)",x0+pw-95,y0+22);
+  ctx.fillText("Velocity (km/s)",8,y0-ph+8);
+
+  const Hfit=Math.max(1,f.m);
+  const ageGyr=978/Hfit;
+  document.getElementById("stats").textContent="Fitted H0: "+Hfit.toFixed(2)+" km/s/Mpc | Hubble-time age ~ "+ageGyr.toFixed(2)+" Gyr";
+}
+
+function fateLabel(om,ol){
+  if(ol>om+0.2) return "Accelerating expansion likely (heat-death scenario emphasis).";
+  if(om>1.0 && ol<0.2) return "Recollapse tendency (Big Crunch style arguments become stronger).";
+  return "Near-critical/slowly accelerating regime; nuanced long-term fate arguments needed.";
+}
+
+function debatePrompt(){
+  const om=parseFloat(document.getElementById("om").value);
+  const ol=parseFloat(document.getElementById("ol").value);
+  const f=fateLabel(om,ol);
+  const txt=[
+    "Debate Topic: Final fate of the Universe",
+    "Given model parameters: Omega_m="+om.toFixed(2)+", Omega_Lambda="+ol.toFixed(2)+".",
+    "Model interpretation: "+f,
+    "Tasks for LLM:",
+    "1) Build two opposing evidence-based arguments (affirmative and negative).",
+    "2) Include one observational test each side would prioritize.",
+    "3) End with a balanced synthesis noting model assumptions and uncertainty limits."
+  ].join("\n");
+  document.getElementById("debateText").value=txt;
+}
+
+["H0","noise"].forEach(id=>document.getElementById(id).addEventListener("input",()=>{genData();draw();}));
+document.getElementById("regen").addEventListener("click",()=>{genData();draw();});
+document.getElementById("debate").addEventListener("click",debatePrompt);
+window.addEventListener("resize",()=>{resize();draw();});
+resize();genData();draw();debatePrompt();
+</script>
+</body>
+</html>

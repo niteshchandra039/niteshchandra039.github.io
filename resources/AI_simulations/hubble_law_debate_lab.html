@@ -1,0 +1,1728 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Hubble Law and Cosmology Simulator - Fundamentals of Astrophysics interactive learning module." />
+  <meta name="keywords" content="Hubble law, cosmology, expanding universe, galaxy recession, astrophysics simulation" />
+  <meta name="author" content="Dr. Nitesh Kumar, UPES - Creator and Maintainer" />
+  <!-- LMS: embed as an iframe or SCORM package wrapping this standalone HTML file -->
+  <title>Hubble Law Cosmology Simulator | Fundamentals of Astrophysics</title>
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <script>
+    window.MathJax = { tex: { inlineMath: [['\\(','\\)'], ['$', '$']] } };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <style>
+    /* === Design tokens === */
+    :root {
+      --bg:      #070d1a;
+      --surface: rgba(11,22,48,.88);
+      --card:    rgba(17,32,66,.72);
+      --border:  rgba(89,208,255,.15);
+      --muted:   #8fb5d9;
+      --text:    #e8f2ff;
+      --accent:  #59d0ff;
+      --accent2: #ffad6d;
+      --green:   #63e6a0;
+      --red:     #ff7070;
+      --tab-h:   48px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html,body{
+      height:100%;
+      font-family:"Space Grotesk",system-ui,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 12% 18%,rgba(89,208,255,.18),transparent 35%),
+        radial-gradient(circle at 85% 80%,rgba(255,173,109,.15),transparent 34%),
+        linear-gradient(165deg,#030814,#081a36 55%,#0b2246);
+      overflow:hidden;
+    }
+
+    /* === Login modal === */
+    #loginOverlay{
+      position:fixed;inset:0;z-index:9999;
+      background:rgba(3,8,20,.92);
+      display:flex;align-items:center;justify-content:center;
+      backdrop-filter:blur(6px);
+    }
+    #loginOverlay.hidden{display:none}
+    .loginBox{
+      background:var(--card);border:1px solid var(--border);
+      border-radius:14px;padding:36px 40px;
+      max-width:420px;width:92%;
+      box-shadow:0 24px 64px rgba(0,0,0,.7);text-align:center;
+    }
+    .loginBox h2{font-size:22px;color:var(--accent);margin-bottom:6px}
+    .loginBox p{font-size:13px;color:var(--muted);margin-bottom:24px}
+    .loginBox label{font-size:13px;color:var(--muted);text-align:left;display:block;margin-bottom:4px}
+    .loginBox input{
+      width:100%;padding:10px 12px;border-radius:8px;
+      border:1px solid #355b87;background:#0a1730;color:#eaf2ff;
+      font-size:14px;margin-bottom:14px;
+    }
+    .loginBox button{
+      width:100%;padding:12px;border-radius:8px;border:0;
+      background:linear-gradient(180deg,#2d9dd6,#1d6fa4);
+      color:#fff;font-weight:700;font-size:15px;cursor:pointer;transition:opacity .2s;
+    }
+    .loginBox button:hover{opacity:.88}
+    .loginBox .skip{margin-top:12px;font-size:12px;color:var(--muted);cursor:pointer}
+    .loginBox .skip:hover{color:var(--accent)}
+    .loginBox .skip.disabled{opacity:.5;cursor:not-allowed}
+    .loginBox .skip.disabled:hover{color:var(--muted)}
+    .loginBox .aiCredit{
+      margin-top:18px;font-size:11px;color:rgba(143,181,217,.6);
+      border-top:1px solid var(--border);padding-top:10px;
+    }
+
+    /* === App shell === */
+    .app{height:100vh;display:flex;flex-direction:column}
+
+    /* === Header === */
+    header{
+      flex-shrink:0;padding:8px 20px;
+      background:rgba(5,12,28,.82);border-bottom:1px solid var(--border);
+      display:flex;align-items:center;justify-content:space-between;
+      backdrop-filter:blur(6px);
+    }
+    header .titleBlock{display:flex;flex-direction:column}
+    header h1{font-size:16px;color:var(--accent);font-weight:700;line-height:1.2}
+    header .subtitle{font-size:11px;color:var(--muted)}
+    #studentIdentityLine{
+      margin-top:2px;font-size:11px;color:var(--text);
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+      max-width:74vw;
+    }
+    #studentBadge{
+      background:rgba(89,208,255,.1);border:1px solid var(--border);
+      border-radius:8px;padding:5px 12px;font-size:12px;color:var(--accent);cursor:pointer;
+    }
+    #studentBadge:hover{background:rgba(89,208,255,.2)}
+
+    /* === Tab bar === */
+    .tabBar{
+      flex-shrink:0;display:flex;align-items:stretch;
+      background:rgba(6,14,32,.7);border-bottom:1px solid var(--border);
+      padding:0 16px;gap:4px;overflow-x:auto;
+    }
+    .tabBar button{
+      background:none;border:none;border-bottom:3px solid transparent;
+      color:var(--muted);font-family:inherit;font-size:13px;font-weight:600;
+      padding:0 16px;height:var(--tab-h);cursor:pointer;white-space:nowrap;
+      transition:color .2s,border-color .2s;
+    }
+    .tabBar button:hover{color:var(--accent)}
+    .tabBar button.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+    /* === Tab panels === */
+    .tabContent{flex:1;overflow:hidden;position:relative}
+    .tabPanel{position:absolute;inset:0;display:none;overflow-y:auto;padding:20px}
+    .tabPanel.active{display:flex;flex-direction:column;gap:16px}
+    #tab-sim.active{
+      padding:12px;display:grid;
+      grid-template-columns:330px minmax(0,1fr) 320px;gap:12px;
+    }
+
+    /* === Shared card === */
+    .card{
+      background:var(--card);border:1px solid var(--border);
+      border-radius:12px;padding:18px 22px;backdrop-filter:blur(4px);
+    }
+    .card h2{font-size:16px;font-weight:700;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+    .card h2 .icon{font-size:18px}
+    .card h3{font-size:14px;color:var(--accent2);margin:14px 0 6px}
+    .card p,.card li{font-size:13.5px;color:var(--muted);line-height:1.75}
+    .card ul,.card ol{padding-left:20px}
+    .card ul li,.card ol li{margin-bottom:5px}
+    .card em{color:var(--text);font-style:normal;font-family:"IBM Plex Mono",monospace;font-size:12.5px}
+
+    .eqBox{
+      background:rgba(89,208,255,.07);border-left:3px solid var(--accent);
+      border-radius:6px;padding:10px 16px;margin:10px 0;
+      font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--text);line-height:1.8;
+    }
+    .theoryGrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    @media(max-width:900px){.theoryGrid{grid-template-columns:1fr}}
+
+    /* === Simulation panel === */
+    .simPanel{display:flex;flex-direction:column;gap:8px;overflow-y:auto}
+    .simSection{
+      background:var(--card);border:1px solid var(--border);
+      border-radius:10px;padding:10px 12px;
+    }
+    .simSection .kicker{
+      font-size:11px;color:var(--accent);font-weight:600;
+      text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;
+    }
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+    .simSection label{font-size:11.5px;color:var(--muted);display:block;margin-bottom:3px}
+    .simSection input,.simSection select{
+      width:100%;border-radius:6px;border:1px solid #355b87;
+      background:#0a1730;color:#eaf2ff;padding:6px 8px;font-size:12px;
+    }
+    input[type=range]{accent-color:var(--accent)}
+    .row{display:flex;gap:6px;flex-wrap:wrap}
+    .simBtn{
+      border:0;border-radius:7px;padding:7px 11px;
+      background:linear-gradient(180deg,#2d9dd6,#1d6fa4);
+      color:#fff;font-weight:600;cursor:pointer;font-size:12px;
+      font-family:inherit;transition:opacity .15s;
+    }
+    .simBtn:hover{opacity:.85}
+    .simBtn.danger{background:linear-gradient(180deg,#c94040,#8c2a2a)}
+    .mono{
+      font-family:"IBM Plex Mono",monospace;font-size:12px;
+      background:rgba(89,208,255,.1);border-radius:6px;padding:4px 7px;
+    }
+    .checkRow{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+    .checkRow input[type=checkbox]{accent-color:var(--accent)}
+
+    /* === Canvas === */
+    .simWrap{
+      position:relative;background:#060f22;
+      border-radius:10px;border:1px solid var(--border);
+      overflow:hidden;min-height:400px;
+    }
+    #canvas{width:100%;height:100%;display:block;cursor:default}
+    #overlay{
+      position:absolute;right:12px;top:12px;
+      background:rgba(4,10,26,.78);border:1px solid var(--border);
+      border-radius:8px;padding:10px 12px;font-size:12px;color:var(--muted);line-height:1.9;
+    }
+    #overlay button{
+      margin-top:6px;width:100%;padding:3px 6px;font-size:11px;
+      background:rgba(89,208,255,.1);border:1px solid var(--accent);
+      border-radius:4px;color:var(--accent);cursor:pointer;font-family:inherit;
+    }
+    #overlay button:hover{background:rgba(89,208,255,.25)}
+
+    .simInsights{display:flex;flex-direction:column;gap:8px;overflow-y:auto}
+    .graphWrap{
+      background:rgba(6,15,34,.82);border:1px solid var(--border);
+      border-radius:8px;padding:10px;
+    }
+    #liveGraph{width:100%;height:190px;display:block;background:#081733;border-radius:6px}
+    .metricGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .metricBox{
+      border:1px solid var(--border);border-radius:7px;padding:8px;
+      background:rgba(89,208,255,.06);
+    }
+    .metricBox .k{font-size:11px;color:var(--muted)}
+    .metricBox .v{font-size:12px;color:var(--text);font-family:"IBM Plex Mono",monospace;margin-top:4px}
+
+    #tutorModal{
+      position:fixed;inset:0;z-index:10001;
+      display:none;align-items:center;justify-content:center;
+      background:rgba(2,8,20,.8);backdrop-filter:blur(4px);
+    }
+    #tutorModal.show{display:flex}
+    .tutorCard{
+      width:min(760px,94vw);max-height:86vh;overflow:auto;
+      background:var(--card);border:1px solid var(--border);border-radius:12px;
+      box-shadow:0 24px 64px rgba(0,0,0,.6);
+    }
+    .tutorHead{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:14px 16px;border-bottom:1px solid var(--border);
+    }
+    .tutorHead h3{font-size:15px;color:var(--accent)}
+    #closeTutor{
+      border:1px solid var(--border);background:rgba(89,208,255,.12);color:var(--accent);
+      border-radius:6px;padding:5px 8px;cursor:pointer;font-size:12px;
+    }
+    #tutorBody{padding:14px 16px;font-size:13px;color:var(--muted);line-height:1.7;white-space:pre-wrap}
+
+    /* === Data Export tab === */
+    .exportGrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    @media(max-width:800px){.exportGrid{grid-template-columns:1fr}}
+    .statBox{
+      background:rgba(89,208,255,.06);border:1px solid var(--border);
+      border-radius:8px;padding:14px 18px;text-align:center;
+    }
+    .statBox .statVal{font-family:"IBM Plex Mono",monospace;font-size:26px;color:var(--accent);font-weight:600}
+    .statBox .statLabel{font-size:12px;color:var(--muted);margin-top:4px}
+    .dlBtn{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:11px 20px;border-radius:9px;border:0;cursor:pointer;
+      font-family:inherit;font-size:14px;font-weight:600;transition:opacity .15s;
+    }
+    .dlBtn:hover{opacity:.85}
+    .dlBtn.primary  {background:linear-gradient(135deg,#1d9cd4,#115882);color:#fff}
+    .dlBtn.secondary{background:rgba(99,230,160,.15);border:1px solid var(--green);color:var(--green)}
+    .dlBtn.tertiary {background:rgba(255,173,109,.12);border:1px solid var(--accent2);color:var(--accent2)}
+
+    .tableWrap{max-height:260px;overflow-y:auto;border-radius:8px;border:1px solid var(--border);font-size:11px}
+    table{width:100%;border-collapse:collapse}
+    th{background:rgba(89,208,255,.12);color:var(--accent);padding:6px 10px;text-align:left;position:sticky;top:0;font-size:11px}
+    td{padding:5px 10px;border-top:1px solid rgba(255,255,255,.04);color:var(--muted)}
+    tr:hover td{background:rgba(255,255,255,.04)}
+
+    /* === Objectives tab === */
+    .objGrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    @media(max-width:800px){.objGrid{grid-template-columns:1fr}}
+    .badge{display:inline-block;font-size:11px;font-weight:600;padding:2px 9px;border-radius:20px;margin-bottom:10px}
+    .badge.blue {background:rgba(89,208,255,.15);color:var(--accent);border:1px solid rgba(89,208,255,.3)}
+    .badge.green{background:rgba(99,230,160,.15);color:var(--green);border:1px solid rgba(99,230,160,.3)}
+    .badge.amber{background:rgba(255,173,109,.15);color:var(--accent2);border:1px solid rgba(255,173,109,.3)}
+    .checkList{list-style:none;padding:0}
+    .checkList li{
+      display:flex;gap:10px;align-items:flex-start;
+      font-size:13.5px;color:var(--muted);line-height:1.6;
+      padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);
+    }
+    .checkList li:last-child{border-bottom:none}
+    .checkList li .tick{color:var(--green);font-size:14px;flex-shrink:0}
+
+    /* === Quiz tab === */
+    .quizCard h3{font-size:14px;color:var(--accent2);margin-bottom:8px}
+    .quizQ{padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+    .quizQ:last-child{border-bottom:none}
+    .quizQ p{font-size:13px;color:var(--text);margin-bottom:8px}
+    .quizQ label{display:block;font-size:12.5px;color:var(--muted);margin:4px 0;cursor:pointer}
+    .quizTools{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;margin:10px 0 12px}
+    .quizTools input{
+      width:100%;border-radius:6px;border:1px solid #355b87;
+      background:#0a1730;color:#eaf2ff;padding:8px 10px;font-size:13px;
+    }
+    .quizHint{font-size:12px;color:var(--muted);margin:6px 0 2px}
+    .quizResult{
+      margin-top:12px;padding:10px;border-radius:8px;
+      background:rgba(89,208,255,.1);border:1px solid var(--border);
+      font-size:13px;color:var(--text);
+    }
+
+    /* === References tab === */
+    .refItem{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+    .refNum{
+      width:28px;height:28px;border-radius:50%;
+      background:rgba(89,208,255,.12);color:var(--accent);
+      font-size:12px;font-weight:700;flex-shrink:0;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .refBody{flex:1}
+    .refBody .refTitle{font-size:14px;color:var(--text);font-weight:600}
+    .refBody .refMeta{font-size:12px;color:var(--muted);margin-top:3px}
+    .refBody a.refLink{
+      display:inline-flex;align-items:center;gap:5px;
+      font-size:12px;color:var(--accent);margin-top:5px;text-decoration:none;
+      border:1px solid rgba(89,208,255,.3);padding:3px 10px;border-radius:5px;transition:background .2s;
+    }
+    .refBody a.refLink:hover{background:rgba(89,208,255,.12)}
+
+    /* === Footer === */
+    footer{
+      flex-shrink:0;padding:7px 20px;
+      background:rgba(3,8,18,.82);border-top:1px solid var(--border);
+      display:flex;align-items:center;justify-content:space-between;
+      font-size:11px;color:var(--muted);backdrop-filter:blur(4px);
+    }
+    footer .aiTag{
+      background:rgba(255,173,109,.12);border:1px solid rgba(255,173,109,.3);
+      color:var(--accent2);padding:3px 10px;border-radius:20px;font-weight:600;font-size:11px;
+    }
+
+    @media(max-width:1280px){
+      #tab-sim.active{grid-template-columns:300px minmax(0,1fr);grid-template-rows:auto auto}
+      .simInsights{grid-column:1 / -1}
+    }
+    @media(max-width:980px){
+      #tab-sim.active{grid-template-columns:1fr;grid-template-rows:auto auto auto;overflow-y:auto}
+      .simWrap{min-height:380px}
+    }
+    ::-webkit-scrollbar{width:6px;height:6px}
+    ::-webkit-scrollbar-track{background:transparent}
+    ::-webkit-scrollbar-thumb{background:rgba(89,208,255,.25);border-radius:3px}
+    .infoAlert{
+      background:rgba(89,208,255,.08);border:1px solid rgba(89,208,255,.25);
+      border-radius:8px;padding:10px 14px;font-size:13px;color:var(--muted);
+    }
+    .infoAlert strong{color:var(--accent)}
+  </style>
+</head>
+<body>
+
+<!-- LOGIN MODAL -->
+<div id="loginOverlay">
+  <div class="loginBox">
+    <h2>&#x269B; Hubble Law Cosmology Simulator</h2>
+    <p>Computational Astrophysics &middot; Interactive Learning Module<br>Please enter your details to continue.</p>
+    <label for="loginName">Full Name</label>
+    <input id="loginName" type="text" placeholder="e.g. Priya Sharma" autocomplete="name" />
+    <label for="loginID">Student / Roll Number</label>
+    <input id="loginID" type="text" placeholder="e.g. 2023PHY042" autocomplete="off" />
+    <button id="loginBtn">Enter Simulator &#x2192;</button>
+    <div class="skip disabled" id="skipLogin">Guest mode disabled (student login required)</div>
+    <div class="aiCredit">Creator and Maintainer: Dr. Nitesh Kumar, UPES</div>
+  </div>
+</div>
+
+<!-- APP SHELL -->
+<div class="app" id="appShell" style="visibility:hidden">
+
+  <header>
+    <div class="titleBlock">
+      <h1>Hubble Law Cosmology Simulator</h1>
+      <span class="subtitle">Fundamentals of Astrophysics (PHYS4022P) &middot; Unit 5: Cosmology &middot; Uniform Simulation Architecture</span>
+      <span id="studentIdentityLine">Student: Guest | SAPID: NA | Topic: Hubble Law and Cosmology</span>
+    </div>
+    <div id="studentBadge" title="Click to switch user">&#x1F464; Guest</div>
+  </header>
+
+  <nav class="tabBar" role="tablist" aria-label="Module tabs">
+    <button class="active" data-tab="tab-theory" role="tab">&#x1F4D6; Theory</button>
+    <button data-tab="tab-sim"    role="tab">&#x1F52D; Simulation</button>
+    <button data-tab="tab-data"   role="tab">&#x1F4CA; Data &amp; Export</button>
+    <button data-tab="tab-obj"    role="tab">&#x1F3AF; Objectives</button>
+    <button data-tab="tab-quiz"   role="tab">&#x1F9E0; Quiz</button>
+    <button data-tab="tab-refs"   role="tab">&#x1F4DA; References</button>
+  </nav>
+
+  <div class="tabContent">
+
+    <!-- THEORY TAB -->
+    <section id="tab-theory" class="tabPanel active" role="tabpanel">
+
+      <div class="card">
+        <h2><span class="icon">&#x1F30C;</span>Hubble Law and Cosmology</h2>
+        <p>This page uses the exact same architecture as the primary simulator (login, theory, formulas, simulation, data export, objectives, quiz, references) for course-wide uniformity. For the dedicated Unit 5: Cosmology topic engine, open: <a class="refLink" href="hubble_law_debate_core.html" target="_blank" rel="noopener">Hubble Law Cosmology Simulator Core Module</a>.</p>
+      </div>
+
+      <div class="theoryGrid">
+        <div class="card">
+          <h2><span class="icon">&#x2696;&#xFE0F;</span>Expanding Universe and Hubble Relation</h2><p>For nearby galaxies, recession velocity approximately scales with distance:</p>
+<div class="eqBox">\( v = H_0 d \)</div>
+<p>Linear fits to redshift-distance data estimate \(H_0\) and indicate expansion.</p>
+<h3>Redshift Relation (low z)</h3>
+<div class="eqBox">\( z \approx v/c \approx H_0 d / c \)</div>
+<p>At larger redshift, relativistic/cosmological corrections become important.</p>
+        </div>
+
+        <div class="card">
+          <h2><span class="icon">&#x1F522;</span>Cosmological Parameters and Fate</h2><h3>Critical Density</h3>
+<div class="eqBox">\( \rho_c = 3H_0^2/(8\pi G) \)</div>
+<p>Defines density scale for expansion geometry discussions.</p>
+<h3>Density Parameters</h3>
+<div class="eqBox">\( \Omega_m, \Omega_\Lambda, \Omega_k \)</div>
+<p>Relative contributions influence long-term expansion behavior.</p>
+<h3>Hubble Time Approximation</h3>
+<div class="eqBox">\( t_H \approx 1/H_0 \)</div>
+<p>A useful first timescale for order-of-magnitude age reasoning.</p>
+        </div>
+      </div>
+
+      <div class="theoryGrid">
+        <div class="card">
+          <h2><span class="icon">&#x1F9EE;</span>Large-Scale Structure and Debate Framing</h2><h3>Galaxy Classification Context</h3>
+<p>Morphology and environment inform formation and growth pathways in cosmic web structures.</p>
+<h3>Final Fate Scenarios</h3>
+<p>Use parameter sets to compare accelerating expansion, near-critical evolution, and recollapse-style arguments.</p>
+<h3>Evidence-Based Debate</h3>
+<p>AI tools can structure pro/con claims, but arguments should cite model assumptions and uncertainty limits.</p>
+        </div>
+
+        <div class="card">
+          <h2><span class="icon">&#x1FA90;</span>Formula Sheet and Physical Constants</h2><div class="eqBox">Use SI units unless stated. Constants and relations shown above are preloaded for lab work.</div><p>Switch to the Simulation tab to explore the same relationships numerically under this unit topic.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2><span class="icon">&#x1F50D;</span>Unit 5 Guided Scenarios</h2>
+        <div class="theoryGrid" style="margin-top:0">
+          <div>
+            <h3>Estimate H0</h3>
+            <p>Fit synthetic distance-velocity points and compare inferred Hubble constants across noise levels.</p>
+            <h3>Age Scale</h3>
+            <p>Convert fitted \(H_0\) values to Hubble-time estimates and discuss limitations.</p>
+          </div>
+          <div>
+            <h3>Parameter Sweep</h3>
+            <p>Vary \(\Omega_m\) and \(\Omega_\Lambda\) to frame plausible long-term expansion outcomes.</p>
+            <h3>Debate Builder</h3>
+            <p>Generate structured argument maps on the final fate of the universe.</p>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- SIMULATION TAB -->
+    <section id="tab-sim" class="tabPanel" role="tabpanel">
+
+      <aside class="simPanel">
+
+        <div class="simSection">
+          <div class="kicker">Presets</div>
+          <div class="row">
+            <button class="simBtn" id="presetPlanck">Planck-like</button>
+            <button class="simBtn" id="presetSH0ES">SH0ES-like</button>
+            <button class="simBtn" id="presetCustom">Balanced</button>
+          </div>
+        </div>
+
+        <div class="simSection">
+          <div class="kicker">Cosmology controls</div>
+          <div class="grid2">
+            <div>
+              <label>Input \(H_0\) (km/s/Mpc)</label>
+              <input id="h0Input" type="range" min="50" max="90" step="0.1" value="67.4" />
+              <div class="mono" id="h0Val" style="margin-top:4px">67.4 km/s/Mpc</div>
+            </div>
+            <div>
+              <label>Galaxy count</label>
+              <input id="nGalaxies" type="range" min="12" max="120" step="1" value="40" />
+              <div class="mono" id="nGalVal" style="margin-top:4px">40 galaxies</div>
+            </div>
+            <div>
+              <label>Velocity noise (1-sigma km/s)</label>
+              <input id="noiseInput" type="range" min="5" max="400" step="1" value="80" />
+              <div class="mono" id="noiseVal" style="margin-top:4px">80 km/s</div>
+            </div>
+            <div>
+              <label>Max sampled distance (Mpc)</label>
+              <input id="dMaxInput" type="range" min="20" max="2000" step="10" value="500" />
+              <div class="mono" id="dMaxVal" style="margin-top:4px">500 Mpc</div>
+            </div>
+            <div>
+              <label>\(\Omega_m\)</label>
+              <input id="omegaM" type="range" min="0.05" max="0.60" step="0.01" value="0.31" />
+              <div class="mono" id="omegaMVal" style="margin-top:4px">0.31</div>
+            </div>
+            <div>
+              <label>\(\Omega_\Lambda\)</label>
+              <input id="omegaL" type="range" min="0.20" max="0.95" step="0.01" value="0.69" />
+              <div class="mono" id="omegaLVal" style="margin-top:4px">0.69</div>
+            </div>
+          </div>
+          <div class="row" style="margin-top:8px">
+            <label class="checkRow"><input id="showFitLine" type="checkbox" checked /> Show fit line</label>
+            <label class="checkRow"><input id="showResiduals" type="checkbox" checked /> Show residual bars</label>
+            <label class="checkRow"><input id="logData" type="checkbox" checked /> Log data</label>
+          </div>
+          <div class="row" style="margin-top:8px">
+            <button class="simBtn" id="playBtn">&#x23F8; Pause</button>
+            <button class="simBtn" id="stepBtn">&#x23ED; Step</button>
+            <button class="simBtn danger" id="resetBtn">&#x21BA; Reset</button>
+            <button class="simBtn" id="helpBtn">? Help</button>
+          </div>
+        </div>
+
+        <div class="simSection">
+          <div class="kicker">Simulation pacing</div>
+          <label>Auto-refresh rate (new sample sets per second)</label>
+          <input id="simRate" type="range" min="0.2" max="8" step="0.1" value="1.2" />
+          <div class="mono" id="simRateVal" style="margin-top:4px">1.2 samples/s</div>
+          <label style="margin-top:8px">Sampling strategy</label>
+          <select id="samplingMode">
+            <option value="uniform">Uniform distance sampling</option>
+            <option value="clustered">Clustered nearby + sparse far</option>
+            <option value="deep">Deep-field far-biased sample</option>
+          </select>
+        </div>
+
+        <div class="simSection">
+          <div class="kicker">Derived context</div>
+          <div style="margin-top:4px" class="mono">\(\Omega_k = 1 - \Omega_m - \Omega_\Lambda\): <span id="omegaK">0.00</span></div>
+          <div style="margin-top:6px" class="mono">Expected age scale: <span id="ageScale">--</span> Gyr</div>
+          <div style="margin-top:6px" class="mono">Current scenario: <span id="scenarioLabel">Balanced baseline</span></div>
+        </div>
+
+        <div class="simSection">
+          <div class="kicker">Run tools</div>
+          <div class="row">
+            <button class="simBtn" id="regenNow">Regenerate Sample</button>
+            <button class="simBtn" id="applySettings">Apply Settings</button>
+          </div>
+          <div style="margin-top:10px" class="mono">Best-fit \(H_0\): <span id="fitH0Label">--</span> km/s/Mpc</div>
+          <div style="margin-top:6px" class="mono">Intercept: <span id="fitBLabel">--</span> km/s</div>
+        </div>
+
+      </aside>
+
+      <div class="simWrap">
+        <canvas id="canvas" title="Distance-velocity scatter with linear fit"></canvas>
+        <div id="overlay">
+          <div>Run: <span id="time">0</span></div>
+          <div>Galaxies: <span id="nBodies">0</span></div>
+          <div>Fit status: <span id="heaviestInfo">Ready</span></div>
+          <div>Distance span: <span id="zoomLevel">0-500 Mpc</span></div>
+          <button id="resetZoom">Reset Plot Range</button>
+        </div>
+      </div>
+
+      <aside class="simInsights">
+        <div class="simSection">
+          <div class="kicker">Output values</div>
+          <div class="metricGrid">
+            <div class="metricBox"><div class="k">Fitted \(H_0\)</div><div class="v" id="outEnergy">--</div></div>
+            <div class="metricBox"><div class="k">Intercept \(b\)</div><div class="v" id="outLz">--</div></div>
+            <div class="metricBox"><div class="k">Fit quality \(R^2\)</div><div class="v" id="outMeanSpeed">--</div></div>
+            <div class="metricBox"><div class="k">Hubble time</div><div class="v" id="outSpread">--</div></div>
+          </div>
+        </div>
+
+        <div class="simSection">
+          <div class="kicker">Trend graph (Y vs run number)</div>
+          <label>Y-axis metric</label>
+          <select id="graphMetric">
+            <option value="fitH0">Fitted H0</option>
+            <option value="r2">R-squared</option>
+            <option value="intercept">Intercept</option>
+          </select>
+          <div class="graphWrap" style="margin-top:8px">
+            <canvas id="liveGraph" title="Realtime graph: selected metric vs run count"></canvas>
+          </div>
+          <div class="mono" style="margin-top:8px">X-axis: run count | Y-axis: selected metric</div>
+        </div>
+      </aside>
+
+    </section>
+
+    <!-- DATA & EXPORT TAB -->
+    <section id="tab-data" class="tabPanel" role="tabpanel">
+
+      <div class="infoAlert">
+        <strong>How data logging works:</strong> When the <em>Log data</em> checkbox is enabled in the
+        Simulation tab, the simulator records synthetic galaxy distance-velocity samples and fit metrics.
+        Download the data in standard formats for analysis in Python, MATLAB, or Excel.
+      </div>
+
+      <div class="exportGrid">
+        <div class="statBox"><div class="statVal" id="logCount">0</div><div class="statLabel">Recorded rows</div></div>
+        <div class="statBox"><div class="statVal" id="logBodies">0</div><div class="statLabel">Galaxies per run</div></div>
+        <div class="statBox"><div class="statVal" id="logTimeSpan">0</div><div class="statLabel">Run span</div></div>
+        <div class="statBox"><div class="statVal" id="logInterval">Every 1 run</div><div class="statLabel">Sampling interval</div></div>
+      </div>
+
+      <div class="card">
+        <h2><span class="icon">&#x2699;&#xFE0F;</span>Logging Settings</h2>
+        <div style="display:flex;gap:24px;flex-wrap:wrap;align-items:center">
+          <div>
+            <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px">Sample every N runs</label>
+            <input id="sampleEvery" type="number" value="1" min="0.1" step="0.1"
+              style="width:140px;border-radius:6px;border:1px solid #355b87;background:#0a1730;color:#eaf2ff;padding:7px 10px;font-size:13px" />
+          </div>
+          <div>
+            <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px">Max rows (memory cap)</label>
+            <input id="maxRows" type="number" value="5000" min="100" max="50000" step="100"
+              style="width:140px;border-radius:6px;border:1px solid #355b87;background:#0a1730;color:#eaf2ff;padding:7px 10px;font-size:13px" />
+          </div>
+          <button class="simBtn danger" id="clearLogBtn" style="align-self:flex-end">&#x1F5D1; Clear Log</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2><span class="icon">&#x1F4BE;</span>Download Simulation Data</h2>
+        <div class="row" style="gap:12px;margin-bottom:14px">
+          <button class="dlBtn primary"   id="dlCSV">&#x2B07; Download CSV</button>
+          <button class="dlBtn secondary" id="dlJSON">&#x2B07; Download JSON</button>
+          <button class="dlBtn tertiary"  id="dlPython">&#x2B07; Python Starter Script</button>
+        </div>
+        <p style="font-size:12.5px;color:var(--muted)">
+          CSV columns: <em>sapid, student_name, run_id, galaxy_id, distance_mpc, velocity_kms, model_velocity_kms, residual_kms, fit_h0, fit_intercept, fit_r2, omega_m, omega_lambda</em>.
+          JSON includes full metadata (input H0, omegas, noise model, sampling mode).
+          The Python script uses matplotlib to reproduce Hubble scatter and trend plots from exported data.
+        </p>
+      </div>
+
+      <div class="card">
+        <h2><span class="icon">&#x1F4CB;</span>Live Data Preview (last 20 rows)</h2>
+        <div class="tableWrap">
+          <table id="previewTable">
+            <thead><tr><th>Run</th><th>Galaxy</th><th>d (Mpc)</th><th>v (km/s)</th><th>Model v (km/s)</th><th>Residual (km/s)</th><th>Fit H0</th></tr></thead>
+            <tbody id="previewBody">
+              <tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px">No data yet &mdash; run the simulation with "Log data" checked.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2><span class="icon">&#x1F512;</span>Student Login Audit</h2>
+        <div class="row" style="margin-bottom:10px;align-items:center;justify-content:space-between">
+          <div class="mono">Total recorded logins: <span id="loginLogCount">0</span></div>
+          <button class="dlBtn primary" id="dlLoginCSV" type="button">&#x2B07; Download Login Logs CSV</button>
+        </div>
+        <div class="tableWrap">
+          <table>
+            <thead><tr><th>Timestamp (ISO)</th><th>Name</th><th>SAPID</th></tr></thead>
+            <tbody id="loginLogBody">
+              <tr><td colspan="3" style="text-align:center;color:var(--muted);padding:20px">No login records yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- OBJECTIVES TAB -->
+    <section id="tab-obj" class="tabPanel" role="tabpanel">
+
+      <div class="card">
+        <h2><span class="icon">&#x1F3AF;</span>Module: Cosmology</h2>
+        <p>
+          This interactive module targets Unit 5 of PHYS4022P. Students analyze Hubble-law data, infer cosmological scales, and build evidence-based arguments about cosmic evolution and fate.
+        </p>
+      </div>
+
+      <div class="objGrid">
+        <div class="card">
+          <h2><span class="icon">&#x1F4CC;</span>Learning Objectives</h2>
+          <span class="badge blue">After completing this module, students will be able to:</span>
+          <ul class="checkList">
+            <li><span class="tick">&#x2713;</span>Apply Hubble's relation to interpret recession data.</li>
+            <li><span class="tick">&#x2713;</span>Estimate H0 from linear fits and assess uncertainty effects.</li>
+            <li><span class="tick">&#x2713;</span>Relate redshift, velocity, and distance in low-redshift limits.</li>
+            <li><span class="tick">&#x2713;</span>Use density parameters to discuss expansion scenarios.</li>
+            <li><span class="tick">&#x2713;</span>Interpret large-scale-structure context in cosmological reasoning.</li>
+            <li><span class="tick">&#x2713;</span>Use LLMs to scaffold balanced scientific debates.</li>
+            <li><span class="tick">&#x2713;</span>Export simulation evidence for report and argument construction.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h2><span class="icon">&#x1F4E6;</span>Deliverables</h2>
+          <span class="badge green">Students are expected to submit:</span>
+          <ol class="checkList">
+            <li><span class="tick">1.</span><strong style="color:var(--text)">Lab Report (PDF)</strong> &mdash; Scatter/fit plots with at least two noise settings.</li>
+            <li><span class="tick">2.</span><strong style="color:var(--text)">Exported Data File</strong> &mdash; Exported data and fit summaries for H0 estimation runs.</li>
+            <li><span class="tick">3.</span><strong style="color:var(--text)">Python analysis script</strong> &mdash; Python script recreating fit and age-scale calculations.</li>
+            <li><span class="tick">4.</span><strong style="color:var(--text)">Comparison table</strong> &mdash; Comparison table of parameter sets and inferred fate tendencies.</li>
+            <li><span class="tick">5.</span><strong style="color:var(--text)">Bonus investigation</strong> &mdash; Structured debate brief with evidence and uncertainty notes.</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="objGrid">
+        <div class="card">
+          <h2><span class="icon">&#x1F4C5;</span>Suggested Lab Workflow</h2>
+          <span class="badge amber">Step-by-step guide</span>
+          <ol class="checkList">
+            <li><span class="tick">1.</span>Review cosmology equations and assumptions in Theory.</li>
+            <li><span class="tick">2.</span>Generate synthetic galaxy data and fit Hubble slope.</li>
+            <li><span class="tick">3.</span>Compare fitted H0 under different noise regimes.</li>
+            <li><span class="tick">4.</span>Compute Hubble-time scales and discuss approximation limits.</li>
+            <li><span class="tick">5.</span>Vary cosmological parameters and note fate implications.</li>
+            <li><span class="tick">6.</span>Export data for reproducible fit analysis.</li>
+            <li><span class="tick">7.</span>Recreate figures in Python with clear annotations.</li>
+            <li><span class="tick">8.</span>Use AI debate prompt to write balanced final-fate arguments.</li>
+          </ol>
+        </div>
+
+        <div class="card">
+          <h2><span class="icon">&#x1F4D0;</span>Assessment Criteria</h2>
+          <ul class="checkList">
+            <li><span class="tick">&#x25C8;</span><strong style="color:var(--text)">Understanding (30%)</strong> &mdash; Correct use of Hubble-law and redshift approximations.</li>
+            <li><span class="tick">&#x25C8;</span><strong style="color:var(--text)">Simulation (25%)</strong> &mdash; Fit quality and quantitative interpretation.</li>
+            <li><span class="tick">&#x25C8;</span><strong style="color:var(--text)">Data Analysis (25%)</strong> &mdash; Clarity of cosmological-parameter reasoning.</li>
+            <li><span class="tick">&#x25C8;</span><strong style="color:var(--text)">Method comparison (15%)</strong> &mdash; Evidence quality in exported analysis.</li>
+            <li><span class="tick">&#x25C8;</span><strong style="color:var(--text)">Bonus (5%)</strong> &mdash; Balance and rigor in AI-assisted debate framing.</li>
+          </ul>
+          <div class="infoAlert" style="margin-top:12px">
+            <strong>LMS Note:</strong> Submit PDF, exported data, and analysis script under Lab 5 &mdash; Cosmology.
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- QUIZ TAB -->
+    <section id="tab-quiz" class="tabPanel" role="tabpanel">
+
+      <div class="card quizCard">
+        <h2><span class="icon">&#x1F9E0;</span>Concept Check Quiz</h2>
+        <p>This quiz is interactive and generates a new question set whenever a student asks for one.</p>
+
+        <form id="quizForm">
+          <div class="quizTools">
+            <input id="quizPrompt" type="text" placeholder="Ask for topic focus (e.g. H0 fit, redshift, cosmological parameters)" />
+            <button class="simBtn" id="askQuizBtn" type="button">Ask New Quiz</button>
+            <button class="simBtn" id="newQuizBtn" type="button">Regenerate</button>
+          </div>
+          <div class="quizHint">Adaptive mode: after high scores, the next generated set becomes more challenging.</div>
+
+          <div id="quizQuestionsWrap"></div>
+
+          <div class="row" style="margin-top:12px">
+            <button class="simBtn" id="submitQuizBtn" type="submit">Submit Quiz</button>
+            <button class="simBtn danger" id="resetQuizBtn" type="button">Reset Quiz</button>
+          </div>
+        </form>
+
+        <div class="quizResult" id="quizResult">No attempts yet.</div>
+      </div>
+
+      <div class="card">
+        <h2><span class="icon">&#x1F4DD;</span>Quiz Attempt Log</h2>
+        <div class="row" style="margin-bottom:10px;align-items:center;justify-content:space-between">
+          <div class="mono">Attempts: <span id="quizAttemptCount">0</span></div>
+          <button class="dlBtn secondary" id="dlQuizCSV" type="button">&#x2B07; Download Quiz Attempts CSV</button>
+        </div>
+        <div class="tableWrap">
+          <table>
+            <thead><tr><th>Timestamp (ISO)</th><th>Name</th><th>SAPID</th><th>Score</th></tr></thead>
+            <tbody id="quizAttemptBody">
+              <tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px">No quiz attempts yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- REFERENCES TAB -->
+    <section id="tab-refs" class="tabPanel" role="tabpanel">
+
+      <div class="card">
+        <h2><span class="icon">&#x1F4DA;</span>Bibliography &amp; Further Reading</h2>
+        <p style="margin-bottom:16px">References used to ensure scientific accuracy of this module. Open-access links are provided where available.</p>
+
+        <div class="refItem">
+          <div class="refNum">1</div>
+          <div class="refBody">
+            <div class="refTitle">Hubble, E. (1929) &mdash; <em>A Relation Between Distance and Radial Velocity Among Extra-galactic Nebulae</em></div>
+            <div class="refMeta"><em>Proceedings of the National Academy of Sciences</em>, 15, 168-173. Original observational basis of Hubble's law.</div>
+            <a class="refLink" href="https://doi.org/10.1073/pnas.15.3.168" target="_blank" rel="noopener">&#x2197; Source link</a>
+          </div>
+        </div>
+
+        <div class="refItem">
+          <div class="refNum">2</div>
+          <div class="refBody">
+            <div class="refTitle">Peebles, P. J. E. &mdash; <em>Principles of Physical Cosmology</em></div>
+            <div class="refMeta">Princeton University Press, 1993. Foundational treatment of cosmological dynamics and structure.</div>
+            <a class="refLink" href="https://press.princeton.edu/books/paperback/9780691019338/principles-of-physical-cosmology" target="_blank" rel="noopener">&#x2197; Source link</a>
+          </div>
+        </div>
+
+        <div class="refItem">
+          <div class="refNum">3</div>
+          <div class="refBody">
+            <div class="refTitle">Weinberg, S. &mdash; <em>Cosmology</em></div>
+            <div class="refMeta">Oxford University Press, 2008. Comprehensive modern cosmology text on expansion and parameters.</div>
+          </div>
+        </div>
+
+        <div class="refItem">
+          <div class="refNum">4</div>
+          <div class="refBody">
+            <div class="refTitle">Ryden, B. &mdash; <em>Introduction to Cosmology</em> (2nd ed.)</div>
+            <div class="refMeta">Cambridge University Press, 2017. Accessible coverage of Hubble law, distances, and cosmic history.</div>
+          </div>
+        </div>
+
+        <div class="refItem">
+          <div class="refNum">5</div>
+          <div class="refBody">
+            <div class="refTitle">Planck Collaboration (2020) &mdash; <em>Planck 2018 Results. VI. Cosmological Parameters</em></div>
+            <div class="refMeta">Precision measurements for \(\Omega_m\), \(\Omega_\Lambda\), and related parameters.</div>
+            <a class="refLink" href="https://arxiv.org/abs/1807.06209" target="_blank" rel="noopener">&#x2197; Source link</a>
+          </div>
+        </div>
+
+        <div class="refItem">
+          <div class="refNum">6</div>
+          <div class="refBody">
+            <div class="refTitle">Riess, A. G. et al. (1998) &amp; Perlmutter, S. et al. (1999)</div>
+            <div class="refMeta">Type Ia supernova evidence for accelerated expansion.</div>
+            <a class="refLink" href="https://ui.adsabs.harvard.edu/abs/1998AJ....116.1009R/abstract" target="_blank" rel="noopener">&#x2197; Source link</a>
+          </div>
+        </div>
+
+        <div class="refItem">
+          <div class="refNum">7</div>
+          <div class="refBody">
+            <div class="refTitle">Sloan Digital Sky Survey (SDSS) Data Resources</div>
+            <div class="refMeta">Large-scale structure and galaxy redshift datasets suitable for classroom Hubble-law fitting exercises.</div>
+            <a class="refLink" href="https://www.sdss.org/dr18/" target="_blank" rel="noopener">&#x2197; Source link</a>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="card">
+        <h2><span class="icon">&#x1F6E0;</span>Software &amp; Tools Used</h2>
+        <ul class="checkList">
+          <li><span class="tick">&#x25B8;</span><strong style="color:var(--text)">HTML5 Canvas API</strong> &mdash; Interactive recession-fit visualization and cosmology parameter exploration.</li>
+          <li><span class="tick">&#x25B8;</span><strong style="color:var(--text)">Vanilla JavaScript (ES2020)</strong> &mdash; Simulation engine and UI logic. No external runtime dependencies.</li>
+          <li><span class="tick">&#x25B8;</span><strong style="color:var(--text)">Google Fonts (CDN)</strong> &mdash; Space Grotesk, IBM Plex Mono (falls back to system fonts offline).</li>
+          <li><span class="tick">&#x25B8;</span><strong style="color:var(--text)">Project Leadership</strong> &mdash; Created and maintained by Dr. Nitesh Kumar, UPES.</li>
+        </ul>
+      </div>
+
+    </section>
+
+  </div><!-- tabContent -->
+
+  <footer>
+    <span>Hubble Law Cosmology Simulator &middot; Fundamentals of Astrophysics (PHYS4022P) &middot; v3.0</span>
+    <span class="aiTag">Creator and Maintainer: Dr. Nitesh Kumar, UPES</span>
+    <span id="footerStudent">Guest session</span>
+  </footer>
+
+</div><!-- .app -->
+
+<div id="tutorModal" role="dialog" aria-modal="true" aria-label="AI tutor guidance">
+  <div class="tutorCard">
+    <div class="tutorHead">
+      <h3>AI Tutor - Contextual Guidance</h3>
+      <button id="closeTutor" type="button">Close</button>
+    </div>
+    <div id="tutorBody">Tutor is preparing guidance...</div>
+  </div>
+</div>
+
+<script>
+"use strict";
+const canvas = document.getElementById("canvas");
+const ctx    = canvas.getContext("2d");
+const state  = {
+  playing:true,
+  runId:0,
+  frameAccumulator:0,
+  plotRange:null,
+  authenticated:false
+};
+const student = { name:"Guest", sapid:"" };
+
+let dataLog=[], lastLogTimeDays=-Infinity;
+let graphLog=[];
+let currentSample=[];
+let lastFit={h0:0,intercept:0,r2:0,hubbleTime:0};
+let loginAudit=[];
+let quizAttempts=[];
+let currentQuizQuestions=[];
+let lastGraphSampleRun=-Infinity;
+
+const C_KMS = 299792.458;
+
+const QUESTION_BANK=[
+  {id:"q01",difficulty:"easy",tags:["hubble"],q:"Hubble's law for nearby galaxies is approximately:",options:["v = H0 d","v = d/H0","v = H0/d"],answer:0},
+  {id:"q02",difficulty:"easy",tags:["redshift"],q:"At low redshift, z is approximately:",options:["v/c","c/v","independent of v"],answer:0},
+  {id:"q03",difficulty:"medium",tags:["age"],q:"Hubble time is roughly:",options:["H0","1/H0","H0^2"],answer:1},
+  {id:"q04",difficulty:"medium",tags:["critical"],q:"Critical density depends on:",options:["H0 and G","Only c","Only matter temperature"],answer:0},
+  {id:"q05",difficulty:"hard",tags:["omega"],q:"A larger Omega_Lambda generally supports:",options:["Accelerated expansion tendency","Guaranteed recollapse","No expansion"],answer:0},
+  {id:"q06",difficulty:"hard",tags:["fit"],q:"Increasing velocity noise in data mainly affects:",options:["Slope uncertainty","Definition of distance unit","Speed of light"],answer:0},
+  {id:"q07",difficulty:"hard",tags:["debate"],q:"Good cosmology debates should explicitly include:",options:["Model assumptions and uncertainties","Only final claims","No data context"],answer:0}
+];
+
+function loadPersistentLogs(){
+  try{
+    loginAudit=JSON.parse(localStorage.getItem("hubble_login_audit")||"[]");
+    quizAttempts=JSON.parse(localStorage.getItem("hubble_quiz_attempts")||"[]");
+  }catch(e){
+    loginAudit=[];
+    quizAttempts=[];
+  }
+}
+
+function savePersistentLogs(){
+  try{
+    localStorage.setItem("hubble_login_audit",JSON.stringify(loginAudit));
+    localStorage.setItem("hubble_quiz_attempts",JSON.stringify(quizAttempts));
+  }catch(e){}
+}
+
+function updateLoginAuditUI(){
+  const body=document.getElementById("loginLogBody");
+  document.getElementById("loginLogCount").textContent=String(loginAudit.length);
+  if(!loginAudit.length){
+    body.innerHTML='<tr><td colspan="3" style="text-align:center;color:var(--muted);padding:20px">No login records yet.</td></tr>';
+    return;
+  }
+  const rows=loginAudit.slice(-30).reverse();
+  body.innerHTML=rows.map(r=>"<tr><td>"+r.timestamp+"</td><td>"+r.name+"</td><td>"+r.sapid+"</td></tr>").join("");
+}
+
+function updateQuizAttemptUI(){
+  const body=document.getElementById("quizAttemptBody");
+  document.getElementById("quizAttemptCount").textContent=String(quizAttempts.length);
+  if(!quizAttempts.length){
+    body.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px">No quiz attempts yet.</td></tr>';
+    return;
+  }
+  const rows=quizAttempts.slice(-30).reverse();
+  body.innerHTML=rows.map(r=>"<tr><td>"+r.timestamp+"</td><td>"+r.name+"</td><td>"+r.sapid+"</td><td>"+r.score+"/"+r.total+"</td></tr>").join("");
+}
+
+function recordLogin(name,sapid){
+  loginAudit.push({timestamp:new Date().toISOString(),name,sapid});
+  if(loginAudit.length>3000) loginAudit=loginAudit.slice(-3000);
+  savePersistentLogs();
+  updateLoginAuditUI();
+}
+
+function exportLoginCSV(){
+  if(!loginAudit.length){alert("No login logs yet.");return;}
+  const h=["timestamp_iso","student_name","sapid"];
+  const rows=loginAudit.map(r=>[r.timestamp,r.name,r.sapid].join(","));
+  dlBlob([h.join(","),...rows].join("\n"),"hubble_login_audit.csv","text/csv");
+}
+
+function exportQuizCSV(){
+  if(!quizAttempts.length){alert("No quiz attempts yet.");return;}
+  const h=["timestamp_iso","student_name","sapid","score","total"];
+  const rows=quizAttempts.map(r=>[r.timestamp,r.name,r.sapid,r.score,r.total].join(","));
+  dlBlob([h.join(","),...rows].join("\n"),"hubble_quiz_attempts.csv","text/csv");
+}
+
+function pickRandom(arr,n){
+  const cp=[...arr];
+  for(let i=cp.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [cp[i],cp[j]]=[cp[j],cp[i]];
+  }
+  return cp.slice(0,Math.min(n,cp.length));
+}
+
+function inferDifficultyTarget(){
+  if(!quizAttempts.length) return "easy";
+  const last=quizAttempts[quizAttempts.length-1];
+  const ratio=last.total>0?last.score/last.total:0;
+  if(ratio>=0.8) return "hard";
+  if(ratio>=0.5) return "medium";
+  return "easy";
+}
+
+function parsePromptTokens(text){
+  return String(text||"").toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
+}
+
+function generateQuizSet(){
+  const prompt=document.getElementById("quizPrompt").value.trim();
+  const tokens=parsePromptTokens(prompt);
+  const target=inferDifficultyTarget();
+  let pool=QUESTION_BANK.filter(q=>q.difficulty===target);
+  if(tokens.length){
+    const tagged=QUESTION_BANK.filter(q=>q.tags.some(t=>tokens.includes(t)) || tokens.some(tok=>q.q.toLowerCase().includes(tok)));
+    if(tagged.length>=5) pool=tagged;
+    else if(tagged.length>0) pool=[...new Set([...tagged,...pool])];
+  }
+  if(pool.length<5) pool=[...new Set([...pool,...QUESTION_BANK])];
+  currentQuizQuestions=pickRandom(pool,5);
+}
+
+function renderQuizQuestions(){
+  const wrap=document.getElementById("quizQuestionsWrap");
+  if(!currentQuizQuestions.length){
+    wrap.innerHTML='<div class="quizHint">Click "Ask New Quiz" to generate a fresh interactive quiz.</div>';
+    return;
+  }
+  wrap.innerHTML=currentQuizQuestions.map((q,idx)=>{
+    const opts=q.options.map((opt,oi)=>'<label><input type="radio" name="q_'+idx+'" value="'+oi+'" /> '+opt+'</label>').join("");
+    return '<div class="quizQ"><p>'+(idx+1)+'. '+q.q+'</p>'+opts+'</div>';
+  }).join("");
+}
+
+function generateAndRenderQuiz(){
+  if(!state.authenticated){
+    alert("Please log in first, then ask for a new quiz.");
+    document.getElementById("loginOverlay").classList.remove("hidden");
+    return;
+  }
+  generateQuizSet();
+  renderQuizQuestions();
+  document.getElementById("quizResult").textContent="New quiz generated for "+student.name+". Difficulty profile: "+inferDifficultyTarget()+".";
+}
+
+function submitQuiz(ev){
+  ev.preventDefault();
+  if(!state.authenticated){
+    alert("Please log in with Name and SAPID before taking the quiz.");
+    document.getElementById("loginOverlay").classList.remove("hidden");
+    return;
+  }
+  const form=document.getElementById("quizForm");
+  if(!currentQuizQuestions.length){
+    document.getElementById("quizResult").textContent="Generate a quiz first using Ask New Quiz.";
+    return;
+  }
+  let score=0, answered=0;
+  const feedback=[];
+  currentQuizQuestions.forEach((q,idx)=>{
+    const picked=form.querySelector('input[name="q_'+idx+'"]:checked');
+    if(picked){
+      answered++;
+      const selected=parseInt(picked.value,10);
+      if(selected===q.answer){
+        score++;
+      }else{
+        feedback.push((idx+1)+") Correct: "+q.options[q.answer]);
+      }
+    }
+  });
+  const total=currentQuizQuestions.length;
+  if(answered<total){
+    document.getElementById("quizResult").textContent="Please answer all questions before submission ("+answered+"/"+total+").";
+    return;
+  }
+  const pct=Math.round((score/total)*100);
+  document.getElementById("quizResult").textContent="Submitted. Score: "+score+"/"+total+" ("+pct+"%)."+(feedback.length?" Review: "+feedback.join(" | "):" Excellent run.");
+  quizAttempts.push({
+    timestamp:new Date().toISOString(),
+    name:student.name,
+    sapid:student.sapid||"NA",
+    score,
+    total
+  });
+  if(quizAttempts.length>3000) quizAttempts=quizAttempts.slice(-3000);
+  savePersistentLogs();
+  updateQuizAttemptUI();
+}
+
+function resetQuizForm(){
+  document.getElementById("quizForm").reset();
+  document.getElementById("quizResult").textContent="Quiz selection reset. You can submit or generate a new set.";
+}
+
+function maybeGraphPoint(force){
+  const run=state.runId;
+  if(!force && (run-lastGraphSampleRun)<1) return;
+  lastGraphSampleRun=run;
+  graphLog.push({run:run,fitH0:lastFit.h0,r2:lastFit.r2,intercept:lastFit.intercept});
+  if(graphLog.length>1200) graphLog.shift();
+}
+
+function randn(){
+  let u=0,v=0;
+  while(u===0) u=Math.random();
+  while(v===0) v=Math.random();
+  return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);
+}
+
+function linearFit(points){
+  const n=points.length;
+  if(n<2) return {h0:0,intercept:0,r2:0};
+  let sx=0,sy=0,sxx=0,sxy=0;
+  for(const p of points){
+    sx+=p.distanceMpc;
+    sy+=p.velocityKms;
+    sxx+=p.distanceMpc*p.distanceMpc;
+    sxy+=p.distanceMpc*p.velocityKms;
+  }
+  const den=(n*sxx-sx*sx);
+  const h0=Math.abs(den)<1e-9?0:(n*sxy-sx*sy)/den;
+  const intercept=(sy-h0*sx)/n;
+  const yMean=sy/n;
+  let ssRes=0, ssTot=0;
+  for(const p of points){
+    const yHat=h0*p.distanceMpc+intercept;
+    ssRes+=(p.velocityKms-yHat)*(p.velocityKms-yHat);
+    ssTot+=(p.velocityKms-yMean)*(p.velocityKms-yMean);
+  }
+  const r2=ssTot>0?1-ssRes/ssTot:1;
+  return {h0,intercept,r2};
+}
+
+function resize(){
+  const dpr=window.devicePixelRatio||1;
+  canvas.width=Math.floor(canvas.clientWidth*dpr);
+  canvas.height=Math.floor(canvas.clientHeight*dpr);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+window.addEventListener("resize",resize);
+setTimeout(resize,50);
+
+function currentInputs(){
+  return {
+    h0:parseFloat(document.getElementById("h0Input").value)||67.4,
+    nGal:parseInt(document.getElementById("nGalaxies").value,10)||40,
+    noise:parseFloat(document.getElementById("noiseInput").value)||80,
+    dMax:parseFloat(document.getElementById("dMaxInput").value)||500,
+    omegaM:parseFloat(document.getElementById("omegaM").value)||0.31,
+    omegaL:parseFloat(document.getElementById("omegaL").value)||0.69,
+    samplingMode:document.getElementById("samplingMode").value
+  };
+}
+
+function estimateHubbleTimeGyr(h0){
+  if(!isFinite(h0) || h0<=0) return 0;
+  return 9.778*(100/h0);
+}
+
+function sampleDistance(mode,dMax){
+  const u=Math.random();
+  if(mode==="clustered") return dMax*Math.pow(u,1.8);
+  if(mode==="deep") return dMax*Math.pow(u,0.55);
+  return dMax*u;
+}
+
+function setScenarioLabel(inputs){
+  let label="Balanced baseline";
+  if(inputs.h0<69) label="Lower-H0 / CMB-like";
+  if(inputs.h0>72) label="Higher-H0 / distance-ladder-like";
+  document.getElementById("scenarioLabel").textContent=label;
+}
+
+function updateInputLabels(){
+  const i=currentInputs();
+  document.getElementById("h0Val").textContent=i.h0.toFixed(1)+" km/s/Mpc";
+  document.getElementById("nGalVal").textContent=i.nGal+" galaxies";
+  document.getElementById("noiseVal").textContent=i.noise.toFixed(0)+" km/s";
+  document.getElementById("dMaxVal").textContent=i.dMax.toFixed(0)+" Mpc";
+  document.getElementById("omegaMVal").textContent=i.omegaM.toFixed(2);
+  document.getElementById("omegaLVal").textContent=i.omegaL.toFixed(2);
+  const omegaK=1-i.omegaM-i.omegaL;
+  document.getElementById("omegaK").textContent=omegaK.toFixed(3);
+  document.getElementById("ageScale").textContent=estimateHubbleTimeGyr(i.h0).toFixed(2);
+  document.getElementById("simRateVal").textContent=(parseFloat(document.getElementById("simRate").value)||1.2).toFixed(1)+" samples/s";
+  setScenarioLabel(i);
+}
+
+function resizeGraph(){
+  const gcv=document.getElementById("liveGraph");
+  if(!gcv) return;
+  const w=Math.floor(gcv.clientWidth);
+  const h=Math.floor(gcv.clientHeight);
+  if(w<10||h<10) return;
+  const dpr=window.devicePixelRatio||1;
+  gcv.width=Math.floor(w*dpr);
+  gcv.height=Math.floor(h*dpr);
+  const gctx=gcv.getContext("2d");
+  gctx.setTransform(dpr,0,0,dpr,0,0);
+}
+
+function drawLiveGraph(){
+  const gcv=document.getElementById("liveGraph");
+  if(!gcv) return;
+  const gctx=gcv.getContext("2d");
+  const w=gcv.clientWidth, h=gcv.clientHeight;
+  if(w<10||h<10) return;
+  gctx.clearRect(0,0,w,h);
+  gctx.fillStyle="#081733";
+  gctx.fillRect(0,0,w,h);
+  if(graphLog.length<2){
+    gctx.fillStyle="#8fb5d9";
+    gctx.font="12px 'Space Grotesk',sans-serif";
+    gctx.fillText("Run simulation to populate graph",14,22);
+    return;
+  }
+  const metric=document.getElementById("graphMetric").value;
+  const values=graphLog.map(p=>metric==="fitH0"?p.fitH0:(metric==="r2"?p.r2:p.intercept));
+  const t0=graphLog[0].run, t1=graphLog[graphLog.length-1].run;
+  let vMin=Math.min(...values), vMax=Math.max(...values);
+  if(vMin===vMax){vMin-=1;vMax+=1;}
+  const pad=22;
+  gctx.strokeStyle="rgba(143,181,217,.25)";
+  gctx.lineWidth=1;
+  gctx.beginPath();
+  gctx.moveTo(pad,h-pad); gctx.lineTo(w-pad,h-pad);
+  gctx.moveTo(pad,pad); gctx.lineTo(pad,h-pad);
+  gctx.stroke();
+  gctx.beginPath();
+  for(let i=0;i<graphLog.length;i++){
+    const x=pad+((graphLog[i].run-t0)/Math.max(1e-9,t1-t0))*(w-2*pad);
+    const y=h-pad-((values[i]-vMin)/(vMax-vMin))*(h-2*pad);
+    i===0?gctx.moveTo(x,y):gctx.lineTo(x,y);
+  }
+  gctx.strokeStyle="#59d0ff";
+  gctx.lineWidth=1.8;
+  gctx.stroke();
+  gctx.fillStyle="#8fb5d9";
+  gctx.font="11px 'IBM Plex Mono',monospace";
+  gctx.fillText("run: "+t0.toFixed(0)+" to "+t1.toFixed(0),pad,h-6);
+  gctx.fillText("y min: "+vMin.toExponential(2),pad+4,14);
+  gctx.fillText("y max: "+vMax.toExponential(2),pad+4,28);
+}
+
+function updateOutputPanel(){
+  document.getElementById("outEnergy").textContent=isFinite(lastFit.h0)?lastFit.h0.toFixed(3):"--";
+  document.getElementById("outLz").textContent=isFinite(lastFit.intercept)?lastFit.intercept.toFixed(2):"--";
+  document.getElementById("outMeanSpeed").textContent=isFinite(lastFit.r2)?lastFit.r2.toFixed(4):"--";
+  document.getElementById("outSpread").textContent=isFinite(lastFit.hubbleTime)?lastFit.hubbleTime.toFixed(3)+" Gyr":"--";
+  document.getElementById("fitH0Label").textContent=isFinite(lastFit.h0)?lastFit.h0.toFixed(3):"--";
+  document.getElementById("fitBLabel").textContent=isFinite(lastFit.intercept)?lastFit.intercept.toFixed(2):"--";
+}
+
+function generateSample(){
+  const i=currentInputs();
+  const points=[];
+  for(let k=0;k<i.nGal;k++){
+    const d=sampleDistance(i.samplingMode,i.dMax);
+    const model=i.h0*d;
+    const noiseSigma=i.noise*(1+0.0007*d);
+    const noisy=model+randn()*noiseSigma;
+    const z=Math.max(0,noisy/C_KMS);
+    points.push({
+      runId:state.runId,
+      galaxyId:"G"+String(k+1).padStart(3,"0"),
+      distanceMpc:d,
+      modelVelocityKms:model,
+      velocityKms:noisy,
+      residualKms:noisy-model,
+      zApprox:z
+    });
+  }
+  points.sort((a,b)=>a.distanceMpc-b.distanceMpc);
+  const fit=linearFit(points);
+  fit.hubbleTime=estimateHubbleTimeGyr(fit.h0);
+  for(const p of points){
+    p.fitVelocityKms=fit.h0*p.distanceMpc+fit.intercept;
+    p.fitResidualKms=p.velocityKms-p.fitVelocityKms;
+  }
+  currentSample=points;
+  lastFit=fit;
+  document.getElementById("nBodies").textContent=String(points.length);
+  document.getElementById("heaviestInfo").textContent="Slope fit complete";
+  document.getElementById("zoomLevel").textContent="0-"+i.dMax.toFixed(0)+" Mpc";
+  document.getElementById("time").textContent=String(state.runId);
+  updateOutputPanel();
+}
+
+function maybeLog(){
+  if(!state.authenticated) return;
+  if(!document.getElementById("logData").checked) return;
+  const maxR=parseInt(document.getElementById("maxRows").value,10)||5000;
+  if(dataLog.length>=maxR) return;
+  const se=parseFloat(document.getElementById("sampleEvery").value)||1;
+  if((state.runId-lastLogTimeDays)<se) return;
+  lastLogTimeDays=state.runId;
+  const i=currentInputs();
+  for(const p of currentSample){
+    if(dataLog.length>=maxR) break;
+    dataLog.push({
+      sapid:student.sapid||"NA",
+      student_name:student.name||"Guest",
+      run_id:state.runId,
+      galaxy_id:p.galaxyId,
+      distance_mpc:p.distanceMpc.toFixed(4),
+      velocity_kms:p.velocityKms.toFixed(4),
+      model_velocity_kms:p.modelVelocityKms.toFixed(4),
+      residual_kms:p.fitResidualKms.toFixed(4),
+      fit_h0:lastFit.h0.toFixed(6),
+      fit_intercept:lastFit.intercept.toFixed(6),
+      fit_r2:lastFit.r2.toFixed(6),
+      omega_m:i.omegaM.toFixed(3),
+      omega_lambda:i.omegaL.toFixed(3)
+    });
+  }
+}
+
+function draw(){
+  const w=canvas.clientWidth, h=canvas.clientHeight;
+  ctx.clearRect(0,0,w,h);
+  const grad=ctx.createLinearGradient(0,0,0,h);
+  grad.addColorStop(0,"#050d1f"); grad.addColorStop(0.55,"#0b1d3f"); grad.addColorStop(1,"#142c57");
+  ctx.fillStyle=grad; ctx.fillRect(0,0,w,h);
+  for(let i=0;i<120;i++){
+    const sx=(i*97+13)%w, sy=(i*53+7)%h;
+    const a=(0.28+(i%7)/14).toFixed(2);
+    ctx.fillStyle="rgba(220,240,255,"+a+")";
+    ctx.beginPath(); ctx.arc(sx,sy,i%5===0?1.8:1.1,0,Math.PI*2); ctx.fill();
+  }
+  const pad=44;
+  const i=currentInputs();
+  const xMin=0;
+  const xMax=Math.max(50,i.dMax);
+  const vmax=Math.max(200, ...currentSample.map(p=>p.velocityKms), ...currentSample.map(p=>p.fitVelocityKms||0));
+  const yMin=Math.min(0, ...currentSample.map(p=>p.velocityKms), ...currentSample.map(p=>p.fitVelocityKms||0));
+  const yMax=Math.max(100, vmax*1.08);
+
+  ctx.strokeStyle="rgba(143,181,217,.32)";
+  ctx.lineWidth=1;
+  ctx.beginPath();
+  ctx.moveTo(pad,h-pad); ctx.lineTo(w-pad,h-pad);
+  ctx.moveTo(pad,pad); ctx.lineTo(pad,h-pad);
+  ctx.stroke();
+
+  ctx.fillStyle="#8fb5d9";
+  ctx.font="12px 'IBM Plex Mono',monospace";
+  ctx.fillText("Distance d (Mpc)",w/2-45,h-10);
+  ctx.save();
+  ctx.translate(13,h/2+40);
+  ctx.rotate(-Math.PI/2);
+  ctx.fillText("Velocity v (km/s)",0,0);
+  ctx.restore();
+
+  const tx=(x)=>pad+((x-xMin)/(xMax-xMin))*(w-2*pad);
+  const ty=(y)=>h-pad-((y-yMin)/Math.max(1e-9,yMax-yMin))*(h-2*pad);
+
+  if(document.getElementById("showResiduals").checked){
+    ctx.strokeStyle="rgba(255,173,109,.26)";
+    ctx.lineWidth=1;
+    for(const p of currentSample){
+      const x=tx(p.distanceMpc);
+      ctx.beginPath();
+      ctx.moveTo(x,ty(p.velocityKms));
+      ctx.lineTo(x,ty(p.fitVelocityKms));
+      ctx.stroke();
+    }
+  }
+
+  ctx.fillStyle="#59d0ff";
+  for(const p of currentSample){
+    ctx.beginPath();
+    ctx.arc(tx(p.distanceMpc),ty(p.velocityKms),3.1,0,Math.PI*2);
+    ctx.fill();
+  }
+
+  if(document.getElementById("showFitLine").checked && currentSample.length>1){
+    const y0=lastFit.h0*xMin+lastFit.intercept;
+    const y1=lastFit.h0*xMax+lastFit.intercept;
+    ctx.strokeStyle="#63e6a0";
+    ctx.lineWidth=2;
+    ctx.beginPath();
+    ctx.moveTo(tx(xMin),ty(y0));
+    ctx.lineTo(tx(xMax),ty(y1));
+    ctx.stroke();
+  }
+
+  ctx.fillStyle="#e8f2ff";
+  ctx.font="12px 'Space Grotesk',sans-serif";
+  ctx.fillText("Fit: v = "+lastFit.h0.toFixed(3)+" d + "+lastFit.intercept.toFixed(2),pad+8,pad+16);
+  ctx.fillText("R^2 = "+lastFit.r2.toFixed(4)+" | Approx age = "+lastFit.hubbleTime.toFixed(2)+" Gyr",pad+8,pad+34);
+}
+
+let lastFrame=performance.now();
+function loop(now){
+  const elapsed=Math.min((now-lastFrame)/1000,0.2);
+  lastFrame=now;
+  updateInputLabels();
+  if(state.playing){
+    const rate=parseFloat(document.getElementById("simRate").value)||1.2;
+    state.frameAccumulator+=elapsed*rate;
+    if(state.frameAccumulator>=1){
+      state.frameAccumulator=0;
+      singleStep();
+    }
+  }
+  draw();
+  drawLiveGraph();
+  updateDataTab();
+  requestAnimationFrame(loop);
+}
+
+function singleStep(){
+  state.runId+=1;
+  generateSample();
+  maybeGraphPoint(true);
+  maybeLog();
+  draw();
+  drawLiveGraph();
+}
+
+function resetAllToDefaults(){
+  document.getElementById("h0Input").value="67.4";
+  document.getElementById("nGalaxies").value="40";
+  document.getElementById("noiseInput").value="80";
+  document.getElementById("dMaxInput").value="500";
+  document.getElementById("omegaM").value="0.31";
+  document.getElementById("omegaL").value="0.69";
+  document.getElementById("samplingMode").value="uniform";
+  document.getElementById("simRate").value="1.2";
+  document.getElementById("showFitLine").checked=true;
+  document.getElementById("showResiduals").checked=true;
+  document.getElementById("logData").checked=true;
+  document.getElementById("sampleEvery").value="1";
+  document.getElementById("maxRows").value="5000";
+  document.getElementById("graphMetric").value="fitH0";
+  state.playing=true;
+  state.runId=0;
+  state.frameAccumulator=0;
+  document.getElementById("playBtn").textContent="Pause";
+  dataLog=[];
+  graphLog=[];
+  currentSample=[];
+  lastGraphSampleRun=-Infinity;
+  lastLogTimeDays=-Infinity;
+  generateSample();
+  updateDataTab();
+}
+
+let lastPrev=0;
+function updateDataTab(){
+  const now=performance.now();
+  if(now-lastPrev<800) return;
+  lastPrev=now;
+  document.getElementById("logCount").textContent=dataLog.length;
+  document.getElementById("logBodies").textContent=currentSample.length;
+  const ts=dataLog.length>0?(parseFloat(dataLog[dataLog.length-1].run_id)-parseFloat(dataLog[0].run_id)).toFixed(0):"0";
+  document.getElementById("logTimeSpan").textContent=ts;
+  const sv=parseFloat(document.getElementById("sampleEvery").value)||1;
+  document.getElementById("logInterval").textContent="Every "+sv+" run"+(sv!==1?"s":"");
+  const tbody=document.getElementById("previewBody");
+  if(!dataLog.length){
+    tbody.innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px">No data yet.</td></tr>';
+    return;
+  }
+  const prev=dataLog.slice(-20);
+  tbody.innerHTML=prev.map(r=>"<tr><td>"+r.run_id+"</td><td>"+r.galaxy_id+"</td><td>"+r.distance_mpc+"</td><td>"+r.velocity_kms+"</td><td>"+r.model_velocity_kms+"</td><td>"+r.residual_kms+"</td><td>"+r.fit_h0+"</td></tr>").join("");
+}
+
+function dlBlob(content,fname,mime){
+  const blob=new Blob([content],{type:mime});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url; a.download=fname;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+function exportCSV(){
+  if(!state.authenticated){alert("Login required before export.");return;}
+  if(!dataLog.length){alert("No data logged yet.");return;}
+  const h=["sapid","student_name","run_id","galaxy_id","distance_mpc","velocity_kms","model_velocity_kms","residual_kms","fit_h0","fit_intercept","fit_r2","omega_m","omega_lambda"];
+  const rows=dataLog.map(r=>h.map(k=>r[k]).join(","));
+  dlBlob([h.join(","),...rows].join("\n"),"hubble_law_simulation_data.csv","text/csv");
+}
+
+function exportJSON(){
+  if(!state.authenticated){alert("Login required before export.");return;}
+  if(!dataLog.length){alert("No data logged yet.");return;}
+  const i=currentInputs();
+  const meta={
+    module:"Hubble Law Cosmology Simulator",version:"3.0",
+    generated:new Date().toISOString(),
+    input_h0_km_s_mpc:i.h0,
+    omega_m:i.omegaM,
+    omega_lambda:i.omegaL,
+    max_distance_mpc:i.dMax,
+    noise_sigma_km_s:i.noise,
+    sampling_mode:i.samplingMode,
+    data:dataLog
+  };
+  dlBlob(JSON.stringify(meta,null,2),"hubble_law_simulation_data.json","application/json");
+}
+
+function exportPython(){
+  if(!state.authenticated){alert("Login required before export.");return;}
+  const py=`#!/usr/bin/env python3
+"""
+Hubble Law Cosmology Simulator - Analysis Starter Script
+Generated by: Hubble Law Cosmology Simulator v3.0 (AI-assisted module)
+Requirements: pip install pandas matplotlib numpy
+Usage:        python analyse_simulation.py
+"""
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+
+df = pd.read_csv("hubble_law_simulation_data.csv")
+runs = df["run_id"].nunique()
+print(f"Runs: {runs}")
+print(f"Total rows: {len(df)}")
+
+colors = ["#59d0ff", "#63e6a0", "#ffad6d", "#ffd27f"]
+fig, axes = plt.subplots(1, 2, figsize=(14, 6), facecolor="#070d1a")
+
+ax1 = axes[0]
+ax1.set_facecolor("#0b1d3f")
+ax1.set_title("Hubble Scatter and Fit (latest run)", color="white", fontsize=13)
+ax1.set_xlabel("Distance (Mpc)", color="#8fb5d9")
+ax1.set_ylabel("Velocity (km/s)", color="#8fb5d9")
+ax1.tick_params(colors="#8fb5d9")
+for spine in ax1.spines.values(): spine.set_edgecolor("#355b87")
+latest = df[df["run_id"] == df["run_id"].max()].copy()
+latest["d"] = pd.to_numeric(latest["distance_mpc"])
+latest["v"] = pd.to_numeric(latest["velocity_kms"])
+latest["vm"] = pd.to_numeric(latest["model_velocity_kms"])
+ax1.scatter(latest["d"], latest["v"], s=20, color=colors[0], alpha=0.9, label="Observed")
+
+coef = np.polyfit(latest["d"], latest["v"], 1)
+xline = np.linspace(0, latest["d"].max(), 200)
+yline = coef[0] * xline + coef[1]
+ax1.plot(xline, yline, color=colors[1], linewidth=2.0, label=f"Fit: H0={coef[0]:.2f}")
+
+ax1.legend(facecolor="#0b1d3f", labelcolor="white", fontsize=9, loc="upper left")
+ax1.grid(True, alpha=0.15)
+
+ax2 = axes[1]
+ax2.set_facecolor("#0b1d3f")
+ax2.set_title("Fitted H0 Trend by Run", color="white", fontsize=13)
+ax2.set_xlabel("Run", color="#8fb5d9")
+ax2.set_ylabel("Fitted H0 (km/s/Mpc)", color="#8fb5d9")
+ax2.tick_params(colors="#8fb5d9")
+for spine in ax2.spines.values(): spine.set_edgecolor("#355b87")
+trend = df.groupby("run_id", as_index=False)["fit_h0"].mean()
+trend["fit_h0"] = pd.to_numeric(trend["fit_h0"])
+ax2.plot(trend["run_id"], trend["fit_h0"], color=colors[2], linewidth=1.8)
+ax2.scatter(trend["run_id"], trend["fit_h0"], color=colors[2], s=18)
+ax2.grid(True, alpha=0.15)
+
+plt.tight_layout()
+plt.savefig("hubble_law_output.png", dpi=150, bbox_inches="tight", facecolor="#070d1a")
+plt.show()
+print("Plot saved to hubble_law_output.png")
+`;
+  dlBlob(py,"analyse_simulation.py","text/plain");
+}
+
+// Tab switching
+document.querySelectorAll(".tabBar button").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    const tabId=btn.dataset.tab;
+    const target=document.getElementById(tabId);
+    if(!target) return;
+    document.querySelectorAll(".tabBar button").forEach(b=>{
+      b.classList.remove("active");
+      b.setAttribute("aria-selected","false");
+    });
+    document.querySelectorAll(".tabPanel").forEach(p=>p.classList.remove("active"));
+    btn.classList.add("active");
+    btn.setAttribute("aria-selected","true");
+    target.classList.add("active");
+    if(tabId==="tab-sim"){
+      setTimeout(()=>{resize();resizeGraph();drawLiveGraph();},30);
+    }
+  });
+});
+
+// Login
+function setStudent(name,id){
+  student.name=name||"Guest";
+  student.sapid=id||"";
+  const label=student.name+(student.sapid?" - "+student.sapid:"");
+  document.getElementById("studentBadge").textContent="[User] "+label;
+  document.getElementById("footerStudent").textContent=label+" - session active";
+  document.getElementById("studentIdentityLine").textContent="Student: "+student.name+" | SAPID: "+(student.sapid||"NA")+" | Topic: Hubble Law and Cosmology";
+  try{localStorage.setItem("hubble_sn",name);localStorage.setItem("hubble_si",id);}catch(e){}
+}
+function showApp(){
+  document.getElementById("loginOverlay").classList.add("hidden");
+  document.getElementById("appShell").style.visibility="visible";
+}
+document.getElementById("loginBtn").addEventListener("click",()=>{
+  const name=document.getElementById("loginName").value.trim();
+  const sapid=document.getElementById("loginID").value.trim();
+  if(!name){document.getElementById("loginName").focus();return;}
+  if(!sapid){document.getElementById("loginID").focus();return;}
+  state.authenticated=true;
+  setStudent(name,sapid);
+  recordLogin(name,sapid);
+  showApp();
+});
+document.getElementById("loginName").addEventListener("keydown",e=>{if(e.key==="Enter") document.getElementById("loginID").focus();});
+document.getElementById("loginID").addEventListener("keydown",e=>{if(e.key==="Enter") document.getElementById("loginBtn").click();});
+document.getElementById("skipLogin").addEventListener("click",()=>{
+  alert("Guest access is disabled. Please log in with Name and SAPID.");
+});
+document.getElementById("studentBadge").addEventListener("click",()=>{
+  document.getElementById("loginOverlay").classList.remove("hidden");
+});
+try{
+  const sn=localStorage.getItem("hubble_sn"),si=localStorage.getItem("hubble_si");
+  if(sn){document.getElementById("loginName").value=sn||"";document.getElementById("loginID").value=si||"";}
+}catch(e){}
+
+function buildTutorMessage(){
+  const activeBtn=document.querySelector(".tabBar button.active");
+  const activeTabLabel=activeBtn?activeBtn.textContent.replace(/\s+/g," ").trim():"Simulation";
+  const metric=document.getElementById("graphMetric").value;
+  const i=currentInputs();
+  const nGal=currentSample.length;
+  const run=state.runId;
+  const tips=[];
+  tips.push("Topic: Hubble Law and Cosmology");
+  tips.push("Active tab: "+activeTabLabel);
+  tips.push("Input H0: "+i.h0.toFixed(2)+" km/s/Mpc");
+  tips.push("Current galaxies: "+nGal);
+  tips.push("Current run: "+run);
+  tips.push("Graph currently plotting: "+metric+" vs run");
+  tips.push("");
+  if(lastFit.r2<0.9){
+    tips.push("Tutor note: Fit quality is modest. Try reducing noise or increasing galaxy count.");
+    tips.push("Compare how R^2 and fitted H0 respond to your sampling strategy.");
+  }else{
+    tips.push("Tutor note: Fit quality is strong under current settings.");
+    tips.push("Now vary Omega_m and Omega_Lambda to compare fate arguments with the same H0 baseline.");
+  }
+  tips.push("");
+  tips.push("Suggested next actions:");
+  tips.push("1) Run multiple samples at low and high noise.");
+  tips.push("2) Track fitted H0 spread and R^2 in the trend graph.");
+  tips.push("3) Export CSV and include uncertainty discussion in the report.");
+  return tips.join("\n");
+}
+
+function openTutor(){
+  document.getElementById("tutorBody").textContent=buildTutorMessage();
+  document.getElementById("tutorModal").classList.add("show");
+}
+
+function closeTutor(){
+  document.getElementById("tutorModal").classList.remove("show");
+}
+
+// Bindings
+document.getElementById("presetPlanck").addEventListener("click",()=>{
+  document.getElementById("h0Input").value="67.4";
+  document.getElementById("omegaM").value="0.315";
+  document.getElementById("omegaL").value="0.685";
+  document.getElementById("noiseInput").value="65";
+  document.getElementById("samplingMode").value="deep";
+  updateInputLabels();
+  singleStep();
+});
+document.getElementById("presetSH0ES").addEventListener("click",()=>{
+  document.getElementById("h0Input").value="73.0";
+  document.getElementById("omegaM").value="0.28";
+  document.getElementById("omegaL").value="0.72";
+  document.getElementById("noiseInput").value="95";
+  document.getElementById("samplingMode").value="clustered";
+  updateInputLabels();
+  singleStep();
+});
+document.getElementById("presetCustom").addEventListener("click",()=>{
+  document.getElementById("h0Input").value="70.0";
+  document.getElementById("omegaM").value="0.30";
+  document.getElementById("omegaL").value="0.70";
+  document.getElementById("noiseInput").value="80";
+  document.getElementById("samplingMode").value="uniform";
+  updateInputLabels();
+  singleStep();
+});
+document.getElementById("regenNow").addEventListener("click",singleStep);
+document.getElementById("applySettings").addEventListener("click",()=>{
+  updateInputLabels();
+  singleStep();
+});
+document.getElementById("playBtn").addEventListener("click",()=>{
+  state.playing=!state.playing;
+  document.getElementById("playBtn").textContent=state.playing?"Pause":"Run";
+});
+document.getElementById("stepBtn").addEventListener("click",singleStep);
+document.getElementById("resetBtn").addEventListener("click",resetAllToDefaults);
+document.getElementById("resetZoom").addEventListener("click",()=>{
+  document.getElementById("dMaxInput").value="500";
+  updateInputLabels();
+  draw();
+});
+document.getElementById("dlCSV").addEventListener("click",exportCSV);
+document.getElementById("dlJSON").addEventListener("click",exportJSON);
+document.getElementById("dlPython").addEventListener("click",exportPython);
+document.getElementById("clearLogBtn").addEventListener("click",()=>{dataLog=[];lastLogTimeDays=-Infinity;});
+document.getElementById("helpBtn").addEventListener("click",openTutor);
+document.getElementById("closeTutor").addEventListener("click",closeTutor);
+document.getElementById("tutorModal").addEventListener("click",(e)=>{if(e.target.id==="tutorModal") closeTutor();});
+document.getElementById("graphMetric").addEventListener("change",drawLiveGraph);
+document.getElementById("quizForm").addEventListener("submit",submitQuiz);
+document.getElementById("resetQuizBtn").addEventListener("click",resetQuizForm);
+document.getElementById("askQuizBtn").addEventListener("click",generateAndRenderQuiz);
+document.getElementById("newQuizBtn").addEventListener("click",generateAndRenderQuiz);
+document.getElementById("dlLoginCSV").addEventListener("click",exportLoginCSV);
+document.getElementById("dlQuizCSV").addEventListener("click",exportQuizCSV);
+window.addEventListener("resize",resizeGraph);
+
+loadPersistentLogs();
+updateLoginAuditUI();
+updateQuizAttemptUI();
+renderQuizQuestions();
+updateInputLabels();
+singleStep();
+resizeGraph();
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
