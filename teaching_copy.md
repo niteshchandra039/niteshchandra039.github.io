@@ -6,6 +6,7 @@ permalink: /teaching/
 
 <style>
   @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Manrope:wght@400;500;600;700;800&display=swap');
+  
 
   :root {
     --bg: #f6f8fc;
@@ -17,7 +18,7 @@ permalink: /teaching/
     --brand: #10448f;
     --brand-2: #0f766e;
     --accent: #da8f1d;
-    --radius: 14px;
+    --radius: 10px;
     --shadow: 0 10px 25px rgba(15, 39, 73, 0.08);
   }
 
@@ -27,7 +28,7 @@ permalink: /teaching/
     padding: 14px 0 30px;
     font-family: "Manrope", "Segoe UI", sans-serif;
     color: var(--text);
-    font-size: 16px;
+    font-size: 14px;
     line-height: 1.66;
   }
 
@@ -40,7 +41,7 @@ permalink: /teaching/
       radial-gradient(circle at 12% 12%, rgba(16, 68, 143, 0.16), transparent 42%),
       radial-gradient(circle at 88% 78%, rgba(218, 143, 29, 0.22), transparent 38%),
       linear-gradient(140deg, #ffffff, #edf3fb);
-    padding: 28px;
+    padding: 22px;
     box-shadow: var(--shadow);
   }
 
@@ -52,7 +53,7 @@ permalink: /teaching/
     border-radius: 999px;
     border: 1px solid #c4d8f1;
     color: #1f4f8b;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.04em;
     text-transform: uppercase;
@@ -70,11 +71,10 @@ permalink: /teaching/
 
   .hero p {
     margin: 0;
-    max-width: 760px;
+    max-width: 860px;
     color: #344965;
-    font-size: 1.03rem;
+    font-size: 1rem;
   }
-
   .hero-grid {
     margin-top: 18px;
     display: grid;
@@ -85,7 +85,7 @@ permalink: /teaching/
   .hero-card {
     border: 1px solid #d4deec;
     background: var(--surface);
-    border-radius: 12px;
+    border-radius: 10px;
     padding: 14px;
   }
 
@@ -203,7 +203,7 @@ permalink: /teaching/
 
   .section {
     margin-top: 26px;
-    border-radius: 16px;
+    border-radius: 10px;
     border: 1px solid var(--line);
     background: var(--surface);
     padding: 20px;
@@ -386,7 +386,7 @@ permalink: /teaching/
 
   .final-cta {
     margin-top: 24px;
-    border-radius: 16px;
+    border-radius: 10px;
     padding: 24px;
     border: 1px solid #f1d8a9;
     background: linear-gradient(135deg, #fff8ea, #fffdf7);
@@ -438,8 +438,7 @@ permalink: /teaching/
     <span class="brand-kicker"> Teaching & Mentorship
     </span>
     <h1>Teaching, Simulations, and Mentorship by Dr. Nitesh Kumar</h1>
-    <p> Hi there! I'm Dr. Nitesh Kumar an IUCAA visiting associate faculty and astrophysicist with a passion for teaching and mentorship. I teach courses in astrophysics, computational physics, and data science at the undergraduate and graduate levels. I also develop interactive simulations and computational labs to make complex concepts accessible and engaging for students. My teaching philosophy centers around fostering curiosity, critical thinking, and hands-on learning through real-world applications and research-led mentorship.
-    </p>
+    <p> Hi there! I'm Dr. Nitesh Kumar an IUCAA visiting associate faculty and astrophysicist with a passion for teaching and mentorship. I teach courses in astrophysics, computational physics, and data science at the undergraduate and graduate levels. I also develop interactive simulations and computational labs to make complex concepts accessible and engaging for students. My teaching philosophy centers around fostering curiosity, critical thinking, and hands-on learning through real-world applications and research-led mentorship.</p>
 
     <div class="hero-grid">
       <div class="hero-card">
