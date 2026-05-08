@@ -147,6 +147,31 @@ permalink: /teaching/
     margin-top: 40px;
     font-size: 1.05em;
   }
+  .sim-course-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 12px;
+    margin-top: 10px;
+  }
+  .sim-course-box {
+    background: #f8fbff;
+    border: 1px solid #d9e5f2;
+    border-left: 4px solid #2b6cb0;
+    border-radius: 8px;
+    padding: 14px;
+  }
+  .course-pill {
+    display: inline-block;
+    padding: 2px 10px;
+    margin-bottom: 8px;
+    border-radius: 999px;
+    font-size: 0.78em;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    background: #ebf4ff;
+    color: #2b6cb0;
+    border: 1px solid #c3dafe;
+  }
 </style>
 
 <div class="page__content page-wrapper">
@@ -164,44 +189,93 @@ permalink: /teaching/
   <h2 class="section-header">🤖 AI & Interactive Simulations in Teaching</h2>
   <ul class="interactive-list">
     <li class="interactive-card">
-      <span class="card-title">Explore Interactive HTML Simulations</span>
-      <ul class="sub-list">
-        <li>
-          <span class="lecture-title">Lagrangian vs Eulerian Animation</span>
-          <a href="/resources/computational_astrophysics/lag_vs_eul.html" class="btn-link" target="_blank">🌐 Open Simulation</a>
-        </li>
-        <li>
-          <span class="lecture-title">Supernova Shockwave Animation</span>
-          <a href="/resources/computational_astrophysics/supernova_shockwave.html" class="btn-link" target="_blank">🌐 Open Simulation</a>
-        </li>
-        <li>
-          <span class="lecture-title">Supernova Shockwave Animation 1</span>
-          <a href="/resources/computational_astrophysics/shockwave_1.html" class="btn-link" target="_blank">🌐 Open Simulation</a>
-        </li>
-        <li>
-          <span class="lecture-title">PN Juntion Diode</span>
-          <a href="/resources/AI_simulations/pn-diode.html" class="btn-link" target="_blank">🌐 Open Simulation</a>
-        </li>
-        <li>
-          <span class="lecture-title">Hall Effect Animation</span>
-          <a href="/resources/AI_simulations/hall-effect.html" class="btn-link" target="_blank">🌐 Open Simulation</a>
-        </li>
-        <li>
-          <span class="lecture-title">Quantum Hall Effect Animation</span>
-          <a href="/resources/AI_simulations/quantum-hall-effect.html" class="btn-link" target="_blank">🌐 Open Simulation</a>
-        </li>
-        <li>
-          <span class="lecture-title">N-Body Simulation</span>
-          <a href="/resources/AI_simulations/simple_nbody_orbits.html" class="btn-link" target="_blank">🌐 Open Simulation</a>
-        </li>
-        <li>
-          <span class="lecture-title">Motion Gravity Lab</span>
-          <a href="/resources/AI_simulations/motion_gravity_lab.html" class="btn-link" target="_blank">🌐 Open Simulation</a>
-        </li>
+      <span class="card-title">Course-wise AI Simulation Library</span>
+      <p style="margin-bottom: 12px; color: #4a5568; font-size: 0.95em;">
+        Simulations are organized below by course/module for quicker access during lecture and lab sessions.
+      </p>
 
-      </ul>
+      <div class="sim-course-grid">
+        <div class="sim-course-box">
+          <span class="course-pill">PHYS4022P · Fundamentals of Astrophysics</span>
+          <ul class="sub-list" style="margin-top: 8px;">
+            <li>
+              <span class="lecture-title">Simulation Hub (all Unit modules)</span>
+              <a href="/resources/AI_simulations/phys4022p_llm_sim_hub.html" class="btn-link" target="_blank">🌐 Open Hub</a>
+            </li>
+            <li>
+              <span class="lecture-title">Unit 1: N-Body Orbits</span>
+              <a href="/resources/AI_simulations/simple_nbody_orbits.html" class="btn-link" target="_blank">🌐 Lab</a>
+            </li>
+            <li>
+              <span class="lecture-title">Unit 2: Blackbody Radiation</span>
+              <a href="/resources/AI_simulations/blackbody_radiation_ai_lab.html" class="btn-link" target="_blank">🌐 Lab</a>
+              <a href="/resources/AI_simulations/blackbody_radiation_ai_core.html" class="btn-link" target="_blank">🧩 Core</a>
+            </li>
+            <li>
+              <span class="lecture-title">Unit 3: H-R Diagram</span>
+              <a href="/resources/AI_simulations/hr_diagram_socratic_lab.html" class="btn-link" target="_blank">🌐 Lab</a>
+              <a href="/resources/AI_simulations/hr_diagram_socratic_core.html" class="btn-link" target="_blank">🧩 Core</a>
+            </li>
+            <li>
+              <span class="lecture-title">Unit 4: Optical Depth & Dust</span>
+              <a href="/resources/AI_simulations/optical_depth_ai_lab.html" class="btn-link" target="_blank">🌐 Lab</a>
+              <a href="/resources/AI_simulations/optical_depth_ai_core.html" class="btn-link" target="_blank">🧩 Core</a>
+            </li>
+            <li>
+              <span class="lecture-title">Unit 5: Hubble Law & Cosmology</span>
+              <a href="/resources/AI_simulations/hubble_law_debate_lab.html" class="btn-link" target="_blank">🌐 Lab</a>
+              <a href="/resources/AI_simulations/hubble_law_debate_core.html" class="btn-link" target="_blank">🧩 Core</a>
+            </li>
+            <li>
+              <span class="lecture-title">Motion Gravity Lab (Bridge Activity)</span>
+              <a href="/resources/AI_simulations/motion_gravity_lab.html" class="btn-link" target="_blank">🌐 Open</a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="sim-course-box">
+          <span class="course-pill">B.Sc. Physics · Semiconductor / Solid-State Concepts</span>
+          <ul class="sub-list" style="margin-top: 8px;">
+            <li>
+              <span class="lecture-title">PN Junction Diode</span>
+              <a href="/resources/AI_simulations/pn-diode.html" class="btn-link" target="_blank">🌐 Open Simulation</a>
+            </li>
+            <li>
+              <span class="lecture-title">Hall Effect</span>
+              <a href="/resources/AI_simulations/hall-effect.html" class="btn-link" target="_blank">🌐 Open Simulation</a>
+            </li>
+            <li>
+              <span class="lecture-title">Quantum Hall Effect</span>
+              <a href="/resources/AI_simulations/quantum-hall-effect.html" class="btn-link" target="_blank">🌐 Open Simulation</a>
+            </li>
+            <li>
+              <span class="lecture-title">Gravity Module (General Interactive Physics)</span>
+              <a href="/resources/AI_simulations/gravity_module.html" class="btn-link" target="_blank">🌐 Open Module</a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="sim-course-box">
+          <span class="course-pill">Computational Astrophysics (M.Sc.) · Visual Explainers</span>
+          <ul class="sub-list" style="margin-top: 8px;">
+            <li>
+              <span class="lecture-title">Lagrangian vs Eulerian Animation</span>
+              <a href="/resources/computational_astrophysics/lag_vs_eul.html" class="btn-link" target="_blank">🌐 Open Simulation</a>
+            </li>
+            <li>
+              <span class="lecture-title">Supernova Shockwave Animation</span>
+              <a href="/resources/computational_astrophysics/supernova_shockwave.html" class="btn-link" target="_blank">🌐 Open Simulation</a>
+            </li>
+            <li>
+              <span class="lecture-title">Supernova Shockwave Animation 1</span>
+              <a href="/resources/computational_astrophysics/shockwave_1.html" class="btn-link" target="_blank">🌐 Open Simulation</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
       <p style="font-size: 0.85em; color: #718096; margin-top: 10px; margin-bottom: 0;">
-        <em>*These interactive simulations are designed to enhance conceptual understanding using AI and computational techniques.*</em>
+        <em>*These AI-powered and interactive simulations are grouped course-wise to support concept-first teaching and guided lab activities.*</em>
       </p>
     </li>
   </ul>

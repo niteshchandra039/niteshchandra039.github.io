@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -6,14 +6,20 @@
   <meta name="description" content="Optical Depth and Dust Attenuation Simulator - Fundamentals of Astrophysics interactive learning module." />
   <meta name="keywords" content="optical depth, interstellar medium, dust, radiative transfer, astrophysics simulation" />
   <meta name="author" content="Dr. Nitesh Kumar, UPES - Creator and Maintainer" />
-  <!-- LMS: embed as an iframe or SCORM package wrapping this standalone HTML file -->
   <title>Optical Depth Interstellar Medium Simulator | Fundamentals of Astrophysics</title>
 
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(','\\)'], ['$', '$']] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
   <style>
-    /* === Design tokens === */
     :root {
       --bg:      #070d1a;
       --surface: rgba(11,22,48,.88);
@@ -27,763 +33,1143 @@
       --red:     #ff7070;
       --tab-h:   48px;
     }
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    html,body{
-      height:100%;
-      font-family:"Space Grotesk",system-ui,sans-serif;
-      color:var(--text);
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      font-family: "Space Grotesk", system-ui, sans-serif;
+      color: var(--text);
       background:
-        radial-gradient(circle at 12% 18%,rgba(89,208,255,.18),transparent 35%),
-        radial-gradient(circle at 85% 80%,rgba(255,173,109,.15),transparent 34%),
-        linear-gradient(165deg,#030814,#081a36 55%,#0b2246);
-      overflow:hidden;
+        radial-gradient(circle at 12% 18%, rgba(89,208,255,.18), transparent 35%),
+        radial-gradient(circle at 85% 80%, rgba(255,173,109,.15), transparent 34%),
+        linear-gradient(165deg, #030814, #081a36 55%, #0b2246);
+      overflow: hidden;
     }
 
-    /* === Login modal === */
-    #loginOverlay{
-      position:fixed;inset:0;z-index:9999;
-      background:rgba(3,8,20,.92);
-      display:flex;align-items:center;justify-content:center;
-      backdrop-filter:blur(6px);
-    }
-    #loginOverlay.hidden{display:none}
-    .loginBox{
-      background:var(--card);border:1px solid var(--border);
-      border-radius:14px;padding:36px 40px;
-      max-width:420px;width:92%;
-      box-shadow:0 24px 64px rgba(0,0,0,.7);text-align:center;
-    }
-    .loginBox h2{font-size:22px;color:var(--accent);margin-bottom:6px}
-    .loginBox p{font-size:13px;color:var(--muted);margin-bottom:24px}
-    .loginBox label{font-size:13px;color:var(--muted);text-align:left;display:block;margin-bottom:4px}
-    .loginBox input{
-      width:100%;padding:10px 12px;border-radius:8px;
-      border:1px solid #355b87;background:#0a1730;color:#eaf2ff;
-      font-size:14px;margin-bottom:14px;
-    }
-    .loginBox button{
-      width:100%;padding:12px;border-radius:8px;border:0;
-      background:linear-gradient(180deg,#2d9dd6,#1d6fa4);
-      color:#fff;font-weight:700;font-size:15px;cursor:pointer;transition:opacity .2s;
-    }
-    .loginBox button:hover{opacity:.88}
-    .loginBox .skip{margin-top:12px;font-size:12px;color:var(--muted);cursor:pointer}
-    .loginBox .skip:hover{color:var(--accent)}
-    .loginBox .skip.disabled{opacity:.5;cursor:not-allowed}
-    .loginBox .skip.disabled:hover{color:var(--muted)}
-    .loginBox .aiCredit{
-      margin-top:18px;font-size:11px;color:rgba(143,181,217,.6);
-      border-top:1px solid var(--border);padding-top:10px;
+    a { color: var(--accent); }
+
+    #loginOverlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(3,8,20,.92);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(6px);
     }
 
-    /* === App shell === */
-    .app{height:100vh;display:flex;flex-direction:column}
+    #loginOverlay.hidden { display: none; }
 
-    /* === Header === */
-    header{
-      flex-shrink:0;padding:8px 20px;
-      background:rgba(5,12,28,.82);border-bottom:1px solid var(--border);
-      display:flex;align-items:center;justify-content:space-between;
-      backdrop-filter:blur(6px);
-    }
-    header .titleBlock{display:flex;flex-direction:column}
-    header h1{font-size:16px;color:var(--accent);font-weight:700;line-height:1.2}
-    header .subtitle{font-size:11px;color:var(--muted)}
-    #studentIdentityLine{
-      margin-top:2px;font-size:11px;color:var(--text);
-      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-      max-width:74vw;
-    }
-    #studentBadge{
-      background:rgba(89,208,255,.1);border:1px solid var(--border);
-      border-radius:8px;padding:5px 12px;font-size:12px;color:var(--accent);cursor:pointer;
-    }
-    #studentBadge:hover{background:rgba(89,208,255,.2)}
-
-    /* === Tab bar === */
-    .tabBar{
-      flex-shrink:0;display:flex;align-items:stretch;
-      background:rgba(6,14,32,.7);border-bottom:1px solid var(--border);
-      padding:0 16px;gap:4px;overflow-x:auto;
-    }
-    .tabBar button{
-      background:none;border:none;border-bottom:3px solid transparent;
-      color:var(--muted);font-family:inherit;font-size:13px;font-weight:600;
-      padding:0 16px;height:var(--tab-h);cursor:pointer;white-space:nowrap;
-      transition:color .2s,border-color .2s;
-    }
-    .tabBar button:hover{color:var(--accent)}
-    .tabBar button.active{color:var(--accent);border-bottom-color:var(--accent)}
-
-    /* === Tab panels === */
-    .tabContent{flex:1;overflow:hidden;position:relative}
-    .tabPanel{position:absolute;inset:0;display:none;overflow-y:auto;padding:20px}
-    .tabPanel.active{display:flex;flex-direction:column;gap:16px}
-    #tab-sim.active{
-      padding:12px;display:grid;
-      grid-template-columns:330px minmax(0,1fr) 320px;gap:12px;
+    .loginBox {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 36px 40px;
+      max-width: 440px;
+      width: 92%;
+      box-shadow: 0 24px 64px rgba(0,0,0,.7);
+      text-align: center;
     }
 
-    /* === Shared card === */
-    .card{
-      background:var(--card);border:1px solid var(--border);
-      border-radius:12px;padding:18px 22px;backdrop-filter:blur(4px);
-    }
-    .card h2{font-size:16px;font-weight:700;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:8px}
-    .card h2 .icon{font-size:18px}
-    .card h3{font-size:14px;color:var(--accent2);margin:14px 0 6px}
-    .card p,.card li{font-size:13.5px;color:var(--muted);line-height:1.75}
-    .card ul,.card ol{padding-left:20px}
-    .card ul li,.card ol li{margin-bottom:5px}
-    .card em{color:var(--text);font-style:normal;font-family:"IBM Plex Mono",monospace;font-size:12.5px}
-
-    .eqBox{
-      background:rgba(89,208,255,.07);border-left:3px solid var(--accent);
-      border-radius:6px;padding:10px 16px;margin:10px 0;
-      font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--text);line-height:1.8;
-    }
-    .theoryGrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-    @media(max-width:900px){.theoryGrid{grid-template-columns:1fr}}
-
-    /* === Simulation panel === */
-    .simPanel{display:flex;flex-direction:column;gap:8px;overflow-y:auto}
-    .simSection{
-      background:var(--card);border:1px solid var(--border);
-      border-radius:10px;padding:10px 12px;
-    }
-    .simSection .kicker{
-      font-size:11px;color:var(--accent);font-weight:600;
-      text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;
-    }
-    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-    .simSection label{font-size:11.5px;color:var(--muted);display:block;margin-bottom:3px}
-    .simSection input,.simSection select{
-      width:100%;border-radius:6px;border:1px solid #355b87;
-      background:#0a1730;color:#eaf2ff;padding:6px 8px;font-size:12px;
-    }
-    input[type=range]{accent-color:var(--accent)}
-    .row{display:flex;gap:6px;flex-wrap:wrap}
-    .simBtn{
-      border:0;border-radius:7px;padding:7px 11px;
-      background:linear-gradient(180deg,#2d9dd6,#1d6fa4);
-      color:#fff;font-weight:600;cursor:pointer;font-size:12px;
-      font-family:inherit;transition:opacity .15s;
-    }
-    .simBtn:hover{opacity:.85}
-    .simBtn.danger{background:linear-gradient(180deg,#c94040,#8c2a2a)}
-    .mono{
-      font-family:"IBM Plex Mono",monospace;font-size:12px;
-      background:rgba(89,208,255,.1);border-radius:6px;padding:4px 7px;
-    }
-    .checkRow{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
-    .checkRow input[type=checkbox]{accent-color:var(--accent)}
-
-    /* === Canvas === */
-    .simWrap{
-      position:relative;background:#060f22;
-      border-radius:10px;border:1px solid var(--border);
-      overflow:hidden;min-height:400px;
-    }
-    #tau{width:100%;height:100%;display:block;cursor:default}
-    #overlay{
-      position:absolute;right:12px;top:12px;
-      background:rgba(4,10,26,.78);border:1px solid var(--border);
-      border-radius:8px;padding:10px 12px;font-size:12px;color:var(--muted);line-height:1.9;
-    }
-    #overlay button{
-      margin-top:6px;width:100%;padding:3px 6px;font-size:11px;
-      background:rgba(89,208,255,.1);border:1px solid var(--accent);
-      border-radius:4px;color:var(--accent);cursor:pointer;font-family:inherit;
-    }
-    #overlay button:hover{background:rgba(89,208,255,.25)}
-
-    .simInsights{display:flex;flex-direction:column;gap:8px;overflow-y:auto}
-    .graphWrap{
-      background:rgba(6,15,34,.82);border:1px solid var(--border);
-      border-radius:8px;padding:10px;
-    }
-    #liveGraph{width:100%;height:190px;display:block;background:#081733;border-radius:6px}
-    .metricGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-    .metricBox{
-      border:1px solid var(--border);border-radius:7px;padding:8px;
-      background:rgba(89,208,255,.06);
-    }
-    .metricBox .k{font-size:11px;color:var(--muted)}
-    .metricBox .v{font-size:12px;color:var(--text);font-family:"IBM Plex Mono",monospace;margin-top:4px}
-
-    #tutorModal{
-      position:fixed;inset:0;z-index:10001;
-      display:none;align-items:center;justify-content:center;
-      background:rgba(2,8,20,.8);backdrop-filter:blur(4px);
-    }
-    #tutorModal.show{display:flex}
-    .tutorCard{
-      width:min(760px,94vw);max-height:86vh;overflow:auto;
-      background:var(--card);border:1px solid var(--border);border-radius:12px;
-      box-shadow:0 24px 64px rgba(0,0,0,.6);
-    }
-    .tutorHead{
-      display:flex;align-items:center;justify-content:space-between;
-      padding:14px 16px;border-bottom:1px solid var(--border);
-    }
-    .tutorHead h3{font-size:15px;color:var(--accent)}
-    #closeTutor{
-      border:1px solid var(--border);background:rgba(89,208,255,.12);color:var(--accent);
-      border-radius:6px;padding:5px 8px;cursor:pointer;font-size:12px;
-    }
-    #tutorBody{padding:14px 16px;font-size:13px;color:var(--muted);line-height:1.7;white-space:pre-wrap}
-
-    /* === Data Export tab === */
-    .exportGrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-    @media(max-width:800px){.exportGrid{grid-template-columns:1fr}}
-    .statBox{
-      background:rgba(89,208,255,.06);border:1px solid var(--border);
-      border-radius:8px;padding:14px 18px;text-align:center;
-    }
-    .statBox .statVal{font-family:"IBM Plex Mono",monospace;font-size:26px;color:var(--accent);font-weight:600}
-    .statBox .statLabel{font-size:12px;color:var(--muted);margin-top:4px}
-    .dlBtn{
-      display:inline-flex;align-items:center;gap:8px;
-      padding:11px 20px;border-radius:9px;border:0;cursor:pointer;
-      font-family:inherit;font-size:14px;font-weight:600;transition:opacity .15s;
-    }
-    .dlBtn:hover{opacity:.85}
-    .dlBtn.primary  {background:linear-gradient(135deg,#1d9cd4,#115882);color:#fff}
-    .dlBtn.secondary{background:rgba(99,230,160,.15);border:1px solid var(--green);color:var(--green)}
-    .dlBtn.tertiary {background:rgba(255,173,109,.12);border:1px solid var(--accent2);color:var(--accent2)}
-
-    .tableWrap{max-height:260px;overflow-y:auto;border-radius:8px;border:1px solid var(--border);font-size:11px}
-    table{width:100%;border-collapse:collapse}
-    th{background:rgba(89,208,255,.12);color:var(--accent);padding:6px 10px;text-align:left;position:sticky;top:0;font-size:11px}
-    td{padding:5px 10px;border-top:1px solid rgba(255,255,255,.04);color:var(--muted)}
-    tr:hover td{background:rgba(255,255,255,.04)}
-
-    /* === Objectives tab === */
-    .objGrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-    @media(max-width:800px){.objGrid{grid-template-columns:1fr}}
-    .badge{display:inline-block;font-size:11px;font-weight:600;padding:2px 9px;border-radius:20px;margin-bottom:10px}
-    .badge.blue {background:rgba(89,208,255,.15);color:var(--accent);border:1px solid rgba(89,208,255,.3)}
-    .badge.green{background:rgba(99,230,160,.15);color:var(--green);border:1px solid rgba(99,230,160,.3)}
-    .badge.amber{background:rgba(255,173,109,.15);color:var(--accent2);border:1px solid rgba(255,173,109,.3)}
-    .checkList{list-style:none;padding:0}
-    .checkList li{
-      display:flex;gap:10px;align-items:flex-start;
-      font-size:13.5px;color:var(--muted);line-height:1.6;
-      padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);
-    }
-    .checkList li:last-child{border-bottom:none}
-    .checkList li .tick{color:var(--green);font-size:14px;flex-shrink:0}
-
-    /* === Quiz tab === */
-    .quizCard h3{font-size:14px;color:var(--accent2);margin-bottom:8px}
-    .quizQ{padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05)}
-    .quizQ:last-child{border-bottom:none}
-    .quizQ p{font-size:13px;color:var(--text);margin-bottom:8px}
-    .quizQ label{display:block;font-size:12.5px;color:var(--muted);margin:4px 0;cursor:pointer}
-    .quizTools{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;margin:10px 0 12px}
-    .quizTools input{
-      width:100%;border-radius:6px;border:1px solid #355b87;
-      background:#0a1730;color:#eaf2ff;padding:8px 10px;font-size:13px;
-    }
-    .quizHint{font-size:12px;color:var(--muted);margin:6px 0 2px}
-    .quizResult{
-      margin-top:12px;padding:10px;border-radius:8px;
-      background:rgba(89,208,255,.1);border:1px solid var(--border);
-      font-size:13px;color:var(--text);
+    .loginBox h2 {
+      font-size: 22px;
+      color: var(--accent);
+      margin-bottom: 6px;
     }
 
-    /* === References tab === */
-    .refItem{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.05)}
-    .refNum{
-      width:28px;height:28px;border-radius:50%;
-      background:rgba(89,208,255,.12);color:var(--accent);
-      font-size:12px;font-weight:700;flex-shrink:0;
-      display:flex;align-items:center;justify-content:center;
-    }
-    .refBody{flex:1}
-    .refBody .refTitle{font-size:14px;color:var(--text);font-weight:600}
-    .refBody .refMeta{font-size:12px;color:var(--muted);margin-top:3px}
-    .refBody a.refLink{
-      display:inline-flex;align-items:center;gap:5px;
-      font-size:12px;color:var(--accent);margin-top:5px;text-decoration:none;
-      border:1px solid rgba(89,208,255,.3);padding:3px 10px;border-radius:5px;transition:background .2s;
-    }
-    .refBody a.refLink:hover{background:rgba(89,208,255,.12)}
-
-    /* === Footer === */
-    footer{
-      flex-shrink:0;padding:7px 20px;
-      background:rgba(3,8,18,.82);border-top:1px solid var(--border);
-      display:flex;align-items:center;justify-content:space-between;
-      font-size:11px;color:var(--muted);backdrop-filter:blur(4px);
-    }
-    footer .aiTag{
-      background:rgba(255,173,109,.12);border:1px solid rgba(255,173,109,.3);
-      color:var(--accent2);padding:3px 10px;border-radius:20px;font-weight:600;font-size:11px;
+    .loginBox p {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 18px;
+      line-height: 1.6;
     }
 
-    @media(max-width:1280px){
-      #tab-sim.active{grid-template-columns:300px minmax(0,1fr);grid-template-rows:auto auto}
-      .simInsights{grid-column:1 / -1}
+    .loginBox label {
+      font-size: 13px;
+      color: var(--muted);
+      text-align: left;
+      display: block;
+      margin-bottom: 4px;
     }
-    @media(max-width:980px){
-      #tab-sim.active{grid-template-columns:1fr;grid-template-rows:auto auto auto;overflow-y:auto}
-      .simWrap{min-height:380px}
+
+    .loginBox input {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #355b87;
+      background: #0a1730;
+      color: #eaf2ff;
+      font-size: 14px;
+      margin-bottom: 14px;
     }
-    ::-webkit-scrollbar{width:6px;height:6px}
-    ::-webkit-scrollbar-track{background:transparent}
-    ::-webkit-scrollbar-thumb{background:rgba(89,208,255,.25);border-radius:3px}
-    .infoAlert{
-      background:rgba(89,208,255,.08);border:1px solid rgba(89,208,255,.25);
-      border-radius:8px;padding:10px 14px;font-size:13px;color:var(--muted);
+
+    .loginBox button {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 0;
+      background: linear-gradient(180deg, #2d9dd6, #1d6fa4);
+      color: #fff;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      transition: opacity .2s;
     }
-    .infoAlert strong{color:var(--accent)}
+
+    .loginBox button:hover { opacity: .88; }
+
+    .loginBox .skip {
+      margin-top: 12px;
+      font-size: 12px;
+      color: var(--muted);
+      opacity: .6;
+    }
+
+    .loginBox .aiCredit {
+      margin-top: 18px;
+      font-size: 11px;
+      color: rgba(143,181,217,.6);
+      border-top: 1px solid var(--border);
+      padding-top: 10px;
+    }
+
+    .loginStatus {
+      margin-top: 12px;
+      font-size: 12px;
+      color: var(--accent);
+      min-height: 18px;
+    }
+
+    .app {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      flex-shrink: 0;
+      padding: 8px 20px;
+      background: rgba(5,12,28,.82);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      backdrop-filter: blur(6px);
+    }
+
+    header .titleBlock {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    header h1 {
+      font-size: 16px;
+      color: var(--accent);
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    header .subtitle {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    #studentIdentityLine {
+      margin-top: 2px;
+      font-size: 11px;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 74vw;
+    }
+
+    #studentBadge {
+      background: rgba(89,208,255,.1);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 5px 12px;
+      font-size: 12px;
+      color: var(--accent);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    #studentBadge:hover { background: rgba(89,208,255,.2); }
+
+    .tabBar {
+      flex-shrink: 0;
+      display: flex;
+      align-items: stretch;
+      background: rgba(6,14,32,.7);
+      border-bottom: 1px solid var(--border);
+      padding: 0 16px;
+      gap: 4px;
+      overflow-x: auto;
+    }
+
+    .tabBar button {
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 0 16px;
+      height: var(--tab-h);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: color .2s, border-color .2s;
+    }
+
+    .tabBar button:hover { color: var(--accent); }
+    .tabBar button.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+    .tabContent {
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .tabPanel {
+      position: absolute;
+      inset: 0;
+      display: none;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .tabPanel.active {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    #tab-sim.active {
+      padding: 12px;
+      display: grid;
+      grid-template-columns: 330px minmax(0,1fr) 320px;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 22px;
+      backdrop-filter: blur(4px);
+    }
+
+    .card h2 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card h2 .icon { font-size: 18px; }
+    .card h3 { font-size: 14px; color: var(--accent2); margin: 14px 0 6px; }
+    .card p, .card li { font-size: 13.5px; color: var(--muted); line-height: 1.75; }
+    .card ul, .card ol { padding-left: 20px; }
+    .card ul li, .card ol li { margin-bottom: 5px; }
+    .card em {
+      color: var(--text);
+      font-style: normal;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12.5px;
+    }
+
+    .eqBox {
+      background: rgba(89,208,255,.07);
+      border-left: 3px solid var(--accent);
+      border-radius: 6px;
+      padding: 10px 16px;
+      margin: 10px 0;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.8;
+      overflow-x: auto;
+    }
+
+    .theoryGrid,
+    .objGrid,
+    .exportGrid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .simPanel,
+    .simInsights {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      overflow-y: auto;
+      min-width: 0;
+    }
+
+    .simSection {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+    }
+
+    .simSection .kicker {
+      font-size: 11px;
+      color: var(--accent);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin-bottom: 8px;
+    }
+
+    .grid2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .simSection label {
+      font-size: 11.5px;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    .simSection input,
+    .simSection select,
+    textarea,
+    .quizTools input {
+      width: 100%;
+      border-radius: 6px;
+      border: 1px solid #355b87;
+      background: #0a1730;
+      color: #eaf2ff;
+      padding: 7px 8px;
+      font-size: 12px;
+      font-family: inherit;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 110px;
+    }
+
+    input[type=range] { accent-color: var(--accent); }
+
+    .row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .simBtn,
+    .dlBtn {
+      border: 0;
+      border-radius: 7px;
+      padding: 8px 11px;
+      background: linear-gradient(180deg,#2d9dd6,#1d6fa4);
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 12px;
+      font-family: inherit;
+      transition: opacity .15s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .simBtn:hover,
+    .dlBtn:hover { opacity: .85; }
+
+    .simBtn.danger { background: linear-gradient(180deg,#c94040,#8c2a2a); }
+    .dlBtn.secondary { background: rgba(99,230,160,.15); border: 1px solid var(--green); color: var(--green); }
+    .dlBtn.tertiary { background: rgba(255,173,109,.12); border: 1px solid var(--accent2); color: var(--accent2); }
+
+    .mono {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 12px;
+      background: rgba(89,208,255,.1);
+      border-radius: 6px;
+      padding: 4px 7px;
+      color: var(--text);
+    }
+
+    .checkRow {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .simWrap {
+      position: relative;
+      background: #060f22;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      min-height: 400px;
+    }
+
+    #tau {
+      width: 100%;
+      height: 100%;
+      min-height: 560px;
+      display: block;
+      cursor: default;
+      background: #081423;
+    }
+
+    #overlay {
+      position: absolute;
+      right: 12px;
+      top: 12px;
+      background: rgba(4,10,26,.78);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.9;
+      min-width: 190px;
+    }
+
+    #overlay button {
+      margin-top: 6px;
+      width: 100%;
+      padding: 5px 6px;
+      font-size: 11px;
+      background: rgba(89,208,255,.1);
+      border: 1px solid var(--accent);
+      border-radius: 4px;
+      color: var(--accent);
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    #overlay button:hover { background: rgba(89,208,255,.25); }
+
+    .graphWrap {
+      background: rgba(6,15,34,.82);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+    }
+
+    #liveGraph {
+      width: 100%;
+      height: 190px;
+      display: block;
+      background: #081733;
+      border-radius: 6px;
+    }
+
+    .metricGrid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .metricBox {
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 8px;
+      background: rgba(89,208,255,.06);
+    }
+
+    .metricBox .k {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .metricBox .v {
+      font-size: 12px;
+      color: var(--text);
+      font-family: "IBM Plex Mono", monospace;
+      margin-top: 4px;
+    }
+
+    .tableWrap {
+      max-height: 280px;
+      overflow-y: auto;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      font-size: 11px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      background: rgba(89,208,255,.12);
+      color: var(--accent);
+      padding: 6px 10px;
+      text-align: left;
+      position: sticky;
+      top: 0;
+      font-size: 11px;
+    }
+
+    td {
+      padding: 5px 10px;
+      border-top: 1px solid rgba(255,255,255,.04);
+      color: var(--muted);
+    }
+
+    tr:hover td { background: rgba(255,255,255,.04); }
+
+    .statBox {
+      background: rgba(89,208,255,.06);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 18px;
+      text-align: center;
+    }
+
+    .statBox .statVal {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 26px;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .statBox .statLabel {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 9px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+    }
+
+    .badge.blue  { background: rgba(89,208,255,.15); color: var(--accent); border: 1px solid rgba(89,208,255,.3); }
+    .badge.green { background: rgba(99,230,160,.15); color: var(--green); border: 1px solid rgba(99,230,160,.3); }
+    .badge.amber { background: rgba(255,173,109,.15); color: var(--accent2); border: 1px solid rgba(255,173,109,.3); }
+
+    .checkList {
+      list-style: none;
+      padding: 0;
+    }
+
+    .checkList li {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      font-size: 13.5px;
+      color: var(--muted);
+      line-height: 1.6;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255,255,255,.04);
+    }
+
+    .checkList li:last-child { border-bottom: none; }
+    .checkList li .tick { color: var(--green); font-size: 14px; flex-shrink: 0; }
+
+    .quizCard h3 {
+      font-size: 14px;
+      color: var(--accent2);
+      margin-bottom: 8px;
+    }
+
+    .quizQ {
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+    }
+
+    .quizQ:last-child { border-bottom: none; }
+
+    .quizQ p {
+      font-size: 13px;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .quizQ label {
+      display: block;
+      font-size: 12.5px;
+      color: var(--muted);
+      margin: 4px 0;
+      cursor: pointer;
+    }
+
+    .quizTools {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 8px;
+      align-items: center;
+      margin: 10px 0 12px;
+    }
+
+    .quizHint {
+      font-size: 12px;
+      color: var(--muted);
+      margin: 6px 0 2px;
+    }
+
+    .quizResult,
+    .infoAlert {
+      margin-top: 12px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      background: rgba(89,208,255,.1);
+      border: 1px solid var(--border);
+      font-size: 13px;
+      color: var(--text);
+    }
+
+    .infoAlert strong { color: var(--accent); }
+
+    .refItem {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+    }
+
+    .refNum {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(89,208,255,.12);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 700;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .refBody { flex: 1; }
+
+    .refBody .refTitle {
+      font-size: 14px;
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .refBody .refMeta {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    .refBody a.refLink {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      color: var(--accent);
+      margin-top: 5px;
+      text-decoration: none;
+      border: 1px solid rgba(89,208,255,.3);
+      padding: 3px 10px;
+      border-radius: 5px;
+      transition: background .2s;
+    }
+
+    .refBody a.refLink:hover { background: rgba(89,208,255,.12); }
+
+    footer {
+      flex-shrink: 0;
+      padding: 7px 20px;
+      background: rgba(3,8,18,.82);
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      font-size: 11px;
+      color: var(--muted);
+      backdrop-filter: blur(4px);
+    }
+
+    footer .aiTag {
+      background: rgba(255,173,109,.12);
+      border: 1px solid rgba(255,173,109,.3);
+      color: var(--accent2);
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 11px;
+    }
+
+    #tutorModal {
+      position: fixed;
+      inset: 0;
+      z-index: 10001;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(2,8,20,.8);
+      backdrop-filter: blur(4px);
+    }
+
+    #tutorModal.show { display: flex; }
+
+    .tutorCard {
+      width: min(760px, 94vw);
+      max-height: 86vh;
+      overflow: auto;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 24px 64px rgba(0,0,0,.6);
+    }
+
+    .tutorHead {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tutorHead h3 { font-size: 15px; color: var(--accent); }
+
+    #closeTutor {
+      border: 1px solid var(--border);
+      background: rgba(89,208,255,.12);
+      color: var(--accent);
+      border-radius: 6px;
+      padding: 5px 8px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    #tutorBody {
+      padding: 14px 16px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.7;
+      white-space: pre-wrap;
+    }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(89,208,255,.25); border-radius: 3px; }
+
+    @media (max-width: 1280px) {
+      #tab-sim.active {
+        grid-template-columns: 300px minmax(0,1fr);
+        grid-template-rows: auto auto;
+      }
+      .simInsights { grid-column: 1 / -1; }
+    }
+
+    @media (max-width: 980px) {
+      #tab-sim.active {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+        overflow-y: auto;
+      }
+      .simWrap { min-height: 380px; }
+    }
+
+    @media (max-width: 900px) {
+      .theoryGrid,
+      .objGrid,
+      .exportGrid,
+      .grid2,
+      .metricGrid {
+        grid-template-columns: 1fr;
+      }
+      .quizTools { grid-template-columns: 1fr; }
+      #tau { min-height: 420px; }
+    }
   </style>
 </head>
 <body>
-
-<!-- LOGIN MODAL -->
 <div id="loginOverlay">
   <div class="loginBox">
-    <h2>&#x269B; Optical Depth Interstellar Medium Simulator</h2>
-    <p>Computational Astrophysics &middot; Interactive Learning Module<br>Please enter your details to continue.</p>
+    <h2>Optical Depth Interstellar Medium Simulator</h2>
+    <p>Computational Astrophysics · Interactive Learning Module<br>Please enter your details to continue.</p>
     <label for="loginName">Full Name</label>
     <input id="loginName" type="text" placeholder="e.g. Priya Sharma" autocomplete="name" />
-    <label for="loginID">Student / Roll Number</label>
+    <label for="loginID">Student / SAPID</label>
     <input id="loginID" type="text" placeholder="e.g. 2023PHY042" autocomplete="off" />
-    <button id="loginBtn">Enter Simulator &#x2192;</button>
-    <div class="skip disabled" id="skipLogin">Guest mode disabled (student login required)</div>
+    <button id="loginBtn" type="button">Enter Simulator</button>
+    <div class="skip" id="skipLogin">Guest mode disabled (student login required)</div>
+    <div class="loginStatus" id="loginStatus">Enter Name and SAPID to continue.</div>
     <div class="aiCredit">Creator and Maintainer: Dr. Nitesh Kumar, UPES</div>
   </div>
 </div>
 
-<!-- APP SHELL -->
 <div class="app" id="appShell" style="visibility:hidden">
-
   <header>
     <div class="titleBlock">
       <h1>Optical Depth Interstellar Medium Simulator</h1>
-      <span class="subtitle">Fundamentals of Astrophysics (PHYS4022P) &middot; Unit 4: Interstellar Space &middot; Uniform Simulation Architecture</span>
-      <span id="studentIdentityLine">Student: Guest | SAPID: NA | Topic: Optical Depth and Interstellar Dust</span>
+      <span class="subtitle">Fundamentals of Astrophysics (PHYS4022P) · Unit 4: Interstellar Space · Uniform Simulation Architecture</span>
+      <span id="studentIdentityLine">Student: -- | SAPID: -- | Topic: Optical Depth and Interstellar Dust</span>
     </div>
-    <div id="studentBadge" title="Click to switch user">&#x1F464; Guest</div>
+    <div id="studentBadge" title="Click to re-open login overlay">Not logged in</div>
   </header>
 
   <nav class="tabBar" role="tablist" aria-label="Module tabs">
-    <button class="active" data-tab="tab-theory" role="tab">&#x1F4D6; Theory</button>
-    <button data-tab="tab-sim"    role="tab">&#x1F52D; Simulation</button>
-    <button data-tab="tab-data"   role="tab">&#x1F4CA; Data &amp; Export</button>
-    <button data-tab="tab-obj"    role="tab">&#x1F3AF; Objectives</button>
-    <button data-tab="tab-quiz"   role="tab">&#x1F9E0; Quiz</button>
-    <button data-tab="tab-refs"   role="tab">&#x1F4DA; References</button>
+    <button class="active" data-tab="tab-theory" role="tab" aria-selected="true" type="button">Theory</button>
+    <button data-tab="tab-sim" role="tab" aria-selected="false" type="button">Simulation</button>
+    <button data-tab="tab-data" role="tab" aria-selected="false" type="button">Data &amp; Export</button>
+    <button data-tab="tab-obj" role="tab" aria-selected="false" type="button">Objectives</button>
+    <button data-tab="tab-quiz" role="tab" aria-selected="false" type="button">Quiz</button>
+    <button data-tab="tab-refs" role="tab" aria-selected="false" type="button">References</button>
   </nav>
 
   <div class="tabContent">
-
-    <!-- THEORY TAB -->
     <section id="tab-theory" class="tabPanel active" role="tabpanel">
-
       <div class="card">
-        <h2><span class="icon">&#x1F30C;</span>Optical Depth and Interstellar Dust</h2>
-        <p>This page uses the exact same architecture as the primary simulator (login, theory, formulas, simulation, data export, objectives, quiz, references) for course-wide uniformity. For the dedicated Unit 4: Interstellar Space topic engine, open: <a class="refLink" href="optical_depth_ai_core.html" target="_blank" rel="noopener">Optical Depth Interstellar Medium Simulator Core Module</a>.</p>
+        <h2><span class="icon">Theory</span>Optical Depth and Interstellar Dust</h2>
+        <p>This module uses the same login, tab, simulation, data, quiz, and reference architecture as the first simulator for course-wide uniformity. The present engine is fully optical-depth specific and models attenuation in dusty interstellar media.</p>
       </div>
 
       <div class="theoryGrid">
         <div class="card">
-          <h2><span class="icon">&#x2696;&#xFE0F;</span>Radiative Transfer Basics</h2><p>Optical depth quantifies attenuation through absorbing/scattering media:</p>
-<div class="eqBox">dI_\u03bd/ds = -\alpha_\u03bd I_\u03bd + j_\u03bd</div>
-<div class="eqBox">\tau_\u03bd = \int \alpha_\u03bd ds, &nbsp; I_\u03bd = I_{\u03bd,0} e^{-\tau_\u03bd} \; (j_\u03bd=0)</div>
-<p>For increasing optical depth, transmission decreases exponentially.</p>
-<h3>Extinction</h3>
-<div class="eqBox">A_\u03bb = 1.086\,\tau_\u03bb</div>
-<p>Magnitude attenuation directly links to optical depth.</p>
+          <h2><span class="icon">Basics</span>Radiative Transfer Basics</h2>
+          <p>Optical depth quantifies attenuation through absorbing or scattering media.</p>
+          <div class="eqBox">\( \frac{dI_\lambda}{ds} = -\alpha_\lambda I_\lambda + j_\lambda \)</div>
+          <div class="eqBox">\( \tau_\lambda = \int \alpha_\lambda\, ds \)</div>
+          <div class="eqBox">\( I_\lambda = I_{\lambda,0} e^{-\tau_\lambda} \quad (j_\lambda = 0) \)</div>
+          <p>As optical depth increases, transmitted intensity decreases exponentially.</p>
+          <h3>Extinction in Magnitudes</h3>
+          <div class="eqBox">\( A_\lambda = 1.086\,\tau_\lambda \)</div>
         </div>
 
         <div class="card">
-          <h2><span class="icon">&#x1F522;</span>Interstellar Medium Components</h2><h3>H II Regions and Molecular Clouds</h3>
-<p>Ionized and molecular phases produce distinct emission/absorption signatures and thermal conditions.</p>
-<h3>Dust and Reddening</h3>
-<div class="eqBox">\tau_\u03bb \propto \lambda^{-\beta}</div>
-<p>Shorter wavelengths are generally extinguished more strongly, producing reddening.</p>
-<h3>Jeans Criterion (context)</h3>
-<div class="eqBox">M_J \propto T^{3/2}\rho^{-1/2}</div>
-<p>Links cloud thermodynamics to gravitational collapse propensity.</p>
+          <h2><span class="icon">Dust</span>Dust-Law Parameterization</h2>
+          <p>Dust extinction is wavelength dependent and generally stronger at shorter wavelengths.</p>
+          <div class="eqBox">\( \kappa_\lambda = \kappa_0 \left(\frac{\lambda}{550\ \mathrm{nm}}\right)^{-\beta} \)</div>
+          <div class="eqBox">\( \tau_\lambda = N\,\kappa_0 \left(\frac{\lambda}{550\ \mathrm{nm}}\right)^{-\beta} L \)</div>
+          <p>Here \(N\) is a dust-column scale factor, \( \kappa_0 \) is the opacity normalization, \( \beta \) controls the slope of the dust law, and \(L\) is a path-length scale.</p>
         </div>
       </div>
 
       <div class="theoryGrid">
         <div class="card">
-          <h2><span class="icon">&#x1F9EE;</span>Diffusion and Transfer Diagnostics</h2><h3>Optically Thin vs Thick Regimes</h3>
-<div class="eqBox">\tau \ll 1: \text{thin}, \quad \tau \gg 1: \text{thick}</div>
-<p>Observed spectra differ strongly between these limits.</p>
-<h3>Effective Attenuation Models</h3>
-<p>Parameterized dust laws allow rapid simulation, but should be validated against observed extinction curves.</p>
-<h3>Research Summaries with LLMs</h3>
-<p>Use model outputs to structure short, evidence-based summaries of recent cloud/dust studies.</p>
+          <h2><span class="icon">Transmission</span>Transmission and Absorption</h2>
+          <div class="eqBox">\( T_\lambda = e^{-\tau_\lambda} \)</div>
+          <div class="eqBox">\( A_\lambda = 1 - T_\lambda \)</div>
+          <div class="eqBox">\( \tau \ll 1 \Rightarrow \text{optically thin}, \quad \tau \gg 1 \Rightarrow \text{optically thick} \)</div>
+          <p>These limits determine whether radiation escapes almost freely or is strongly suppressed.</p>
         </div>
 
         <div class="card">
-          <h2><span class="icon">&#x1FA90;</span>Formula Sheet and Physical Constants</h2><div class="eqBox">Use SI units unless stated. Constants and relations shown above are preloaded for lab work.</div><p>Switch to the Simulation tab to explore the same relationships numerically under this unit topic.</p>
+          <h2><span class="icon">Context</span>Astrophysical Context</h2>
+          <p>Optical depth is central to dust lanes, molecular clouds, circumstellar shells, and embedded star-forming regions.</p>
+          <div class="eqBox">\( \tau_\lambda \propto \lambda^{-\beta} \)</div>
+          <p>Because blue light is often attenuated more than red light, dusty objects appear reddened. This connects directly to extinction curves and observed stellar colors.</p>
         </div>
       </div>
-
-      <div class="card">
-        <h2><span class="icon">&#x1F50D;</span>Unit 4 Guided Scenarios</h2><div class="theoryGrid" style="margin-top:0"><div><h3>Wavelength Sweep</h3><p>Hold medium properties fixed and inspect how attenuation varies from blue to infrared bands.</p><h3>Density Contrast</h3><p>Increase column density to observe transition from optically thin to thick behavior.</p></div><div><h3>Dust Law Sensitivity</h3><p>Change exponent beta and examine reddening implications in synthetic observations.</p><h3>Transfer Interpretation</h3><p>Build short explanations connecting $\tau_\lambda$ trends to physical ISM structure.</p></div></div></div>
-      </div>
-
     </section>
 
-    <!-- SIMULATION TAB -->
     <section id="tab-sim" class="tabPanel" role="tabpanel">
-
       <aside class="simPanel">
+        <div class="simSection">
+          <div class="kicker">Presets</div>
+          <div class="row">
+            <button class="simBtn" id="presetDiffuse" type="button">Diffuse ISM</button>
+            <button class="simBtn" id="presetCloud" type="button">Dust Cloud</button>
+            <button class="simBtn" id="presetDense" type="button">Dense Core</button>
+          </div>
+        </div>
 
         <div class="simSection">
           <div class="kicker">Optical Depth Controls</div>
-          <label>Dust column density scale (N)</label>
-          <input id="N" type="range" min="0.1" max="8" step="0.1" value="2" />
-
-          <label style="margin-top:8px">Opacity normalization (kappa_0)</label>
-          <input id="k0" type="range" min="0.05" max="2.5" step="0.05" value="0.6" />
-
-          <label style="margin-top:8px">Wavelength exponent beta</label>
-          <input id="beta" type="range" min="0.5" max="2.5" step="0.1" value="1.4" />
-
-          <label style="margin-top:8px">Path length scale</label>
-          <input id="L" type="range" min="0.5" max="5" step="0.1" value="1" />
-
-          <div class="row" style="margin-top:10px">
-            <button class="simBtn" id="reset">Reset</button>
-            <button class="simBtn" id="summarize">Generate AI Summary</button>
+          <div class="grid2">
+            <div>
+              <label for="N">Dust column density scale \(N\)</label>
+              <input id="N" type="range" min="0.1" max="8" step="0.1" value="2" />
+              <div class="mono" id="nValMono">2.00</div>
+            </div>
+            <div>
+              <label for="k0">Opacity normalization \( \kappa_0 \)</label>
+              <input id="k0" type="range" min="0.05" max="2.5" step="0.05" value="0.6" />
+              <div class="mono" id="k0ValMono">0.60</div>
+            </div>
+            <div>
+              <label for="beta">Wavelength exponent \( \beta \)</label>
+              <input id="beta" type="range" min="0.5" max="2.5" step="0.1" value="1.4" />
+              <div class="mono" id="betaValMono">1.40</div>
+            </div>
+            <div>
+              <label for="L">Path length scale \(L\)</label>
+              <input id="L" type="range" min="0.5" max="5" step="0.1" value="1.0" />
+              <div class="mono" id="LValMono">1.00</div>
+            </div>
+            <div>
+              <label for="refLam">Reference wavelength (nm)</label>
+              <input id="refLam" type="range" min="350" max="1000" step="5" value="550" />
+              <div class="mono" id="refLamValMono">550 nm</div>
+            </div>
+            <div>
+              <label for="graphMetric">Live graph metric</label>
+              <select id="graphMetric">
+                <option value="tauRef">tau ref</option>
+                <option value="transRef">T ref</option>
+                <option value="meanTau">Mean tau</option>
+                <option value="meanTrans">Mean transmission</option>
+              </select>
+            </div>
           </div>
 
-          <div class="mono" id="stats" style="margin-top:8px">tau(550nm)= -, T(550nm)= -</div>
-          <textarea id="summary" placeholder="AI-ready interpretation will appear here." style="margin-top:8px"></textarea>
+          <div class="row" style="margin-top:10px">
+            <label class="checkRow"><input id="showTransmission" type="checkbox" checked /> Show transmission curve</label>
+            <label class="checkRow"><input id="showRefLine" type="checkbox" checked /> Show reference wavelength</label>
+            <label class="checkRow"><input id="logData" type="checkbox" checked /> Log data</label>
+          </div>
+
+          <div class="row" style="margin-top:10px">
+            <button class="simBtn" id="playBtn" type="button">Pause Sweep</button>
+            <button class="simBtn" id="stepBtn" type="button">Step +0.2 N</button>
+            <button class="simBtn danger" id="resetBtn" type="button">Reset</button>
+            <button class="simBtn" id="helpBtn" type="button">Help</button>
+          </div>
         </div>
 
+        <div class="simSection">
+          <div class="kicker">Sweep Settings</div>
+          <label for="sweepRate">Sweep rate in \(N\) per second</label>
+          <input id="sweepRate" type="range" min="0" max="2" step="0.05" value="0.25" />
+          <div class="mono" id="sweepRateVal">0.25 N/s</div>
+
+          <label for="lamMin" style="margin-top:8px">Wavelength minimum (nm)</label>
+          <input id="lamMin" type="number" min="300" max="900" step="10" value="350" />
+
+          <label for="lamMax" style="margin-top:8px">Wavelength maximum (nm)</label>
+          <input id="lamMax" type="number" min="500" max="1400" step="10" value="1000" />
+        </div>
+
+        <div class="simSection">
+          <div class="kicker">AI Summary</div>
+          <textarea id="summary" placeholder="AI-ready interpretation will appear here."></textarea>
+          <div class="row" style="margin-top:8px">
+            <button class="simBtn" id="summarizeBtn" type="button">Generate AI Summary</button>
+          </div>
+        </div>
       </aside>
 
       <div class="simWrap">
         <canvas id="tau" title="Optical depth and transmission curves"></canvas>
         <div id="overlay">
-          <div>tau(550nm): <span id="tau550">--</span></div>
-          <div>T(550nm): <span id="t550">--</span></div>
-          <div>N: <span id="nVal">--</span></div>
-          <div>beta: <span id="betaVal">--</span></div>
+          <div>Mode: <span id="modeTxt">Optical Depth Curves</span></div>
+          <div>Runtime: <span id="runtimeTxt">0.00</span> s</div>
+          <div>Range: <span id="rangeTxt">350-1000 nm</span></div>
+          <div>Ref λ: <span id="refLamOverlay">550 nm</span></div>
+          <div>tau ref: <span id="tau550">--</span></div>
+          <div>T ref: <span id="t550">--</span></div>
+          <button id="resetZoom" type="button">Reset View</button>
         </div>
       </div>
 
       <aside class="simInsights">
         <div class="simSection">
-          <div class="kicker">Output values</div>
+          <div class="kicker">Output Values</div>
           <div class="metricGrid">
-            <div class="metricBox"><div class="k">Total energy (J)</div><div class="v" id="outEnergy">--</div></div>
-            <div class="metricBox"><div class="k">Angular momentum Lz</div><div class="v" id="outLz">--</div></div>
-            <div class="metricBox"><div class="k">Mean speed (m/s)</div><div class="v" id="outMeanSpeed">--</div></div>
-            <div class="metricBox"><div class="k">Radial spread (AU)</div><div class="v" id="outSpread">--</div></div>
+            <div class="metricBox"><div class="k">tau ref</div><div class="v" id="outTauRef">--</div></div>
+            <div class="metricBox"><div class="k">T ref</div><div class="v" id="outTransRef">--</div></div>
+            <div class="metricBox"><div class="k">Mean tau</div><div class="v" id="outMeanTau">--</div></div>
+            <div class="metricBox"><div class="k">Mean transmission</div><div class="v" id="outMeanTrans">--</div></div>
           </div>
         </div>
 
         <div class="simSection">
-          <div class="kicker">Output graph (Y vs X)</div>
-          <label>Y-axis metric</label>
-          <select id="graphMetric">
-            <option value="energy">Total energy</option>
-            <option value="lz">Angular momentum Lz</option>
-            <option value="speed">Mean speed</option>
-          </select>
-          <div class="graphWrap" style="margin-top:8px">
-            <canvas id="liveGraph" title="Realtime graph: selected Y metric vs simulation time"></canvas>
+          <div class="kicker">Output Graph</div>
+          <div class="graphWrap">
+            <canvas id="liveGraph" title="Realtime graph"></canvas>
           </div>
-          <div class="mono" style="margin-top:8px">X-axis: simulation time (days) | Y-axis: selected metric</div>
+          <div class="mono" style="margin-top:8px" id="graphInfo">X-axis: runtime (s) | Y-axis: selected metric</div>
+        </div>
+
+        <div class="simSection">
+          <div class="kicker">Quick Diagnostics</div>
+          <div class="mono" id="stats">tau(550nm)= --, T(550nm)= --</div>
         </div>
       </aside>
-
     </section>
 
-    <!-- DATA & EXPORT TAB -->
     <section id="tab-data" class="tabPanel" role="tabpanel">
-
       <div class="infoAlert">
-        <strong>How data logging works:</strong> When the <em>Log data</em> checkbox is enabled in the
-        Simulation tab, the simulator records body positions and velocities at configurable intervals.
-        Download the data in standard formats for analysis in Python, MATLAB, or Excel.
+        <strong>How data logging works:</strong> when <em>Log data</em> is enabled in the Simulation tab, the module records runtime and current optical-depth parameters at the selected sampling interval.
       </div>
 
       <div class="exportGrid">
         <div class="statBox"><div class="statVal" id="logCount">0</div><div class="statLabel">Recorded rows</div></div>
-        <div class="statBox"><div class="statVal" id="logBodies">0</div><div class="statLabel">Bodies tracked</div></div>
-        <div class="statBox"><div class="statVal" id="logTimeSpan">0.0</div><div class="statLabel">Time span (days)</div></div>
-        <div class="statBox"><div class="statVal" id="logInterval">Every 1 day</div><div class="statLabel">Sampling interval</div></div>
+        <div class="statBox"><div class="statVal" id="logBodies">550 nm</div><div class="statLabel">Reference wavelength</div></div>
+        <div class="statBox"><div class="statVal" id="logTimeSpan">0.0 s</div><div class="statLabel">Runtime span</div></div>
+        <div class="statBox"><div class="statVal" id="logInterval">Every 0.2 N</div><div class="statLabel">Sampling interval</div></div>
       </div>
 
       <div class="card">
-        <h2><span class="icon">&#x2699;&#xFE0F;</span>Logging Settings</h2>
-        <div style="display:flex;gap:24px;flex-wrap:wrap;align-items:center">
-          <div>
-            <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px">Sample every N simulation days</label>
-            <input id="sampleEvery" type="number" value="1" min="0.1" step="0.1"
-              style="width:140px;border-radius:6px;border:1px solid #355b87;background:#0a1730;color:#eaf2ff;padding:7px 10px;font-size:13px" />
-          </div>
-          <div>
-            <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px">Max rows (memory cap)</label>
-            <input id="maxRows" type="number" value="5000" min="100" max="50000" step="100"
-              style="width:140px;border-radius:6px;border:1px solid #355b87;background:#0a1730;color:#eaf2ff;padding:7px 10px;font-size:13px" />
-          </div>
-          <button class="simBtn danger" id="clearLogBtn" style="align-self:flex-end">&#x1F5D1; Clear Log</button>
-        </div>
-      </div>
-
-      <div class="card">
-        <h2><span class="icon">&#x1F4BE;</span>Download Simulation Data</h2>
+        <h2><span class="icon">Data</span>Download Simulation Data</h2>
         <div class="row" style="gap:12px;margin-bottom:14px">
-          <button class="dlBtn primary"   id="dlCSV">&#x2B07; Download CSV</button>
-          <button class="dlBtn secondary" id="dlJSON">&#x2B07; Download JSON</button>
-          <button class="dlBtn tertiary"  id="dlPython">&#x2B07; Python Starter Script</button>
+          <button class="dlBtn" id="dlCSV" type="button">Download CSV</button>
+          <button class="dlBtn secondary" id="dlJSON" type="button">Download JSON</button>
+          <button class="dlBtn tertiary" id="dlPython" type="button">Python Starter Script</button>
+          <button class="simBtn danger" id="clearLogBtn" type="button">Clear Log</button>
         </div>
-        <p style="font-size:12.5px;color:var(--muted)">
-          CSV columns: <em>sapid, student_name, time_days, body_name, x_AU, y_AU, vx_ms, vy_ms, mass_kg, energy_j, lz_kgm2s</em>.
-          JSON includes full metadata (integrator, G scale, body names).
-          The Python script uses matplotlib to reproduce a core simulation plot from the exported data.
-        </p>
+        <p>CSV columns: <em>sapid, student_name, runtime_s, N, k0, beta, L, ref_lambda_nm, tau_ref, trans_ref, mean_tau, mean_transmission</em>.</p>
       </div>
 
       <div class="card">
-        <h2><span class="icon">&#x1F4CB;</span>Live Data Preview (last 20 rows)</h2>
-        <div class="tableWrap">
-          <table id="previewTable">
-            <thead><tr><th>Time (days)</th><th>Body</th><th>x (AU)</th><th>y (AU)</th><th>vx (m/s)</th><th>vy (m/s)</th><th>Mass (kg)</th></tr></thead>
-            <tbody id="previewBody">
-              <tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px">No data yet &mdash; run the simulation with "Log data" checked.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="card">
-        <h2><span class="icon">&#x1F512;</span>Student Login Audit</h2>
-        <div class="row" style="margin-bottom:10px;align-items:center;justify-content:space-between">
-          <div class="mono">Total recorded logins: <span id="loginLogCount">0</span></div>
-          <button class="dlBtn primary" id="dlLoginCSV" type="button">&#x2B07; Download Login Logs CSV</button>
-        </div>
+        <h2><span class="icon">Preview</span>Live Data Preview (last 20 rows)</h2>
         <div class="tableWrap">
           <table>
-            <thead><tr><th>Timestamp (ISO)</th><th>Name</th><th>SAPID</th></tr></thead>
-            <tbody id="loginLogBody">
-              <tr><td colspan="3" style="text-align:center;color:var(--muted);padding:20px">No login records yet.</td></tr>
+            <thead>
+              <tr>
+                <th>Runtime (s)</th>
+                <th>N</th>
+                <th>k0</th>
+                <th>beta</th>
+                <th>L</th>
+                <th>Ref λ (nm)</th>
+                <th>tau ref</th>
+                <th>T ref</th>
+                <th>Mean tau</th>
+                <th>Mean T</th>
+              </tr>
+            </thead>
+            <tbody id="previewBody">
+              <tr><td colspan="10" style="text-align:center;color:var(--muted);padding:20px">No data yet — run the simulation with log data checked.</td></tr>
             </tbody>
           </table>
         </div>
       </div>
 
-    </section>
-
-    <!-- OBJECTIVES TAB -->
-    <section id="tab-obj" class="tabPanel" role="tabpanel">
-
-      <div class="card">
-        <h2><span class="icon">&#x1F3AF;</span>Module: Interstellar Space</h2>
-        <p>
-          This interactive module targets Unit 4 of PHYS4022P. Students model attenuation and radiative transfer through interstellar media and connect outputs to observational diagnostics.
-        </p>
-      </div>
-
-      <div class="objGrid">
+      <div class="exportGrid">
         <div class="card">
-          <h2><span class="icon">&#x1F4CC;</span>Learning Objectives</h2>
-          <span class="badge blue">After completing this module, students will be able to:</span>
-          <ul class="checkList">
-            <li><span class="tick">&#x2713;</span>Define optical depth and apply Beer-Lambert attenuation in astrophysical media.</li>
-            <li><span class="tick">&#x2713;</span>Explain dust-driven wavelength-dependent extinction and reddening.</li>
-            <li><span class="tick">&#x2713;</span>Distinguish optically thin and optically thick transfer regimes.</li>
-            <li><span class="tick">&#x2713;</span>Relate ISM phases to characteristic absorption/emission behavior.</li>
-            <li><span class="tick">&#x2713;</span>Use simplified Jeans and diffusion concepts for cloud interpretation.</li>
-            <li><span class="tick">&#x2713;</span>Generate LLM-ready summaries grounded in simulation evidence.</li>
-            <li><span class="tick">&#x2713;</span>Export simulation outputs for reproducible transfer analysis.</li>
-          </ul>
+          <h2><span class="icon">Audit</span>Student Login Audit</h2>
+          <div class="row" style="margin-bottom:10px;align-items:center;justify-content:space-between">
+            <div class="mono">Total recorded logins: <span id="loginLogCount">0</span></div>
+            <button class="dlBtn" id="dlLoginCSV" type="button">Download Login Logs CSV</button>
+          </div>
+          <div class="tableWrap">
+            <table>
+              <thead><tr><th>Timestamp (ISO)</th><th>Name</th><th>SAPID</th></tr></thead>
+              <tbody id="loginLogBody">
+                <tr><td colspan="3" style="text-align:center;color:var(--muted);padding:20px">No login records yet.</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <div class="card">
-          <h2><span class="icon">&#x1F4E6;</span>Deliverables</h2>
-          <span class="badge green">Students are expected to submit:</span>
-          <ol class="checkList">
-            <li><span class="tick">1.</span><strong style="color:var(--text)">Lab Report (PDF)</strong> &mdash; Plots showing transmission/optical-depth trends across wavelength.</li>
-            <li><span class="tick">2.</span><strong style="color:var(--text)">Exported Data File</strong> &mdash; Exported data for at least two density/opacity scenarios.</li>
-            <li><span class="tick">3.</span><strong style="color:var(--text)">Python analysis script</strong> &mdash; Python script reproducing attenuation and extinction curves.</li>
-            <li><span class="tick">4.</span><strong style="color:var(--text)">Comparison table</strong> &mdash; Comparison table of tau and transmission at selected wavelengths.</li>
-            <li><span class="tick">5.</span><strong style="color:var(--text)">Bonus investigation</strong> &mdash; Short summary connecting simulation behavior to ISM observations.</li>
-          </ol>
-        </div>
-      </div>
-
-      <div class="objGrid">
-        <div class="card">
-          <h2><span class="icon">&#x1F4C5;</span>Suggested Lab Workflow</h2>
-          <span class="badge amber">Step-by-step guide</span>
-          <ol class="checkList">
-            <li><span class="tick">1.</span>Review transfer equations and identify model assumptions.</li>
-            <li><span class="tick">2.</span>Run baseline attenuation and log key wavelength points.</li>
-            <li><span class="tick">3.</span>Increase column density and compare regime changes.</li>
-            <li><span class="tick">4.</span>Modify dust-law slope and analyze reddening sensitivity.</li>
-            <li><span class="tick">5.</span>Interpret optical-thin/thick behavior with evidence.</li>
-            <li><span class="tick">6.</span>Export parameter sweeps for external plotting.</li>
-            <li><span class="tick">7.</span>Reproduce outputs in Python with annotations.</li>
-            <li><span class="tick">8.</span>Use AI summary prompt to write a concise ISM interpretation.</li>
-          </ol>
-        </div>
-
-        <div class="card">
-          <h2><span class="icon">&#x1F4D0;</span>Assessment Criteria</h2>
-          <ul class="checkList">
-            <li><span class="tick">&#x25C8;</span><strong style="color:var(--text)">Understanding (30%)</strong> &mdash; Equation-level understanding of radiative transfer.</li>
-            <li><span class="tick">&#x25C8;</span><strong style="color:var(--text)">Simulation (25%)</strong> &mdash; Quality of parameter studies and physical consistency.</li>
-            <li><span class="tick">&#x25C8;</span><strong style="color:var(--text)">Data Analysis (25%)</strong> &mdash; Data export quality and reproducibility.</li>
-            <li><span class="tick">&#x25C8;</span><strong style="color:var(--text)">Method comparison (15%)</strong> &mdash; Strength of wavelength-dependent interpretation.</li>
-            <li><span class="tick">&#x25C8;</span><strong style="color:var(--text)">Bonus (5%)</strong> &mdash; Quality of AI-assisted scientific summarization.</li>
-          </ul>
-          <div class="infoAlert" style="margin-top:12px">
-            <strong>LMS Note:</strong> Submit PDF, exported data, and analysis script under Lab 4 &mdash; Interstellar Space.
+          <h2><span class="icon">Quiz</span>Quiz Attempt Log</h2>
+          <div class="row" style="margin-bottom:10px;align-items:center;justify-content:space-between">
+            <div class="mono">Attempts: <span id="quizAttemptCount">0</span></div>
+            <button class="dlBtn secondary" id="dlQuizCSV" type="button">Download Quiz Attempts CSV</button>
+          </div>
+          <div class="tableWrap">
+            <table>
+              <thead><tr><th>Timestamp (ISO)</th><th>Name</th><th>SAPID</th><th>Score</th></tr></thead>
+              <tbody id="quizAttemptBody">
+                <tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px">No quiz attempts yet.</td></tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
-
     </section>
 
-    <!-- QUIZ TAB -->
+    <section id="tab-obj" class="tabPanel" role="tabpanel">
+      <div class="card">
+        <h2><span class="icon">Objectives</span>Module: Interstellar Space</h2>
+        <p>This module targets Unit 4 of PHYS4022P. Students model wavelength-dependent attenuation through interstellar dust and connect simulated outputs to observational interpretation.</p>
+      </div>
+
+      <div class="objGrid">
+        <div class="card">
+          <h2><span class="icon">Goals</span>Learning Objectives</h2>
+          <span class="badge blue">After completing this module, students will be able to:</span>
+          <ul class="checkList">
+            <li><span class="tick">✓</span>Define optical depth and apply exponential attenuation in astrophysical media.</li>
+            <li><span class="tick">✓</span>Explain wavelength-dependent extinction and reddening by interstellar dust.</li>
+            <li><span class="tick">✓</span>Distinguish optically thin and optically thick regimes.</li>
+            <li><span class="tick">✓</span>Relate dust-law parameters to observed changes in transmission curves.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h2><span class="icon">Work</span>Deliverables</h2>
+          <span class="badge green">Students are expected to submit:</span>
+          <ol class="checkList">
+            <li><span class="tick">1.</span><strong style="color:var(--text)">Lab report</strong> — attenuation and transmission trends across wavelength.</li>
+            <li><span class="tick">2.</span><strong style="color:var(--text)">Exported data file</strong> — at least two physically distinct dust scenarios.</li>
+            <li><span class="tick">3.</span><strong style="color:var(--text)">Python analysis script</strong> — reproducing key curves.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
     <section id="tab-quiz" class="tabPanel" role="tabpanel">
-
       <div class="card quizCard">
-        <h2><span class="icon">&#x1F9E0;</span>Concept Check Quiz</h2>
-        <p>This quiz is interactive and generates a new question set whenever a student asks for one.</p>
-
+        <h2><span class="icon">Quiz</span>Concept Check Quiz</h2>
+        <p>This quiz generates a new adaptive question set whenever a student asks for one.</p>
         <form id="quizForm">
           <div class="quizTools">
             <input id="quizPrompt" type="text" placeholder="Ask for topic focus (e.g. attenuation, reddening, optical depth)" />
             <button class="simBtn" id="askQuizBtn" type="button">Ask New Quiz</button>
             <button class="simBtn" id="newQuizBtn" type="button">Regenerate</button>
           </div>
-          <div class="quizHint">Adaptive mode: after high scores, the next generated set becomes more challenging.</div>
-
+          <div class="quizHint">Adaptive mode: after higher scores, the next generated set becomes more challenging.</div>
           <div id="quizQuestionsWrap"></div>
-
           <div class="row" style="margin-top:12px">
             <button class="simBtn" id="submitQuizBtn" type="submit">Submit Quiz</button>
             <button class="simBtn danger" id="resetQuizBtn" type="button">Reset Quiz</button>
           </div>
         </form>
-
         <div class="quizResult" id="quizResult">No attempts yet.</div>
       </div>
-
-      <div class="card">
-        <h2><span class="icon">&#x1F4DD;</span>Quiz Attempt Log</h2>
-        <div class="row" style="margin-bottom:10px;align-items:center;justify-content:space-between">
-          <div class="mono">Attempts: <span id="quizAttemptCount">0</span></div>
-          <button class="dlBtn secondary" id="dlQuizCSV" type="button">&#x2B07; Download Quiz Attempts CSV</button>
-        </div>
-        <div class="tableWrap">
-          <table>
-            <thead><tr><th>Timestamp (ISO)</th><th>Name</th><th>SAPID</th><th>Score</th></tr></thead>
-            <tbody id="quizAttemptBody">
-              <tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px">No quiz attempts yet.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
     </section>
 
-    <!-- REFERENCES TAB -->
     <section id="tab-refs" class="tabPanel" role="tabpanel">
-
       <div class="card">
-        <h2><span class="icon">&#x1F4DA;</span>Bibliography &amp; Further Reading</h2>
-        <p style="margin-bottom:16px">References used to ensure scientific accuracy of this module. Open-access links are provided where available.</p>
-
+        <h2><span class="icon">Refs</span>Bibliography and Further Reading</h2>
         <div class="refItem">
           <div class="refNum">1</div>
           <div class="refBody">
-            <div class="refTitle">Draine, B. T. &mdash; <em>Physics of the Interstellar and Intergalactic Medium</em></div>
-            <div class="refMeta">Princeton University Press, 2011. Comprehensive treatment of ISM microphysics, dust, and transfer.</div>
-            <a class="refLink" href="https://press.princeton.edu/books/hardcover/9780691122144/physics-of-the-interstellar-and-intergalactic-medium" target="_blank" rel="noopener">&#x2197; Source link</a>
+            <div class="refTitle">Draine, B. T. — Physics of the Interstellar and Intergalactic Medium</div>
+            <div class="refMeta">Princeton University Press, 2011. Comprehensive treatment of ISM microphysics, dust, and radiative transfer.</div>
           </div>
         </div>
-
         <div class="refItem">
           <div class="refNum">2</div>
           <div class="refBody">
-            <div class="refTitle">Spitzer, L. &mdash; <em>Physical Processes in the Interstellar Medium</em></div>
-            <div class="refMeta">Wiley, 1978. Classic resource on gas, dust, and interstellar heating/cooling processes.</div>
+            <div class="refTitle">Cardelli, Clayton, Mathis (1989)</div>
+            <div class="refMeta">Standard extinction-curve parameterization.</div>
           </div>
         </div>
-
-        <div class="refItem">
-          <div class="refNum">3</div>
-          <div class="refBody">
-            <div class="refTitle">Osterbrock, D. E. &amp; Ferland, G. J. &mdash; <em>Astrophysics of Gaseous Nebulae and Active Galactic Nuclei</em></div>
-            <div class="refMeta">University Science Books, 2nd ed. Practical diagnostics for emission and absorption in ionized regions.</div>
-          </div>
-        </div>
-
-        <div class="refItem">
-          <div class="refNum">4</div>
-          <div class="refBody">
-            <div class="refTitle">Cardelli, Clayton, Mathis (1989) &mdash; <em>The Relationship Between Infrared, Optical, and Ultraviolet Extinction</em></div>
-            <div class="refMeta"><em>Astrophysical Journal</em>, 345, 245-256. Widely used extinction-curve parameterization.</div>
-            <a class="refLink" href="https://ui.adsabs.harvard.edu/abs/1989ApJ...345..245C/abstract" target="_blank" rel="noopener">&#x2197; Source link</a>
-          </div>
-        </div>
-
-        <div class="refItem">
-          <div class="refNum">5</div>
-          <div class="refBody">
-            <div class="refTitle">Bohlin, R. C., Savage, B. D., Drake, J. F. (1978)</div>
-            <div class="refMeta">Empirical relation between hydrogen column density and reddening, useful for optical-depth scaling checks.</div>
-            <a class="refLink" href="https://ui.adsabs.harvard.edu/abs/1978ApJ...224..132B/abstract" target="_blank" rel="noopener">&#x2197; Source link</a>
-          </div>
-        </div>
-
-        <div class="refItem">
-          <div class="refNum">6</div>
-          <div class="refBody">
-            <div class="refTitle">Lequeux, J. &mdash; <em>The Interstellar Medium</em></div>
-            <div class="refMeta">Springer, 2005. Overview text on dust, molecular clouds, and radiative transfer in galactic environments.</div>
-            <a class="refLink" href="https://link.springer.com/book/10.1007/b138107" target="_blank" rel="noopener">&#x2197; Source link</a>
-          </div>
-        </div>
-
-        <div class="refItem">
-          <div class="refNum">7</div>
-          <div class="refBody">
-            <div class="refTitle">NIST/IAU Constants and Units References</div>
-            <div class="refMeta">Useful constants and conversion standards for reproducible attenuation and optical-depth calculations.</div>
-            <a class="refLink" href="https://physics.nist.gov/cuu/Constants/" target="_blank" rel="noopener">&#x2197; Source link</a>
-          </div>
-        </div>
-
       </div>
-
-      <div class="card">
-        <h2><span class="icon">&#x1F6E0;</span>Software &amp; Tools Used</h2>
-        <ul class="checkList">
-          <li><span class="tick">&#x25B8;</span><strong style="color:var(--text)">HTML5 Canvas API</strong> &mdash; Interactive attenuation modeling and optical-depth transfer visualization.</li>
-          <li><span class="tick">&#x25B8;</span><strong style="color:var(--text)">Vanilla JavaScript (ES2020)</strong> &mdash; Simulation engine and UI logic. No external runtime dependencies.</li>
-          <li><span class="tick">&#x25B8;</span><strong style="color:var(--text)">Google Fonts (CDN)</strong> &mdash; Space Grotesk, IBM Plex Mono (falls back to system fonts offline).</li>
-          <li><span class="tick">&#x25B8;</span><strong style="color:var(--text)">Project Leadership</strong> &mdash; Created and maintained by Dr. Nitesh Kumar, UPES.</li>
-        </ul>
-      </div>
-
     </section>
-
-  </div><!-- tabContent -->
+  </div>
 
   <footer>
-    <span>Optical Depth Interstellar Medium Simulator &middot; Fundamentals of Astrophysics (PHYS4022P) &middot; v3.0</span>
+    <span>Optical Depth Interstellar Medium Simulator · Fundamentals of Astrophysics (PHYS4022P) · v4.0</span>
     <span class="aiTag">Creator and Maintainer: Dr. Nitesh Kumar, UPES</span>
-    <span id="footerStudent">Guest session</span>
+    <span id="footerStudent">No active session</span>
   </footer>
-
-</div><!-- .app -->
+</div>
 
 <div id="tutorModal" role="dialog" aria-modal="true" aria-label="AI tutor guidance">
   <div class="tutorCard">
@@ -798,971 +1184,743 @@
 <script>
 "use strict";
 
-const G_SI   = 6.67430e-11;
-const AU     = 1.495978707e11;
-const MSUN   = 1.98847e30;
-const MEARTH = 5.9722e24;
-const MJUP   = 1.89813e27;
-const DAY    = 86400;
+const state = {
+  authenticated: false,
+  playing: true,
+  runtime: 0,
+  activeTab: "tab-theory"
+};
 
-class Body {
-  constructor(name,m,r,v,c){
-    this.name=name; this.m=m;
-    this.r={...r}; this.v={...v};
-    this.c=c; this.trail=[];
-  }
-}
+const student = { name: "", sapid: "" };
 
-class Sim {
-  constructor(){ this.b=[]; this.G=G_SI; this.soft=1e8; }
-  clear(){ this.b=[]; }
-  add(body){ this.b.push(body); }
-  _forcesFromR(R){
-    const n=this.b.length;
-    const F=Array.from({length:n},()=>({x:0,y:0,z:0}));
-    for(let i=0;i<n;i++){
-      for(let j=i+1;j<n;j++){
-        const dx=R[j].x-R[i].x, dy=R[j].y-R[i].y, dz=(R[j].z||0)-(R[i].z||0);
-        const r2=dx*dx+dy*dy+dz*dz+this.soft*this.soft;
-        const r=Math.sqrt(r2);
-        const f=this.G*this.b[i].m*this.b[j].m/r2;
-        const fx=f*dx/r, fy=f*dy/r, fz=f*dz/r;
-        F[i].x+=fx; F[i].y+=fy; F[i].z+=fz;
-        F[j].x-=fx; F[j].y-=fy; F[j].z-=fz;
-      }
-    }
-    return F;
-  }
-  _forces(){ return this._forcesFromR(this.b.map(b=>b.r)); }
-  step(dt,method){
-    if(!this.b.length) return;
-    if(method==="Euler"){
-      const F=this._forces();
-      for(let i=0;i<this.b.length;i++){
-        const b=this.b[i];
-        const ax=F[i].x/b.m, ay=F[i].y/b.m, az=(F[i].z||0)/b.m;
-        b.v.x+=ax*dt; b.v.y+=ay*dt; b.v.z=(b.v.z||0)+az*dt;
-        b.r.x+=b.v.x*dt; b.r.y+=b.v.y*dt; b.r.z=(b.r.z||0)+(b.v.z||0)*dt;
-      }
-      return;
-    }
-    if(method==="VelocityVerlet"){
-      const F0=this._forces();
-      const a0=F0.map((f,i)=>({x:f.x/this.b[i].m,y:f.y/this.b[i].m,z:(f.z||0)/this.b[i].m}));
-      for(let i=0;i<this.b.length;i++){
-        const b=this.b[i];
-        b.r.x+=b.v.x*dt+0.5*a0[i].x*dt*dt;
-        b.r.y+=b.v.y*dt+0.5*a0[i].y*dt*dt;
-        b.r.z=(b.r.z||0)+(b.v.z||0)*dt+0.5*(a0[i].z||0)*dt*dt;
-      }
-      const F1=this._forces();
-      const a1=F1.map((f,i)=>({x:f.x/this.b[i].m,y:f.y/this.b[i].m,z:(f.z||0)/this.b[i].m}));
-      for(let i=0;i<this.b.length;i++){
-        const b=this.b[i];
-        b.v.x+=0.5*(a0[i].x+a1[i].x)*dt;
-        b.v.y+=0.5*(a0[i].y+a1[i].y)*dt;
-        b.v.z=(b.v.z||0)+0.5*((a0[i].z||0)+(a1[i].z||0))*dt;
-      }
-      return;
-    }
-    if(method==="RK4"){
-      const n=this.b.length;
-      const y0=[];
-      for(let i=0;i<n;i++){
-        const b=this.b[i];
-        y0.push(b.r.x,b.r.y,b.r.z||0,b.v.x,b.v.y,b.v.z||0);
-      }
-      const deriv=(y)=>{
-        const d=new Array(6*n).fill(0);
-        const R=[];
-        for(let i=0;i<n;i++){
-          R.push({x:y[6*i],y:y[6*i+1],z:y[6*i+2]});
-          d[6*i]=y[6*i+3]; d[6*i+1]=y[6*i+4]; d[6*i+2]=y[6*i+5];
-        }
-        const F=this._forcesFromR(R);
-        for(let i=0;i<n;i++){
-          d[6*i+3]=F[i].x/this.b[i].m;
-          d[6*i+4]=F[i].y/this.b[i].m;
-          d[6*i+5]=(F[i].z||0)/this.b[i].m;
-        }
-        return d;
-      };
-      const k1=deriv(y0);
-      const y1=y0.map((v,i)=>v+0.5*dt*k1[i]);
-      const k2=deriv(y1);
-      const y2=y0.map((v,i)=>v+0.5*dt*k2[i]);
-      const k3=deriv(y2);
-      const y3=y0.map((v,i)=>v+dt*k3[i]);
-      const k4=deriv(y3);
-      const yn=y0.map((v,i)=>v+(dt/6)*(k1[i]+2*k2[i]+2*k3[i]+k4[i]));
-      for(let i=0;i<n;i++){
-        const b=this.b[i];
-        b.r.x=yn[6*i]; b.r.y=yn[6*i+1]; b.r.z=yn[6*i+2];
-        b.v.x=yn[6*i+3]; b.v.y=yn[6*i+4]; b.v.z=yn[6*i+5];
-      }
-    }
-  }
-  kinetic(){
-    return this.b.reduce((s,b)=>{
-      const v2=b.v.x*b.v.x+b.v.y*b.v.y+(b.v.z||0)*(b.v.z||0);
-      return s+0.5*b.m*v2;
-    },0);
-  }
-  potential(){
-    let U=0;
-    for(let i=0;i<this.b.length;i++){
-      for(let j=i+1;j<this.b.length;j++){
-        const dx=this.b[i].r.x-this.b[j].r.x;
-        const dy=this.b[i].r.y-this.b[j].r.y;
-        const dz=(this.b[i].r.z||0)-(this.b[j].r.z||0);
-        const r=Math.sqrt(dx*dx+dy*dy+dz*dz+this.soft*this.soft);
-        U+=-this.G*this.b[i].m*this.b[j].m/r;
-      }
-    }
-    return U;
-  }
-  Lz(){
-    return this.b.reduce((s,b)=>s+b.m*(b.r.x*b.v.y-b.r.y*b.v.x),0);
-  }
-}
+const STORAGE_KEYS = {
+  loginAudit: "optical_depth_login_audit_v4",
+  quizAttempts: "optical_depth_quiz_attempts_v4",
+  savedName: "optical_depth_saved_name_v4",
+  savedSapid: "optical_depth_saved_sapid_v4"
+};
 
-const cv=document.getElementById("tau"),ctx=cv.getContext("2d");
-function resize(){const dpr=window.devicePixelRatio||1;cv.width=Math.floor(cv.clientWidth*dpr);cv.height=Math.floor(cv.clientHeight*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);}
-function tauLam(lam,N,k0,beta,L){return N*k0*Math.pow(lam/550,-beta)*L;}
-function draw(){
-  const N=parseFloat(document.getElementById("N").value),k0=parseFloat(document.getElementById("k0").value),beta=parseFloat(document.getElementById("beta").value),L=parseFloat(document.getElementById("L").value);
-  const w=cv.clientWidth,h=cv.clientHeight;ctx.clearRect(0,0,w,h);ctx.fillStyle="#0a1529";ctx.fillRect(0,0,w,h);
-  const x0=54,y0=h-36,pw=w-78,ph=h-60;
-  ctx.strokeStyle="rgba(158,190,221,.27)";ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x0,y0-ph);ctx.lineTo(x0+pw,y0-ph);ctx.stroke();
-  const vals=[];let tmax=0;
-  for(let i=0;i<380;i++){
-    const lam=350 + i*(650/379);
-    const t=tauLam(lam,N,k0,beta,L);
-    vals.push({lam,t,trans:Math.exp(-t)});
-    if(t>tmax)tmax=t;
-  }
-  tmax=Math.max(0.8,tmax*1.08);
-  ctx.beginPath();
-  vals.forEach((p,i)=>{const x=x0+(p.lam-350)/650*pw,y=y0-(p.t/tmax)*ph;i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
-  ctx.strokeStyle="#5bc8ff";ctx.lineWidth=2;ctx.stroke();
-  ctx.beginPath();
-  vals.forEach((p,i)=>{const x=x0+(p.lam-350)/650*pw,y=y0-(p.trans)*ph;i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
-  ctx.strokeStyle="#ffd77a";ctx.lineWidth=1.8;ctx.stroke();
-  ctx.fillStyle="#9ebedd";ctx.font="12px Segoe UI";
-  ctx.fillText("Wavelength (nm)",x0+pw-100,y0+22);
-  ctx.fillText("Blue: tau(lambda), Yellow: Transmission",x0+8,y0-ph+16);
-  ctx.fillText("350",x0-8,y0+16);ctx.fillText("1000",x0+pw-18,y0+16);
-  const t550=tauLam(550,N,k0,beta,L),tr550=Math.exp(-t550);
-  document.getElementById("stats").textContent="tau(550nm)="+t550.toFixed(3)+", T(550nm)="+tr550.toFixed(3)+" | N="+N.toFixed(2)+", k0="+k0.toFixed(2)+", beta="+beta.toFixed(2)+", L="+L.toFixed(2);
-  // Update overlay
-  document.getElementById("tau550").textContent=t550.toFixed(3);
-  document.getElementById("t550").textContent=tr550.toFixed(3);
-  document.getElementById("nVal").textContent=N.toFixed(2);
-  document.getElementById("betaVal").textContent=beta.toFixed(2);
-}
-function summary(){
-  const N=parseFloat(document.getElementById("N").value),k0=parseFloat(document.getElementById("k0").value),beta=parseFloat(document.getElementById("beta").value),L=parseFloat(document.getElementById("L").value);
-  const t550=tauLam(550,N,k0,beta,L),tr550=Math.exp(-t550);
-  const txt=[
-    "Interpret this interstellar attenuation setup:",
-    "N="+N.toFixed(2)+", kappa0="+k0.toFixed(2)+", beta="+beta.toFixed(2)+", path="+L.toFixed(2)+".",
-    "At 550 nm, tau="+t550.toFixed(3)+" so transmission exp(-tau)="+tr550.toFixed(3)+".",
-    "Tasks for LLM:",
-    "1) Explain in plain language why shorter wavelengths are attenuated more strongly when beta > 0.",
-    "2) Connect this to reddening and observed stellar colors.",
-    "3) Provide a short NumPy script to reproduce tau(lambda) and transmission(lambda)."
-  ].join("\n");
-  document.getElementById("summary").value=txt;
-}
-["N","k0","beta","L"].forEach(id=>document.getElementById(id).addEventListener("input",draw));
-document.getElementById("reset").addEventListener("click",()=>{document.getElementById("N").value="2";document.getElementById("k0").value="0.6";document.getElementById("beta").value="1.4";document.getElementById("L").value="1";draw();summary();});
-document.getElementById("summarize").addEventListener("click",summary);
-window.addEventListener("resize",()=>{resize();draw();});
-resize();draw();summary();
-const student = { name:"Guest", sapid:"" };
-
-let dataLog=[], lastLogTimeDays=-Infinity;
-let graphLog=[];
-let lastMetrics={energy:0,lz:0,meanSpeed:0,radialSpread:0};
-let loginAudit=[];
-let quizAttempts=[];
-let currentQuizQuestions=[];
-let lastGraphSampleDays=-Infinity;
-
-const QUESTION_BANK=[
-  {id:"q01",difficulty:"easy",tags:["tau"],q:"If optical depth tau increases, direct transmission usually:",options:["Increases","Decreases exponentially","Stays unchanged"],answer:1},
-  {id:"q02",difficulty:"easy",tags:["extinction"],q:"A_lambda is commonly related to optical depth by:",options:["A_lambda = 1.086 tau_lambda","A_lambda = tau_lambda^2","A_lambda independent of tau"],answer:0},
-  {id:"q03",difficulty:"medium",tags:["reddening"],q:"With tau_lambda proportional to lambda^-beta (beta>0), shorter wavelengths are:",options:["Less attenuated","More attenuated","Unaffected"],answer:1},
-  {id:"q04",difficulty:"medium",tags:["regime"],q:"Optically thick regime corresponds to:",options:["tau << 1","tau ~ 0","tau >> 1"],answer:2},
-  {id:"q05",difficulty:"hard",tags:["transfer"],q:"In dI/ds = -alpha I + j, the j term represents:",options:["Extinction coefficient","Emission coefficient","Distance only"],answer:1},
-  {id:"q06",difficulty:"hard",tags:["jeans"],q:"Jeans mass generally increases with higher:",options:["Temperature","Density at fixed T","Optical transparency only"],answer:0},
-  {id:"q07",difficulty:"hard",tags:["ism"],q:"Molecular clouds are typically associated with:",options:["Cold dense gas","Fully ionized plasma only","No dust"],answer:0}
+const QUESTION_BANK = [
+  { id:"od1", difficulty:"easy", tags:["optical","depth"], q:"Optical depth primarily measures:", options:["Distance alone","Amount of attenuation","Temperature only"], answer:1 },
+  { id:"od2", difficulty:"easy", tags:["transmission"], q:"If tau = 0, transmission is:", options:["0","1","Undefined"], answer:1 },
+  { id:"od3", difficulty:"easy", tags:["dust","reddening"], q:"Dust usually causes stronger extinction at:", options:["Shorter wavelengths","Longer wavelengths","All wavelengths equally"], answer:0 },
+  { id:"od4", difficulty:"medium", tags:["equation","transmission"], q:"The correct transmission relation is:", options:["T=e^-tau","T=e^tau","T=1+tau"], answer:0 },
+  { id:"od5", difficulty:"medium", tags:["beta"], q:"Increasing beta mainly makes wavelength dependence:", options:["Flatter","Steeper","Zero"], answer:1 },
+  { id:"od6", difficulty:"medium", tags:["thin"], q:"An optically thin medium generally has:", options:["tau << 1","tau >> 1","T=0"], answer:0 },
+  { id:"od7", difficulty:"hard", tags:["opacity"], q:"In this lab, kappa_lambda is modeled as:", options:["kappa0(lambda/550)^(-beta)","kappa0 lambda^beta","Constant zero"], answer:0 },
+  { id:"od8", difficulty:"hard", tags:["radiative","transfer"], q:"If path length increases while other parameters stay fixed, optical depth will:", options:["Decrease","Increase","Stay unchanged"], answer:1 }
 ];
 
-function loadPersistentLogs(){
-  try{
-    loginAudit=JSON.parse(localStorage.getItem("nbody_login_audit")||"[]");
-    quizAttempts=JSON.parse(localStorage.getItem("nbody_quiz_attempts")||"[]");
-  }catch(e){
-    loginAudit=[];
-    quizAttempts=[];
+const canvas = document.getElementById("tau");
+const ctx = canvas.getContext("2d");
+const liveGraph = document.getElementById("liveGraph");
+const gctx = liveGraph.getContext("2d");
+
+let dataLog = [];
+let trendLog = [];
+let loginAudit = [];
+let quizAttempts = [];
+let currentQuizQuestions = [];
+let lastLoggedN = -Infinity;
+let viewState = { zoomY: 1 };
+
+function q(id) { return document.getElementById(id); }
+function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+function fmt(v, d = 3) { return Number(v).toFixed(d); }
+
+function resizeCanvas(el, context) {
+  const dpr = window.devicePixelRatio || 1;
+  const w = Math.max(100, el.clientWidth || 100);
+  const h = Math.max(100, el.clientHeight || 100);
+  el.width = Math.floor(w * dpr);
+  el.height = Math.floor(h * dpr);
+  context.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+
+function resizeAllCanvases() {
+  resizeCanvas(canvas, ctx);
+  resizeCanvas(liveGraph, gctx);
+}
+
+function safeCSV(v) {
+  const s = String(v ?? "");
+  return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+}
+
+function downloadBlob(content, fileName, mimeType) {
+  const blob = new Blob([content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = fileName;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function loadPersistent() {
+  try {
+    loginAudit = JSON.parse(localStorage.getItem(STORAGE_KEYS.loginAudit) || "[]");
+    quizAttempts = JSON.parse(localStorage.getItem(STORAGE_KEYS.quizAttempts) || "[]");
+    q("loginName").value = localStorage.getItem(STORAGE_KEYS.savedName) || "";
+    q("loginID").value = localStorage.getItem(STORAGE_KEYS.savedSapid) || "";
+  } catch {
+    loginAudit = [];
+    quizAttempts = [];
   }
 }
 
-function savePersistentLogs(){
-  try{
-    localStorage.setItem("nbody_login_audit",JSON.stringify(loginAudit));
-    localStorage.setItem("nbody_quiz_attempts",JSON.stringify(quizAttempts));
-  }catch(e){}
+function savePersistent() {
+  localStorage.setItem(STORAGE_KEYS.loginAudit, JSON.stringify(loginAudit));
+  localStorage.setItem(STORAGE_KEYS.quizAttempts, JSON.stringify(quizAttempts));
+  localStorage.setItem(STORAGE_KEYS.savedName, student.name || q("loginName").value.trim());
+  localStorage.setItem(STORAGE_KEYS.savedSapid, student.sapid || q("loginID").value.trim());
 }
 
-function updateLoginAuditUI(){
-  const body=document.getElementById("loginLogBody");
-  document.getElementById("loginLogCount").textContent=String(loginAudit.length);
-  if(!loginAudit.length){
-    body.innerHTML='<tr><td colspan="3" style="text-align:center;color:var(--muted);padding:20px">No login records yet.</td></tr>';
-    return;
-  }
-  const rows=loginAudit.slice(-30).reverse();
-  body.innerHTML=rows.map(r=>"<tr><td>"+r.timestamp+"</td><td>"+r.name+"</td><td>"+r.sapid+"</td></tr>").join("");
+function setStudent(name, sapid) {
+  student.name = name;
+  student.sapid = sapid;
+  q("studentBadge").textContent = `${name} - ${sapid}`;
+  q("studentIdentityLine").textContent = `Student: ${name} | SAPID: ${sapid} | Topic: Optical Depth and Interstellar Dust`;
+  q("footerStudent").textContent = `${name} - ${sapid} session active`;
 }
 
-function updateQuizAttemptUI(){
-  const body=document.getElementById("quizAttemptBody");
-  document.getElementById("quizAttemptCount").textContent=String(quizAttempts.length);
-  if(!quizAttempts.length){
-    body.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px">No quiz attempts yet.</td></tr>';
-    return;
-  }
-  const rows=quizAttempts.slice(-30).reverse();
-  body.innerHTML=rows.map(r=>"<tr><td>"+r.timestamp+"</td><td>"+r.name+"</td><td>"+r.sapid+"</td><td>"+r.score+"/"+r.total+"</td></tr>").join("");
-}
-
-function recordLogin(name,sapid){
-  loginAudit.push({timestamp:new Date().toISOString(),name,sapid});
-  if(loginAudit.length>3000) loginAudit=loginAudit.slice(-3000);
-  savePersistentLogs();
+function recordLogin(name, sapid) {
+  loginAudit.push({ timestamp: new Date().toISOString(), name, sapid });
+  if (loginAudit.length > 3000) loginAudit = loginAudit.slice(-3000);
+  savePersistent();
   updateLoginAuditUI();
 }
 
-function exportLoginCSV(){
-  if(!loginAudit.length){alert("No login logs yet.");return;}
-  const h=["timestamp_iso","student_name","sapid"];
-  const rows=loginAudit.map(r=>[r.timestamp,r.name,r.sapid].join(","));
-  dlBlob([h.join(","),...rows].join("\n"),"nbody_login_audit.csv","text/csv");
-}
-
-function exportQuizCSV(){
-  if(!quizAttempts.length){alert("No quiz attempts yet.");return;}
-  const h=["timestamp_iso","student_name","sapid","score","total"];
-  const rows=quizAttempts.map(r=>[r.timestamp,r.name,r.sapid,r.score,r.total].join(","));
-  dlBlob([h.join(","),...rows].join("\n"),"nbody_quiz_attempts.csv","text/csv");
-}
-
-function pickRandom(arr,n){
-  const cp=[...arr];
-  for(let i=cp.length-1;i>0;i--){
-    const j=Math.floor(Math.random()*(i+1));
-    [cp[i],cp[j]]=[cp[j],cp[i]];
+function login() {
+  const name = q("loginName").value.trim();
+  const sapid = q("loginID").value.trim();
+  if (!name || !sapid) {
+    q("loginStatus").textContent = "Both Name and SAPID are required.";
+    if (!name) q("loginName").focus();
+    else q("loginID").focus();
+    return;
   }
-  return cp.slice(0,Math.min(n,cp.length));
+  state.authenticated = true;
+  setStudent(name, sapid);
+  recordLogin(name, sapid);
+  q("loginStatus").textContent = "Login successful.";
+  q("loginOverlay").classList.add("hidden");
+  q("appShell").style.visibility = "visible";
+  activateTab("tab-theory");
 }
 
-function inferDifficultyTarget(){
-  if(!quizAttempts.length) return "easy";
-  const last=quizAttempts[quizAttempts.length-1];
-  const ratio=last.total>0?last.score/last.total:0;
-  if(ratio>=0.8) return "hard";
-  if(ratio>=0.5) return "medium";
+function reopenLogin() {
+  q("loginOverlay").classList.remove("hidden");
+  q("loginStatus").textContent = "Update Name/SAPID and log in again if needed.";
+}
+
+function activateTab(tabId) {
+  state.activeTab = tabId;
+  document.querySelectorAll(".tabBar button").forEach(btn => {
+    const active = btn.dataset.tab === tabId;
+    btn.classList.toggle("active", active);
+    btn.setAttribute("aria-selected", active ? "true" : "false");
+  });
+  document.querySelectorAll(".tabPanel").forEach(panel => {
+    panel.classList.toggle("active", panel.id === tabId);
+  });
+  if (tabId === "tab-sim" || tabId === "tab-data" || tabId === "tab-quiz") {
+    setTimeout(() => {
+      resizeAllCanvases();
+      drawSimulation();
+      drawLiveGraph();
+      if (window.MathJax && window.MathJax.typesetPromise) window.MathJax.typesetPromise();
+    }, 30);
+  }
+}
+
+function getInputs() {
+  let lamMin = parseFloat(q("lamMin").value);
+  let lamMax = parseFloat(q("lamMax").value);
+  if (!Number.isFinite(lamMin)) lamMin = 350;
+  if (!Number.isFinite(lamMax)) lamMax = 1000;
+  if (lamMax <= lamMin) {
+    lamMax = lamMin + 10;
+    q("lamMax").value = String(lamMax);
+  }
+  return {
+    N: parseFloat(q("N").value),
+    k0: parseFloat(q("k0").value),
+    beta: parseFloat(q("beta").value),
+    L: parseFloat(q("L").value),
+    refLam: parseFloat(q("refLam").value),
+    lamMin,
+    lamMax,
+    showTransmission: q("showTransmission").checked,
+    showRefLine: q("showRefLine").checked
+  };
+}
+
+function tauLam(lambdaNm, inp) {
+  return inp.N * inp.k0 * Math.pow(lambdaNm / 550, -inp.beta) * inp.L;
+}
+
+function buildSpectrum(inp) {
+  const points = [];
+  let meanTau = 0;
+  let meanTrans = 0;
+  const count = 420;
+  for (let i = 0; i < count; i++) {
+    const lam = inp.lamMin + (i / (count - 1)) * (inp.lamMax - inp.lamMin);
+    const tau = tauLam(lam, inp);
+    const trans = Math.exp(-tau);
+    points.push({ lam, tau, trans });
+    meanTau += tau;
+    meanTrans += trans;
+  }
+  meanTau /= count;
+  meanTrans /= count;
+  const tauRef = tauLam(inp.refLam, inp);
+  const transRef = Math.exp(-tauRef);
+  return { points, tauRef, transRef, meanTau, meanTrans };
+}
+
+function updateLabels(inp, out) {
+  q("nValMono").textContent = fmt(inp.N, 2);
+  q("k0ValMono").textContent = fmt(inp.k0, 2);
+  q("betaValMono").textContent = fmt(inp.beta, 2);
+  q("LValMono").textContent = fmt(inp.L, 2);
+  q("refLamValMono").textContent = `${fmt(inp.refLam, 0)} nm`;
+  q("sweepRateVal").textContent = `${fmt(parseFloat(q("sweepRate").value), 2)} N/s`;
+  q("rangeTxt").textContent = `${fmt(inp.lamMin, 0)}-${fmt(inp.lamMax, 0)} nm`;
+  q("refLamOverlay").textContent = `${fmt(inp.refLam, 0)} nm`;
+  q("runtimeTxt").textContent = fmt(state.runtime, 2);
+  q("tau550").textContent = fmt(out.tauRef, 4);
+  q("t550").textContent = fmt(out.transRef, 4);
+  q("outTauRef").textContent = fmt(out.tauRef, 5);
+  q("outTransRef").textContent = fmt(out.transRef, 5);
+  q("outMeanTau").textContent = fmt(out.meanTau, 5);
+  q("outMeanTrans").textContent = fmt(out.meanTrans, 5);
+  q("stats").textContent = `tau(${fmt(inp.refLam,0)}nm)=${fmt(out.tauRef,3)}, T(${fmt(inp.refLam,0)}nm)=${fmt(out.transRef,3)} | N=${fmt(inp.N,2)}, k0=${fmt(inp.k0,2)}, beta=${fmt(inp.beta,2)}, L=${fmt(inp.L,2)}`;
+  q("logBodies").textContent = `${fmt(inp.refLam, 0)} nm`;
+  q("logTimeSpan").textContent = `${fmt(state.runtime, 1)} s`;
+  q("logInterval").textContent = `Every ${q("sampleEvery").value} N`;
+}
+
+function drawSimulation() {
+  const inp = getInputs();
+  const out = buildSpectrum(inp);
+  updateLabels(inp, out);
+  const w = canvas.clientWidth;
+  const h = canvas.clientHeight;
+  const padL = 58;
+  const padR = 20;
+  const padT = 28;
+  const padB = 44;
+  const plotW = w - padL - padR;
+  const plotH = h - padT - padB;
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = "#0a1529";
+  ctx.fillRect(0, 0, w, h);
+  ctx.strokeStyle = "rgba(158,190,221,.22)";
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= 5; i++) {
+    const y = padT + (i / 5) * plotH;
+    ctx.beginPath();
+    ctx.moveTo(padL, y);
+    ctx.lineTo(w - padR, y);
+    ctx.stroke();
+  }
+  for (let i = 0; i <= 6; i++) {
+    const x = padL + (i / 6) * plotW;
+    ctx.beginPath();
+    ctx.moveTo(x, padT);
+    ctx.lineTo(x, h - padB);
+    ctx.stroke();
+  }
+  ctx.strokeStyle = "rgba(158,190,221,.45)";
+  ctx.beginPath();
+  ctx.moveTo(padL, padT);
+  ctx.lineTo(padL, h - padB);
+  ctx.lineTo(w - padR, h - padB);
+  ctx.stroke();
+  const maxTau = Math.max(0.5, ...out.points.map(p => p.tau)) / viewState.zoomY;
+  ctx.beginPath();
+  out.points.forEach((p, i) => {
+    const x = padL + ((p.lam - inp.lamMin) / (inp.lamMax - inp.lamMin)) * plotW;
+    const y = h - padB - (p.tau / maxTau) * plotH;
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+  ctx.strokeStyle = "#5bc8ff";
+  ctx.lineWidth = 2.2;
+  ctx.stroke();
+  if (inp.showTransmission) {
+    ctx.beginPath();
+    out.points.forEach((p, i) => {
+      const x = padL + ((p.lam - inp.lamMin) / (inp.lamMax - inp.lamMin)) * plotW;
+      const y = h - padB - p.trans * plotH;
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    });
+    ctx.strokeStyle = "#ffd77a";
+    ctx.lineWidth = 1.8;
+    ctx.stroke();
+  }
+  if (inp.showRefLine && inp.refLam >= inp.lamMin && inp.refLam <= inp.lamMax) {
+    const xRef = padL + ((inp.refLam - inp.lamMin) / (inp.lamMax - inp.lamMin)) * plotW;
+    ctx.save();
+    ctx.setLineDash([5, 4]);
+    ctx.strokeStyle = "rgba(255,173,109,.9)";
+    ctx.beginPath();
+    ctx.moveTo(xRef, padT);
+    ctx.lineTo(xRef, h - padB);
+    ctx.stroke();
+    ctx.restore();
+  }
+  ctx.fillStyle = "#9ebedd";
+  ctx.font = "12px 'Space Grotesk', sans-serif";
+  ctx.fillText("Wavelength (nm)", w - 120, h - 12);
+  ctx.fillText("Blue: tau(lambda)", padL + 8, padT + 14);
+  if (inp.showTransmission) ctx.fillText("Yellow: T(lambda)", padL + 110, padT + 14);
+}
+
+function drawLiveGraph() {
+  const w = liveGraph.clientWidth;
+  const h = liveGraph.clientHeight;
+  gctx.clearRect(0, 0, w, h);
+  gctx.fillStyle = "#081733";
+  gctx.fillRect(0, 0, w, h);
+  if (trendLog.length < 2) {
+    gctx.fillStyle = "#8fb5d9";
+    gctx.font = "12px 'Space Grotesk', sans-serif";
+    gctx.fillText("Run simulation to populate graph", 14, 22);
+    return;
+  }
+  const metric = q("graphMetric").value;
+  const ys = trendLog.map(p => p[metric]);
+  const xs = trendLog.map(p => p.runtime);
+  let yMin = Math.min(...ys);
+  let yMax = Math.max(...ys);
+  const xMin = Math.min(...xs);
+  const xMax = Math.max(...xs);
+  if (yMin === yMax) { yMin -= 1; yMax += 1; }
+  const pad = 24;
+  gctx.strokeStyle = "rgba(143,181,217,.25)";
+  gctx.lineWidth = 1;
+  gctx.beginPath();
+  gctx.moveTo(pad, h - pad);
+  gctx.lineTo(w - pad, h - pad);
+  gctx.moveTo(pad, pad);
+  gctx.lineTo(pad, h - pad);
+  gctx.stroke();
+  gctx.beginPath();
+  trendLog.forEach((p, i) => {
+    const x = pad + ((p.runtime - xMin) / Math.max(1e-9, xMax - xMin)) * (w - 2 * pad);
+    const y = h - pad - ((p[metric] - yMin) / Math.max(1e-9, yMax - yMin)) * (h - 2 * pad);
+    if (i === 0) gctx.moveTo(x, y);
+    else gctx.lineTo(x, y);
+  });
+  gctx.strokeStyle = "#59d0ff";
+  gctx.lineWidth = 1.8;
+  gctx.stroke();
+}
+
+function pushTrend(inp, out) {
+  trendLog.push({ runtime: state.runtime, tauRef: out.tauRef, transRef: out.transRef, meanTau: out.meanTau, meanTrans: out.meanTrans });
+  if (trendLog.length > 1500) trendLog.shift();
+}
+
+function maybeLog(inp, out) {
+  if (!state.authenticated) return;
+  if (!q("logData").checked) return;
+  const step = parseFloat(q("sampleEvery").value) || 0.2;
+  const maxRows = parseInt(q("maxRows").value, 10) || 5000;
+  if (Math.abs(inp.N - lastLoggedN) < step) return;
+  if (dataLog.length >= maxRows) return;
+  lastLoggedN = inp.N;
+  dataLog.push({
+    sapid: student.sapid,
+    student_name: student.name,
+    runtime_s: fmt(state.runtime, 4),
+    N: fmt(inp.N, 3),
+    k0: fmt(inp.k0, 3),
+    beta: fmt(inp.beta, 3),
+    L: fmt(inp.L, 3),
+    ref_lambda_nm: fmt(inp.refLam, 0),
+    tau_ref: fmt(out.tauRef, 6),
+    trans_ref: fmt(out.transRef, 6),
+    mean_tau: fmt(out.meanTau, 6),
+    mean_transmission: fmt(out.meanTrans, 6)
+  });
+}
+
+function updateDataPreview() {
+  q("logCount").textContent = String(dataLog.length);
+  const body = q("previewBody");
+  if (!dataLog.length) {
+    body.innerHTML = '<tr><td colspan="10" style="text-align:center;color:var(--muted);padding:20px">No data yet — run the simulation with log data checked.</td></tr>';
+    return;
+  }
+  body.innerHTML = dataLog.slice(-20).reverse().map(r => `
+    <tr>
+      <td>${r.runtime_s}</td>
+      <td>${r.N}</td>
+      <td>${r.k0}</td>
+      <td>${r.beta}</td>
+      <td>${r.L}</td>
+      <td>${r.ref_lambda_nm}</td>
+      <td>${r.tau_ref}</td>
+      <td>${r.trans_ref}</td>
+      <td>${r.mean_tau}</td>
+      <td>${r.mean_transmission}</td>
+    </tr>
+  `).join("");
+}
+
+function buildSummary(inp, out) {
+  const regime = out.tauRef < 0.3 ? "optically thin" : (out.tauRef > 3 ? "optically thick" : "intermediate");
+  return [
+    "Interpret this interstellar attenuation setup:",
+    `N=${fmt(inp.N,2)}, kappa0=${fmt(inp.k0,2)}, beta=${fmt(inp.beta,2)}, path=${fmt(inp.L,2)}, refLambda=${fmt(inp.refLam,0)} nm.`,
+    `At the reference wavelength, tau=${fmt(out.tauRef,3)} and transmission exp(-tau)=${fmt(out.transRef,3)}.`,
+    `The medium is currently in the ${regime} regime at the reference wavelength.`,
+    `Across ${fmt(inp.lamMin,0)}-${fmt(inp.lamMax,0)} nm, mean tau=${fmt(out.meanTau,3)} and mean transmission=${fmt(out.meanTrans,3)}.`
+  ].join("\n");
+}
+
+function refreshSimulation() {
+  const inp = getInputs();
+  const out = buildSpectrum(inp);
+  updateLabels(inp, out);
+  q("summary").value = buildSummary(inp, out);
+  pushTrend(inp, out);
+  maybeLog(inp, out);
+  drawSimulation();
+  drawLiveGraph();
+  updateDataPreview();
+}
+
+function setPreset(type) {
+  if (type === "diffuse") {
+    q("N").value = "1.0";
+    q("k0").value = "0.25";
+    q("beta").value = "1.0";
+    q("L").value = "0.8";
+    q("refLam").value = "550";
+    q("lamMin").value = "350";
+    q("lamMax").value = "1000";
+    q("sweepRate").value = "0.20";
+  } else if (type === "cloud") {
+    q("N").value = "2.8";
+    q("k0").value = "0.75";
+    q("beta").value = "1.4";
+    q("L").value = "1.5";
+    q("refLam").value = "550";
+    q("lamMin").value = "350";
+    q("lamMax").value = "1000";
+    q("sweepRate").value = "0.25";
+  } else if (type === "dense") {
+    q("N").value = "5.5";
+    q("k0").value = "1.4";
+    q("beta").value = "1.8";
+    q("L").value = "2.8";
+    q("refLam").value = "550";
+    q("lamMin").value = "350";
+    q("lamMax").value = "1200";
+    q("sweepRate").value = "0.15";
+  }
+  refreshSimulation();
+}
+
+function resetAll() {
+  q("N").value = "2";
+  q("k0").value = "0.6";
+  q("beta").value = "1.4";
+  q("L").value = "1.0";
+  q("refLam").value = "550";
+  q("graphMetric").value = "tauRef";
+  q("showTransmission").checked = true;
+  q("showRefLine").checked = true;
+  q("logData").checked = true;
+  q("sweepRate").value = "0.25";
+  q("lamMin").value = "350";
+  q("lamMax").value = "1000";
+  q("sampleEvery").value = "0.2";
+  q("maxRows").value = "5000";
+  state.playing = true;
+  state.runtime = 0;
+  lastLoggedN = -Infinity;
+  trendLog = [];
+  dataLog = [];
+  viewState = { zoomY: 1 };
+  q("playBtn").textContent = "Pause Sweep";
+  refreshSimulation();
+}
+
+function exportCSV() {
+  if (!state.authenticated) { alert("Login required before export."); return; }
+  if (!dataLog.length) { alert("No data logged yet."); return; }
+  const headers = Object.keys(dataLog[0]);
+  const rows = dataLog.map(r => headers.map(h => safeCSV(r[h])).join(","));
+  downloadBlob([headers.join(","), ...rows].join("\n"), "optical_depth_data.csv", "text/csv");
+}
+
+function exportJSON() {
+  if (!state.authenticated) { alert("Login required before export."); return; }
+  if (!dataLog.length) { alert("No data logged yet."); return; }
+  const payload = { module: "Optical Depth Interstellar Medium Simulator", version: "4.0", generated: new Date().toISOString(), student: { ...student }, data: dataLog };
+  downloadBlob(JSON.stringify(payload, null, 2), "optical_depth_data.json", "application/json");
+}
+
+function exportPython() {
+  const py = `import pandas as pd\nimport matplotlib.pyplot as plt\n\ndf = pd.read_csv("optical_depth_data.csv")\n\nfig, ax1 = plt.subplots(figsize=(8,5))\nax1.plot(df["runtime_s"], df["tau_ref"], label="tau_ref")\nax1.plot(df["runtime_s"], df["mean_tau"], label="mean_tau")\nax1.legend()\nax1.grid(True, alpha=0.3)\n\nfig2, ax2 = plt.subplots(figsize=(8,5))\nax2.plot(df["runtime_s"], df["trans_ref"], label="T_ref")\nax2.plot(df["runtime_s"], df["mean_transmission"], label="mean_transmission")\nax2.legend()\nax2.grid(True, alpha=0.3)\n\nplt.show()\n`;
+  downloadBlob(py, "analyse_optical_depth.py", "text/plain");
+}
+
+function updateLoginAuditUI() {
+  q("loginLogCount").textContent = String(loginAudit.length);
+  const body = q("loginLogBody");
+  if (!loginAudit.length) {
+    body.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--muted);padding:20px">No login records yet.</td></tr>';
+    return;
+  }
+  body.innerHTML = loginAudit.slice(-30).reverse().map(r => `<tr><td>${r.timestamp}</td><td>${r.name}</td><td>${r.sapid}</td></tr>`).join("");
+}
+
+function exportLoginCSV() {
+  if (!loginAudit.length) { alert("No login records yet."); return; }
+  const rows = loginAudit.map(r => `${safeCSV(r.timestamp)},${safeCSV(r.name)},${safeCSV(r.sapid)}`);
+  downloadBlob(["timestamp_iso,student_name,sapid", ...rows].join("\n"), "optical_depth_login_audit.csv", "text/csv");
+}
+
+function pickRandom(arr, n) {
+  return [...arr].sort(() => Math.random() - 0.5).slice(0, n);
+}
+
+function inferDifficultyTarget() {
+  if (!quizAttempts.length) return "easy";
+  const last = quizAttempts[quizAttempts.length - 1];
+  const ratio = last.total ? last.score / last.total : 0;
+  if (ratio >= 0.8) return "hard";
+  if (ratio >= 0.5) return "medium";
   return "easy";
 }
 
-function parsePromptTokens(text){
-  return String(text||"").toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
+function parsePromptTokens(text) {
+  return String(text || "").toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
 }
 
-function generateQuizSet(){
-  const prompt=document.getElementById("quizPrompt").value.trim();
-  const tokens=parsePromptTokens(prompt);
-  const target=inferDifficultyTarget();
-  let pool=QUESTION_BANK.filter(q=>q.difficulty===target);
-  if(tokens.length){
-    const tagged=QUESTION_BANK.filter(q=>q.tags.some(t=>tokens.includes(t)) || tokens.some(tok=>q.q.toLowerCase().includes(tok)));
-    if(tagged.length>=5) pool=tagged;
-    else if(tagged.length>0) pool=[...new Set([...tagged,...pool])];
+function generateQuizSet() {
+  const tokens = parsePromptTokens(q("quizPrompt").value);
+  const target = inferDifficultyTarget();
+  let pool = QUESTION_BANK.filter(item => item.difficulty === target);
+  if (tokens.length) {
+    const tagged = QUESTION_BANK.filter(item => item.tags.some(tag => tokens.includes(tag)) || tokens.some(tok => item.q.toLowerCase().includes(tok)));
+    if (tagged.length) pool = [...new Set([...tagged, ...pool])];
   }
-  if(pool.length<5) pool=[...new Set([...pool,...QUESTION_BANK])];
-  currentQuizQuestions=pickRandom(pool,5);
+  if (pool.length < 5) pool = [...QUESTION_BANK];
+  currentQuizQuestions = pickRandom(pool, Math.min(5, pool.length));
 }
 
-function renderQuizQuestions(){
-  const wrap=document.getElementById("quizQuestionsWrap");
-  if(!currentQuizQuestions.length){
-    wrap.innerHTML='<div class="quizHint">Click "Ask New Quiz" to generate a fresh interactive quiz.</div>';
+function renderQuizQuestions() {
+  const wrap = q("quizQuestionsWrap");
+  if (!currentQuizQuestions.length) {
+    wrap.innerHTML = '<div class="quizHint">Click Ask New Quiz to generate a fresh interactive quiz.</div>';
     return;
   }
-  wrap.innerHTML=currentQuizQuestions.map((q,idx)=>{
-    const opts=q.options.map((opt,oi)=>'<label><input type="radio" name="q_'+idx+'" value="'+oi+'" /> '+opt+'</label>').join("");
-    return '<div class="quizQ"><p>'+(idx+1)+'. '+q.q+'</p>'+opts+'</div>';
-  }).join("");
+  wrap.innerHTML = currentQuizQuestions.map((item, idx) => `
+    <div class="quizQ">
+      <p>${idx + 1}. ${item.q}</p>
+      ${item.options.map((opt, i) => `<label><input type="radio" name="q_${idx}" value="${i}" /> ${opt}</label>`).join("")}
+    </div>
+  `).join("");
 }
 
-function generateAndRenderQuiz(){
-  if(!state.authenticated){
-    alert("Please log in first, then ask for a new quiz.");
-    document.getElementById("loginOverlay").classList.remove("hidden");
+function generateAndRenderQuiz() {
+  if (!state.authenticated) {
+    alert("Please log in first.");
+    reopenLogin();
     return;
   }
   generateQuizSet();
   renderQuizQuestions();
-  document.getElementById("quizResult").textContent="New quiz generated for "+student.name+". Difficulty profile: "+inferDifficultyTarget()+".";
+  q("quizResult").textContent = `New quiz generated for ${student.name}. Difficulty: ${inferDifficultyTarget()}.`;
 }
 
-function submitQuiz(ev){
+function submitQuiz(ev) {
   ev.preventDefault();
-  if(!state.authenticated){
-    alert("Please log in with Name and SAPID before taking the quiz.");
-    document.getElementById("loginOverlay").classList.remove("hidden");
+  if (!state.authenticated) {
+    alert("Please log in before taking the quiz.");
+    reopenLogin();
     return;
   }
-  const form=document.getElementById("quizForm");
-  if(!currentQuizQuestions.length){
-    document.getElementById("quizResult").textContent="Generate a quiz first using Ask New Quiz.";
+  if (!currentQuizQuestions.length) {
+    q("quizResult").textContent = "Generate a quiz first.";
     return;
   }
-  let score=0, answered=0;
-  const feedback=[];
-  currentQuizQuestions.forEach((q,idx)=>{
-    const picked=form.querySelector('input[name="q_'+idx+'"]:checked');
-    if(picked){
-      answered++;
-      const selected=parseInt(picked.value,10);
-      if(selected===q.answer){
-        score++;
-      }else{
-        feedback.push((idx+1)+") Correct: "+q.options[q.answer]);
-      }
+  let score = 0;
+  for (let i = 0; i < currentQuizQuestions.length; i++) {
+    const picked = q("quizForm").querySelector(`input[name="q_${i}"]:checked`);
+    if (!picked) {
+      q("quizResult").textContent = "Please answer all questions before submitting.";
+      return;
     }
-  });
-  const total=currentQuizQuestions.length;
-  if(answered<total){
-    document.getElementById("quizResult").textContent="Please answer all questions before submission ("+answered+"/"+total+").";
-    return;
+    if (parseInt(picked.value, 10) === currentQuizQuestions[i].answer) score++;
   }
-  const pct=Math.round((score/total)*100);
-  document.getElementById("quizResult").textContent="Submitted. Score: "+score+"/"+total+" ("+pct+"%)."+(feedback.length?" Review: "+feedback.join(" | "):" Excellent run.");
-  quizAttempts.push({
-    timestamp:new Date().toISOString(),
-    name:student.name,
-    sapid:student.sapid||"NA",
-    score,
-    total
-  });
-  if(quizAttempts.length>3000) quizAttempts=quizAttempts.slice(-3000);
-  savePersistentLogs();
+  const total = currentQuizQuestions.length;
+  const pct = Math.round((score / total) * 100);
+  q("quizResult").textContent = `Submitted. Score: ${score}/${total} (${pct}%).`;
+  quizAttempts.push({ timestamp: new Date().toISOString(), name: student.name, sapid: student.sapid, score, total });
+  if (quizAttempts.length > 3000) quizAttempts = quizAttempts.slice(-3000);
+  savePersistent();
   updateQuizAttemptUI();
 }
 
-function resetQuizForm(){
-  document.getElementById("quizForm").reset();
-  document.getElementById("quizResult").textContent="Quiz selection reset. You can submit or generate a new set.";
+function resetQuizForm() {
+  q("quizForm").reset();
+  q("quizResult").textContent = "Quiz reset.";
 }
 
-function maybeGraphPoint(force){
-  const tD=state.t/DAY;
-  if(!force && (tD-lastGraphSampleDays)<0.15) return;
-  lastGraphSampleDays=tD;
-  const metrics=getCurrentMetrics();
-  graphLog.push({tDays:tD,energy:metrics.energy,lz:metrics.lz,meanSpeed:metrics.meanSpeed});
-  if(graphLog.length>1200) graphLog.shift();
-}
-
-function massToKg(val,unit){
-  if(unit==="Msun")  return val*MSUN;
-  if(unit==="Mearth") return val*MEARTH;
-  return val*MJUP;
-}
-
-function updateHeaviestIdx(){
-  if(!sim.b.length){state.heaviestIdx=0;return;}
-  let idx=0;
-  for(let i=1;i<sim.b.length;i++) if(sim.b[i].m>sim.b[idx].m) idx=i;
-  state.heaviestIdx=idx;
-  const hb=sim.b[idx];
-  document.getElementById("heaviestInfo").textContent=hb.name+" ("+hb.m.toExponential(2)+" kg)";
-}
-
-function resize(){
-  const dpr=window.devicePixelRatio||1;
-  canvas.width=Math.floor(canvas.clientWidth*dpr);
-  canvas.height=Math.floor(canvas.clientHeight*dpr);
-  ctx.setTransform(dpr,0,0,dpr,0,0);
-}
-window.addEventListener("resize",resize);
-setTimeout(resize,50);
-
-canvas.addEventListener("wheel",(e)=>{
-  e.preventDefault();
-  const f=e.deltaY<0?1.15:1/1.15;
-  state.pxPerM=Math.max(1e-12,Math.min(1e-6,state.pxPerM*f));
-  updateZoom();
-},{passive:false});
-
-canvas.addEventListener("mousedown",(e)=>{
-  state.isPanning=true;
-  state.panStart={x:e.clientX-state.panOffset.x,y:e.clientY-state.panOffset.y};
-  canvas.style.cursor="grabbing";
-});
-canvas.addEventListener("mousemove",(e)=>{
-  if(!state.isPanning) return;
-  state.panOffset.x=e.clientX-state.panStart.x;
-  state.panOffset.y=e.clientY-state.panStart.y;
-});
-canvas.addEventListener("mouseup",()=>{state.isPanning=false;canvas.style.cursor="default";});
-canvas.addEventListener("mouseleave",()=>{state.isPanning=false;canvas.style.cursor="default";});
-
-function updateZoom(){
-  document.getElementById("zoomLevel").textContent=(state.pxPerM/state.basePxPerM).toFixed(2)+"x";
-}
-
-function getCurrentMetrics(){
-  const energy=sim.kinetic()+sim.potential();
-  const lz=sim.Lz();
-  if(!sim.b.length) return {energy,lz,meanSpeed:0,radialSpread:0};
-  let speedSum=0, rMin=Infinity, rMax=0;
-  sim.b.forEach(b=>{
-    const speed=Math.sqrt(b.v.x*b.v.x+b.v.y*b.v.y+(b.v.z||0)*(b.v.z||0));
-    speedSum+=speed;
-    const rMag=Math.sqrt(b.r.x*b.r.x+b.r.y*b.r.y+(b.r.z||0)*(b.r.z||0));
-    rMin=Math.min(rMin,rMag);
-    rMax=Math.max(rMax,rMag);
-  });
-  return {
-    energy,
-    lz,
-    meanSpeed:speedSum/sim.b.length,
-    radialSpread:(rMax-rMin)/AU
-  };
-}
-
-function updateOutputPanel(metrics){
-  document.getElementById("outEnergy").textContent=isFinite(metrics.energy)?metrics.energy.toExponential(4):"--";
-  document.getElementById("outLz").textContent=isFinite(metrics.lz)?metrics.lz.toExponential(4):"--";
-  document.getElementById("outMeanSpeed").textContent=isFinite(metrics.meanSpeed)?metrics.meanSpeed.toFixed(3):"--";
-  document.getElementById("outSpread").textContent=isFinite(metrics.radialSpread)?metrics.radialSpread.toFixed(6):"--";
-}
-
-function resizeGraph(){
-  const gcv=document.getElementById("liveGraph");
-  if(!gcv) return;
-  const w=Math.floor(gcv.clientWidth);
-  const h=Math.floor(gcv.clientHeight);
-  if(w<10||h<10) return;
-  const dpr=window.devicePixelRatio||1;
-  gcv.width=Math.floor(w*dpr);
-  gcv.height=Math.floor(h*dpr);
-  const gctx=gcv.getContext("2d");
-  gctx.setTransform(dpr,0,0,dpr,0,0);
-}
-
-function drawLiveGraph(){
-  const gcv=document.getElementById("liveGraph");
-  if(!gcv) return;
-  const gctx=gcv.getContext("2d");
-  const w=gcv.clientWidth, h=gcv.clientHeight;
-  if(w<10||h<10) return;
-  gctx.clearRect(0,0,w,h);
-  gctx.fillStyle="#081733";
-  gctx.fillRect(0,0,w,h);
-  if(graphLog.length<2){
-    gctx.fillStyle="#8fb5d9";
-    gctx.font="12px 'Space Grotesk',sans-serif";
-    gctx.fillText("Run simulation to populate graph",14,22);
+function updateQuizAttemptUI() {
+  q("quizAttemptCount").textContent = String(quizAttempts.length);
+  const body = q("quizAttemptBody");
+  if (!quizAttempts.length) {
+    body.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px">No quiz attempts yet.</td></tr>';
     return;
   }
-  const metric=document.getElementById("graphMetric").value;
-  const values=graphLog.map(p=>metric==="energy"?p.energy:(metric==="lz"?p.lz:p.meanSpeed));
-  const t0=graphLog[0].tDays, t1=graphLog[graphLog.length-1].tDays;
-  let vMin=Math.min(...values), vMax=Math.max(...values);
-  if(vMin===vMax){vMin-=1;vMax+=1;}
-  const pad=22;
-  gctx.strokeStyle="rgba(143,181,217,.25)";
-  gctx.lineWidth=1;
-  gctx.beginPath();
-  gctx.moveTo(pad,h-pad); gctx.lineTo(w-pad,h-pad);
-  gctx.moveTo(pad,pad); gctx.lineTo(pad,h-pad);
-  gctx.stroke();
-  gctx.beginPath();
-  for(let i=0;i<graphLog.length;i++){
-    const x=pad+((graphLog[i].tDays-t0)/Math.max(1e-9,t1-t0))*(w-2*pad);
-    const y=h-pad-((values[i]-vMin)/(vMax-vMin))*(h-2*pad);
-    i===0?gctx.moveTo(x,y):gctx.lineTo(x,y);
+  body.innerHTML = quizAttempts.slice(-30).reverse().map(r => `<tr><td>${r.timestamp}</td><td>${r.name}</td><td>${r.sapid}</td><td>${r.score}/${r.total}</td></tr>`).join("");
+}
+
+function exportQuizCSV() {
+  if (!quizAttempts.length) { alert("No quiz attempts yet."); return; }
+  const rows = quizAttempts.map(r => `${safeCSV(r.timestamp)},${safeCSV(r.name)},${safeCSV(r.sapid)},${r.score},${r.total}`);
+  downloadBlob(["timestamp_iso,student_name,sapid,score,total", ...rows].join("\n"), "optical_depth_quiz_attempts.csv", "text/csv");
+}
+
+function buildTutorMessage() {
+  const inp = getInputs();
+  const out = buildSpectrum(inp);
+  const regime = out.tauRef < 0.3 ? "optically thin" : (out.tauRef > 3 ? "optically thick" : "intermediate");
+  return [
+    "Topic: Optical Depth and Dust Attenuation",
+    `Student: ${student.name || "--"} (${student.sapid || "--"})`,
+    `Runtime: ${fmt(state.runtime, 2)} s`,
+    `Reference wavelength: ${fmt(inp.refLam, 0)} nm`,
+    `tau_ref: ${fmt(out.tauRef, 4)}`,
+    `transmission_ref: ${fmt(out.transRef, 4)}`,
+    `Regime: ${regime}`,
+    "",
+    "Suggested next actions:",
+    "1) Increase N and observe exponential suppression of transmission.",
+    "2) Increase beta and compare short-wavelength attenuation.",
+    "3) Compare diffuse and dense presets, then export the data."
+  ].join("\n");
+}
+
+function openTutor() {
+  q("tutorBody").textContent = buildTutorMessage();
+  q("tutorModal").classList.add("show");
+}
+
+function closeTutor() {
+  q("tutorModal").classList.remove("show");
+}
+
+let lastFrame = performance.now();
+function animate(now) {
+  const dt = Math.min((now - lastFrame) / 1000, 0.1);
+  lastFrame = now;
+  if (state.playing) {
+    const rate = parseFloat(q("sweepRate").value) || 0;
+    let nextN = parseFloat(q("N").value) + rate * dt;
+    const nMin = parseFloat(q("N").min);
+    const nMax = parseFloat(q("N").max);
+    if (nextN > nMax) nextN = nMin;
+    q("N").value = String(nextN);
+    state.runtime += dt;
+    refreshSimulation();
+  } else {
+    drawSimulation();
+    drawLiveGraph();
   }
-  gctx.strokeStyle="#59d0ff";
-  gctx.lineWidth=1.8;
-  gctx.stroke();
-  gctx.fillStyle="#8fb5d9";
-  gctx.font="11px 'IBM Plex Mono',monospace";
-  gctx.fillText("t: "+t0.toFixed(1)+" to "+t1.toFixed(1)+" days",pad,h-6);
-  gctx.fillText("y min: "+vMin.toExponential(2),pad+4,14);
-  gctx.fillText("y max: "+vMax.toExponential(2),pad+4,28);
+  requestAnimationFrame(animate);
 }
 
-function configureBodiesFromInputs(){
-  const rb=(i)=>({
-    name:(document.getElementById("n"+i).value||"Body"+i).trim(),
-    m:massToKg(parseFloat(document.getElementById("m"+i).value),document.getElementById("m"+i+"u").value),
-    r:AU*parseFloat(document.getElementById("r"+i).value),
-    c:["#ffd27f","#66afff","#dff5ff","#9be7a2"][i-1]
-  });
-  const entries=[rb(1),rb(2)];
-  if(document.getElementById("use3").checked) entries.push(rb(3));
-  if(document.getElementById("use4").checked) entries.push(rb(4));
-  sim.clear();
-  entries.forEach((e,idx)=>{
-    const pos={x:e.r,y:0,z:0};
-    let vel={x:0,y:0,z:0};
-    if(idx>0){
-      const dr=Math.max(Math.abs(e.r-entries[0].r),1e7);
-      vel={x:0,y:Math.sqrt(sim.G*entries[0].m/dr),z:0};
-    }
-    sim.add(new Body(e.name,e.m,pos,vel,e.c));
-  });
-  let M=0,rx=0,ry=0,vx=0,vy=0;
-  sim.b.forEach(b=>{M+=b.m;rx+=b.m*b.r.x;ry+=b.m*b.r.y;vx+=b.m*b.v.x;vy+=b.m*b.v.y;});
-  const cx=rx/M,cy=ry/M,cvx=vx/M,cvy=vy/M;
-  sim.b.forEach(b=>{b.r.x-=cx;b.r.y-=cy;b.v.x-=cvx;b.v.y-=cvy;b.trail=[];});
-  const maxR=Math.max(...sim.b.map(b=>Math.sqrt(b.r.x*b.r.x+b.r.y*b.r.y)),1e9);
-  state.pxPerM=Math.min(220/maxR,1e-8);
-  state.basePxPerM=state.pxPerM;
-  state.t=0;
-  state.panOffset={x:0,y:0};
-  dataLog=[]; lastLogTimeDays=-Infinity;
-  graphLog=[];
-  lastGraphSampleDays=-Infinity;
-  document.getElementById("nBodies").textContent=String(sim.b.length);
-  updateHeaviestIdx();
-  updateZoom();
-  maybeGraphPoint(true);
-}
+document.querySelectorAll(".tabBar button").forEach(btn => {
+  btn.addEventListener("click", () => activateTab(btn.dataset.tab));
+});
 
-function presetSEM(){
-  document.getElementById("n1").value="Sun";    document.getElementById("m1").value="1";      document.getElementById("m1u").value="Msun";
-  document.getElementById("r1").value="0";
-  document.getElementById("n2").value="Earth";  document.getElementById("m2").value="1";      document.getElementById("m2u").value="Mearth";
-  document.getElementById("r2").value="1";
-  document.getElementById("use3").checked=true;
-  document.getElementById("n3").value="Moon";   document.getElementById("m3").value="0.0123"; document.getElementById("m3u").value="Mearth";
-  document.getElementById("r3").value="1.00257";
-  document.getElementById("use4").checked=false;
-  document.getElementById("n4").value="Body4";  document.getElementById("m4").value="0.02";   document.getElementById("m4u").value="Mjup";
-  document.getElementById("r4").value="1.47";
-  configureBodiesFromInputs();
-}
-function presetSE(){
-  presetSEM();
-  document.getElementById("use3").checked=false;
-  document.getElementById("use4").checked=false;
-  configureBodiesFromInputs();
-}
-
-function draw(){
-  const w=canvas.clientWidth, h=canvas.clientHeight;
-  ctx.clearRect(0,0,w,h);
-  const grad=ctx.createLinearGradient(0,0,0,h);
-  grad.addColorStop(0,"#050d1f"); grad.addColorStop(0.55,"#0b1d3f"); grad.addColorStop(1,"#142c57");
-  ctx.fillStyle=grad; ctx.fillRect(0,0,w,h);
-  for(let i=0;i<140;i++){
-    const sx=(i*97+13)%w, sy=(i*53+7)%h;
-    const a=(0.28+(i%7)/14).toFixed(2);
-    ctx.fillStyle="rgba(220,240,255,"+a+")";
-    ctx.beginPath(); ctx.arc(sx,sy,i%5===0?1.8:1.1,0,Math.PI*2); ctx.fill();
-  }
-  ctx.save();
-  ctx.translate(w/2+state.panOffset.x,h/2+state.panOffset.y);
-  updateHeaviestIdx();
-  const trackH=document.getElementById("trackHeaviest").checked;
-  const frameMode=document.getElementById("cameraFrame").value;
-  const showL=document.getElementById("showLabels").checked;
-  const ref=(frameMode==="heaviest"&&trackH&&sim.b.length>0)?sim.b[state.heaviestIdx].r:{x:0,y:0};
-  const trailLength=parseInt(document.getElementById("trailLength").value,10)||1200;
-  document.getElementById("trailLenVal").textContent=trailLength+" points";
-  sim.b.forEach(b=>{
-    b.trail.push({x:b.r.x,y:b.r.y});
-    if(b.trail.length>trailLength) b.trail.shift();
-    if(b.trail.length<2) return;
-    ctx.beginPath();
-    b.trail.forEach((p,i)=>{
-      const px=(p.x-ref.x)*state.pxPerM, py=(p.y-ref.y)*state.pxPerM;
-      i===0?ctx.moveTo(px,py):ctx.lineTo(px,py);
-    });
-    ctx.strokeStyle=b.c+"aa"; ctx.lineWidth=1.2; ctx.stroke();
-  });
-  sim.b.forEach((b,i)=>{
-    const bx=(b.r.x-ref.x)*state.pxPerM, by=(b.r.y-ref.y)*state.pxPerM;
-    const rp=Math.max(3,Math.min(10,2+Math.log10(b.m)/3));
-    const grd=ctx.createRadialGradient(bx,by,0,bx,by,rp*3);
-    grd.addColorStop(0,b.c+"66"); grd.addColorStop(1,"transparent");
-    ctx.beginPath(); ctx.arc(bx,by,rp*3,0,Math.PI*2); ctx.fillStyle=grd; ctx.fill();
-    ctx.beginPath(); ctx.arc(bx,by,rp,0,Math.PI*2); ctx.fillStyle=b.c; ctx.fill();
-    if(i===state.heaviestIdx){
-      ctx.beginPath(); ctx.arc(bx,by,rp+5,0,Math.PI*2);
-      ctx.strokeStyle="#ffe596cc"; ctx.lineWidth=2; ctx.stroke();
-    }
-    if(showL){
-      ctx.fillStyle="#eaf2ff";
-      ctx.font="12px 'Space Grotesk',sans-serif";
-      ctx.fillText(b.name,bx+rp+7,by-5);
-    }
-  });
-  ctx.restore();
-  const m=getCurrentMetrics();
-  lastMetrics=m;
-  document.getElementById("E").textContent=isFinite(m.energy)?m.energy.toExponential(4):"--";
-  document.getElementById("L").textContent=isFinite(m.lz)?m.lz.toExponential(4):"--";
-  updateOutputPanel(m);
-  document.getElementById("time").textContent=(state.t/DAY).toFixed(2);
-}
-
-function maybeLog(){
-  if(!state.authenticated) return;
-  if(!document.getElementById("logData").checked) return;
-  const maxR=parseInt(document.getElementById("maxRows").value,10)||5000;
-  if(dataLog.length>=maxR) return;
-  const se=parseFloat(document.getElementById("sampleEvery").value)||1;
-  const tD=state.t/DAY;
-  if(tD-lastLogTimeDays<se) return;
-  lastLogTimeDays=tD;
-  const metrics=getCurrentMetrics();
-  lastMetrics=metrics;
-  sim.b.forEach(b=>{
-    dataLog.push({
-      sapid:student.sapid||"NA",
-      student_name:student.name||"Guest",
-      time_days:tD.toFixed(4),
-      body_name:b.name,
-      x_AU:(b.r.x/AU).toFixed(8),
-      y_AU:(b.r.y/AU).toFixed(8),
-      vx_ms:b.v.x.toFixed(4),
-      vy_ms:b.v.y.toFixed(4),
-      mass_kg:b.m.toExponential(6),
-      energy_j:metrics.energy.toExponential(6),
-      lz_kgm2s:metrics.lz.toExponential(6)
-    });
-  });
-}
-
-let lastFrame=performance.now();
-function loop(now){
-  const elapsed=Math.min((now-lastFrame)/1000,0.1);
-  lastFrame=now;
-  const rate=parseFloat(document.getElementById("simDaysPerSec").value);
-  document.getElementById("simRateVal").textContent=rate.toFixed(1)+" days/s";
-  if(state.playing){
-    const n=parseInt(document.getElementById("substeps").value,10);
-    const dphys=elapsed*rate*DAY/Math.max(1,n);
-    const gSc=parseFloat(document.getElementById("gScale").value)||1;
-    sim.G=G_SI*gSc;
-    for(let i=0;i<n;i++){sim.step(dphys,document.getElementById("integrator").value);state.t+=dphys;}
-    maybeGraphPoint(false);
-    maybeLog();
-  }
-  draw();
+q("loginBtn").addEventListener("click", login);
+q("loginName").addEventListener("keydown", e => { if (e.key === "Enter") q("loginID").focus(); });
+q("loginID").addEventListener("keydown", e => { if (e.key === "Enter") login(); });
+q("skipLogin").addEventListener("click", () => alert("Guest access is disabled. Please log in with Name and SAPID."));
+q("studentBadge").addEventListener("click", reopenLogin);
+q("presetDiffuse").addEventListener("click", () => setPreset("diffuse"));
+q("presetCloud").addEventListener("click", () => setPreset("cloud"));
+q("presetDense").addEventListener("click", () => setPreset("dense"));
+["N","k0","beta","L","refLam","sweepRate","lamMin","lamMax","graphMetric","showTransmission","showRefLine","logData"].forEach(id => {
+  q(id).addEventListener("input", refreshSimulation);
+  q(id).addEventListener("change", refreshSimulation);
+});
+q("playBtn").addEventListener("click", () => {
+  state.playing = !state.playing;
+  q("playBtn").textContent = state.playing ? "Pause Sweep" : "Run Sweep";
+});
+q("stepBtn").addEventListener("click", () => {
+  const nMin = parseFloat(q("N").min);
+  const nMax = parseFloat(q("N").max);
+  const nextN = clamp(parseFloat(q("N").value) + 0.2, nMin, nMax);
+  q("N").value = String(nextN);
+  state.runtime += 0.1;
+  refreshSimulation();
+});
+q("resetBtn").addEventListener("click", resetAll);
+q("resetZoom").addEventListener("click", () => {
+  viewState = { zoomY: 1 };
+  drawSimulation();
+});
+q("summarizeBtn").addEventListener("click", () => {
+  const inp = getInputs();
+  const out = buildSpectrum(inp);
+  q("summary").value = buildSummary(inp, out);
+});
+q("helpBtn").addEventListener("click", openTutor);
+q("closeTutor").addEventListener("click", closeTutor);
+q("tutorModal").addEventListener("click", e => { if (e.target.id === "tutorModal") closeTutor(); });
+q("dlCSV").addEventListener("click", exportCSV);
+q("dlJSON").addEventListener("click", exportJSON);
+q("dlPython").addEventListener("click", exportPython);
+q("clearLogBtn").addEventListener("click", () => {
+  dataLog = [];
+  lastLoggedN = -Infinity;
+  updateDataPreview();
+  q("logCount").textContent = "0";
+});
+q("dlLoginCSV").addEventListener("click", exportLoginCSV);
+q("dlQuizCSV").addEventListener("click", exportQuizCSV);
+q("quizForm").addEventListener("submit", submitQuiz);
+q("askQuizBtn").addEventListener("click", generateAndRenderQuiz);
+q("newQuizBtn").addEventListener("click", generateAndRenderQuiz);
+q("resetQuizBtn").addEventListener("click", resetQuizForm);
+window.addEventListener("resize", () => {
+  resizeAllCanvases();
+  drawSimulation();
   drawLiveGraph();
-  updateDataTab();
-  requestAnimationFrame(loop);
-}
-
-function singleStep(){
-  const gSc=parseFloat(document.getElementById("gScale").value)||1;
-  sim.G=G_SI*gSc;
-  sim.step(DAY,document.getElementById("integrator").value);
-  state.t+=DAY;
-  maybeGraphPoint(true);
-  maybeLog(); draw(); drawLiveGraph();
-}
-
-function resetAllToDefaults(){
-  document.getElementById("integrator").value="VelocityVerlet";
-  document.getElementById("simDaysPerSec").value="40";
-  document.getElementById("substeps").value="6";
-  document.getElementById("gScale").value="1";
-  document.getElementById("showLabels").checked=true;
-  document.getElementById("trackHeaviest").checked=true;
-  document.getElementById("logData").checked=true;
-  document.getElementById("cameraFrame").value="heaviest";
-  document.getElementById("trailLength").value="1200";
-  document.getElementById("trailLenVal").textContent="1200 points";
-  document.getElementById("sampleEvery").value="1";
-  document.getElementById("maxRows").value="5000";
-  document.getElementById("graphMetric").value="energy";
-  state.playing=true;
-  document.getElementById("playBtn").textContent="[||] Pause";
-  dataLog=[];
-  graphLog=[];
-  lastGraphSampleDays=-Infinity;
-  lastLogTimeDays=-Infinity;
-  presetSEM();
-}
-
-let lastPrev=0;
-function updateDataTab(){
-  const now=performance.now();
-  if(now-lastPrev<800) return;
-  lastPrev=now;
-  document.getElementById("logCount").textContent=dataLog.length;
-  document.getElementById("logBodies").textContent=sim.b.length;
-  const ts=dataLog.length>0?(parseFloat(dataLog[dataLog.length-1].time_days)-parseFloat(dataLog[0].time_days)).toFixed(1):"0.0";
-  document.getElementById("logTimeSpan").textContent=ts;
-  const sv=parseFloat(document.getElementById("sampleEvery").value)||1;
-  document.getElementById("logInterval").textContent="Every "+sv+" day"+(sv!==1?"s":"");
-  const tbody=document.getElementById("previewBody");
-  if(!dataLog.length){
-    tbody.innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px">No data yet.</td></tr>';
-    return;
-  }
-  const prev=dataLog.slice(-20);
-  tbody.innerHTML=prev.map(r=>"<tr><td>"+r.time_days+"</td><td>"+r.body_name+"</td><td>"+r.x_AU+"</td><td>"+r.y_AU+"</td><td>"+r.vx_ms+"</td><td>"+r.vy_ms+"</td><td>"+r.mass_kg+"</td></tr>").join("");
-}
-
-function dlBlob(content,fname,mime){
-  const blob=new Blob([content],{type:mime});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement("a");
-  a.href=url; a.download=fname;
-  document.body.appendChild(a); a.click();
-  document.body.removeChild(a); URL.revokeObjectURL(url);
-}
-
-function exportCSV(){
-  if(!state.authenticated){alert("Login required before export.");return;}
-  if(!dataLog.length){alert("No data logged yet.");return;}
-  const h=["sapid","student_name","time_days","body_name","x_AU","y_AU","vx_ms","vy_ms","mass_kg","energy_j","lz_kgm2s"];
-  const rows=dataLog.map(r=>h.map(k=>r[k]).join(","));
-  dlBlob([h.join(","),...rows].join("\n"),"nbody_simulation_data.csv","text/csv");
-}
-
-function exportJSON(){
-  if(!state.authenticated){alert("Login required before export.");return;}
-  if(!dataLog.length){alert("No data logged yet.");return;}
-  const meta={
-    module:"Optical Depth Interstellar Medium Simulator",version:"3.0",
-    generated:new Date().toISOString(),
-    integrator:document.getElementById("integrator").value,
-    gScale:parseFloat(document.getElementById("gScale").value),
-    bodies:sim.b.map(b=>({name:b.name,mass_kg:b.m})),
-    data:dataLog
-  };
-  dlBlob(JSON.stringify(meta,null,2),"nbody_simulation_data.json","application/json");
-}
-
-function exportPython(){
-  if(!state.authenticated){alert("Login required before export.");return;}
-  const py=`#!/usr/bin/env python3
-"""
-Optical Depth Interstellar Medium Simulator - Analysis Starter Script
-Generated by: Optical Depth Interstellar Medium Simulator v3.0 (AI-assisted module)
-Requirements: pip install pandas matplotlib numpy
-Usage:        python analyse_simulation.py
-"""
-import pandas as pd
-import matplotlib.pyplot as plt
-import numpy as np
-
-df = pd.read_csv("nbody_simulation_data.csv")
-bodies = df["body_name"].unique()
-print(f"Bodies: {list(bodies)}")
-print(f"Time range: {df['time_days'].min():.1f} - {df['time_days'].max():.1f} days")
-print(f"Total rows: {len(df)}")
-
-colors = ["#ffd27f","#66afff","#dff5ff","#9be7a2"]
-fig, axes = plt.subplots(1, 2, figsize=(14, 6), facecolor="#070d1a")
-
-ax1 = axes[0]
-ax1.set_facecolor("#0b1d3f")
-ax1.set_title("Simulation Output", color="white", fontsize=13)
-ax1.set_xlabel("x (AU)", color="#8fb5d9")
-ax1.set_ylabel("y (AU)", color="#8fb5d9")
-ax1.tick_params(colors="#8fb5d9")
-for spine in ax1.spines.values(): spine.set_edgecolor("#355b87")
-for i, body in enumerate(bodies):
-    bd = df[df["body_name"] == body]
-    ax1.plot(pd.to_numeric(bd["x_AU"]), pd.to_numeric(bd["y_AU"]),
-             label=body, color=colors[i % len(colors)], linewidth=1.2)
-    ax1.scatter(pd.to_numeric(bd["x_AU"]).iloc[-1], pd.to_numeric(bd["y_AU"]).iloc[-1],
-                color=colors[i % len(colors)], s=40, zorder=5)
-ax1.legend(facecolor="#0b1d3f", labelcolor="white", fontsize=9)
-ax1.set_aspect("equal")
-ax1.grid(True, alpha=0.15)
-
-ax2 = axes[1]
-ax2.set_facecolor("#0b1d3f")
-ax2.set_title("Speed vs Time", color="white", fontsize=13)
-ax2.set_xlabel("Time (days)", color="#8fb5d9")
-ax2.set_ylabel("Speed (m/s)", color="#8fb5d9")
-ax2.tick_params(colors="#8fb5d9")
-for spine in ax2.spines.values(): spine.set_edgecolor("#355b87")
-for i, body in enumerate(bodies):
-    bd = df[df["body_name"] == body].copy()
-    bd["speed"] = np.sqrt(pd.to_numeric(bd["vx_ms"])**2 + pd.to_numeric(bd["vy_ms"])**2)
-    ax2.plot(pd.to_numeric(bd["time_days"]), bd["speed"],
-             label=body, color=colors[i % len(colors)], linewidth=1.0)
-ax2.legend(facecolor="#0b1d3f", labelcolor="white", fontsize=9)
-ax2.grid(True, alpha=0.15)
-
-plt.tight_layout()
-plt.savefig("simulation_output.png", dpi=150, bbox_inches="tight", facecolor="#070d1a")
-plt.show()
-print("Plot saved to simulation_output.png")
-
-if len(bodies) >= 2:
-    earth = df[df["body_name"] == bodies[1]].copy()
-    earth["y"] = pd.to_numeric(earth["y_AU"])
-    earth["t"] = pd.to_numeric(earth["time_days"])
-    crossings = earth[(earth["y"].shift(1) < 0) & (earth["y"] >= 0)]["t"].values
-    if len(crossings) >= 2:
-        period = np.mean(np.diff(crossings))
-        print("Characteristic timescale estimate generated from available data.")
-`;
-  dlBlob(py,"analyse_simulation.py","text/plain");
-}
-
-// Tab switching
-document.querySelectorAll(".tabBar button").forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    document.querySelectorAll(".tabBar button").forEach(b=>b.classList.remove("active"));
-    document.querySelectorAll(".tabPanel").forEach(p=>p.classList.remove("active"));
-    btn.classList.add("active");
-    document.getElementById(btn.dataset.tab).classList.add("active");
-    if(btn.dataset.tab==="tab-sim"){
-      setTimeout(()=>{resize();resizeGraph();drawLiveGraph();},30);
-    }
-  });
 });
-
-// Login
-function setStudent(name,id){
-  student.name=name||"Guest";
-  student.sapid=id||"";
-  const label=student.name+(student.sapid?" - "+student.sapid:"");
-  document.getElementById("studentBadge").textContent="[User] "+label;
-  document.getElementById("footerStudent").textContent=label+" - session active";
-  document.getElementById("studentIdentityLine").textContent="Student: "+student.name+" | SAPID: "+(student.sapid||"NA")+" | Topic: Optical Depth and Interstellar Dust";
-  try{localStorage.setItem("nbody_sn",name);localStorage.setItem("nbody_si",id);}catch(e){}
-}
-function showApp(){
-  document.getElementById("loginOverlay").classList.add("hidden");
-  document.getElementById("appShell").style.visibility="visible";
-}
-document.getElementById("loginBtn").addEventListener("click",()=>{
-  const name=document.getElementById("loginName").value.trim();
-  const sapid=document.getElementById("loginID").value.trim();
-  if(!name){document.getElementById("loginName").focus();return;}
-  if(!sapid){document.getElementById("loginID").focus();return;}
-  state.authenticated=true;
-  setStudent(name,sapid);
-  recordLogin(name,sapid);
-  showApp();
-});
-document.getElementById("loginName").addEventListener("keydown",e=>{if(e.key==="Enter") document.getElementById("loginID").focus();});
-document.getElementById("loginID").addEventListener("keydown",e=>{if(e.key==="Enter") document.getElementById("loginBtn").click();});
-document.getElementById("skipLogin").addEventListener("click",()=>{
-  alert("Guest access is disabled. Please log in with Name and SAPID.");
-});
-document.getElementById("studentBadge").addEventListener("click",()=>{
-  document.getElementById("loginOverlay").classList.remove("hidden");
-});
-try{
-  const sn=localStorage.getItem("nbody_sn"),si=localStorage.getItem("nbody_si");
-  if(sn){document.getElementById("loginName").value=sn||"";document.getElementById("loginID").value=si||"";}
-}catch(e){}
-
-function buildTutorMessage(){
-  const activeBtn=document.querySelector(".tabBar button.active");
-  const activeTabLabel=activeBtn?activeBtn.textContent.replace(/\s+/g," ").trim():"Simulation";
-  const metric=document.getElementById("graphMetric").value;
-  const integrator=document.getElementById("integrator").value;
-  const bodies=sim.b.length;
-  const tDays=(state.t/DAY).toFixed(2);
-  const tips=[];
-  tips.push("Topic: Optical Depth and Interstellar Dust");
-  tips.push("Active tab: "+activeTabLabel);
-  tips.push("Current integrator: "+integrator);
-  tips.push("Bodies in simulation: "+bodies);
-  tips.push("Simulation time: "+tDays+" days");
-  tips.push("Graph currently plotting: "+metric+" vs time");
-  tips.push("");
-  if(integrator==="Euler"){
-    tips.push("Tutor note: Euler is first-order and can accumulate numerical error over long runs.");
-    tips.push("Try a higher-accuracy method and compare stability metrics across runs.");
-  }else if(integrator==="RK4"){
-    tips.push("Tutor note: RK4 is accurate per step but still requires consistency checks in long integrations.");
-    tips.push("For long runs, compare RK4 with your baseline method for drift behavior.");
-  }else{
-    tips.push("Tutor note: Your baseline method should be the one showing the best stability for this unit task.");
-    tips.push("Use this as your reference method for consistency checks.");
-  }
-  tips.push("");
-  tips.push("Suggested next actions:");
-  tips.push("1) Run a full baseline scenario for sufficient duration.");
-  tips.push("2) Switch graph metric between available diagnostics.");
-  tips.push("3) Export CSV and verify student fields plus analysis columns.");
-  return tips.join("\n");
-}
-
-function openTutor(){
-  document.getElementById("tutorBody").textContent=buildTutorMessage();
-  document.getElementById("tutorModal").classList.add("show");
-}
-
-function closeTutor(){
-  document.getElementById("tutorModal").classList.remove("show");
-}
-
-// Bindings
-document.getElementById("presetSEM").addEventListener("click",presetSEM);
-document.getElementById("presetSE").addEventListener("click",presetSE);
-document.getElementById("applyBodies").addEventListener("click",configureBodiesFromInputs);
-document.getElementById("playBtn").addEventListener("click",()=>{
-  state.playing=!state.playing;
-  document.getElementById("playBtn").textContent=state.playing?"[||] Pause":"[>] Run";
-});
-document.getElementById("stepBtn").addEventListener("click",singleStep);
-document.getElementById("resetBtn").addEventListener("click",resetAllToDefaults);
-document.getElementById("resetZoom").addEventListener("click",()=>{
-  state.pxPerM=state.basePxPerM;state.panOffset={x:0,y:0};updateZoom();
-});
-document.getElementById("dlCSV").addEventListener("click",exportCSV);
-document.getElementById("dlJSON").addEventListener("click",exportJSON);
-document.getElementById("dlPython").addEventListener("click",exportPython);
-document.getElementById("clearLogBtn").addEventListener("click",()=>{dataLog=[];lastLogTimeDays=-Infinity;});
-document.getElementById("helpBtn").addEventListener("click",openTutor);
-document.getElementById("closeTutor").addEventListener("click",closeTutor);
-document.getElementById("tutorModal").addEventListener("click",(e)=>{if(e.target.id==="tutorModal") closeTutor();});
-document.getElementById("graphMetric").addEventListener("change",drawLiveGraph);
-document.getElementById("quizForm").addEventListener("submit",submitQuiz);
-document.getElementById("resetQuizBtn").addEventListener("click",resetQuizForm);
-document.getElementById("askQuizBtn").addEventListener("click",generateAndRenderQuiz);
-document.getElementById("newQuizBtn").addEventListener("click",generateAndRenderQuiz);
-document.getElementById("dlLoginCSV").addEventListener("click",exportLoginCSV);
-document.getElementById("dlQuizCSV").addEventListener("click",exportQuizCSV);
-window.addEventListener("resize",resizeGraph);
-
-loadPersistentLogs();
+canvas.addEventListener("wheel", e => {
+  e.preventDefault();
+  const factor = e.deltaY < 0 ? 1.12 : 1 / 1.12;
+  viewState.zoomY = clamp(viewState.zoomY * factor, 0.6, 5);
+  drawSimulation();
+}, { passive: false });
+loadPersistent();
 updateLoginAuditUI();
 updateQuizAttemptUI();
 renderQuizQuestions();
-presetSEM();
-resizeGraph();
-// removed loop start
+resizeAllCanvases();
+resetAll();
+drawSimulation();
+drawLiveGraph();
+if (window.MathJax && window.MathJax.typesetPromise) window.MathJax.typesetPromise();
+requestAnimationFrame(animate);
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
