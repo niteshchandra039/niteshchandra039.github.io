@@ -278,6 +278,31 @@ permalink: /teaching/
     border: 1px solid #c8daf8;
   }
 
+  .update-tag {
+    display: inline-block;
+    margin-bottom: 10px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    border: 1px solid #d6e2f4;
+    background: #f4f8ff;
+    color: #4a6386;
+    font-size: 0.73em;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+
+  .group-divider {
+    margin-top: 8px;
+    padding-top: 10px;
+    border-top: 1px solid #cfdbec;
+    border-bottom: none !important;
+    font-size: 0.78em;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #4f6787;
+  }
+
   a:focus-visible,
   button:focus-visible,
   summary:focus-visible {
@@ -350,6 +375,7 @@ permalink: /teaching/
   <ul class="interactive-list">
     <li class="interactive-card">
       <span class="card-title">Course-wise AI Simulation Library</span>
+      <span class="update-tag">Last updated: May 2026</span>
       <p style="margin-bottom: 12px; color: #4a5568; font-size: 0.95em;">
         Simulations are organized below by course/module for quicker access during lecture and lab sessions.
       </p>
@@ -360,35 +386,35 @@ permalink: /teaching/
           <ul class="sub-list" style="margin-top: 8px;">
             <li>
               <span class="lecture-title">Simulation Hub (all Unit modules)</span>
-              <a href="/resources/AI_simulations/phys4022p_llm_sim_hub.html" class="btn-link" target="_blank">🌐 Open Hub</a>
+              <a href="/resources/AI_simulations/phys4022p_llm_sim_hub.html" class="btn-link" target="_blank">Open</a>
             </li>
             <li>
               <span class="lecture-title">Unit 1: N-Body Orbits</span>
-              <a href="/resources/AI_simulations/simple_nbody_orbits.html" class="btn-link" target="_blank">🌐 Lab</a>
+              <a href="/resources/AI_simulations/simple_nbody_orbits.html" class="btn-link" target="_blank">Open Lab</a>
             </li>
             <li>
               <span class="lecture-title">Unit 2: Blackbody Radiation</span>
-              <a href="/resources/AI_simulations/blackbody_radiation_ai_lab.html" class="btn-link" target="_blank">🌐 Lab</a>
-              <a href="/resources/AI_simulations/blackbody_radiation_ai_core.html" class="btn-link" target="_blank">🧩 Core</a>
+              <a href="/resources/AI_simulations/blackbody_radiation_ai_lab.html" class="btn-link" target="_blank">Open Lab</a>
+              <a href="/resources/AI_simulations/blackbody_radiation_ai_core.html" class="btn-link" target="_blank">Open Core</a>
             </li>
             <li>
               <span class="lecture-title">Unit 3: H-R Diagram</span>
-              <a href="/resources/AI_simulations/hr_diagram_socratic_lab.html" class="btn-link" target="_blank">🌐 Lab</a>
-              <a href="/resources/AI_simulations/hr_diagram_socratic_core.html" class="btn-link" target="_blank">🧩 Core</a>
+              <a href="/resources/AI_simulations/hr_diagram_socratic_lab.html" class="btn-link" target="_blank">Open Lab</a>
+              <a href="/resources/AI_simulations/hr_diagram_socratic_core.html" class="btn-link" target="_blank">Open Core</a>
             </li>
             <li>
               <span class="lecture-title">Unit 4: Optical Depth & Dust</span>
-              <a href="/resources/AI_simulations/optical_depth_ai_lab.html" class="btn-link" target="_blank">🌐 Lab</a>
-              <a href="/resources/AI_simulations/optical_depth_ai_core.html" class="btn-link" target="_blank">🧩 Core</a>
+              <a href="/resources/AI_simulations/optical_depth_ai_lab.html" class="btn-link" target="_blank">Open Lab</a>
+              <a href="/resources/AI_simulations/optical_depth_ai_core.html" class="btn-link" target="_blank">Open Core</a>
             </li>
             <li>
               <span class="lecture-title">Unit 5: Hubble Law & Cosmology</span>
-              <a href="/resources/AI_simulations/hubble_law_debate_lab.html" class="btn-link" target="_blank">🌐 Lab</a>
-              <a href="/resources/AI_simulations/hubble_law_debate_core.html" class="btn-link" target="_blank">🧩 Core</a>
+              <a href="/resources/AI_simulations/hubble_law_debate_lab.html" class="btn-link" target="_blank">Open Lab</a>
+              <a href="/resources/AI_simulations/hubble_law_debate_core.html" class="btn-link" target="_blank">Open Core</a>
             </li>
             <li>
               <span class="lecture-title">Motion Gravity Lab (Bridge Activity)</span>
-              <a href="/resources/AI_simulations/motion_gravity_lab.html" class="btn-link" target="_blank">🌐 Open</a>
+              <a href="/resources/AI_simulations/motion_gravity_lab.html" class="btn-link" target="_blank">Open Lab</a>
             </li>
           </ul>
         </div>
@@ -398,19 +424,19 @@ permalink: /teaching/
           <ul class="sub-list" style="margin-top: 8px;">
             <li>
               <span class="lecture-title">PN Junction Diode</span>
-              <a href="/resources/AI_simulations/pn-diode.html" class="btn-link" target="_blank">🌐 Open Simulation</a>
+              <a href="/resources/AI_simulations/pn-diode.html" class="btn-link" target="_blank">Open</a>
             </li>
             <li>
               <span class="lecture-title">Hall Effect</span>
-              <a href="/resources/AI_simulations/hall-effect.html" class="btn-link" target="_blank">🌐 Open Simulation</a>
+              <a href="/resources/AI_simulations/hall-effect.html" class="btn-link" target="_blank">Open</a>
             </li>
             <li>
               <span class="lecture-title">Quantum Hall Effect</span>
-              <a href="/resources/AI_simulations/quantum-hall-effect.html" class="btn-link" target="_blank">🌐 Open Simulation</a>
+              <a href="/resources/AI_simulations/quantum-hall-effect.html" class="btn-link" target="_blank">Open</a>
             </li>
             <li>
               <span class="lecture-title">Gravity Module (General Interactive Physics)</span>
-              <a href="/resources/AI_simulations/gravity_module.html" class="btn-link" target="_blank">🌐 Open Module</a>
+              <a href="/resources/AI_simulations/gravity_module.html" class="btn-link" target="_blank">Open</a>
             </li>
           </ul>
         </div>
@@ -420,15 +446,15 @@ permalink: /teaching/
           <ul class="sub-list" style="margin-top: 8px;">
             <li>
               <span class="lecture-title">Lagrangian vs Eulerian Animation</span>
-              <a href="/resources/computational_astrophysics/lag_vs_eul.html" class="btn-link" target="_blank">🌐 Open Simulation</a>
+              <a href="/resources/computational_astrophysics/lag_vs_eul.html" class="btn-link" target="_blank">Open</a>
             </li>
             <li>
               <span class="lecture-title">Supernova Shockwave Animation</span>
-              <a href="/resources/computational_astrophysics/supernova_shockwave.html" class="btn-link" target="_blank">🌐 Open Simulation</a>
+              <a href="/resources/computational_astrophysics/supernova_shockwave.html" class="btn-link" target="_blank">Open</a>
             </li>
             <li>
               <span class="lecture-title">Supernova Shockwave Animation 1</span>
-              <a href="/resources/computational_astrophysics/shockwave_1.html" class="btn-link" target="_blank">🌐 Open Simulation</a>
+              <a href="/resources/computational_astrophysics/shockwave_1.html" class="btn-link" target="_blank">Open</a>
             </li>
           </ul>
         </div>
@@ -443,153 +469,158 @@ permalink: /teaching/
   <ul class="interactive-list">
     <li class="interactive-card">
       <span class="card-title">Computational Astrophysics (M.Sc.)</span>
+      <span class="update-tag">Notebook index refreshed: May 2026</span>
       <details>
         <summary>View Lecture Notebooks & Materials</summary>
         <ul class="sub-list">
+          <li class="group-divider">Foundations · Lectures 1-7</li>
           <li>
             <span class="lecture-title">Lecture 1</span>
             <div>
-              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational%20Astrophysics%20-%20Lect%201.ipynb" class="btn-link" target="_blank">🌐 View in Browser</a>
-              <a href="/resources/computational_astrophysics/Computational%20Astrophysics%20-%20Lect%201.ipynb" class="btn-link" target="_blank">⬇️ Download .ipynb</a>
+              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational%20Astrophysics%20-%20Lect%201.ipynb" class="btn-link" target="_blank">View</a>
+              <a href="/resources/computational_astrophysics/Computational%20Astrophysics%20-%20Lect%201.ipynb" class="btn-link" target="_blank">Download</a>
             </div>
           </li>
           <li>
             <span class="lecture-title">Lecture 2: Data Sorting Algorithms</span>
             <div>
-              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational%20Astrophysics%20Lecture%202_%20Data%20Sorting%20Algorithms%20in%20Python.ipynb" class="btn-link" target="_blank">🌐 View in Browser</a>
-              <a href="/resources/computational_astrophysics/Computational%20Astrophysics%20Lecture%202_%20Data%20Sorting%20Algorithms%20in%20Python.ipynb" class="btn-link" target="_blank">⬇️ Download .ipynb</a>
+              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational%20Astrophysics%20Lecture%202_%20Data%20Sorting%20Algorithms%20in%20Python.ipynb" class="btn-link" target="_blank">View</a>
+              <a href="/resources/computational_astrophysics/Computational%20Astrophysics%20Lecture%202_%20Data%20Sorting%20Algorithms%20in%20Python.ipynb" class="btn-link" target="_blank">Download</a>
             </div>
           </li>
           <li>
             <span class="lecture-title">Lecture 3</span>
             <div>
-              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational%20Astrophysics%20-%20Lecture%203.ipynb" class="btn-link" target="_blank">🌐 View in Browser</a>
-              <a href="/resources/computational_astrophysics/Computational%20Astrophysics%20-%20Lecture%203.ipynb" class="btn-link" target="_blank">⬇️ Download .ipynb</a>
+              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational%20Astrophysics%20-%20Lecture%203.ipynb" class="btn-link" target="_blank">View</a>
+              <a href="/resources/computational_astrophysics/Computational%20Astrophysics%20-%20Lecture%203.ipynb" class="btn-link" target="_blank">Download</a>
             </div>
           </li>
           <li>
             <span class="lecture-title">Lecture 4 & 5</span>
             <div>
-              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational%20Astrophysics%20-%20Lecture%204%20%26%205.ipynb" class="btn-link" target="_blank">🌐 View in Browser</a>
-              <a href="/resources/computational_astrophysics/Computational%20Astrophysics%20-%20Lecture%204%20%26%205.ipynb" class="btn-link" target="_blank">⬇️ Download .ipynb</a>
+              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational%20Astrophysics%20-%20Lecture%204%20%26%205.ipynb" class="btn-link" target="_blank">View</a>
+              <a href="/resources/computational_astrophysics/Computational%20Astrophysics%20-%20Lecture%204%20%26%205.ipynb" class="btn-link" target="_blank">Download</a>
             </div>
           </li>
           <li>
             <span class="lecture-title">Lecture 6</span>
             <div>
-              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational%20Astrophysics%20Lecture%206.ipynb" class="btn-link" target="_blank">🌐 View in Browser</a>
-              <a href="/resources/computational_astrophysics/Computational%20Astrophysics%20Lecture%206.ipynb" class="btn-link" target="_blank">⬇️ Download .ipynb</a>
+              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational%20Astrophysics%20Lecture%206.ipynb" class="btn-link" target="_blank">View</a>
+              <a href="/resources/computational_astrophysics/Computational%20Astrophysics%20Lecture%206.ipynb" class="btn-link" target="_blank">Download</a>
             </div>
           </li>
           <li>
             <span class="lecture-title">Lecture 7</span>
             <div>
-              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational%20Astrophysics%20Lecture%207.ipynb" class="btn-link" target="_blank">🌐 View in Browser</a>
-              <a href="/resources/computational_astrophysics/Computational%20Astrophysics%20Lecture%207.ipynb" class="btn-link" target="_blank">⬇️ Download .ipynb</a>
+              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational%20Astrophysics%20Lecture%207.ipynb" class="btn-link" target="_blank">View</a>
+              <a href="/resources/computational_astrophysics/Computational%20Astrophysics%20Lecture%207.ipynb" class="btn-link" target="_blank">Download</a>
             </div>
           </li>
+          <li class="group-divider">Methods And Modeling · Lectures 11-17</li>
           <li>
             <span class="lecture-title">Lecture 11: Error Analysis</span>
             <div>
-              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational%20Astrophysics%20Lect%2011_%20Error%20Analysis.ipynb" class="btn-link" target="_blank">🌐 View in Browser</a>
-              <a href="/resources/computational_astrophysics/Computational%20Astrophysics%20Lect%2011_%20Error%20Analysis.ipynb" class="btn-link" target="_blank">⬇️ Download .ipynb</a>
+              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational%20Astrophysics%20Lect%2011_%20Error%20Analysis.ipynb" class="btn-link" target="_blank">View</a>
+              <a href="/resources/computational_astrophysics/Computational%20Astrophysics%20Lect%2011_%20Error%20Analysis.ipynb" class="btn-link" target="_blank">Download</a>
             </div>
           </li>
           <li>
             <span class="lecture-title">Lecture 13: ODEs and Euler's Method</span>
             <div>
-              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational%20Astrophysics%20Lect%2013_%20ODEs%20and%20Euler_s%20Method%20Lecture.ipynb" class="btn-link" target="_blank">🌐 View in Browser</a>
-              <a href="/resources/computational_astrophysics/Computational%20Astrophysics%20Lect%2013_%20ODEs%20and%20Euler_s%20Method%20Lecture.ipynb" class="btn-link" target="_blank">⬇️ Download .ipynb</a>
+              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational%20Astrophysics%20Lect%2013_%20ODEs%20and%20Euler_s%20Method%20Lecture.ipynb" class="btn-link" target="_blank">View</a>
+              <a href="/resources/computational_astrophysics/Computational%20Astrophysics%20Lect%2013_%20ODEs%20and%20Euler_s%20Method%20Lecture.ipynb" class="btn-link" target="_blank">Download</a>
             </div>
           </li>
           <li>
             <span class="lecture-title">Lecture 17: PDEs</span>
             <div>
-              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational_Astrophysics_lecture_17_PDE_.ipynb" class="btn-link" target="_blank">🌐 View in Browser</a>
-              <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_17_PDE_.ipynb" class="btn-link" target="_blank">⬇️ Download .ipynb</a>
+              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational_Astrophysics_lecture_17_PDE_.ipynb" class="btn-link" target="_blank">View</a>
+              <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_17_PDE_.ipynb" class="btn-link" target="_blank">Download</a>
             </div>
           </li>
+          <li class="group-divider">Advanced Applications · Lectures 19-26</li>
           <li>
             <span class="lecture-title">Lecture 19</span>
             <div>
-              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational_Astrophysics_lecture_19.ipynb" class="btn-link" target="_blank">🌐 View in Browser</a>
-              <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_19.ipynb" class="btn-link" target="_blank">⬇️ Download .ipynb</a>
+              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational_Astrophysics_lecture_19.ipynb" class="btn-link" target="_blank">View</a>
+              <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_19.ipynb" class="btn-link" target="_blank">Download</a>
             </div>
           </li>
           <li>
             <span class="lecture-title">Lecture 20</span>
             <div>
-              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational_Astrophysics_lecture_20.ipynb" class="btn-link" target="_blank">🌐 View in Browser</a>
-              <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_20.ipynb" class="btn-link" target="_blank">⬇️ Download .ipynb</a>
+              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational_Astrophysics_lecture_20.ipynb" class="btn-link" target="_blank">View</a>
+              <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_20.ipynb" class="btn-link" target="_blank">Download</a>
             </div>
           </li>
           <li>
             <span class="lecture-title">Lecture 21: Curve Fitting</span>
             <div>
-              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational_Astrophysics_lecture_21.ipynb" class="btn-link" target="_blank">🌐 View in Browser</a>
-              <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_21.ipynb" class="btn-link" target="_blank">⬇️ Download .ipynb</a>
+              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational_Astrophysics_lecture_21.ipynb" class="btn-link" target="_blank">View</a>
+              <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_21.ipynb" class="btn-link" target="_blank">Download</a>
             </div>
           </li>
           <li>
             <span class="lecture-title">Lecture 22: Fourier Transforms</span>
             <div>
-              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational_Astrophysics_lecture_22.ipynb" class="btn-link" target="_blank">🌐 View in Browser</a>
-              <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_22.ipynb" class="btn-link" target="_blank">⬇️ Download .ipynb</a>
+              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational_Astrophysics_lecture_22.ipynb" class="btn-link" target="_blank">View</a>
+              <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_22.ipynb" class="btn-link" target="_blank">Download</a>
             </div>
           </li>
           <li>
             <span class="lecture-title">Lecture 23: 2 Body Problem</span>
             <div>
-              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational_Astrophysics_lecture_23.ipynb" class="btn-link" target="_blank">🌐 View in Browser</a>
-              <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_23.ipynb" class="btn-link" target="_blank">⬇️ Download .ipynb</a>
+              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational_Astrophysics_lecture_23.ipynb" class="btn-link" target="_blank">View</a>
+              <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_23.ipynb" class="btn-link" target="_blank">Download</a>
             </div>
           </li>
           <li>
             <span class="lecture-title">Lecture 24: N Body Problem</span>
             <div>
-              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational_Astrophysics_lecture_24.ipynb" class="btn-link" target="_blank">🌐 View in Browser</a>
-              <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_24.ipynb" class="btn-link" target="_blank">⬇️ Download .ipynb</a>
+              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational_Astrophysics_lecture_24.ipynb" class="btn-link" target="_blank">View</a>
+              <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_24.ipynb" class="btn-link" target="_blank">Download</a>
             </div>
           </li>
           <li>
             <span class="lecture-title">Lecture 25A: Monte Carlo Methods</span>
             <div>
-              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational_Astrophysics_lecture_25A.ipynb" class="btn-link" target="_blank">🌐 View in Browser</a>
-              <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_25A.ipynb" class="btn-link" target="_blank">⬇️ Download .ipynb</a>
+              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational_Astrophysics_lecture_25A.ipynb" class="btn-link" target="_blank">View</a>
+              <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_25A.ipynb" class="btn-link" target="_blank">Download</a>
             </div>
           </li>
           <li>
             <span class="lecture-title">Lecture 25B: Monte Carlo Methods</span>
             <div>
-              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational_Astrophysics_lecture_25.ipynb" class="btn-link" target="_blank">🌐 View in Browser</a>
-              <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_25.ipynb" class="btn-link" target="_blank">⬇️ Download .ipynb</a>
+              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational_Astrophysics_lecture_25.ipynb" class="btn-link" target="_blank">View</a>
+              <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_25.ipynb" class="btn-link" target="_blank">Download</a>
             </div>
           </li>
           <li>
             <span class="lecture-title">Lecture 26: Shockwave Propagation</span>
             <div>
-              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational_Astrophysics_lecture_26.ipynb" class="btn-link" target="_blank">🌐 View in Browser</a>
-              <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_26.ipynb" class="btn-link" target="_blank">⬇️ Download .ipynb</a>
+              <a href="https://nbviewer.org/github/niteshchandra039/niteshchandra039.github.io/blob/main/resources/computational_astrophysics/Computational_Astrophysics_lecture_26.ipynb" class="btn-link" target="_blank">View</a>
+              <a href="/resources/computational_astrophysics/Computational_Astrophysics_lecture_26.ipynb" class="btn-link" target="_blank">Download</a>
             </div>
           </li>
+          <li class="group-divider">Visual Explainers</li>
           <li>
             <span class="lecture-title">Lagrangian vs Eulerian </span>
             <div>
-              <a href="/resources/computational_astrophysics/lag_vs_eul.html" class="btn-link" target="_blank"> Animation Page</a>
+              <a href="/resources/computational_astrophysics/lag_vs_eul.html" class="btn-link" target="_blank">Open</a>
             </div>
           </li>
 
           <li>
             <span class="lecture-title">Supernova Shockwave Animation</span>
             <div>
-              <a href="/resources/computational_astrophysics/supernova_shockwave.html" class="btn-link" target="_blank"> Supernova Shockwave Animation</a>
+              <a href="/resources/computational_astrophysics/supernova_shockwave.html" class="btn-link" target="_blank">Open</a>
             </div>
           </li>
 
           <li>
             <span class="lecture-title">Supernova Shockwave Animation 1 </span>
             <div>
-              <a href="/resources/computational_astrophysics/shockwave_1.html" class="btn-link" target="_blank"> Animation Page</a>
+              <a href="/resources/computational_astrophysics/shockwave_1.html" class="btn-link" target="_blank">Open</a>
             </div>
           </li>
 
@@ -603,10 +634,11 @@ permalink: /teaching/
 
     <li class="interactive-card">
       <span class="card-title">Computational Techniques (B.Sc. Physics)</span>
+      <span class="update-tag">Last updated: May 2026</span>
       <div>
-        <a href="/resources/computational_techniques/python_notes.pdf" class="btn-link" target="_blank">📄 Python Notes (PDF)</a>
-        <a href="/resources/computational_techniques/Python_learning/python_notes_updated.ipynb" class="btn-link" target="_blank">📓 Jupyter Notebooks</a>
-        <a href="https://colab.research.google.com/drive/1W0J-ll0QylMYLvjRHqHGANBbj2ApXnIr?usp=sharing" class="btn-link" target="_blank">☁️ Google Colab Link</a>
+        <a href="/resources/computational_techniques/python_notes.pdf" class="btn-link" target="_blank">Open PDF</a>
+        <a href="/resources/computational_techniques/Python_learning/python_notes_updated.ipynb" class="btn-link" target="_blank">Open Notebook</a>
+        <a href="https://colab.research.google.com/drive/1W0J-ll0QylMYLvjRHqHGANBbj2ApXnIr?usp=sharing" class="btn-link" target="_blank">Open Colab</a>
       </div>
       <p style="font-size: 0.85em; color: #718096; margin-top: 10px; margin-bottom: 0;">
         <em>*Use ctrl+s to save and open Notebooks in Jupyter Lab or VS Code.*</em>
@@ -615,31 +647,33 @@ permalink: /teaching/
 
     <li class="interactive-card">
       <span class="card-title">Laboratory & Specialized Courses</span>
+      <span class="update-tag">Last updated: May 2026</span>
       <div style="display: flex; flex-direction: column; gap: 10px;">
         <div>
           <strong>Intro to Computational Physics Lab (Int. B.Sc. + M.Sc.):</strong>
-          <a href="/resources/computational_physics_lab/lab_manual_1.pdf" class="btn-link" target="_blank">📄 Lab Manual (PDF)</a>
+          <a href="/resources/computational_physics_lab/lab_manual_1.pdf" class="btn-link" target="_blank">Open PDF</a>
         </div>
         <div>
           <strong>Learning LaTeX:</strong>
-          <a href="/resources/LearnLaTeX.pdf" class="btn-link" target="_blank">📄 LaTeX Tutorial (PDF)</a>
+          <a href="/resources/LearnLaTeX.pdf" class="btn-link" target="_blank">Open PDF</a>
         </div>
         <div>
           <strong>Computational Physics (M.Sc. Level):</strong>
-          <a href="/resources/computational_physics/Introduction_to_computational_physics_23_May.pdf" class="btn-link" target="_blank">📄 Intro to Computational Physics (PDF)</a>
+          <a href="/resources/computational_physics/Introduction_to_computational_physics_23_May.pdf" class="btn-link" target="_blank">Open PDF</a>
         </div>
         <div>
           <strong>Observational Astronomy Lab (B.Sc. Physics):</strong>
-          <a href="/resources/observational_astronomy_lab/Observational_Astronomy_Handbook.pdf" class="btn-link" target="_blank">📄 Lab Manual (PDF)</a>
+          <a href="/resources/observational_astronomy_lab/Observational_Astronomy_Handbook.pdf" class="btn-link" target="_blank">Open PDF</a>
         </div>
       </div>
     </li>
 
     <li class="interactive-card">
       <span class="card-title">Fundamentals of Astronomy (B.Sc. Physics)</span>
+      <span class="update-tag">Last updated: May 2026</span>
       <div>
-        <a href="/resources/fundamentals_of_astronomy/Astronomy_Notes.pdf" class="btn-link" target="_blank">📄 Lecture Notes (PDF)</a>
-        <a href="/resources/fundamentals_of_astronomy/assignment.pdf" class="btn-link" target="_blank">📝 Problem Sets (PDF)</a>
+        <a href="/resources/fundamentals_of_astronomy/Astronomy_Notes.pdf" class="btn-link" target="_blank">Open Notes</a>
+        <a href="/resources/fundamentals_of_astronomy/assignment.pdf" class="btn-link" target="_blank">Open Problem Set</a>
       </div>
     </li>
   </ul>
