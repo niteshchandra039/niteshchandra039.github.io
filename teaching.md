@@ -30,7 +30,7 @@ permalink: /teaching/
     font-family: "Manrope", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     color: var(--text);
     line-height: 1.65;
-    font-size: 16px;
+    font-size: 12px;
     max-width: 980px;
     margin: 0 auto;
     padding: 10px 0 30px;
