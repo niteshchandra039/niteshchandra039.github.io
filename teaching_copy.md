@@ -62,7 +62,7 @@ permalink: /teaching/
 
   .hero h1 {
     font-family: "DM Serif Display", Georgia, serif;
-    font-size: clamp(2rem, 4.6vw, 3rem);
+    font-size: clamp(1.5rem, 3.6vw, 2rem);
     line-height: 1.15;
     margin: 12px 0 8px;
     color: #10253f;
