@@ -200,6 +200,27 @@
     }
 
     #studentBadge:hover { background: rgba(89,208,255,.2); }
+    .hubBtn{
+      display:inline-flex;align-items:center;gap:6px;
+      background:rgba(255,173,109,.12);border:1px solid rgba(255,173,109,.35);
+      color:var(--accent2);padding:5px 13px;border-radius:8px;font-size:12px;font-weight:600;
+      text-decoration:none;transition:background .2s;white-space:nowrap;flex-shrink:0;
+    }
+    .hubBtn:hover{background:rgba(255,173,109,.22)}
+    .quizProgressShell{margin-top:12px;padding:12px;border-radius:10px;border:1px solid rgba(89,208,255,.18);background:linear-gradient(180deg,rgba(89,208,255,.10),rgba(255,173,109,.06));}
+    .quizProgressHead{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:10px;}
+    .quizProgressBar{height:12px;border-radius:999px;overflow:hidden;background:rgba(8,20,38,.78);border:1px solid rgba(143,181,217,.16);}
+    .quizProgressFill{height:100%;width:10%;border-radius:inherit;background:linear-gradient(90deg,var(--accent),#63e6a0,var(--accent2));transition:width .25s ease;}
+    .quizProgressNote{margin-top:8px;font-size:12px;color:var(--muted);line-height:1.55;}
+    .quizLayout{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(260px,1fr);gap:14px;align-items:start;}
+    .quizSideStack{display:flex;flex-direction:column;gap:14px}
+    .quizLevelTrack{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:10px;}
+    .quizLevelPill{text-align:center;border-radius:999px;padding:4px 0;font-size:10px;border:1px solid rgba(143,181,217,.22);color:var(--muted);background:rgba(8,20,38,.45);font-weight:700;}
+    .quizLevelPill.active{background:rgba(89,208,255,.2);border-color:rgba(89,208,255,.45);color:var(--accent);}
+    .quizLevelPill.done{background:rgba(99,230,160,.2);border-color:rgba(99,230,160,.35);color:var(--green);}
+    .quizHero{border:1px solid rgba(89,208,255,.18);border-radius:10px;padding:10px 12px;background:linear-gradient(140deg,rgba(89,208,255,.1),rgba(8,20,38,.2));margin-bottom:10px;font-size:12px;color:var(--muted);line-height:1.6;}
+    .quizActionsSticky{position:sticky;bottom:0;padding-top:10px;background:linear-gradient(180deg,rgba(10,23,48,0),rgba(10,23,48,.92) 50%);}
+    @media(max-width:1024px){.quizLayout{grid-template-columns:1fr}.quizSideStack{order:-1}}
 
     .tabBar {
       flex-shrink: 0;
@@ -241,7 +262,7 @@
       inset: 0;
       display: none;
       overflow-y: auto;
-      padding: 20px;
+      padding: 16px;
     }
 
     .tabPanel.active {
@@ -253,9 +274,12 @@
     #tab-sim.active {
       padding: 12px;
       display: grid;
-      grid-template-columns: 330px minmax(0,1fr) 320px;
+      grid-template-columns: minmax(280px,320px) minmax(460px,620px) minmax(280px,320px);
       gap: 12px;
-      align-items: start;
+      align-items: stretch;
+      height: 100%;
+      overflow: hidden;
+      justify-content: center;
     }
 
     .card {
@@ -313,16 +337,17 @@
     .simInsights {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 10px;
       overflow-y: auto;
       min-width: 0;
+      max-height: 100%;
     }
 
     .simSection {
       background: var(--card);
       border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 10px 12px;
+      border-radius: 12px;
+      padding: 12px 14px;
     }
 
     .simSection .kicker {
@@ -370,7 +395,7 @@
 
     .row {
       display: flex;
-      gap: 6px;
+      gap: 8px;
       flex-wrap: wrap;
     }
 
@@ -378,12 +403,12 @@
     .dlBtn {
       border: 0;
       border-radius: 7px;
-      padding: 8px 11px;
+      padding: 8px 12px;
       background: linear-gradient(180deg,#2d9dd6,#1d6fa4);
       color: #fff;
       font-weight: 600;
       cursor: pointer;
-      font-size: 12px;
+      font-size: 12.5px;
       font-family: inherit;
       transition: opacity .15s;
       text-decoration: none;
@@ -419,16 +444,18 @@
     .simWrap {
       position: relative;
       background: #060f22;
-      border-radius: 10px;
+      border-radius: 12px;
       border: 1px solid var(--border);
       overflow: hidden;
-      min-height: 400px;
+      min-height: 320px;
+      height: clamp(320px, 48vh, 440px);
+      align-self: start;
     }
 
     #tau {
       width: 100%;
       height: 100%;
-      min-height: 560px;
+      min-height: 0;
       display: block;
       cursor: default;
       background: #081423;
@@ -472,7 +499,7 @@
 
     #liveGraph {
       width: 100%;
-      height: 190px;
+      height: 210px;
       display: block;
       background: #081733;
       border-radius: 6px;
@@ -489,6 +516,7 @@
       border-radius: 7px;
       padding: 8px;
       background: rgba(89,208,255,.06);
+      min-height: 62px;
     }
 
     .metricBox .k {
@@ -786,8 +814,14 @@
         grid-template-columns: 1fr;
         grid-template-rows: auto auto auto;
         overflow-y: auto;
+        height: auto;
       }
-      .simWrap { min-height: 380px; }
+      .simPanel,
+      .simInsights { max-height: none; }
+      .simWrap {
+        min-height: 380px;
+        height: 420px;
+      }
     }
 
     @media (max-width: 900px) {
@@ -799,7 +833,11 @@
         grid-template-columns: 1fr;
       }
       .quizTools { grid-template-columns: 1fr; }
-      #tau { min-height: 420px; }
+      .tabPanel { padding: 12px; }
+      .simWrap {
+        min-height: 330px;
+        height: 360px;
+      }
     }
   </style>
 </head>
@@ -826,6 +864,7 @@
       <span class="subtitle">Fundamentals of Astrophysics (PHYS4022P) · Unit 4: Interstellar Space · Uniform Simulation Architecture</span>
       <span id="studentIdentityLine">Student: -- | SAPID: -- | Topic: Optical Depth and Interstellar Dust</span>
     </div>
+    <a class="hubBtn" href="phys4022p_llm_sim_hub.html">&#x2190; PHYS4022P Hub</a>
     <div id="studentBadge" title="Click to re-open login overlay">Not logged in</div>
   </header>
 
@@ -959,6 +998,12 @@
 
           <label for="lamMax" style="margin-top:8px">Wavelength maximum (nm)</label>
           <input id="lamMax" type="number" min="500" max="1400" step="10" value="1000" />
+
+          <label for="sampleEvery" style="margin-top:8px">Log a row every delta N</label>
+          <input id="sampleEvery" type="number" min="0.05" max="2" step="0.05" value="0.2" />
+
+          <label for="maxRows" style="margin-top:8px">Maximum log rows</label>
+          <input id="maxRows" type="number" min="100" max="50000" step="100" value="5000" />
         </div>
 
         <div class="simSection">
@@ -966,6 +1011,8 @@
           <textarea id="summary" placeholder="AI-ready interpretation will appear here."></textarea>
           <div class="row" style="margin-top:8px">
             <button class="simBtn" id="summarizeBtn" type="button">Generate AI Summary</button>
+            <button class="simBtn" id="copySummaryBtn" type="button">Copy Summary</button>
+            <button class="simBtn" id="downloadSummaryBtn" type="button">Download Summary</button>
           </div>
         </div>
       </aside>
@@ -1062,7 +1109,6 @@
           <h2><span class="icon">Audit</span>Student Login Audit</h2>
           <div class="row" style="margin-bottom:10px;align-items:center;justify-content:space-between">
             <div class="mono">Total recorded logins: <span id="loginLogCount">0</span></div>
-            <button class="dlBtn" id="dlLoginCSV" type="button">Download Login Logs CSV</button>
           </div>
           <div class="tableWrap">
             <table>
@@ -1078,15 +1124,6 @@
           <h2><span class="icon">Quiz</span>Quiz Attempt Log</h2>
           <div class="row" style="margin-bottom:10px;align-items:center;justify-content:space-between">
             <div class="mono">Attempts: <span id="quizAttemptCount">0</span></div>
-            <button class="dlBtn secondary" id="dlQuizCSV" type="button">Download Quiz Attempts CSV</button>
-          </div>
-          <div class="tableWrap">
-            <table>
-              <thead><tr><th>Timestamp (ISO)</th><th>Name</th><th>SAPID</th><th>Score</th></tr></thead>
-              <tbody id="quizAttemptBody">
-                <tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px">No quiz attempts yet.</td></tr>
-              </tbody>
-            </table>
           </div>
         </div>
       </div>
@@ -1123,23 +1160,50 @@
     </section>
 
     <section id="tab-quiz" class="tabPanel" role="tabpanel">
-      <div class="card quizCard">
-        <h2><span class="icon">Quiz</span>Concept Check Quiz</h2>
-        <p>This quiz generates a new adaptive question set whenever a student asks for one.</p>
-        <form id="quizForm">
-          <div class="quizTools">
-            <input id="quizPrompt" type="text" placeholder="Ask for topic focus (e.g. attenuation, reddening, optical depth)" />
-            <button class="simBtn" id="askQuizBtn" type="button">Ask New Quiz</button>
-            <button class="simBtn" id="newQuizBtn" type="button">Regenerate</button>
+      <div class="quizLayout">
+        <div class="card quizCard">
+          <h2><span class="icon">Quiz</span>Concept Check Quiz</h2>
+          <div class="quizHero">10 questions per round. Pass a round to unlock the next level with a stronger difficulty mix.</div>
+          <form id="quizForm">
+            <div class="quizTools">
+              <input id="quizPrompt" type="text" placeholder="Optional focus for this level (e.g. attenuation, reddening, optical depth)" />
+              <button class="simBtn" id="askQuizBtn" type="button">Start Level</button>
+              <button class="simBtn" id="newQuizBtn" type="button">Retry Level</button>
+            </div>
+            <div class="quizHint">Adaptive mode: clear 6/10 or better to unlock the next level and a harder mixed set.</div>
+            <div id="quizQuestionsWrap"></div>
+            <div class="row quizActionsSticky" style="margin-top:12px">
+              <button class="simBtn" id="submitQuizBtn" type="submit">Submit Quiz</button>
+              <button class="simBtn danger" id="resetQuizBtn" type="button">Reset Quiz</button>
+            </div>
+          </form>
+          <div class="quizResult" id="quizResult">No attempts yet.</div>
+        </div>
+
+        <div class="quizSideStack">
+          <div class="card">
+            <h2><span class="icon">&#x1F3AE;</span>Level Progress</h2>
+            <div class="quizProgressShell" style="margin-top:0">
+              <div class="quizProgressHead">
+                <div class="mono">Level <span id="quizLevel">1</span>/10</div>
+                <div class="mono">Mastery <span id="quizMastery">0%</span></div>
+                <div class="mono">Questions <span id="quizAnswered">0/0</span></div>
+              </div>
+              <div class="quizProgressBar" aria-label="Quiz level progress">
+                <div class="quizProgressFill" id="quizProgressFill"></div>
+              </div>
+              <div class="quizProgressNote" id="quizProgressNote">Answer 10 questions to complete a level. Passing scores unlock the next level with harder questions.</div>
+              <div class="quizLevelTrack" id="quizLevelTrack"></div>
+            </div>
           </div>
-          <div class="quizHint">Adaptive mode: after higher scores, the next generated set becomes more challenging.</div>
-          <div id="quizQuestionsWrap"></div>
-          <div class="row" style="margin-top:12px">
-            <button class="simBtn" id="submitQuizBtn" type="submit">Submit Quiz</button>
-            <button class="simBtn danger" id="resetQuizBtn" type="button">Reset Quiz</button>
+
+          <div class="card">
+            <h2><span class="icon">&#x1F4DD;</span>Quiz Attempt Log</h2>
+            <div class="row" style="margin-bottom:2px;align-items:center;justify-content:space-between">
+              <div class="mono">Attempts: <span id="quizAttemptCountSide">0</span></div>
+            </div>
           </div>
-        </form>
-        <div class="quizResult" id="quizResult">No attempts yet.</div>
+        </div>
       </div>
     </section>
 
@@ -1196,20 +1260,71 @@ const student = { name: "", sapid: "" };
 const STORAGE_KEYS = {
   loginAudit: "optical_depth_login_audit_v4",
   quizAttempts: "optical_depth_quiz_attempts_v4",
+  quizProgressByStudent: "optical_depth_quiz_progress_by_student_v4",
   savedName: "optical_depth_saved_name_v4",
-  savedSapid: "optical_depth_saved_sapid_v4"
+  savedSapid: "optical_depth_saved_sapid_v4",
+  simConfig: "optical_depth_sim_config_v4"
 };
 
-const QUESTION_BANK = [
-  { id:"od1", difficulty:"easy", tags:["optical","depth"], q:"Optical depth primarily measures:", options:["Distance alone","Amount of attenuation","Temperature only"], answer:1 },
-  { id:"od2", difficulty:"easy", tags:["transmission"], q:"If tau = 0, transmission is:", options:["0","1","Undefined"], answer:1 },
-  { id:"od3", difficulty:"easy", tags:["dust","reddening"], q:"Dust usually causes stronger extinction at:", options:["Shorter wavelengths","Longer wavelengths","All wavelengths equally"], answer:0 },
-  { id:"od4", difficulty:"medium", tags:["equation","transmission"], q:"The correct transmission relation is:", options:["T=e^-tau","T=e^tau","T=1+tau"], answer:0 },
-  { id:"od5", difficulty:"medium", tags:["beta"], q:"Increasing beta mainly makes wavelength dependence:", options:["Flatter","Steeper","Zero"], answer:1 },
-  { id:"od6", difficulty:"medium", tags:["thin"], q:"An optically thin medium generally has:", options:["tau << 1","tau >> 1","T=0"], answer:0 },
-  { id:"od7", difficulty:"hard", tags:["opacity"], q:"In this lab, kappa_lambda is modeled as:", options:["kappa0(lambda/550)^(-beta)","kappa0 lambda^beta","Constant zero"], answer:0 },
-  { id:"od8", difficulty:"hard", tags:["radiative","transfer"], q:"If path length increases while other parameters stay fixed, optical depth will:", options:["Decrease","Increase","Stay unchanged"], answer:1 }
+function makeQuestion(id, level, difficulty, tags, qText, options, answer){
+  return { id, level, difficulty, tags, q: qText, options, answer };
+}
+
+function shuffleArray(items){
+  const copy=[...items];
+  for(let i=copy.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    const t=copy[i]; copy[i]=copy[j]; copy[j]=t;
+  }
+  return copy;
+}
+
+function difficultyMixForLevel(level){
+  const easyCount=Math.max(1,6-Math.floor((level-1)/2));
+  const hardCount=Math.min(1+Math.floor((level-1)/2),6);
+  const mediumCount=10-easyCount-hardCount;
+  const mix=[];
+  for(let i=0;i<easyCount;i++) mix.push("easy");
+  for(let i=0;i<mediumCount;i++) mix.push("medium");
+  for(let i=0;i<hardCount;i++) mix.push("hard");
+  return shuffleArray(mix);
+}
+
+const QUIZ_SCENARIOS=[
+  { N:1.0, k0:0.25, beta:1.0, L:0.8, tau:0.20, T:0.82 },
+  { N:1.5, k0:0.35, beta:1.1, L:1.0, tau:0.45, T:0.64 },
+  { N:2.0, k0:0.45, beta:1.2, L:1.2, tau:0.75, T:0.47 },
+  { N:2.6, k0:0.60, beta:1.3, L:1.4, tau:1.10, T:0.33 },
+  { N:3.2, k0:0.75, beta:1.4, L:1.6, tau:1.50, T:0.22 },
+  { N:4.0, k0:0.95, beta:1.5, L:1.9, tau:2.10, T:0.12 },
+  { N:4.8, k0:1.15, beta:1.6, L:2.2, tau:2.80, T:0.06 },
+  { N:5.5, k0:1.35, beta:1.7, L:2.6, tau:3.60, T:0.03 },
+  { N:6.2, k0:1.55, beta:1.8, L:3.0, tau:4.50, T:0.01 },
+  { N:7.0, k0:1.80, beta:2.0, L:3.5, tau:5.80, T:0.003 }
 ];
+
+function buildQuizLevelQuestions(level){
+  const s=QUIZ_SCENARIOS[level-1];
+  const mix=difficultyMixForLevel(level);
+  return [
+    makeQuestion(`od_l${level}_01`, level, mix[0], ["optical-depth"], "Optical depth tau primarily quantifies", ["attenuation strength", "distance only", "temperature only", "detector noise"], 0),
+    makeQuestion(`od_l${level}_02`, level, mix[1], ["transmission"], `If tau=${s.tau.toFixed(2)}, transmission T=e^-tau is`, ["greater than 1", "between 0 and 1", "exactly 0 always", "negative"], 1),
+    makeQuestion(`od_l${level}_03`, level, mix[2], ["equation"], "Which relation is correct?", ["T = e^-tau", "T = e^tau", "T = tau", "T = 1 + tau"], 0),
+    makeQuestion(`od_l${level}_04`, level, mix[3], ["dust","wavelength"], "Interstellar dust typically extinguishes more strongly at", ["shorter wavelengths", "longer wavelengths", "all wavelengths equally", "only radio wavelengths"], 0),
+    makeQuestion(`od_l${level}_05`, level, mix[4], ["beta"], `Increasing beta from 1.0 to ${s.beta.toFixed(1)} usually makes extinction curve`, ["flatter", "steeper", "zero", "random"], 1),
+    makeQuestion(`od_l${level}_06`, level, mix[5], ["kappa"], "In this lab, opacity model is", ["kappa_lambda = kappa0 (lambda/550)^(-beta)", "kappa_lambda = kappa0 lambda^beta", "kappa_lambda = 0", "kappa_lambda = lambda/kappa0"], 0),
+    makeQuestion(`od_l${level}_07`, level, mix[6], ["path-length"], `If path length increases from 1.0 to ${s.L.toFixed(1)} with others fixed, tau tends to`, ["decrease", "increase", "stay constant", "be undefined"], 1),
+    makeQuestion(`od_l${level}_08`, level, mix[7], ["regime"], `A medium with tau around ${s.tau.toFixed(2)} is best described as`, ["optically thin if tau<<1", "always thick", "transparent with T>1", "non-physical"], 0),
+    makeQuestion(`od_l${level}_09`, level, mix[8], ["parameters"], `With N=${s.N.toFixed(1)} and k0=${s.k0.toFixed(2)}, increasing either parameter usually`, ["reduces tau", "increases tau", "keeps tau fixed", "removes wavelength dependence"], 1),
+    makeQuestion(`od_l${level}_10`, level, mix[9], ["radiative-transfer"], "Main effect of larger tau on transmitted starlight is", ["stronger dimming", "higher brightness", "blueshift increase", "distance reduction"], 0)
+  ];
+}
+
+function buildQuizBank(){
+  return Array.from({ length: 10 }, (_, i) => buildQuizLevelQuestions(i + 1)).flat();
+}
+
+const QUESTION_BANK = buildQuizBank();
 
 const canvas = document.getElementById("tau");
 const ctx = canvas.getContext("2d");
@@ -1221,8 +1336,45 @@ let trendLog = [];
 let loginAudit = [];
 let quizAttempts = [];
 let currentQuizQuestions = [];
+let quizProgressByStudent = {};
+let activeQuizProgress = null;
 let lastLoggedN = -Infinity;
 let viewState = { zoomY: 1 };
+
+const ALLOWED_SAP_FILE = "./hr_diagram_allowed_sap_ids.csv";
+let allowedSapIds = new Set();
+let allowedSapIdsLoaded = false;
+let allowedSapIdsLoadError = false;
+
+function isValidSapId(sapid){
+  return allowedSapIds.has(String(sapid || "").trim());
+}
+
+function parseAllowedSapIds(csvText){
+  const tokens = String(csvText || "")
+    .split(",")
+    .map(x => x.trim())
+    .filter(Boolean);
+  return new Set(tokens);
+}
+
+async function loadAllowedSapIds(){
+  try{
+    const resp = await fetch(ALLOWED_SAP_FILE, { cache: "no-store" });
+    if(!resp.ok) throw new Error("failed to load SAP list");
+    const text = await resp.text();
+    const parsed = parseAllowedSapIds(text);
+    if(!parsed.size) throw new Error("empty SAP list");
+    allowedSapIds = parsed;
+    allowedSapIdsLoaded = true;
+    allowedSapIdsLoadError = false;
+  }catch(err){
+    console.error("Unable to load allowed SAP ID list:", err);
+    allowedSapIds = new Set();
+    allowedSapIdsLoaded = true;
+    allowedSapIdsLoadError = true;
+  }
+}
 
 function q(id) { return document.getElementById(id); }
 function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
@@ -1263,17 +1415,50 @@ function loadPersistent() {
   try {
     loginAudit = JSON.parse(localStorage.getItem(STORAGE_KEYS.loginAudit) || "[]");
     quizAttempts = JSON.parse(localStorage.getItem(STORAGE_KEYS.quizAttempts) || "[]");
+    quizProgressByStudent = JSON.parse(localStorage.getItem(STORAGE_KEYS.quizProgressByStudent) || "{}");
     q("loginName").value = localStorage.getItem(STORAGE_KEYS.savedName) || "";
     q("loginID").value = localStorage.getItem(STORAGE_KEYS.savedSapid) || "";
   } catch {
     loginAudit = [];
     quizAttempts = [];
+    quizProgressByStudent = {};
+  }
+}
+
+function saveSimConfig() {
+  const configIds = [
+    "N", "k0", "beta", "L", "refLam", "graphMetric", "showTransmission", "showRefLine",
+    "logData", "sweepRate", "lamMin", "lamMax", "sampleEvery", "maxRows"
+  ];
+  const config = {};
+  configIds.forEach(id => {
+    const el = q(id);
+    if (!el) return;
+    config[id] = el.type === "checkbox" ? el.checked : el.value;
+  });
+  localStorage.setItem(STORAGE_KEYS.simConfig, JSON.stringify(config));
+}
+
+function restoreSimConfig() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEYS.simConfig);
+    if (!raw) return;
+    const config = JSON.parse(raw);
+    Object.entries(config).forEach(([id, value]) => {
+      const el = q(id);
+      if (!el) return;
+      if (el.type === "checkbox") el.checked = Boolean(value);
+      else el.value = String(value);
+    });
+  } catch {
+    // Ignore invalid persisted config.
   }
 }
 
 function savePersistent() {
   localStorage.setItem(STORAGE_KEYS.loginAudit, JSON.stringify(loginAudit));
   localStorage.setItem(STORAGE_KEYS.quizAttempts, JSON.stringify(quizAttempts));
+  localStorage.setItem(STORAGE_KEYS.quizProgressByStudent, JSON.stringify(quizProgressByStudent));
   localStorage.setItem(STORAGE_KEYS.savedName, student.name || q("loginName").value.trim());
   localStorage.setItem(STORAGE_KEYS.savedSapid, student.sapid || q("loginID").value.trim());
 }
@@ -1284,6 +1469,43 @@ function setStudent(name, sapid) {
   q("studentBadge").textContent = `${name} - ${sapid}`;
   q("studentIdentityLine").textContent = `Student: ${name} | SAPID: ${sapid} | Topic: Optical Depth and Interstellar Dust`;
   q("footerStudent").textContent = `${name} - ${sapid} session active`;
+  ensureActiveQuizProgress();
+}
+
+function defaultQuizProgress(){
+  return { level:1, highestLevel:1, attempts:0, answered:0, correct:0 };
+}
+
+function ensureActiveQuizProgress(){
+  if(!student.sapid) return;
+  const key=String(student.sapid).trim();
+  if(!quizProgressByStudent[key]) quizProgressByStudent[key]=defaultQuizProgress();
+  activeQuizProgress=quizProgressByStudent[key];
+  updateQuizProgressUI();
+}
+function updateQuizProgressUI(){
+  if(!q("quizLevel") || !activeQuizProgress) return;
+  const answered=Math.max(0,activeQuizProgress.answered||0);
+  const correct=Math.max(0,activeQuizProgress.correct||0);
+  const mastery=answered ? Math.round(correct*100/answered) : 0;
+  const level=clamp(activeQuizProgress.level||1,1,10);
+  const progressPct=Math.max(0,Math.min(100,((level-1)/9)*100));
+  q("quizLevel").textContent=String(level);
+  q("quizMastery").textContent=mastery+"%";
+  q("quizAnswered").textContent=answered+"/100";
+  q("quizProgressFill").style.width=progressPct.toFixed(1)+"%";
+  q("quizProgressNote").textContent=activeQuizProgress.lastPassed
+    ?"Level cleared. The next round is unlocked with a harder mix of questions."
+    :"Answer 10 questions per level. Score at least 6/10 to unlock the next level.";
+  const track=q("quizLevelTrack");
+  if(track){
+    const chips=[];
+    for(let lv=1;lv<=10;lv++){
+      const cls=lv<level?"done":(lv===level?"active":"");
+      chips.push(`<div class="quizLevelPill ${cls}">L${lv}</div>`);
+    }
+    track.innerHTML=chips.join("");
+  }
 }
 
 function recordLogin(name, sapid) {
@@ -1300,6 +1522,29 @@ function login() {
     q("loginStatus").textContent = "Both Name and SAPID are required.";
     if (!name) q("loginName").focus();
     else q("loginID").focus();
+    return;
+  }
+  if (name.length < 2) {
+    q("loginStatus").textContent = "Please enter a valid full name.";
+    q("loginName").focus();
+    return;
+  }
+  if (!/^[A-Za-z0-9._-]{4,24}$/.test(sapid)) {
+    q("loginStatus").textContent = "SAPID should be 4-24 characters (letters, numbers, ., _, -).";
+    q("loginID").focus();
+    return;
+  }
+  if(!allowedSapIdsLoaded){
+    q("loginStatus").textContent = "Allowed SAP list is still loading. Please try again.";
+    return;
+  }
+  if(allowedSapIdsLoadError){
+    q("loginStatus").textContent = "Allowed SAP list could not be loaded. Contact instructor.";
+    return;
+  }
+  if(!isValidSapId(sapid)){
+    q("loginStatus").textContent = "SAPID is not in the allowed list.";
+    q("loginID").focus();
     return;
   }
   state.authenticated = true;
@@ -1410,16 +1655,20 @@ function drawSimulation() {
   updateLabels(inp, out);
   const w = canvas.clientWidth;
   const h = canvas.clientHeight;
-  const padL = 58;
-  const padR = 20;
-  const padT = 28;
-  const padB = 44;
+  const padL = 64;
+  const padR = inp.showTransmission ? 58 : 20;
+  const padT = 24;
+  const padB = 52;
   const plotW = w - padL - padR;
   const plotH = h - padT - padB;
   ctx.clearRect(0, 0, w, h);
-  ctx.fillStyle = "#0a1529";
+  const bg = ctx.createLinearGradient(0, 0, 0, h);
+  bg.addColorStop(0, "#0c1b32");
+  bg.addColorStop(1, "#091526");
+  ctx.fillStyle = bg;
   ctx.fillRect(0, 0, w, h);
-  ctx.strokeStyle = "rgba(158,190,221,.22)";
+
+  ctx.strokeStyle = "rgba(158,190,221,.18)";
   ctx.lineWidth = 1;
   for (let i = 0; i <= 5; i++) {
     const y = padT + (i / 5) * plotH;
@@ -1441,7 +1690,53 @@ function drawSimulation() {
   ctx.lineTo(padL, h - padB);
   ctx.lineTo(w - padR, h - padB);
   ctx.stroke();
+
   const maxTau = Math.max(0.5, ...out.points.map(p => p.tau)) / viewState.zoomY;
+
+  ctx.fillStyle = "#8fb5d9";
+  ctx.font = "10.5px 'IBM Plex Mono', monospace";
+  for (let i = 0; i <= 5; i++) {
+    const val = maxTau - (i / 5) * maxTau;
+    const y = padT + (i / 5) * plotH;
+    ctx.fillText(fmt(val, 2), 8, y + 3);
+  }
+  for (let i = 0; i <= 6; i++) {
+    const lam = inp.lamMin + (i / 6) * (inp.lamMax - inp.lamMin);
+    const x = padL + (i / 6) * plotW;
+    ctx.fillText(fmt(lam, 0), x - 14, h - padB + 16);
+  }
+
+  if (inp.showTransmission) {
+    ctx.fillStyle = "#ffd77a";
+    for (let i = 0; i <= 5; i++) {
+      const y = padT + (i / 5) * plotH;
+      const val = 1 - (i / 5);
+      ctx.fillText(fmt(val, 2), w - padR + 6, y + 3);
+    }
+  }
+
+  ctx.save();
+  ctx.translate(18, padT + plotH / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.fillStyle = "#59d0ff";
+  ctx.font = "12px 'Space Grotesk', sans-serif";
+  ctx.fillText("Optical Depth tau(lambda)", -68, 0);
+  ctx.restore();
+
+  if (inp.showTransmission) {
+    ctx.save();
+    ctx.translate(w - 10, padT + plotH / 2);
+    ctx.rotate(Math.PI / 2);
+    ctx.fillStyle = "#ffd77a";
+    ctx.font = "12px 'Space Grotesk', sans-serif";
+    ctx.fillText("Transmission T(lambda)", -60, 0);
+    ctx.restore();
+  }
+
+  ctx.fillStyle = "#9ebedd";
+  ctx.font = "12px 'Space Grotesk', sans-serif";
+  ctx.fillText("Wavelength (nm)", padL + plotW / 2 - 44, h - 8);
+
   ctx.beginPath();
   out.points.forEach((p, i) => {
     const x = padL + ((p.lam - inp.lamMin) / (inp.lamMax - inp.lamMin)) * plotW;
@@ -1449,9 +1744,26 @@ function drawSimulation() {
     if (i === 0) ctx.moveTo(x, y);
     else ctx.lineTo(x, y);
   });
+  ctx.lineJoin = "round";
+  ctx.lineCap = "round";
   ctx.strokeStyle = "#5bc8ff";
-  ctx.lineWidth = 2.2;
+  ctx.lineWidth = 2.4;
   ctx.stroke();
+
+  ctx.beginPath();
+  out.points.forEach((p, i) => {
+    const x = padL + ((p.lam - inp.lamMin) / (inp.lamMax - inp.lamMin)) * plotW;
+    const y = h - padB - (p.tau / maxTau) * plotH;
+    if (i === 0) ctx.moveTo(x, h - padB);
+    ctx.lineTo(x, y);
+  });
+  ctx.closePath();
+  const tauFill = ctx.createLinearGradient(0, padT, 0, h - padB);
+  tauFill.addColorStop(0, "rgba(91,200,255,.24)");
+  tauFill.addColorStop(1, "rgba(91,200,255,.03)");
+  ctx.fillStyle = tauFill;
+  ctx.fill();
+
   if (inp.showTransmission) {
     ctx.beginPath();
     out.points.forEach((p, i) => {
@@ -1461,7 +1773,7 @@ function drawSimulation() {
       else ctx.lineTo(x, y);
     });
     ctx.strokeStyle = "#ffd77a";
-    ctx.lineWidth = 1.8;
+    ctx.lineWidth = 2;
     ctx.stroke();
   }
   if (inp.showRefLine && inp.refLam >= inp.lamMin && inp.refLam <= inp.lamMax) {
@@ -1477,16 +1789,18 @@ function drawSimulation() {
   }
   ctx.fillStyle = "#9ebedd";
   ctx.font = "12px 'Space Grotesk', sans-serif";
-  ctx.fillText("Wavelength (nm)", w - 120, h - 12);
   ctx.fillText("Blue: tau(lambda)", padL + 8, padT + 14);
-  if (inp.showTransmission) ctx.fillText("Yellow: T(lambda)", padL + 110, padT + 14);
+  if (inp.showTransmission) ctx.fillText("Yellow: T(lambda)", padL + 116, padT + 14);
 }
 
 function drawLiveGraph() {
   const w = liveGraph.clientWidth;
   const h = liveGraph.clientHeight;
   gctx.clearRect(0, 0, w, h);
-  gctx.fillStyle = "#081733";
+  const bg = gctx.createLinearGradient(0, 0, 0, h);
+  bg.addColorStop(0, "#0c1a33");
+  bg.addColorStop(1, "#091427");
+  gctx.fillStyle = bg;
   gctx.fillRect(0, 0, w, h);
   if (trendLog.length < 2) {
     gctx.fillStyle = "#8fb5d9";
@@ -1502,25 +1816,96 @@ function drawLiveGraph() {
   const xMin = Math.min(...xs);
   const xMax = Math.max(...xs);
   if (yMin === yMax) { yMin -= 1; yMax += 1; }
-  const pad = 24;
-  gctx.strokeStyle = "rgba(143,181,217,.25)";
+
+  const metricLabelMap = {
+    tauRef: "tau_ref",
+    transRef: "T_ref",
+    meanTau: "mean_tau",
+    meanTrans: "mean_trans"
+  };
+
+  const padL = 52;
+  const padR = 16;
+  const padT = 18;
+  const padB = 42;
+  const plotW = w - padL - padR;
+  const plotH = h - padT - padB;
+
+  gctx.strokeStyle = "rgba(143,181,217,.18)";
   gctx.lineWidth = 1;
+  for (let i = 0; i <= 4; i++) {
+    const y = padT + (i / 4) * plotH;
+    gctx.beginPath();
+    gctx.moveTo(padL, y);
+    gctx.lineTo(w - padR, y);
+    gctx.stroke();
+  }
+  for (let i = 0; i <= 5; i++) {
+    const x = padL + (i / 5) * plotW;
+    gctx.beginPath();
+    gctx.moveTo(x, padT);
+    gctx.lineTo(x, h - padB);
+    gctx.stroke();
+  }
+
+  gctx.strokeStyle = "rgba(143,181,217,.45)";
   gctx.beginPath();
-  gctx.moveTo(pad, h - pad);
-  gctx.lineTo(w - pad, h - pad);
-  gctx.moveTo(pad, pad);
-  gctx.lineTo(pad, h - pad);
+  gctx.moveTo(padL, padT);
+  gctx.lineTo(padL, h - padB);
+  gctx.lineTo(w - padR, h - padB);
   gctx.stroke();
+
+  gctx.fillStyle = "#8fb5d9";
+  gctx.font = "10px 'IBM Plex Mono', monospace";
+  for (let i = 0; i <= 4; i++) {
+    const val = yMax - (i / 4) * (yMax - yMin);
+    const y = padT + (i / 4) * plotH;
+    gctx.fillText(fmt(val, 2), 6, y + 4);
+  }
+  for (let i = 0; i <= 5; i++) {
+    const val = xMin + (i / 5) * (xMax - xMin);
+    const x = padL + (i / 5) * plotW;
+    gctx.fillText(fmt(val, 1), x - 10, h - padB + 14);
+  }
+
+  gctx.save();
+  gctx.translate(14, padT + plotH / 2);
+  gctx.rotate(-Math.PI / 2);
+  gctx.fillStyle = "#59d0ff";
+  gctx.font = "11px 'Space Grotesk', sans-serif";
+  gctx.fillText(metricLabelMap[metric] || metric, -26, 0);
+  gctx.restore();
+
+  gctx.fillStyle = "#9ebedd";
+  gctx.font = "11px 'Space Grotesk', sans-serif";
+  gctx.fillText("Runtime (s)", padL + plotW / 2 - 28, h - 8);
+
   gctx.beginPath();
   trendLog.forEach((p, i) => {
-    const x = pad + ((p.runtime - xMin) / Math.max(1e-9, xMax - xMin)) * (w - 2 * pad);
-    const y = h - pad - ((p[metric] - yMin) / Math.max(1e-9, yMax - yMin)) * (h - 2 * pad);
+    const x = padL + ((p.runtime - xMin) / Math.max(1e-9, xMax - xMin)) * plotW;
+    const y = h - padB - ((p[metric] - yMin) / Math.max(1e-9, yMax - yMin)) * plotH;
     if (i === 0) gctx.moveTo(x, y);
     else gctx.lineTo(x, y);
   });
+  gctx.lineJoin = "round";
+  gctx.lineCap = "round";
   gctx.strokeStyle = "#59d0ff";
-  gctx.lineWidth = 1.8;
+  gctx.lineWidth = 2.1;
   gctx.stroke();
+
+  gctx.beginPath();
+  trendLog.forEach((p, i) => {
+    const x = padL + ((p.runtime - xMin) / Math.max(1e-9, xMax - xMin)) * plotW;
+    const y = h - padB - ((p[metric] - yMin) / Math.max(1e-9, yMax - yMin)) * plotH;
+    if (i === 0) gctx.moveTo(x, h - padB);
+    gctx.lineTo(x, y);
+  });
+  gctx.closePath();
+  const fill = gctx.createLinearGradient(0, padT, 0, h - padB);
+  fill.addColorStop(0, "rgba(89,208,255,.26)");
+  fill.addColorStop(1, "rgba(89,208,255,.04)");
+  gctx.fillStyle = fill;
+  gctx.fill();
 }
 
 function pushTrend(inp, out) {
@@ -1596,6 +1981,7 @@ function refreshSimulation() {
   drawSimulation();
   drawLiveGraph();
   updateDataPreview();
+  saveSimConfig();
 }
 
 function setPreset(type) {
@@ -1675,6 +2061,38 @@ function exportPython() {
   downloadBlob(py, "analyse_optical_depth.py", "text/plain");
 }
 
+async function copySummaryToClipboard() {
+  const text = q("summary").value.trim();
+  if (!text) {
+    alert("Generate a summary first.");
+    return;
+  }
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(text);
+    } else {
+      const temp = document.createElement("textarea");
+      temp.value = text;
+      document.body.appendChild(temp);
+      temp.select();
+      document.execCommand("copy");
+      document.body.removeChild(temp);
+    }
+    alert("Summary copied to clipboard.");
+  } catch {
+    alert("Unable to copy summary. Please copy manually.");
+  }
+}
+
+function downloadSummaryText() {
+  const text = q("summary").value.trim();
+  if (!text) {
+    alert("Generate a summary first.");
+    return;
+  }
+  downloadBlob(text + "\n", "optical_depth_summary.txt", "text/plain");
+}
+
 function updateLoginAuditUI() {
   q("loginLogCount").textContent = String(loginAudit.length);
   const body = q("loginLogBody");
@@ -1696,11 +2114,10 @@ function pickRandom(arr, n) {
 }
 
 function inferDifficultyTarget() {
-  if (!quizAttempts.length) return "easy";
-  const last = quizAttempts[quizAttempts.length - 1];
-  const ratio = last.total ? last.score / last.total : 0;
-  if (ratio >= 0.8) return "hard";
-  if (ratio >= 0.5) return "medium";
+  if (!activeQuizProgress) return "easy";
+  const level = clamp(activeQuizProgress.level || 1, 1, 10);
+  if (level >= 7) return "hard";
+  if (level >= 4) return "medium";
   return "easy";
 }
 
@@ -1708,16 +2125,23 @@ function parsePromptTokens(text) {
   return String(text || "").toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
 }
 
+function scoreQuestionAgainstPrompt(question, tokens){
+  if(!tokens.length) return 0;
+  const corpus=[question.q, ...(question.tags||[]), question.difficulty, String(question.level||"")].join(" ").toLowerCase();
+  let score=0;
+  tokens.forEach(token=>{ if(corpus.includes(token)) score++; });
+  return score;
+}
+
 function generateQuizSet() {
+  ensureActiveQuizProgress();
   const tokens = parsePromptTokens(q("quizPrompt").value);
-  const target = inferDifficultyTarget();
-  let pool = QUESTION_BANK.filter(item => item.difficulty === target);
-  if (tokens.length) {
-    const tagged = QUESTION_BANK.filter(item => item.tags.some(tag => tokens.includes(tag)) || tokens.some(tok => item.q.toLowerCase().includes(tok)));
-    if (tagged.length) pool = [...new Set([...tagged, ...pool])];
-  }
-  if (pool.length < 5) pool = [...QUESTION_BANK];
-  currentQuizQuestions = pickRandom(pool, Math.min(5, pool.length));
+  const level = activeQuizProgress ? clamp(activeQuizProgress.level || 1, 1, 10) : 1;
+  const pool = QUESTION_BANK.filter(x=>x.level===level);
+  const ordered = tokens.length
+    ? [...pool].sort((a,b)=>scoreQuestionAgainstPrompt(b,tokens)-scoreQuestionAgainstPrompt(a,tokens) || Math.random()-0.5)
+    : shuffleArray(pool);
+  currentQuizQuestions = ordered.slice(0,10);
 }
 
 function renderQuizQuestions() {
@@ -1742,7 +2166,9 @@ function generateAndRenderQuiz() {
   }
   generateQuizSet();
   renderQuizQuestions();
-  q("quizResult").textContent = `New quiz generated for ${student.name}. Difficulty: ${inferDifficultyTarget()}.`;
+  updateQuizProgressUI();
+  const level = activeQuizProgress ? activeQuizProgress.level : 1;
+  q("quizResult").textContent = `Level ${level} loaded for ${student.name}. Answer all 10 questions.`;
 }
 
 function submitQuiz(ev) {
@@ -1767,11 +2193,35 @@ function submitQuiz(ev) {
   }
   const total = currentQuizQuestions.length;
   const pct = Math.round((score / total) * 100);
-  q("quizResult").textContent = `Submitted. Score: ${score}/${total} (${pct}%).`;
+  if (!activeQuizProgress) ensureActiveQuizProgress();
+  const levelBefore = activeQuizProgress ? clamp(activeQuizProgress.level || 1, 1, 10) : 1;
+  if (activeQuizProgress) {
+    activeQuizProgress.attempts = (activeQuizProgress.attempts || 0) + 1;
+    activeQuizProgress.answered = (activeQuizProgress.answered || 0) + total;
+    activeQuizProgress.correct = (activeQuizProgress.correct || 0) + score;
+  }
+  let result = `Submitted. Score: ${score}/${total} (${pct}%).`;
+  if (score >= 6) {
+    if (activeQuizProgress && activeQuizProgress.level < 10) {
+      activeQuizProgress.level += 1;
+      activeQuizProgress.highestLevel = Math.max(activeQuizProgress.highestLevel || 1, activeQuizProgress.level);
+      result += ` Passed Level ${levelBefore}. Level ${activeQuizProgress.level} unlocked.`;
+    } else {
+      result += " Great work. Maximum level reached.";
+    }
+  } else {
+    result += " Need 6/10 to unlock the next level.";
+  }
+  q("quizResult").textContent = result;
   quizAttempts.push({ timestamp: new Date().toISOString(), name: student.name, sapid: student.sapid, score, total });
   if (quizAttempts.length > 3000) quizAttempts = quizAttempts.slice(-3000);
   savePersistent();
   updateQuizAttemptUI();
+  updateQuizProgressUI();
+  if (score >= 6 && activeQuizProgress && activeQuizProgress.level !== levelBefore) {
+    generateQuizSet();
+    renderQuizQuestions();
+  }
 }
 
 function resetQuizForm() {
@@ -1780,13 +2230,10 @@ function resetQuizForm() {
 }
 
 function updateQuizAttemptUI() {
-  q("quizAttemptCount").textContent = String(quizAttempts.length);
-  const body = q("quizAttemptBody");
-  if (!quizAttempts.length) {
-    body.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px">No quiz attempts yet.</td></tr>';
-    return;
-  }
-  body.innerHTML = quizAttempts.slice(-30).reverse().map(r => `<tr><td>${r.timestamp}</td><td>${r.name}</td><td>${r.sapid}</td><td>${r.score}/${r.total}</td></tr>`).join("");
+  const el = q("quizAttemptCount") || q("quizAttemptCountSide");
+  if(el) el.textContent = String(quizAttempts.length);
+  const side = q("quizAttemptCountSide");
+  if(side) side.textContent = String(quizAttempts.length);
 }
 
 function exportQuizCSV() {
@@ -1860,6 +2307,10 @@ q("presetDense").addEventListener("click", () => setPreset("dense"));
   q(id).addEventListener("input", refreshSimulation);
   q(id).addEventListener("change", refreshSimulation);
 });
+["sampleEvery", "maxRows"].forEach(id => {
+  q(id).addEventListener("input", refreshSimulation);
+  q(id).addEventListener("change", refreshSimulation);
+});
 q("playBtn").addEventListener("click", () => {
   state.playing = !state.playing;
   q("playBtn").textContent = state.playing ? "Pause Sweep" : "Run Sweep";
@@ -1882,6 +2333,8 @@ q("summarizeBtn").addEventListener("click", () => {
   const out = buildSpectrum(inp);
   q("summary").value = buildSummary(inp, out);
 });
+q("copySummaryBtn").addEventListener("click", copySummaryToClipboard);
+q("downloadSummaryBtn").addEventListener("click", downloadSummaryText);
 q("helpBtn").addEventListener("click", openTutor);
 q("closeTutor").addEventListener("click", closeTutor);
 q("tutorModal").addEventListener("click", e => { if (e.target.id === "tutorModal") closeTutor(); });
@@ -1894,8 +2347,8 @@ q("clearLogBtn").addEventListener("click", () => {
   updateDataPreview();
   q("logCount").textContent = "0";
 });
-q("dlLoginCSV").addEventListener("click", exportLoginCSV);
-q("dlQuizCSV").addEventListener("click", exportQuizCSV);
+q("dlLoginCSV") && q("dlLoginCSV").addEventListener("click", exportLoginCSV);
+q("dlQuizCSV") && q("dlQuizCSV").addEventListener("click", exportQuizCSV);
 q("quizForm").addEventListener("submit", submitQuiz);
 q("askQuizBtn").addEventListener("click", generateAndRenderQuiz);
 q("newQuizBtn").addEventListener("click", generateAndRenderQuiz);
@@ -1911,16 +2364,20 @@ canvas.addEventListener("wheel", e => {
   viewState.zoomY = clamp(viewState.zoomY * factor, 0.6, 5);
   drawSimulation();
 }, { passive: false });
-loadPersistent();
-updateLoginAuditUI();
-updateQuizAttemptUI();
-renderQuizQuestions();
-resizeAllCanvases();
-resetAll();
-drawSimulation();
-drawLiveGraph();
-if (window.MathJax && window.MathJax.typesetPromise) window.MathJax.typesetPromise();
-requestAnimationFrame(animate);
+loadAllowedSapIds().then(() => {
+  loadPersistent();
+  updateLoginAuditUI();
+  updateQuizAttemptUI();
+  renderQuizQuestions();
+  resizeAllCanvases();
+  resetAll();
+  restoreSimConfig();
+  refreshSimulation();
+  drawSimulation();
+  drawLiveGraph();
+  if (window.MathJax && window.MathJax.typesetPromise) window.MathJax.typesetPromise();
+  requestAnimationFrame(animate);
+});
 </script>
 </body>
 </html>

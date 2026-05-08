@@ -103,6 +103,13 @@
       border-radius:8px;padding:5px 12px;font-size:12px;color:var(--accent);cursor:pointer;
     }
     #studentBadge:hover{background:rgba(89,208,255,.2)}
+    .hubBtn{
+      display:inline-flex;align-items:center;gap:6px;
+      background:rgba(255,173,109,.12);border:1px solid rgba(255,173,109,.35);
+      color:var(--accent2);padding:5px 13px;border-radius:8px;font-size:12px;font-weight:600;
+      text-decoration:none;transition:background .2s;white-space:nowrap;flex-shrink:0;
+    }
+    .hubBtn:hover{background:rgba(255,173,109,.22)}
 
     /* === Tab bar === */
     .tabBar{
@@ -280,6 +287,20 @@
 
     /* === Quiz tab === */
     .quizCard h3{font-size:14px;color:var(--accent2);margin-bottom:8px}
+    .quizProgressShell{margin-top:12px;padding:12px;border-radius:10px;border:1px solid rgba(89,208,255,.18);background:linear-gradient(180deg,rgba(89,208,255,.10),rgba(255,173,109,.06));}
+    .quizProgressHead{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:10px;}
+    .quizProgressBar{height:12px;border-radius:999px;overflow:hidden;background:rgba(8,20,38,.78);border:1px solid rgba(143,181,217,.16);}
+    .quizProgressFill{height:100%;width:10%;border-radius:inherit;background:linear-gradient(90deg,var(--accent),#63e6a0,var(--accent2));transition:width .25s ease;}
+    .quizProgressNote{margin-top:8px;font-size:12px;color:var(--muted);line-height:1.55;}
+    .quizLayout{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(260px,1fr);gap:14px;align-items:start;}
+    .quizSideStack{display:flex;flex-direction:column;gap:14px}
+    .quizLevelTrack{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:10px;}
+    .quizLevelPill{text-align:center;border-radius:999px;padding:4px 0;font-size:10px;border:1px solid rgba(143,181,217,.22);color:var(--muted);background:rgba(8,20,38,.45);font-weight:700;}
+    .quizLevelPill.active{background:rgba(89,208,255,.2);border-color:rgba(89,208,255,.45);color:var(--accent);}
+    .quizLevelPill.done{background:rgba(99,230,160,.2);border-color:rgba(99,230,160,.35);color:var(--green);}
+    .quizHero{border:1px solid rgba(89,208,255,.18);border-radius:10px;padding:10px 12px;background:linear-gradient(140deg,rgba(89,208,255,.1),rgba(8,20,38,.2));margin-bottom:10px;font-size:12px;color:var(--muted);line-height:1.6;}
+    .quizActionsSticky{position:sticky;bottom:0;padding-top:10px;background:linear-gradient(180deg,rgba(10,23,48,0),rgba(10,23,48,.92) 50%);}
+    @media(max-width:1024px){.quizLayout{grid-template-columns:1fr}.quizSideStack{order:-1}}
     .quizQ{padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05)}
     .quizQ:last-child{border-bottom:none}
     .quizQ p{font-size:13px;color:var(--text);margin-bottom:8px}
@@ -370,6 +391,7 @@
       <span class="subtitle">Fundamentals of Astrophysics (PHYS4022P) &middot; Unit 5: Cosmology &middot; Uniform Simulation Architecture</span>
       <span id="studentIdentityLine">Student: Guest | SAPID: NA | Topic: Hubble Law and Cosmology</span>
     </div>
+    <a class="hubBtn" href="phys4022p_llm_sim_hub.html">&#x2190; PHYS4022P Hub</a>
     <div id="studentBadge" title="Click to switch user">&#x1F464; Guest</div>
   </header>
 
@@ -645,7 +667,6 @@
         <h2><span class="icon">&#x1F512;</span>Student Login Audit</h2>
         <div class="row" style="margin-bottom:10px;align-items:center;justify-content:space-between">
           <div class="mono">Total recorded logins: <span id="loginLogCount">0</span></div>
-          <button class="dlBtn primary" id="dlLoginCSV" type="button">&#x2B07; Download Login Logs CSV</button>
         </div>
         <div class="tableWrap">
           <table>
@@ -733,42 +754,53 @@
     <!-- QUIZ TAB -->
     <section id="tab-quiz" class="tabPanel" role="tabpanel">
 
-      <div class="card quizCard">
-        <h2><span class="icon">&#x1F9E0;</span>Concept Check Quiz</h2>
-        <p>This quiz is interactive and generates a new question set whenever a student asks for one.</p>
+      <div class="quizLayout">
+        <div class="card quizCard">
+          <h2><span class="icon">&#x1F9E0;</span>Concept Check Quiz</h2>
+          <div class="quizHero">10 questions per round. Pass a round to unlock the next level with a stronger difficulty mix.</div>
 
-        <form id="quizForm">
-          <div class="quizTools">
-            <input id="quizPrompt" type="text" placeholder="Ask for topic focus (e.g. H0 fit, redshift, cosmological parameters)" />
-            <button class="simBtn" id="askQuizBtn" type="button">Ask New Quiz</button>
-            <button class="simBtn" id="newQuizBtn" type="button">Regenerate</button>
-          </div>
-          <div class="quizHint">Adaptive mode: after high scores, the next generated set becomes more challenging.</div>
+          <form id="quizForm">
+            <div class="quizTools">
+              <input id="quizPrompt" type="text" placeholder="Optional focus for this level (e.g. H0 fit, redshift, cosmological parameters)" />
+              <button class="simBtn" id="askQuizBtn" type="button">Start Level</button>
+              <button class="simBtn" id="newQuizBtn" type="button">Retry Level</button>
+            </div>
+            <div class="quizHint">Adaptive mode: clear 6/10 or better to unlock the next level and a harder mixed set.</div>
 
-          <div id="quizQuestionsWrap"></div>
+            <div id="quizQuestionsWrap"></div>
 
-          <div class="row" style="margin-top:12px">
-            <button class="simBtn" id="submitQuizBtn" type="submit">Submit Quiz</button>
-            <button class="simBtn danger" id="resetQuizBtn" type="button">Reset Quiz</button>
-          </div>
-        </form>
+            <div class="row quizActionsSticky" style="margin-top:12px">
+              <button class="simBtn" id="submitQuizBtn" type="submit">Submit Quiz</button>
+              <button class="simBtn danger" id="resetQuizBtn" type="button">Reset Quiz</button>
+            </div>
+          </form>
 
-        <div class="quizResult" id="quizResult">No attempts yet.</div>
-      </div>
-
-      <div class="card">
-        <h2><span class="icon">&#x1F4DD;</span>Quiz Attempt Log</h2>
-        <div class="row" style="margin-bottom:10px;align-items:center;justify-content:space-between">
-          <div class="mono">Attempts: <span id="quizAttemptCount">0</span></div>
-          <button class="dlBtn secondary" id="dlQuizCSV" type="button">&#x2B07; Download Quiz Attempts CSV</button>
+          <div class="quizResult" id="quizResult">No attempts yet.</div>
         </div>
-        <div class="tableWrap">
-          <table>
-            <thead><tr><th>Timestamp (ISO)</th><th>Name</th><th>SAPID</th><th>Score</th></tr></thead>
-            <tbody id="quizAttemptBody">
-              <tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px">No quiz attempts yet.</td></tr>
-            </tbody>
-          </table>
+
+        <div class="quizSideStack">
+          <div class="card">
+            <h2><span class="icon">&#x1F3AE;</span>Level Progress</h2>
+            <div class="quizProgressShell" style="margin-top:0">
+              <div class="quizProgressHead">
+                <div class="mono">Level <span id="quizLevel">1</span>/10</div>
+                <div class="mono">Mastery <span id="quizMastery">0%</span></div>
+                <div class="mono">Questions <span id="quizAnswered">0/0</span></div>
+              </div>
+              <div class="quizProgressBar" aria-label="Quiz level progress">
+                <div class="quizProgressFill" id="quizProgressFill"></div>
+              </div>
+              <div class="quizProgressNote" id="quizProgressNote">Answer 10 questions to complete a level. Passing scores unlock the next level with harder questions.</div>
+              <div class="quizLevelTrack" id="quizLevelTrack"></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2><span class="icon">&#x1F4DD;</span>Quiz Attempt Log</h2>
+            <div class="row" style="margin-bottom:2px;align-items:center;justify-content:space-between">
+              <div class="mono">Attempts: <span id="quizAttemptCount">0</span></div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -896,27 +928,116 @@ let lastFit={h0:0,intercept:0,r2:0,hubbleTime:0};
 let loginAudit=[];
 let quizAttempts=[];
 let currentQuizQuestions=[];
+let quizProgressByStudent={};
+let activeQuizProgress=null;
 let lastGraphSampleRun=-Infinity;
 
 const C_KMS = 299792.458;
 
-const QUESTION_BANK=[
-  {id:"q01",difficulty:"easy",tags:["hubble"],q:"Hubble's law for nearby galaxies is approximately:",options:["v = H0 d","v = d/H0","v = H0/d"],answer:0},
-  {id:"q02",difficulty:"easy",tags:["redshift"],q:"At low redshift, z is approximately:",options:["v/c","c/v","independent of v"],answer:0},
-  {id:"q03",difficulty:"medium",tags:["age"],q:"Hubble time is roughly:",options:["H0","1/H0","H0^2"],answer:1},
-  {id:"q04",difficulty:"medium",tags:["critical"],q:"Critical density depends on:",options:["H0 and G","Only c","Only matter temperature"],answer:0},
-  {id:"q05",difficulty:"hard",tags:["omega"],q:"A larger Omega_Lambda generally supports:",options:["Accelerated expansion tendency","Guaranteed recollapse","No expansion"],answer:0},
-  {id:"q06",difficulty:"hard",tags:["fit"],q:"Increasing velocity noise in data mainly affects:",options:["Slope uncertainty","Definition of distance unit","Speed of light"],answer:0},
-  {id:"q07",difficulty:"hard",tags:["debate"],q:"Good cosmology debates should explicitly include:",options:["Model assumptions and uncertainties","Only final claims","No data context"],answer:0}
+function makeQuestion(id, level, difficulty, tags, qText, options, answer){
+  return { id, level, difficulty, tags, q: qText, options, answer };
+}
+
+function shuffleArray(items){
+  const copy=[...items];
+  for(let i=copy.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    const t=copy[i]; copy[i]=copy[j]; copy[j]=t;
+  }
+  return copy;
+}
+
+function difficultyMixForLevel(level){
+  const easyCount=Math.max(1,6-Math.floor((level-1)/2));
+  const hardCount=Math.min(1+Math.floor((level-1)/2),6);
+  const mediumCount=10-easyCount-hardCount;
+  const mix=[];
+  for(let i=0;i<easyCount;i++) mix.push("easy");
+  for(let i=0;i<mediumCount;i++) mix.push("medium");
+  for(let i=0;i<hardCount;i++) mix.push("hard");
+  return shuffleArray(mix);
+}
+
+const QUIZ_SCENARIOS=[
+  { h0:67.4, d:100, v:6740, noise:60, om:0.31, ol:0.69, age:14.5 },
+  { h0:68.5, d:120, v:8220, noise:70, om:0.30, ol:0.70, age:14.3 },
+  { h0:69.8, d:140, v:9770, noise:80, om:0.30, ol:0.70, age:14.0 },
+  { h0:71.0, d:160, v:11360, noise:85, om:0.29, ol:0.71, age:13.8 },
+  { h0:72.2, d:180, v:12996, noise:95, om:0.28, ol:0.72, age:13.5 },
+  { h0:73.0, d:200, v:14600, noise:105, om:0.28, ol:0.72, age:13.4 },
+  { h0:66.5, d:220, v:14630, noise:110, om:0.32, ol:0.68, age:14.7 },
+  { h0:65.0, d:240, v:15600, noise:120, om:0.33, ol:0.67, age:15.0 },
+  { h0:74.0, d:260, v:19240, noise:130, om:0.27, ol:0.73, age:13.2 },
+  { h0:75.0, d:280, v:21000, noise:140, om:0.26, ol:0.74, age:13.0 }
 ];
+
+function buildQuizLevelQuestions(level){
+  const s=QUIZ_SCENARIOS[level-1];
+  const mix=difficultyMixForLevel(level);
+  return [
+    makeQuestion(`hb_l${level}_01`, level, mix[0], ["hubble-law"], "For nearby galaxies, Hubble law is approximated by", ["v = H0 d", "v = d/H0", "v = H0/d", "v = c/H0"], 0),
+    makeQuestion(`hb_l${level}_02`, level, mix[1], ["redshift"], "At low redshift, z is approximately", ["v/c", "c/v", "H0/v", "independent of velocity"], 0),
+    makeQuestion(`hb_l${level}_03`, level, mix[2], ["fit"], `If H0=${s.h0} and distance=${s.d} Mpc, ideal recession speed is closest to`, ["about 100 km/s", `about ${Math.round(s.v)} km/s`, "about 1 km/s", "about c"], 1),
+    makeQuestion(`hb_l${level}_04`, level, mix[3], ["noise"], `Increasing velocity noise to around ${s.noise} km/s mainly`, ["increases slope uncertainty", "changes speed of light", "changes Mpc definition", "forces zero intercept"], 0),
+    makeQuestion(`hb_l${level}_05`, level, mix[4], ["hubble-time"], "Hubble time is proportional to", ["H0", "1/H0", "H0^2", "sqrt(H0)"], 1),
+    makeQuestion(`hb_l${level}_06`, level, mix[5], ["critical-density"], "Critical density depends primarily on", ["H0 and G", "only c", "stellar temperature", "telescope aperture"], 0),
+    makeQuestion(`hb_l${level}_07`, level, mix[6], ["omega"], `With Omega_m=${s.om.toFixed(2)} and Omega_Lambda=${s.ol.toFixed(2)}, larger dark energy fraction tends to`, ["support accelerated expansion", "guarantee recollapse", "eliminate expansion", "remove redshift"], 0),
+    makeQuestion(`hb_l${level}_08`, level, mix[7], ["r2"], "A higher R^2 in linear fit usually indicates", ["better linear consistency", "worse fit", "wrong units only", "more dark matter by definition"], 0),
+    makeQuestion(`hb_l${level}_09`, level, mix[8], ["age"], `A lower H0 generally implies a Universe age estimate that is`, ["younger", "older", "identical", "undefined"], 1),
+    makeQuestion(`hb_l${level}_10`, level, mix[9], ["scientific-debate"], "A sound cosmology argument should include", ["model assumptions and uncertainty", "final claim only", "no data context", "no fit diagnostics"], 0)
+  ];
+}
+
+function buildQuizBank(){
+  return Array.from({ length: 10 }, (_, i) => buildQuizLevelQuestions(i + 1)).flat();
+}
+
+const QUESTION_BANK=buildQuizBank();
+
+const ALLOWED_SAP_FILE = "./hr_diagram_allowed_sap_ids.csv";
+let allowedSapIds = new Set();
+let allowedSapIdsLoaded = false;
+let allowedSapIdsLoadError = false;
+
+function isValidSapId(sapid){
+  return allowedSapIds.has(String(sapid || "").trim());
+}
+
+function parseAllowedSapIds(csvText){
+  const tokens = String(csvText || "")
+    .split(",")
+    .map(x => x.trim())
+    .filter(Boolean);
+  return new Set(tokens);
+}
+
+async function loadAllowedSapIds(){
+  try{
+    const resp = await fetch(ALLOWED_SAP_FILE, { cache: "no-store" });
+    if(!resp.ok) throw new Error("failed to load SAP list");
+    const text = await resp.text();
+    const parsed = parseAllowedSapIds(text);
+    if(!parsed.size) throw new Error("empty SAP list");
+    allowedSapIds = parsed;
+    allowedSapIdsLoaded = true;
+    allowedSapIdsLoadError = false;
+  }catch(err){
+    console.error("Unable to load allowed SAP ID list:", err);
+    allowedSapIds = new Set();
+    allowedSapIdsLoaded = true;
+    allowedSapIdsLoadError = true;
+  }
+}
 
 function loadPersistentLogs(){
   try{
     loginAudit=JSON.parse(localStorage.getItem("hubble_login_audit")||"[]");
     quizAttempts=JSON.parse(localStorage.getItem("hubble_quiz_attempts")||"[]");
+    quizProgressByStudent=JSON.parse(localStorage.getItem("hubble_quiz_progress_by_student")||"{}");
   }catch(e){
     loginAudit=[];
     quizAttempts=[];
+    quizProgressByStudent={};
   }
 }
 
@@ -924,6 +1045,7 @@ function savePersistentLogs(){
   try{
     localStorage.setItem("hubble_login_audit",JSON.stringify(loginAudit));
     localStorage.setItem("hubble_quiz_attempts",JSON.stringify(quizAttempts));
+    localStorage.setItem("hubble_quiz_progress_by_student",JSON.stringify(quizProgressByStudent));
   }catch(e){}
 }
 
@@ -979,12 +1101,47 @@ function pickRandom(arr,n){
   return cp.slice(0,Math.min(n,cp.length));
 }
 
+function defaultQuizProgress(){
+  return { level:1, highestLevel:1, attempts:0, answered:0, correct:0 };
+}
+
+function ensureActiveQuizProgress(){
+  if(!student.sapid) return;
+  const key=String(student.sapid).trim();
+  if(!quizProgressByStudent[key]) quizProgressByStudent[key]=defaultQuizProgress();
+  activeQuizProgress=quizProgressByStudent[key];
+  updateQuizProgressUI();
+}
+function updateQuizProgressUI(){
+  if(!document.getElementById("quizLevel") || !activeQuizProgress) return;
+  const answered=Math.max(0,activeQuizProgress.answered||0);
+  const correct=Math.max(0,activeQuizProgress.correct||0);
+  const mastery=answered ? Math.round(correct*100/answered) : 0;
+  const level=Math.max(1,Math.min(10,activeQuizProgress.level||1));
+  const progressPct=Math.max(0,Math.min(100,((level-1)/9)*100));
+  document.getElementById("quizLevel").textContent=String(level);
+  document.getElementById("quizMastery").textContent=mastery+"%";
+  document.getElementById("quizAnswered").textContent=answered+"/100";
+  document.getElementById("quizProgressFill").style.width=progressPct.toFixed(1)+"%";
+  document.getElementById("quizProgressNote").textContent=activeQuizProgress.lastPassed
+    ?"Level cleared. The next round is unlocked with a harder mix of questions."
+    :"Answer 10 questions per level. Score at least 6/10 to unlock the next level.";
+  const track=document.getElementById("quizLevelTrack");
+  if(track){
+    const chips=[];
+    for(let lv=1;lv<=10;lv++){
+      const cls=lv<level?"done":(lv===level?"active":"");
+      chips.push(`<div class="quizLevelPill ${cls}">L${lv}</div>`);
+    }
+    track.innerHTML=chips.join("");
+  }
+}
+
 function inferDifficultyTarget(){
-  if(!quizAttempts.length) return "easy";
-  const last=quizAttempts[quizAttempts.length-1];
-  const ratio=last.total>0?last.score/last.total:0;
-  if(ratio>=0.8) return "hard";
-  if(ratio>=0.5) return "medium";
+  if(!activeQuizProgress) return "easy";
+  const level=Math.max(1,Math.min(10,activeQuizProgress.level||1));
+  if(level>=7) return "hard";
+  if(level>=4) return "medium";
   return "easy";
 }
 
@@ -992,18 +1149,24 @@ function parsePromptTokens(text){
   return String(text||"").toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
 }
 
+function scoreQuestionAgainstPrompt(question, tokens){
+  if(!tokens.length) return 0;
+  const corpus=[question.q, ...(question.tags||[]), question.difficulty, String(question.level||"")].join(" ").toLowerCase();
+  let score=0;
+  tokens.forEach(token=>{ if(corpus.includes(token)) score++; });
+  return score;
+}
+
 function generateQuizSet(){
+  ensureActiveQuizProgress();
   const prompt=document.getElementById("quizPrompt").value.trim();
   const tokens=parsePromptTokens(prompt);
-  const target=inferDifficultyTarget();
-  let pool=QUESTION_BANK.filter(q=>q.difficulty===target);
-  if(tokens.length){
-    const tagged=QUESTION_BANK.filter(q=>q.tags.some(t=>tokens.includes(t)) || tokens.some(tok=>q.q.toLowerCase().includes(tok)));
-    if(tagged.length>=5) pool=tagged;
-    else if(tagged.length>0) pool=[...new Set([...tagged,...pool])];
-  }
-  if(pool.length<5) pool=[...new Set([...pool,...QUESTION_BANK])];
-  currentQuizQuestions=pickRandom(pool,5);
+  const level=activeQuizProgress ? Math.max(1,Math.min(10,activeQuizProgress.level||1)) : 1;
+  const pool=QUESTION_BANK.filter(x=>x.level===level);
+  const ordered=tokens.length
+    ? [...pool].sort((a,b)=>scoreQuestionAgainstPrompt(b,tokens)-scoreQuestionAgainstPrompt(a,tokens) || Math.random()-0.5)
+    : shuffleArray(pool);
+  currentQuizQuestions=ordered.slice(0,10);
 }
 
 function renderQuizQuestions(){
@@ -1026,7 +1189,9 @@ function generateAndRenderQuiz(){
   }
   generateQuizSet();
   renderQuizQuestions();
-  document.getElementById("quizResult").textContent="New quiz generated for "+student.name+". Difficulty profile: "+inferDifficultyTarget()+".";
+  updateQuizProgressUI();
+  const level=activeQuizProgress ? activeQuizProgress.level : 1;
+  document.getElementById("quizResult").textContent="Level "+level+" loaded for "+student.name+". Answer all 10 questions.";
 }
 
 function submitQuiz(ev){
@@ -1061,7 +1226,26 @@ function submitQuiz(ev){
     return;
   }
   const pct=Math.round((score/total)*100);
-  document.getElementById("quizResult").textContent="Submitted. Score: "+score+"/"+total+" ("+pct+"%)."+(feedback.length?" Review: "+feedback.join(" | "):" Excellent run.");
+  if(!activeQuizProgress) ensureActiveQuizProgress();
+  const levelBefore=activeQuizProgress ? Math.max(1,Math.min(10,activeQuizProgress.level||1)) : 1;
+  if(activeQuizProgress){
+    activeQuizProgress.attempts=(activeQuizProgress.attempts||0)+1;
+    activeQuizProgress.answered=(activeQuizProgress.answered||0)+total;
+    activeQuizProgress.correct=(activeQuizProgress.correct||0)+score;
+  }
+  let result="Submitted. Score: "+score+"/"+total+" ("+pct+"%)."+(feedback.length?" Review: "+feedback.join(" | "):" Excellent run.");
+  if(score>=6){
+    if(activeQuizProgress && activeQuizProgress.level<10){
+      activeQuizProgress.level+=1;
+      activeQuizProgress.highestLevel=Math.max(activeQuizProgress.highestLevel||1,activeQuizProgress.level);
+      result+=" Passed Level "+levelBefore+". Level "+activeQuizProgress.level+" unlocked.";
+    }else{
+      result+=" Great work. Maximum level reached.";
+    }
+  }else{
+    result+=" Need 6/10 to unlock the next level.";
+  }
+  document.getElementById("quizResult").textContent=result;
   quizAttempts.push({
     timestamp:new Date().toISOString(),
     name:student.name,
@@ -1072,6 +1256,11 @@ function submitQuiz(ev){
   if(quizAttempts.length>3000) quizAttempts=quizAttempts.slice(-3000);
   savePersistentLogs();
   updateQuizAttemptUI();
+  updateQuizProgressUI();
+  if(score>=6 && activeQuizProgress && activeQuizProgress.level!==levelBefore){
+    generateQuizSet();
+    renderQuizQuestions();
+  }
 }
 
 function resetQuizForm(){
@@ -1580,6 +1769,7 @@ function setStudent(name,id){
   document.getElementById("footerStudent").textContent=label+" - session active";
   document.getElementById("studentIdentityLine").textContent="Student: "+student.name+" | SAPID: "+(student.sapid||"NA")+" | Topic: Hubble Law and Cosmology";
   try{localStorage.setItem("hubble_sn",name);localStorage.setItem("hubble_si",id);}catch(e){}
+  ensureActiveQuizProgress();
 }
 function showApp(){
   document.getElementById("loginOverlay").classList.add("hidden");
@@ -1590,6 +1780,19 @@ document.getElementById("loginBtn").addEventListener("click",()=>{
   const sapid=document.getElementById("loginID").value.trim();
   if(!name){document.getElementById("loginName").focus();return;}
   if(!sapid){document.getElementById("loginID").focus();return;}
+  if(!allowedSapIdsLoaded){
+    alert("Allowed SAP ID list is still loading. Please try again.");
+    return;
+  }
+  if(allowedSapIdsLoadError){
+    alert("Allowed SAP ID list could not be loaded. Contact instructor.");
+    return;
+  }
+  if(!isValidSapId(sapid)){
+    alert("SAPID not found in allowed list. Please use an approved SAPID.");
+    document.getElementById("loginID").focus();
+    return;
+  }
   state.authenticated=true;
   setStudent(name,sapid);
   recordLogin(name,sapid);
@@ -1703,18 +1906,18 @@ document.getElementById("quizForm").addEventListener("submit",submitQuiz);
 document.getElementById("resetQuizBtn").addEventListener("click",resetQuizForm);
 document.getElementById("askQuizBtn").addEventListener("click",generateAndRenderQuiz);
 document.getElementById("newQuizBtn").addEventListener("click",generateAndRenderQuiz);
-document.getElementById("dlLoginCSV").addEventListener("click",exportLoginCSV);
-document.getElementById("dlQuizCSV").addEventListener("click",exportQuizCSV);
 window.addEventListener("resize",resizeGraph);
 
-loadPersistentLogs();
-updateLoginAuditUI();
-updateQuizAttemptUI();
-renderQuizQuestions();
-updateInputLabels();
-singleStep();
-resizeGraph();
-requestAnimationFrame(loop);
+loadAllowedSapIds().then(()=>{
+  loadPersistentLogs();
+  updateLoginAuditUI();
+  updateQuizAttemptUI();
+  renderQuizQuestions();
+  updateInputLabels();
+  singleStep();
+  resizeGraph();
+  requestAnimationFrame(loop);
+});
 </script>
 </body>
 </html>

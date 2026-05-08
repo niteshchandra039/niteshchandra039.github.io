@@ -99,6 +99,13 @@
       border-radius:8px;padding:5px 12px;font-size:12px;color:var(--accent);cursor:pointer;
     }
     #studentBadge:hover{background:rgba(89,208,255,.2)}
+    .hubBtn{
+      display:inline-flex;align-items:center;gap:6px;
+      background:rgba(255,173,109,.12);border:1px solid rgba(255,173,109,.35);
+      color:var(--accent2);padding:5px 13px;border-radius:8px;font-size:12px;font-weight:600;
+      text-decoration:none;transition:background .2s;white-space:nowrap;flex-shrink:0;
+    }
+    .hubBtn:hover{background:rgba(255,173,109,.22)}
 
     /* === Tab bar === */
     .tabBar{
@@ -276,6 +283,20 @@
 
     /* === Quiz tab === */
     .quizCard h3{font-size:14px;color:var(--accent2);margin-bottom:8px}
+    .quizProgressShell{margin-top:12px;padding:12px;border-radius:10px;border:1px solid rgba(89,208,255,.18);background:linear-gradient(180deg,rgba(89,208,255,.10),rgba(255,173,109,.06));}
+    .quizProgressHead{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:10px;}
+    .quizProgressBar{height:12px;border-radius:999px;overflow:hidden;background:rgba(8,20,38,.78);border:1px solid rgba(143,181,217,.16);}
+    .quizProgressFill{height:100%;width:10%;border-radius:inherit;background:linear-gradient(90deg,var(--accent),#63e6a0,var(--accent2));transition:width .25s ease;}
+    .quizProgressNote{margin-top:8px;font-size:12px;color:var(--muted);line-height:1.55;}
+    .quizLayout{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(260px,1fr);gap:14px;align-items:start;}
+    .quizSideStack{display:flex;flex-direction:column;gap:14px}
+    .quizLevelTrack{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:10px;}
+    .quizLevelPill{text-align:center;border-radius:999px;padding:4px 0;font-size:10px;border:1px solid rgba(143,181,217,.22);color:var(--muted);background:rgba(8,20,38,.45);font-weight:700;}
+    .quizLevelPill.active{background:rgba(89,208,255,.2);border-color:rgba(89,208,255,.45);color:var(--accent);}
+    .quizLevelPill.done{background:rgba(99,230,160,.2);border-color:rgba(99,230,160,.35);color:var(--green);}
+    .quizHero{border:1px solid rgba(89,208,255,.18);border-radius:10px;padding:10px 12px;background:linear-gradient(140deg,rgba(89,208,255,.1),rgba(8,20,38,.2));margin-bottom:10px;font-size:12px;color:var(--muted);line-height:1.6;}
+    .quizActionsSticky{position:sticky;bottom:0;padding-top:10px;background:linear-gradient(180deg,rgba(10,23,48,0),rgba(10,23,48,.92) 50%);}
+    @media(max-width:1024px){.quizLayout{grid-template-columns:1fr}.quizSideStack{order:-1}}
     .quizQ{padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05)}
     .quizQ:last-child{border-bottom:none}
     .quizQ p{font-size:13px;color:var(--text);margin-bottom:8px}
@@ -366,6 +387,7 @@
       <span class="subtitle">Computational Astrophysics &middot; 2-to-4 Body System &middot; Velocity Verlet / RK4 / Euler</span>
       <span id="studentIdentityLine">Student: Guest | SAPID: NA | Topic: N-Body Gravitational Dynamics</span>
     </div>
+    <a class="hubBtn" href="phys4022p_llm_sim_hub.html">&#x2190; PHYS4022P Hub</a>
     <div id="studentBadge" title="Click to switch user">&#x1F464; Guest</div>
   </header>
 
@@ -708,7 +730,6 @@
         <h2><span class="icon">&#x1F512;</span>Student Login Audit</h2>
         <div class="row" style="margin-bottom:10px;align-items:center;justify-content:space-between">
           <div class="mono">Total recorded logins: <span id="loginLogCount">0</span></div>
-          <button class="dlBtn primary" id="dlLoginCSV" type="button">&#x2B07; Download Login Logs CSV</button>
         </div>
         <div class="tableWrap">
           <table>
@@ -798,42 +819,53 @@
     <!-- QUIZ TAB -->
     <section id="tab-quiz" class="tabPanel" role="tabpanel">
 
-      <div class="card quizCard">
-        <h2><span class="icon">&#x1F9E0;</span>Concept Check Quiz</h2>
-        <p>This quiz is interactive and generates a new question set whenever a student asks for one.</p>
+      <div class="quizLayout">
+        <div class="card quizCard">
+          <h2><span class="icon">&#x1F9E0;</span>Concept Check Quiz</h2>
+          <div class="quizHero">10 questions per round. Pass a round to unlock the next level with a stronger difficulty mix.</div>
 
-        <form id="quizForm">
-          <div class="quizTools">
-            <input id="quizPrompt" type="text" placeholder="Ask for topic focus (e.g. energy drift, RK4, Kepler law)" />
-            <button class="simBtn" id="askQuizBtn" type="button">Ask New Quiz</button>
-            <button class="simBtn" id="newQuizBtn" type="button">Regenerate</button>
-          </div>
-          <div class="quizHint">Adaptive mode: after high scores, the next generated set becomes more challenging.</div>
+          <form id="quizForm">
+            <div class="quizTools">
+              <input id="quizPrompt" type="text" placeholder="Optional focus for this level (e.g. energy drift, RK4, Kepler law)" />
+              <button class="simBtn" id="askQuizBtn" type="button">Start Level</button>
+              <button class="simBtn" id="newQuizBtn" type="button">Retry Level</button>
+            </div>
+            <div class="quizHint">Adaptive mode: clear 6/10 or better to unlock the next level and a harder mixed set.</div>
 
-          <div id="quizQuestionsWrap"></div>
+            <div id="quizQuestionsWrap"></div>
 
-          <div class="row" style="margin-top:12px">
-            <button class="simBtn" id="submitQuizBtn" type="submit">Submit Quiz</button>
-            <button class="simBtn danger" id="resetQuizBtn" type="button">Reset Quiz</button>
-          </div>
-        </form>
+            <div class="row quizActionsSticky" style="margin-top:12px">
+              <button class="simBtn" id="submitQuizBtn" type="submit">Submit Quiz</button>
+              <button class="simBtn danger" id="resetQuizBtn" type="button">Reset Quiz</button>
+            </div>
+          </form>
 
-        <div class="quizResult" id="quizResult">No attempts yet.</div>
-      </div>
-
-      <div class="card">
-        <h2><span class="icon">&#x1F4DD;</span>Quiz Attempt Log</h2>
-        <div class="row" style="margin-bottom:10px;align-items:center;justify-content:space-between">
-          <div class="mono">Attempts: <span id="quizAttemptCount">0</span></div>
-          <button class="dlBtn secondary" id="dlQuizCSV" type="button">&#x2B07; Download Quiz Attempts CSV</button>
+          <div class="quizResult" id="quizResult">No attempts yet.</div>
         </div>
-        <div class="tableWrap">
-          <table>
-            <thead><tr><th>Timestamp (ISO)</th><th>Name</th><th>SAPID</th><th>Score</th></tr></thead>
-            <tbody id="quizAttemptBody">
-              <tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px">No quiz attempts yet.</td></tr>
-            </tbody>
-          </table>
+
+        <div class="quizSideStack">
+          <div class="card">
+            <h2><span class="icon">&#x1F3AE;</span>Level Progress</h2>
+            <div class="quizProgressShell" style="margin-top:0">
+              <div class="quizProgressHead">
+                <div class="mono">Level <span id="quizLevel">1</span>/10</div>
+                <div class="mono">Mastery <span id="quizMastery">0%</span></div>
+                <div class="mono">Questions <span id="quizAnswered">0/0</span></div>
+              </div>
+              <div class="quizProgressBar" aria-label="Quiz level progress">
+                <div class="quizProgressFill" id="quizProgressFill"></div>
+              </div>
+              <div class="quizProgressNote" id="quizProgressNote">Answer 10 questions to complete a level. Passing scores unlock the next level with harder questions.</div>
+              <div class="quizLevelTrack" id="quizLevelTrack"></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2><span class="icon">&#x1F4DD;</span>Quiz Attempt Log</h2>
+            <div class="row" style="margin-bottom:2px;align-items:center;justify-content:space-between">
+              <div class="mono">Attempts: <span id="quizAttemptCount">0</span></div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1093,30 +1125,114 @@ let lastMetrics={energy:0,lz:0,meanSpeed:0,radialSpread:0};
 let loginAudit=[];
 let quizAttempts=[];
 let currentQuizQuestions=[];
+let quizProgressByStudent={};
+let activeQuizProgress=null;
 let lastGraphSampleDays=-Infinity;
 
-const QUESTION_BANK=[
-  {id:"q01",difficulty:"easy",tags:["integrator","symplectic"],q:"Which integrator is symplectic and preferred for long-term orbital stability?",options:["Euler","Velocity Verlet","RK4"],answer:1},
-  {id:"q02",difficulty:"easy",tags:["gravity","gscale"],q:"Increasing G scale in this simulator primarily does what?",options:["Weakens gravity","Strengthens gravity and accelerations","Only changes rendering"],answer:1},
-  {id:"q03",difficulty:"easy",tags:["conservation","energy"],q:"Which quantity is expected to stay approximately conserved in isolated runs?",options:["Total mechanical energy","Zoom level","Trail length"],answer:0},
-  {id:"q04",difficulty:"easy",tags:["graph"],q:"What is the X-axis in the live simulation graph?",options:["Body index","Simulation time (days)","Distance from primary"],answer:1},
-  {id:"q05",difficulty:"easy",tags:["softening"],q:"Why is gravitational softening included?",options:["Avoid force divergence at tiny separation","Increase FPS","Force circular orbits"],answer:0},
-  {id:"q06",difficulty:"medium",tags:["numerics","rk4"],q:"RK4 usually provides high per-step accuracy but is not what?",options:["Fourth order","Symplectic","Explicit"],answer:1},
-  {id:"q07",difficulty:"medium",tags:["units","kepler"],q:"For near-circular Earth orbit around 1 Msun, the period is closest to:",options:["27 days","365 days","11 years"],answer:1},
-  {id:"q08",difficulty:"medium",tags:["sampling","data"],q:"If sampleEvery is reduced from 1.0 to 0.5 days, what happens?",options:["Fewer logged points","More frequent logged points","No change"],answer:1},
-  {id:"q09",difficulty:"medium",tags:["frame","visualization"],q:"Switching camera frame affects which of the following?",options:["Physics integration equations","Rendered reference frame","Gravitational constant"],answer:1},
-  {id:"q10",difficulty:"hard",tags:["error","methods"],q:"Euler in orbital integration often causes what long-run behavior?",options:["Bounded oscillatory energy error","Monotonic-like energy drift","Exact conservation"],answer:1},
-  {id:"q11",difficulty:"hard",tags:["angular momentum","diagnostics"],q:"A large drift in Lz usually indicates:",options:["Integrator/time-step issues","Correct ideal behavior","Only label rendering issue"],answer:0},
-  {id:"q12",difficulty:"hard",tags:["chaos","nbody"],q:"Adding a perturbing 4th body mainly demonstrates:",options:["Guaranteed periodic closure","Deterministic chaos sensitivity","Instant numerical failure only"],answer:1}
+function makeQuestion(id, level, difficulty, tags, qText, options, answer){
+  return { id, level, difficulty, tags, q: qText, options, answer };
+}
+
+function shuffleArray(items){
+  const copy=[...items];
+  for(let i=copy.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    const t=copy[i]; copy[i]=copy[j]; copy[j]=t;
+  }
+  return copy;
+}
+
+function difficultyMixForLevel(level){
+  const easyCount=Math.max(1,6-Math.floor((level-1)/2));
+  const hardCount=Math.min(1+Math.floor((level-1)/2),6);
+  const mediumCount=10-easyCount-hardCount;
+  const mix=[];
+  for(let i=0;i<easyCount;i++) mix.push("easy");
+  for(let i=0;i<mediumCount;i++) mix.push("medium");
+  for(let i=0;i<hardCount;i++) mix.push("hard");
+  return shuffleArray(mix);
+}
+
+const QUIZ_SCENARIOS=[
+  { g:1.0, dt:1.0, period:365, eDrift:"low", frame:"heaviest", ratio:"1/r^2", soft:"small" },
+  { g:1.1, dt:0.8, period:330, eDrift:"moderate", frame:"barycentric", ratio:"1/r^2", soft:"small" },
+  { g:0.9, dt:1.2, period:410, eDrift:"moderate", frame:"heaviest", ratio:"1/r^2", soft:"small" },
+  { g:1.2, dt:0.6, period:300, eDrift:"rising", frame:"barycentric", ratio:"1/r^2", soft:"medium" },
+  { g:0.8, dt:1.4, period:455, eDrift:"rising", frame:"heaviest", ratio:"1/r^2", soft:"medium" },
+  { g:1.3, dt:0.5, period:280, eDrift:"visible", frame:"barycentric", ratio:"1/r^2", soft:"medium" },
+  { g:0.7, dt:1.7, period:520, eDrift:"high", frame:"heaviest", ratio:"1/r^2", soft:"larger" },
+  { g:1.4, dt:0.4, period:260, eDrift:"high", frame:"barycentric", ratio:"1/r^2", soft:"larger" },
+  { g:0.6, dt:2.0, period:600, eDrift:"very high", frame:"heaviest", ratio:"1/r^2", soft:"larger" },
+  { g:1.5, dt:0.3, period:240, eDrift:"very low", frame:"barycentric", ratio:"1/r^2", soft:"tuned" }
 ];
+
+function buildQuizLevelQuestions(level){
+  const s=QUIZ_SCENARIOS[level-1];
+  const mix=difficultyMixForLevel(level);
+  return [
+    makeQuestion(`nb_l${level}_01`, level, mix[0], ["gravity","inverse-square"], `In this simulator, gravitational force magnitude follows which dependence on separation r?`, ["1/r", "1/r^2", "r^2", "constant"], 1),
+    makeQuestion(`nb_l${level}_02`, level, mix[1], ["integrator","symplectic"], "Which integrator here is symplectic and suited for long-term orbital energy behavior?", ["Euler", "Velocity Verlet", "RK4", "None"], 1),
+    makeQuestion(`nb_l${level}_03`, level, mix[2], ["g-scale"], `If G scale is increased from 1.0 to ${s.g.toFixed(1)}, accelerations generally`, ["decrease", "increase", "stay identical", "become random"], 1),
+    makeQuestion(`nb_l${level}_04`, level, mix[3], ["period","kepler"], `A near-Earth analog period closest to ${s.period} days indicates`, ["order of one year", "order of one hour", "order of one decade", "non-orbital motion"], 0),
+    makeQuestion(`nb_l${level}_05`, level, mix[4], ["softening"], `Softening length is introduced mainly to`, ["stabilize force near tiny separations", "speed up rendering only", "enforce circular orbits", "change masses"], 0),
+    makeQuestion(`nb_l${level}_06`, level, mix[5], ["conservation","diagnostics"], `Which pair is monitored to judge numerical quality in this lab?`, ["Energy and angular momentum", "Zoom and label count", "Canvas size and FPS", "Color and trail thickness"], 0),
+    makeQuestion(`nb_l${level}_07`, level, mix[6], ["frame","camera"], `Switching camera frame to ${s.frame} changes`, ["rendered coordinates only", "gravitational constant", "integration algorithm", "body masses"], 0),
+    makeQuestion(`nb_l${level}_08`, level, mix[7], ["sampling","logging"], `Reducing sample interval (e.g., 1.0 to ${s.dt}) generally gives`, ["fewer rows", "more rows", "same rows", "no log file"], 1),
+    makeQuestion(`nb_l${level}_09`, level, mix[8], ["euler","errors"], `Euler integration in orbital problems often shows`, ["exact conservation", "energy drift over long runs", "no phase error", "better symplecticity"], 1),
+    makeQuestion(`nb_l${level}_10`, level, mix[9], ["chaos","nbody"], "Adding additional perturbing bodies most clearly demonstrates", ["deterministic sensitivity to initial conditions", "guaranteed periodic closure", "instant solver failure", "constant radius orbits"], 0)
+  ];
+}
+
+function buildQuizBank(){
+  return Array.from({ length: 10 }, (_, i) => buildQuizLevelQuestions(i + 1)).flat();
+}
+
+const QUESTION_BANK=buildQuizBank();
+
+const ALLOWED_SAP_FILE = "./hr_diagram_allowed_sap_ids.csv";
+let allowedSapIds = new Set();
+let allowedSapIdsLoaded = false;
+let allowedSapIdsLoadError = false;
+
+function isValidSapId(sapid){
+  return allowedSapIds.has(String(sapid || "").trim());
+}
+
+function parseAllowedSapIds(csvText){
+  const tokens = String(csvText || "")
+    .split(",")
+    .map(x => x.trim())
+    .filter(Boolean);
+  return new Set(tokens);
+}
+
+async function loadAllowedSapIds(){
+  try{
+    const resp = await fetch(ALLOWED_SAP_FILE, { cache: "no-store" });
+    if(!resp.ok) throw new Error("failed to load SAP list");
+    const text = await resp.text();
+    const parsed = parseAllowedSapIds(text);
+    if(!parsed.size) throw new Error("empty SAP list");
+    allowedSapIds = parsed;
+    allowedSapIdsLoaded = true;
+    allowedSapIdsLoadError = false;
+  }catch(err){
+    console.error("Unable to load allowed SAP ID list:", err);
+    allowedSapIds = new Set();
+    allowedSapIdsLoaded = true;
+    allowedSapIdsLoadError = true;
+  }
+}
 
 function loadPersistentLogs(){
   try{
     loginAudit=JSON.parse(localStorage.getItem("nbody_login_audit")||"[]");
     quizAttempts=JSON.parse(localStorage.getItem("nbody_quiz_attempts")||"[]");
+    quizProgressByStudent=JSON.parse(localStorage.getItem("nbody_quiz_progress_by_student")||"{}");
   }catch(e){
     loginAudit=[];
     quizAttempts=[];
+    quizProgressByStudent={};
   }
 }
 
@@ -1124,6 +1240,7 @@ function savePersistentLogs(){
   try{
     localStorage.setItem("nbody_login_audit",JSON.stringify(loginAudit));
     localStorage.setItem("nbody_quiz_attempts",JSON.stringify(quizAttempts));
+    localStorage.setItem("nbody_quiz_progress_by_student",JSON.stringify(quizProgressByStudent));
   }catch(e){}
 }
 
@@ -1179,12 +1296,47 @@ function pickRandom(arr,n){
   return cp.slice(0,Math.min(n,cp.length));
 }
 
+function defaultQuizProgress(){
+  return { level:1, highestLevel:1, attempts:0, answered:0, correct:0 };
+}
+
+function ensureActiveQuizProgress(){
+  if(!student.sapid) return;
+  const key=String(student.sapid).trim();
+  if(!quizProgressByStudent[key]) quizProgressByStudent[key]=defaultQuizProgress();
+  activeQuizProgress=quizProgressByStudent[key];
+  updateQuizProgressUI();
+}
+function updateQuizProgressUI(){
+  if(!document.getElementById("quizLevel") || !activeQuizProgress) return;
+  const answered=Math.max(0,activeQuizProgress.answered||0);
+  const correct=Math.max(0,activeQuizProgress.correct||0);
+  const mastery=answered ? Math.round(correct*100/answered) : 0;
+  const level=Math.max(1,Math.min(10,activeQuizProgress.level||1));
+  const progressPct=Math.max(0,Math.min(100,((level-1)/9)*100));
+  document.getElementById("quizLevel").textContent=String(level);
+  document.getElementById("quizMastery").textContent=mastery+"%";
+  document.getElementById("quizAnswered").textContent=answered+"/100";
+  document.getElementById("quizProgressFill").style.width=progressPct.toFixed(1)+"%";
+  document.getElementById("quizProgressNote").textContent=activeQuizProgress.lastPassed
+    ?"Level cleared. The next round is unlocked with a harder mix of questions."
+    :"Answer 10 questions per level. Score at least 6/10 to unlock the next level.";
+  const track=document.getElementById("quizLevelTrack");
+  if(track){
+    const chips=[];
+    for(let lv=1;lv<=10;lv++){
+      const cls=lv<level?"done":(lv===level?"active":"");
+      chips.push(`<div class="quizLevelPill ${cls}">L${lv}</div>`);
+    }
+    track.innerHTML=chips.join("");
+  }
+}
+
 function inferDifficultyTarget(){
-  if(!quizAttempts.length) return "easy";
-  const last=quizAttempts[quizAttempts.length-1];
-  const ratio=last.total>0?last.score/last.total:0;
-  if(ratio>=0.8) return "hard";
-  if(ratio>=0.5) return "medium";
+  if(!activeQuizProgress) return "easy";
+  const level=Math.max(1,Math.min(10,activeQuizProgress.level||1));
+  if(level>=7) return "hard";
+  if(level>=4) return "medium";
   return "easy";
 }
 
@@ -1192,18 +1344,24 @@ function parsePromptTokens(text){
   return String(text||"").toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
 }
 
+function scoreQuestionAgainstPrompt(question, tokens){
+  if(!tokens.length) return 0;
+  const corpus=[question.q, ...(question.tags||[]), question.difficulty, String(question.level||"")].join(" ").toLowerCase();
+  let score=0;
+  tokens.forEach(token=>{ if(corpus.includes(token)) score++; });
+  return score;
+}
+
 function generateQuizSet(){
+  ensureActiveQuizProgress();
   const prompt=document.getElementById("quizPrompt").value.trim();
   const tokens=parsePromptTokens(prompt);
-  const target=inferDifficultyTarget();
-  let pool=QUESTION_BANK.filter(q=>q.difficulty===target);
-  if(tokens.length){
-    const tagged=QUESTION_BANK.filter(q=>q.tags.some(t=>tokens.includes(t)) || tokens.some(tok=>q.q.toLowerCase().includes(tok)));
-    if(tagged.length>=5) pool=tagged;
-    else if(tagged.length>0) pool=[...new Set([...tagged,...pool])];
-  }
-  if(pool.length<5) pool=[...new Set([...pool,...QUESTION_BANK])];
-  currentQuizQuestions=pickRandom(pool,5);
+  const level=activeQuizProgress ? Math.max(1,Math.min(10,activeQuizProgress.level||1)) : 1;
+  const pool=QUESTION_BANK.filter(x=>x.level===level);
+  const ordered=tokens.length
+    ? [...pool].sort((a,b)=>scoreQuestionAgainstPrompt(b,tokens)-scoreQuestionAgainstPrompt(a,tokens) || Math.random()-0.5)
+    : shuffleArray(pool);
+  currentQuizQuestions=ordered.slice(0,10);
 }
 
 function renderQuizQuestions(){
@@ -1226,7 +1384,9 @@ function generateAndRenderQuiz(){
   }
   generateQuizSet();
   renderQuizQuestions();
-  document.getElementById("quizResult").textContent="New quiz generated for "+student.name+". Difficulty profile: "+inferDifficultyTarget()+".";
+  updateQuizProgressUI();
+  const level=activeQuizProgress ? activeQuizProgress.level : 1;
+  document.getElementById("quizResult").textContent="Level "+level+" loaded for "+student.name+". Answer all 10 questions.";
 }
 
 function submitQuiz(ev){
@@ -1261,7 +1421,26 @@ function submitQuiz(ev){
     return;
   }
   const pct=Math.round((score/total)*100);
-  document.getElementById("quizResult").textContent="Submitted. Score: "+score+"/"+total+" ("+pct+"%)."+(feedback.length?" Review: "+feedback.join(" | "):" Excellent run.");
+  if(!activeQuizProgress) ensureActiveQuizProgress();
+  const levelBefore=activeQuizProgress ? Math.max(1,Math.min(10,activeQuizProgress.level||1)) : 1;
+  if(activeQuizProgress){
+    activeQuizProgress.attempts=(activeQuizProgress.attempts||0)+1;
+    activeQuizProgress.answered=(activeQuizProgress.answered||0)+total;
+    activeQuizProgress.correct=(activeQuizProgress.correct||0)+score;
+  }
+  let result="Submitted. Score: "+score+"/"+total+" ("+pct+"%)."+(feedback.length?" Review: "+feedback.join(" | "):" Excellent run.");
+  if(score>=6){
+    if(activeQuizProgress && activeQuizProgress.level<10){
+      activeQuizProgress.level+=1;
+      activeQuizProgress.highestLevel=Math.max(activeQuizProgress.highestLevel||1,activeQuizProgress.level);
+      result+=" Passed Level "+levelBefore+". Level "+activeQuizProgress.level+" unlocked.";
+    }else{
+      result+=" Great work. Maximum level reached.";
+    }
+  }else{
+    result+=" Need 6/10 to unlock the next level.";
+  }
+  document.getElementById("quizResult").textContent=result;
   quizAttempts.push({
     timestamp:new Date().toISOString(),
     name:student.name,
@@ -1272,6 +1451,11 @@ function submitQuiz(ev){
   if(quizAttempts.length>3000) quizAttempts=quizAttempts.slice(-3000);
   savePersistentLogs();
   updateQuizAttemptUI();
+  updateQuizProgressUI();
+  if(score>=6 && activeQuizProgress && activeQuizProgress.level!==levelBefore){
+    generateQuizSet();
+    renderQuizQuestions();
+  }
 }
 
 function resetQuizForm(){
@@ -1760,6 +1944,7 @@ function setStudent(name,id){
   document.getElementById("footerStudent").textContent=label+" - session active";
   document.getElementById("studentIdentityLine").textContent="Student: "+student.name+" | SAPID: "+(student.sapid||"NA")+" | Topic: N-Body Gravitational Dynamics";
   try{localStorage.setItem("nbody_sn",name);localStorage.setItem("nbody_si",id);}catch(e){}
+  ensureActiveQuizProgress();
 }
 function showApp(){
   document.getElementById("loginOverlay").classList.add("hidden");
@@ -1770,6 +1955,19 @@ document.getElementById("loginBtn").addEventListener("click",()=>{
   const sapid=document.getElementById("loginID").value.trim();
   if(!name){document.getElementById("loginName").focus();return;}
   if(!sapid){document.getElementById("loginID").focus();return;}
+  if(!allowedSapIdsLoaded){
+    alert("Allowed SAP ID list is still loading. Please try again.");
+    return;
+  }
+  if(allowedSapIdsLoadError){
+    alert("Allowed SAP ID list could not be loaded. Contact instructor.");
+    return;
+  }
+  if(!isValidSapId(sapid)){
+    alert("SAPID not found in allowed list. Please use an approved SAPID.");
+    document.getElementById("loginID").focus();
+    return;
+  }
   state.authenticated=true;
   setStudent(name,sapid);
   recordLogin(name,sapid);
@@ -1855,17 +2053,17 @@ document.getElementById("quizForm").addEventListener("submit",submitQuiz);
 document.getElementById("resetQuizBtn").addEventListener("click",resetQuizForm);
 document.getElementById("askQuizBtn").addEventListener("click",generateAndRenderQuiz);
 document.getElementById("newQuizBtn").addEventListener("click",generateAndRenderQuiz);
-document.getElementById("dlLoginCSV").addEventListener("click",exportLoginCSV);
-document.getElementById("dlQuizCSV").addEventListener("click",exportQuizCSV);
 window.addEventListener("resize",resizeGraph);
 
-loadPersistentLogs();
-updateLoginAuditUI();
-updateQuizAttemptUI();
-renderQuizQuestions();
-presetSEM();
-resizeGraph();
-requestAnimationFrame(loop);
+loadAllowedSapIds().then(()=>{
+  loadPersistentLogs();
+  updateLoginAuditUI();
+  updateQuizAttemptUI();
+  renderQuizQuestions();
+  presetSEM();
+  resizeGraph();
+  requestAnimationFrame(loop);
+});
 </script>
 </body>
 </html>

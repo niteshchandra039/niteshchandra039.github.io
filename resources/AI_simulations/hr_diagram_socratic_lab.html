@@ -103,6 +103,13 @@
       border-radius:8px;padding:5px 12px;font-size:12px;color:var(--accent);cursor:pointer;
     }
     #studentBadge:hover{background:rgba(89,208,255,.2)}
+    .hubBtn{
+      display:inline-flex;align-items:center;gap:6px;
+      background:rgba(255,173,109,.12);border:1px solid rgba(255,173,109,.35);
+      color:var(--accent2);padding:5px 13px;border-radius:8px;font-size:12px;font-weight:600;
+      text-decoration:none;transition:background .2s;white-space:nowrap;flex-shrink:0;
+    }
+    .hubBtn:hover{background:rgba(255,173,109,.22)}
 
     /* === Tab bar === */
     .tabBar{
@@ -165,6 +172,13 @@
       width:100%;border-radius:6px;border:1px solid #355b87;
       background:#0a1730;color:#eaf2ff;padding:6px 8px;font-size:12px;
     }
+    .sliderMeta{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:6px;
+      margin-top:6px;
+    }
+    .sliderMeta label{font-size:11px;margin-bottom:2px}
     input[type=range]{accent-color:var(--accent)}
     .row{display:flex;gap:6px;flex-wrap:wrap}
     .simBtn{
@@ -283,6 +297,22 @@
     .quizQ{padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05)}
     .quizQ:last-child{border-bottom:none}
     .quizQ p{font-size:13px;color:var(--text);margin-bottom:8px}
+    .quizDiff{
+      display:inline-flex;
+      align-items:center;
+      gap:4px;
+      font-size:10px;
+      padding:2px 8px;
+      border-radius:999px;
+      margin-right:8px;
+      vertical-align:middle;
+      text-transform:uppercase;
+      letter-spacing:.04em;
+      font-weight:700;
+    }
+    .quizDiff.easy{background:rgba(99,230,160,.16);color:var(--green);border:1px solid rgba(99,230,160,.24)}
+    .quizDiff.medium{background:rgba(255,173,109,.16);color:var(--accent2);border:1px solid rgba(255,173,109,.24)}
+    .quizDiff.hard{background:rgba(255,112,112,.16);color:var(--red);border:1px solid rgba(255,112,112,.24)}
     .quizQ label{display:block;font-size:12.5px;color:var(--muted);margin:4px 0;cursor:pointer}
     .quizTools{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;margin:10px 0 12px}
     .quizTools input{
@@ -294,6 +324,93 @@
       margin-top:12px;padding:10px;border-radius:8px;
       background:rgba(89,208,255,.1);border:1px solid var(--border);
       font-size:13px;color:var(--text);
+    }
+    .quizProgressShell{
+      margin-top:12px;
+      padding:12px;
+      border-radius:10px;
+      border:1px solid rgba(89,208,255,.18);
+      background:linear-gradient(180deg,rgba(89,208,255,.10),rgba(255,173,109,.06));
+    }
+    .quizProgressHead{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:8px;
+      margin-bottom:10px;
+    }
+    .quizProgressBar{
+      height:12px;
+      border-radius:999px;
+      overflow:hidden;
+      background:rgba(8,20,38,.78);
+      border:1px solid rgba(143,181,217,.16);
+    }
+    .quizProgressFill{
+      height:100%;
+      width:10%;
+      border-radius:inherit;
+      background:linear-gradient(90deg,var(--accent),#63e6a0,var(--accent2));
+      transition:width .25s ease;
+    }
+    .quizProgressNote{
+      margin-top:8px;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.55;
+    }
+    .quizLayout{
+      display:grid;
+      grid-template-columns:minmax(0,1.9fr) minmax(260px,1fr);
+      gap:14px;
+      align-items:start;
+    }
+    .quizSideStack{display:flex;flex-direction:column;gap:14px}
+    .quizLevelTrack{
+      display:grid;
+      grid-template-columns:repeat(5,minmax(0,1fr));
+      gap:6px;
+      margin-top:10px;
+    }
+    .quizLevelPill{
+      text-align:center;
+      border-radius:999px;
+      padding:4px 0;
+      font-size:10px;
+      border:1px solid rgba(143,181,217,.22);
+      color:var(--muted);
+      background:rgba(8,20,38,.45);
+      font-weight:700;
+    }
+    .quizLevelPill.active{
+      background:rgba(89,208,255,.2);
+      border-color:rgba(89,208,255,.45);
+      color:var(--accent);
+    }
+    .quizLevelPill.done{
+      background:rgba(99,230,160,.2);
+      border-color:rgba(99,230,160,.35);
+      color:var(--green);
+    }
+    .quizHero{
+      border:1px solid rgba(89,208,255,.18);
+      border-radius:10px;
+      padding:10px 12px;
+      background:linear-gradient(140deg,rgba(89,208,255,.1),rgba(8,20,38,.2));
+      margin-bottom:10px;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.6;
+    }
+    .quizActionsSticky{
+      position:sticky;
+      bottom:0;
+      padding-top:10px;
+      background:linear-gradient(180deg,rgba(10,23,48,0),rgba(10,23,48,.92) 50%);
+    }
+
+    @media(max-width:1024px){
+      .quizLayout{grid-template-columns:1fr}
+      .quizSideStack{order:-1}
     }
 
     /* === References tab === */
@@ -352,11 +469,11 @@
     <h2>&#x269B; H-R Diagram Stellar Evolution Simulator</h2>
     <p>Computational Astrophysics &middot; Interactive Learning Module<br>Please enter your details to continue.</p>
     <label for="loginName">Full Name</label>
-    <input id="loginName" type="text" placeholder="e.g. Priya Sharma" autocomplete="name" />
+    <input id="loginName" type="text" value="nitesh" placeholder="e.g. Priya Sharma" autocomplete="name" />
     <label for="loginID">Student / Roll Number</label>
-    <input id="loginID" type="text" placeholder="e.g. 2023PHY042" autocomplete="off" />
+    <input id="loginID" type="text" value="1234" placeholder="e.g. 2023PHY042" autocomplete="off" />
     <button id="loginBtn">Enter Simulator &#x2192;</button>
-    <div class="skip disabled" id="skipLogin">Guest mode disabled (student login required)</div>
+    <div class="skip" id="skipLogin">Continue as Guest</div>
     <div class="aiCredit">Creator and Maintainer: Dr. Nitesh Kumar, UPES</div>
   </div>
 </div>
@@ -370,6 +487,7 @@
       <span class="subtitle">Fundamentals of Astrophysics (PHYS4022P) &middot; Unit 3: Stellar Evolution &middot; Uniform Simulation Architecture</span>
       <span id="studentIdentityLine">Student: Guest | SAPID: NA | Topic: Stellar Evolution and H-R Diagram</span>
     </div>
+    <a class="hubBtn" href="phys4022p_llm_sim_hub.html">&#x2190; PHYS4022P Hub</a>
     <div id="studentBadge" title="Click to switch user">&#x1F464; Guest</div>
   </header>
 
@@ -389,7 +507,7 @@
 
       <div class="card">
         <h2><span class="icon">&#x1F30C;</span>Stellar Evolution and H-R Diagram</h2>
-        <p>This page uses the exact same architecture as the primary simulator (login, theory, formulas, simulation, data export, objectives, quiz, references) for course-wide uniformity. For the dedicated Unit 3: Stellar Evolution topic engine, open: <a class="refLink" href="hr_diagram_socratic_core.html" target="_blank" rel="noopener">H-R Diagram Stellar Evolution Simulator Core Module</a>.</p>
+        <!-- <p>This page uses the exact same architecture as the primary simulator (login, theory, formulas, simulation, data export, objectives, quiz, references) for course-wide uniformity. For the dedicated Unit 3: Stellar Evolution topic engine, open: <a class="refLink" href="hr_diagram_socratic_core.html" target="_blank" rel="noopener">H-R Diagram Stellar Evolution Simulator Core Module</a>.</p> -->
       </div>
 
       <div class="theoryGrid">
@@ -472,35 +590,43 @@
             <div>
               <label>Mass (M&#x2609;)</label>
               <input id="massSlider" type="range" min="0.2" max="40" step="0.1" value="1.0" />
+              <div class="sliderMeta">
+                <div>
+                  <input id="massInput" type="number" min="0.2" max="40" step="0.1" value="1.0" aria-label="Mass value" title="Mass value (Msun)" />
+                </div>
+              </div>
               <div class="mono" id="massVal" style="margin-top:4px">1.0 M&#x2609;</div>
             </div>
             <div>
-              <label>Age (Gyr)</label>
-              <input id="ageSlider" type="range" min="0" max="13.5" step="0.01" value="4.6" />
-              <div class="mono" id="ageVal" style="margin-top:4px">4.60 Gyr</div>
+              <label>Age (Myr)</label>
+              <input id="ageSlider" type="range" min="0" max="13500" step="0.1" value="0" />
+              <div class="sliderMeta">
+                <div>
+                  <input id="ageInput" type="number" min="0" max="13500" step="0.1" value="0" aria-label="Age value" title="Age value (Myr)" />
+                </div>
+              </div>
+              <div class="mono" id="ageVal" style="margin-top:4px">0.0 Myr</div>
             </div>
             <div>
               <label>Metallicity Z</label>
               <input id="metalSlider" type="range" min="0.0001" max="0.04" step="0.0001" value="0.014" />
+              <div class="sliderMeta">
+                <div>
+                  <input id="metalInput" type="number" min="0.0001" max="0.04" step="0.0001" value="0.014" aria-label="Metallicity value" title="Metallicity value (Z)" />
+                </div>
+              </div>
               <div class="mono" id="metalVal" style="margin-top:4px">0.0140</div>
             </div>
-            <div>
-              <label>Phase mode</label>
-              <select id="phaseMode">
-                <option value="auto">Auto (from age/mass)</option>
-                <option value="ms">Main Sequence</option>
-                <option value="giant">Giant Branch</option>
-                <option value="wd">White Dwarf</option>
-              </select>
-            </div>
           </div>
+          <div class="mono" style="margin-top:8px">Phase mode: auto from mass and age (scientific mode)</div>
           <div class="row" style="margin-top:8px">
             <label class="checkRow"><input id="showTrack" type="checkbox" checked /> Show track</label>
             <label class="checkRow"><input id="logData" type="checkbox" checked /> Log data</label>
           </div>
           <div class="row" style="margin-top:8px">
-            <button class="simBtn" id="playBtn">&#x23F8; Pause</button>
-            <button class="simBtn" id="stepBtn">&#x23ED; Step +0.1 Gyr</button>
+            <button class="simBtn" id="playBtn">&#x25B6; Run</button>
+            <input id="stepInput" type="number" min="0.0001" step="0.01" value="0.1" style="width:110px;border-radius:6px;border:1px solid #355b87;background:#0a1730;color:#eaf2ff;padding:6px 8px;font-size:12px" title="Step size in Myr" aria-label="Step size in Myr" />
+            <button class="simBtn" id="stepBtn" title="Step once">&#x23ED;</button>
             <button class="simBtn danger" id="resetBtn">&#x21BA; Reset</button>
             <button class="simBtn" id="helpBtn">? Help</button>
           </div>
@@ -508,9 +634,14 @@
 
         <div class="simSection">
           <div class="kicker">Evolution</div>
-          <label>Evolution speed (Gyr / s)</label>
-          <input id="simRate" type="range" min="0" max="2" step="0.01" value="0.2" />
-          <div class="mono" id="simRateVal" style="margin-top:4px">0.20 Gyr/s</div>
+          <label>Evolution speed (Myr / s)</label>
+          <input id="simRate" type="range" min="0" max="2000" step="0.1" value="200" />
+          <div class="sliderMeta">
+            <div>
+              <input id="simRateInput" type="number" min="0" max="2000" step="0.1" value="200" aria-label="Evolution speed value" title="Evolution speed value (Myr/s)" />
+            </div>
+          </div>
+          <div class="mono" id="simRateVal" style="margin-top:4px">200.0 Myr/s</div>
         </div>
 
       </aside>
@@ -518,10 +649,9 @@
       <div class="simWrap">
         <canvas id="canvas" title="H-R Diagram Evolution"></canvas>
         <div id="overlay">
-          <div>Age: <span id="time">4.60</span> Gyr</div>
+          <div>Age: <span id="time">0.0</span> Myr</div>
           <div>Phase: <span id="nBodies">Main Sequence</span></div>
           <div>Star: <span id="heaviestInfo">1.0 M&#x2609;</span></div>
-          <button id="resetZoom">Reset View</button>
         </div>
       </div>
 
@@ -532,7 +662,7 @@
             <div class="metricBox"><div class="k">Effective Temperature (K)</div><div class="v" id="outEnergy">--</div></div>
             <div class="metricBox"><div class="k">Luminosity (L/L&#x2609;)</div><div class="v" id="outLz">--</div></div>
             <div class="metricBox"><div class="k">Radius (R/R&#x2609;)</div><div class="v" id="outMeanSpeed">--</div></div>
-            <div class="metricBox"><div class="k">MS Lifetime estimate (Gyr)</div><div class="v" id="outSpread">--</div></div>
+            <div class="metricBox"><div class="k">MS Lifetime estimate (Myr)</div><div class="v" id="outSpread">--</div></div>
           </div>
         </div>
 
@@ -547,7 +677,7 @@
           <div class="graphWrap" style="margin-top:8px">
             <canvas id="liveGraph" title="Realtime graph: selected Y metric vs age"></canvas>
           </div>
-          <div class="mono" style="margin-top:8px">X-axis: age (Gyr) | Y-axis: selected metric</div>
+          <div class="mono" style="margin-top:8px">X-axis: age (Myr) | Y-axis: selected metric</div>
         </div>
       </aside>
 
@@ -565,7 +695,7 @@
       <div class="exportGrid">
         <div class="statBox"><div class="statVal" id="logCount">0</div><div class="statLabel">Recorded rows</div></div>
         <div class="statBox"><div class="statVal" id="logBodies">0</div><div class="statLabel">Stars tracked</div></div>
-        <div class="statBox"><div class="statVal" id="logTimeSpan">0.0</div><div class="statLabel">Time span (Gyr)</div></div>
+        <div class="statBox"><div class="statVal" id="logTimeSpan">0.0</div><div class="statLabel">Time span (Myr)</div></div>
         <div class="statBox"><div class="statVal" id="logInterval">Every 1 step</div><div class="statLabel">Sampling interval</div></div>
       </div>
 
@@ -594,7 +724,7 @@
           <button class="dlBtn tertiary"  id="dlPython">&#x2B07; Python Starter Script</button>
         </div>
         <p style="font-size:12.5px;color:var(--muted)">
-          CSV columns: <em>sapid, student_name, age_gyr, phase, log10_teff, log10_lum, teff_k, lum_lsun, radius_rsun, metallicity_z, mass_msun, timestamp_iso</em>.
+          CSV columns: <em>sapid, student_name, age_myr, phase, log10_teff, log10_lum, teff_k, lum_lsun, radius_rsun, metallicity_z, mass_msun, timestamp_iso</em>.
           JSON includes full metadata and full evolutionary log.
           The Python script uses matplotlib to reproduce an H-R track from the exported data.
         </p>
@@ -604,25 +734,9 @@
         <h2><span class="icon">&#x1F4CB;</span>Live Data Preview (last 20 rows)</h2>
         <div class="tableWrap">
           <table id="previewTable">
-            <thead><tr><th>Age (Gyr)</th><th>Phase</th><th>log10(Teff)</th><th>log10(L)</th><th>Teff (K)</th><th>L/L&#x2609;</th><th>R/R&#x2609;</th></tr></thead>
+            <thead><tr><th>Age (Myr)</th><th>Phase</th><th>log10(Teff)</th><th>log10(L)</th><th>Teff (K)</th><th>L/L&#x2609;</th><th>R/R&#x2609;</th></tr></thead>
             <tbody id="previewBody">
               <tr><td colspan="7" style="text-align:center;color:var(--muted);padding:20px">No data yet &mdash; run the simulation with "Log data" checked.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="card">
-        <h2><span class="icon">&#x1F512;</span>Student Login Audit</h2>
-        <div class="row" style="margin-bottom:10px;align-items:center;justify-content:space-between">
-          <div class="mono">Total recorded logins: <span id="loginLogCount">0</span></div>
-          <button class="dlBtn primary" id="dlLoginCSV" type="button">&#x2B07; Download Login Logs CSV</button>
-        </div>
-        <div class="tableWrap">
-          <table>
-            <thead><tr><th>Timestamp (ISO)</th><th>Name</th><th>SAPID</th></tr></thead>
-            <tbody id="loginLogBody">
-              <tr><td colspan="3" style="text-align:center;color:var(--muted);padding:20px">No login records yet.</td></tr>
             </tbody>
           </table>
         </div>
@@ -704,42 +818,53 @@
     <!-- QUIZ TAB -->
     <section id="tab-quiz" class="tabPanel" role="tabpanel">
 
-      <div class="card quizCard">
-        <h2><span class="icon">&#x1F9E0;</span>Concept Check Quiz</h2>
-        <p>This quiz is interactive and generates a new question set whenever a student asks for one.</p>
+      <div class="quizLayout">
+        <div class="card quizCard">
+          <h2><span class="icon">&#x1F9E0;</span>Concept Check Quiz</h2>
+          <div class="quizHero">10 questions per round. Pass a round to unlock the next level with a stronger difficulty mix.</div>
 
-        <form id="quizForm">
-          <div class="quizTools">
-            <input id="quizPrompt" type="text" placeholder="Ask for topic focus (e.g. main sequence, lifetimes, remnant paths)" />
-            <button class="simBtn" id="askQuizBtn" type="button">Ask New Quiz</button>
-            <button class="simBtn" id="newQuizBtn" type="button">Regenerate</button>
-          </div>
-          <div class="quizHint">Adaptive mode: after high scores, the next generated set becomes more challenging.</div>
+          <form id="quizForm">
+            <div class="quizTools">
+              <input id="quizPrompt" type="text" placeholder="Optional focus for this level (e.g. main sequence, lifetimes, remnant paths)" />
+              <button class="simBtn" id="askQuizBtn" type="button">Start Level</button>
+              <button class="simBtn" id="newQuizBtn" type="button">Retry Level</button>
+            </div>
+            <div class="quizHint">Adaptive mode: clear 6/10 or better to unlock the next level and a harder mixed set.</div>
 
-          <div id="quizQuestionsWrap"></div>
+            <div id="quizQuestionsWrap"></div>
 
-          <div class="row" style="margin-top:12px">
-            <button class="simBtn" id="submitQuizBtn" type="submit">Submit Quiz</button>
-            <button class="simBtn danger" id="resetQuizBtn" type="button">Reset Quiz</button>
-          </div>
-        </form>
+            <div class="row quizActionsSticky" style="margin-top:12px">
+              <button class="simBtn" id="submitQuizBtn" type="submit">Submit Quiz</button>
+              <button class="simBtn danger" id="resetQuizBtn" type="button">Reset Quiz</button>
+            </div>
+          </form>
 
-        <div class="quizResult" id="quizResult">No attempts yet.</div>
-      </div>
-
-      <div class="card">
-        <h2><span class="icon">&#x1F4DD;</span>Quiz Attempt Log</h2>
-        <div class="row" style="margin-bottom:10px;align-items:center;justify-content:space-between">
-          <div class="mono">Attempts: <span id="quizAttemptCount">0</span></div>
-          <button class="dlBtn secondary" id="dlQuizCSV" type="button">&#x2B07; Download Quiz Attempts CSV</button>
+          <div class="quizResult" id="quizResult">No attempts yet.</div>
         </div>
-        <div class="tableWrap">
-          <table>
-            <thead><tr><th>Timestamp (ISO)</th><th>Name</th><th>SAPID</th><th>Score</th></tr></thead>
-            <tbody id="quizAttemptBody">
-              <tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px">No quiz attempts yet.</td></tr>
-            </tbody>
-          </table>
+
+        <div class="quizSideStack">
+          <div class="card">
+            <h2><span class="icon">&#x1F3AE;</span>Level Progress</h2>
+            <div class="quizProgressShell" style="margin-top:0">
+              <div class="quizProgressHead">
+                <div class="mono">Level <span id="quizLevel">1</span>/10</div>
+                <div class="mono">Mastery <span id="quizMastery">0%</span></div>
+                <div class="mono">Questions <span id="quizAnswered">0/0</span></div>
+              </div>
+              <div class="quizProgressBar" aria-label="Quiz level progress">
+                <div class="quizProgressFill" id="quizProgressFill"></div>
+              </div>
+              <div class="quizProgressNote" id="quizProgressNote">Answer 10 questions to complete a level. Passing scores unlock the next level with harder questions.</div>
+              <div class="quizLevelTrack" id="quizLevelTrack"></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2><span class="icon">&#x1F4DD;</span>Quiz Attempt Log</h2>
+            <div class="row" style="margin-bottom:2px;align-items:center;justify-content:space-between">
+              <div class="mono">Attempts: <span id="quizAttemptCount">0</span></div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -852,7 +977,7 @@
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
-const state = { playing:true, authenticated:false, stepCount:0 };
+const state = { playing:false, authenticated:false, stepCount:0 };
 const student = { name:"Guest", sapid:"" };
 
 let dataLog = [];
@@ -860,19 +985,201 @@ let trendLog = [];
 let lastLogStep = -Infinity;
 let loginAudit = [];
 let quizAttempts = [];
+let quizProgressLog = [];
+let quizProgressByStudent = {};
+let activeQuizProgress = null;
 let currentQuizQuestions = [];
+let hrTracks = [];
+let currentTrack = null;
+let milestoneEffects = [];
+let milestoneBanner = { text:"", until:0, color:"#59d0ff" };
+let loginCsvFolderHandle = null;
+let loginCsvExportEnabled = false;
 
-const QUESTION_BANK=[
-  {id:"q01",difficulty:"easy",tags:["hr"],q:"The H-R diagram primarily plots luminosity against:",options:["Distance","Temperature/spectral class","Metallicity only"],answer:1},
-  {id:"q02",difficulty:"easy",tags:["main-sequence"],q:"Most stable hydrogen-burning stars are found on the:",options:["Main sequence","White dwarf cooling line","Supernova remnant shell"],answer:0},
-  {id:"q03",difficulty:"medium",tags:["mass-luminosity"],q:"A rough main-sequence scaling is:",options:["L proportional to M^3 to M^4","L proportional to M^-2","L independent of M"],answer:0},
-  {id:"q04",difficulty:"medium",tags:["lifetime"],q:"Massive stars generally have shorter lifetimes because they:",options:["Burn fuel faster","Contain no hydrogen","Radiate no photons"],answer:0},
-  {id:"q05",difficulty:"hard",tags:["saha"],q:"Saha ionization equation links spectral ionization balance mainly to:",options:["Temperature and electron pressure","Orbital eccentricity","Dust grain size only"],answer:0},
-  {id:"q06",difficulty:"hard",tags:["remnants"],q:"A typical low/intermediate-mass stellar remnant is:",options:["White dwarf","Quasar","Globular cluster"],answer:0}
+const TRACK_COLORS = [
+  "#59d0ff", "#ffad6d", "#63e6a0", "#c792ea", "#ff7aa2", "#f7d154", "#8bd3ff"
 ];
+
+const MYR_PER_GYR = 1000;
+const ALLOWED_SAP_FILE = "./hr_diagram_allowed_sap_ids.csv";
+let allowedSapIds = new Set();
+let allowedSapIdsLoaded = false;
+let allowedSapIdsLoadError = false;
+
+function myrToGyr(value){ return value / MYR_PER_GYR; }
+function gyrToMyr(value){ return value * MYR_PER_GYR; }
+
+function isValidSapId(sapid){
+  return allowedSapIds.has(String(sapid || "").trim());
+}
+
+function parseAllowedSapIds(csvText){
+  return new Set(
+    String(csvText || "")
+      .split(",")
+      .map(v => String(v || "").trim())
+      .filter(Boolean)
+  );
+}
+
+async function loadAllowedSapIds(){
+  try{
+    const resp = await fetch(ALLOWED_SAP_FILE, { cache: "no-store" });
+    if(!resp.ok) throw new Error("HTTP "+resp.status);
+    const text = await resp.text();
+    const parsed = parseAllowedSapIds(text);
+    if(!parsed.size) throw new Error("No SAP IDs found");
+    allowedSapIds = parsed;
+    allowedSapIdsLoaded = true;
+    allowedSapIdsLoadError = false;
+  }catch(err){
+    console.error("Failed to load allowed SAP ID list:", err);
+    allowedSapIds = new Set();
+    allowedSapIdsLoaded = true;
+    allowedSapIdsLoadError = true;
+  }
+}
+
+function makeQuestion(id, level, difficulty, tags, qText, options, answer){
+  return { id, level, difficulty, tags, q: qText, options, answer };
+}
+
+function shuffleArray(items){
+  const copy = [...items];
+  for(let i=copy.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    const tmp = copy[i];
+    copy[i] = copy[j];
+    copy[j] = tmp;
+  }
+  return copy;
+}
+
+function difficultyMixForLevel(level){
+  const easyCount = Math.max(1, 6 - Math.floor((level - 1) / 2));
+  const hardCount = Math.min(1 + Math.floor((level - 1) / 2), 6);
+  const mediumCount = 10 - easyCount - hardCount;
+  const mix = [];
+  for(let i = 0; i < easyCount; i++) mix.push("easy");
+  for(let i = 0; i < mediumCount; i++) mix.push("medium");
+  for(let i = 0; i < hardCount; i++) mix.push("hard");
+  return shuffleArray(mix);
+}
+
+const QUIZ_SCENARIOS = [
+  { tempHot: 6200, tempCool: 3800, brightA: 2, brightB: 18, massLow: 0.8, massHigh: 2.4, turnoffMass: 2.8, clusterAge: 6000, giantMass: 1.1, remnantMass: 7.0, giantTemp: 4800, giantLum: 120, spectralHot: "O", spectralCool: "M", ageMyr: 80 },
+  { tempHot: 6800, tempCool: 4100, brightA: 3, brightB: 24, massLow: 1.0, massHigh: 3.0, turnoffMass: 2.4, clusterAge: 9000, giantMass: 1.2, remnantMass: 8.0, giantTemp: 4700, giantLum: 180, spectralHot: "B", spectralCool: "K", ageMyr: 140 },
+  { tempHot: 7200, tempCool: 4300, brightA: 4, brightB: 30, massLow: 1.2, massHigh: 4.0, turnoffMass: 2.0, clusterAge: 12000, giantMass: 1.4, remnantMass: 9.5, giantTemp: 4600, giantLum: 220, spectralHot: "A", spectralCool: "K", ageMyr: 220 },
+  { tempHot: 7600, tempCool: 4500, brightA: 5, brightB: 36, massLow: 1.4, massHigh: 5.0, turnoffMass: 1.7, clusterAge: 18000, giantMass: 1.6, remnantMass: 11.0, giantTemp: 4500, giantLum: 300, spectralHot: "F", spectralCool: "M", ageMyr: 420 },
+  { tempHot: 8200, tempCool: 4700, brightA: 6, brightB: 42, massLow: 1.6, massHigh: 6.0, turnoffMass: 1.5, clusterAge: 26000, giantMass: 1.8, remnantMass: 12.5, giantTemp: 4400, giantLum: 420, spectralHot: "A", spectralCool: "M", ageMyr: 800 },
+  { tempHot: 9000, tempCool: 5000, brightA: 8, brightB: 55, massLow: 1.8, massHigh: 7.5, turnoffMass: 1.3, clusterAge: 42000, giantMass: 2.0, remnantMass: 14.0, giantTemp: 4300, giantLum: 600, spectralHot: "B", spectralCool: "K", ageMyr: 1200 },
+  { tempHot: 12000, tempCool: 5400, brightA: 10, brightB: 70, massLow: 2.2, massHigh: 9.0, turnoffMass: 1.2, clusterAge: 65000, giantMass: 2.2, remnantMass: 16.0, giantTemp: 4200, giantLum: 850, spectralHot: "B", spectralCool: "G", ageMyr: 2400 },
+  { tempHot: 16000, tempCool: 5800, brightA: 14, brightB: 85, massLow: 2.6, massHigh: 12.0, turnoffMass: 1.0, clusterAge: 90000, giantMass: 2.4, remnantMass: 18.0, giantTemp: 4100, giantLum: 1100, spectralHot: "O", spectralCool: "K", ageMyr: 4200 },
+  { tempHot: 22000, tempCool: 6200, brightA: 18, brightB: 100, massLow: 3.0, massHigh: 15.0, turnoffMass: 0.9, clusterAge: 120000, giantMass: 2.8, remnantMass: 20.0, giantTemp: 4000, giantLum: 1500, spectralHot: "O", spectralCool: "M", ageMyr: 7000 },
+  { tempHot: 32000, tempCool: 6800, brightA: 25, brightB: 130, massLow: 3.5, massHigh: 20.0, turnoffMass: 0.8, clusterAge: 180000, giantMass: 3.0, remnantMass: 25.0, giantTemp: 3900, giantLum: 2200, spectralHot: "O", spectralCool: "K", ageMyr: 10000 }
+];
+
+function buildQuizLevelQuestions(level){
+  const scenario = QUIZ_SCENARIOS[level - 1];
+  const mix = difficultyMixForLevel(level);
+  const hot = scenario.tempHot;
+  const cool = scenario.tempCool;
+  const brightA = scenario.brightA;
+  const brightB = scenario.brightB;
+  const massLow = scenario.massLow;
+  const massHigh = scenario.massHigh;
+  const turnoffMass = scenario.turnoffMass;
+  const clusterAge = scenario.clusterAge;
+  const giantMass = scenario.giantMass;
+  const remnantMass = scenario.remnantMass;
+  const giantTemp = scenario.giantTemp;
+  const giantLum = scenario.giantLum;
+  const spectralHot = scenario.spectralHot;
+  const spectralCool = scenario.spectralCool;
+  const ageMyr = scenario.ageMyr;
+
+  return [
+    makeQuestion(`quiz_l${level}_01`, level, mix[0], ["hr", "axes"], `On an H-R diagram, a ${hot} K star is plotted closer to which side than a ${cool} K star?`, ["Left, hotter side", "Right, cooler side", "Bottom, dim side", "Top, giant side"], 0),
+    makeQuestion(`quiz_l${level}_02`, level, mix[1], ["luminosity", "comparison"], `Which star is more luminous: ${brightA} L☉ or ${brightB} L☉?`, [`${brightA} L☉`, `${brightB} L☉`, "They are equal", "Luminosity cannot be compared"], 1),
+    makeQuestion(`quiz_l${level}_03`, level, mix[2], ["main-sequence", "fusion"], `Main-sequence stars are powered primarily by which process?`, ["Hydrogen fusion in the core", "Helium fusion in the core", "Molecular dissociation", "Gravitational cooling only"], 0),
+    makeQuestion(`quiz_l${level}_04`, level, mix[3], ["lifetime", "mass"], `Between a ${massLow} M☉ star and a ${massHigh} M☉ star, which usually has the shorter main-sequence lifetime?`, [`${massLow} M☉ star`, `${massHigh} M☉ star`, "Both are equal", "Lifetime is unrelated to mass"], 1),
+    makeQuestion(`quiz_l${level}_05`, level, mix[4], ["cluster", "turnoff"], `A cluster with a turnoff mass near ${turnoffMass} M☉ is generally ${clusterAge < 5000 ? "younger" : "older"} than a very massive cluster because low-mass turnoff stars survive longer.`, ["Younger", "Older", "The same age", "Cannot be estimated at all"], clusterAge < 5000 ? 0 : 1),
+    makeQuestion(`quiz_l${level}_06`, level, mix[5], ["relations", "hr"], `Which equation links luminosity, radius, and effective temperature?`, ["L = 4πR²σT⁴", "L = MR²", "T = L/R", "R = L + T"], 0),
+    makeQuestion(`quiz_l${level}_07`, level, mix[6], ["giant", "helium-flash"], `A low-mass star around ${giantMass} M☉ entering the red-giant phase may undergo which milestone?`, ["Helium flash", "Core collapse supernova", "Black-hole evaporation", "Planetary ring formation"], 0),
+    makeQuestion(`quiz_l${level}_08`, level, mix[7], ["remnants", "white-dwarf"], `A white dwarf is mainly supported against gravity by which pressure?`, ["Electron degeneracy pressure", "Radiation pressure only", "Magnetic pressure only", "Solar wind pressure"], 0),
+    makeQuestion(`quiz_l${level}_09`, level, mix[8], ["massive-stars", "supernova"], `A very massive star with initial mass around ${remnantMass} M☉ is most likely to end as a`, ["White dwarf", "Neutron star or black hole candidate", "Main-sequence star forever", "Brown dwarf"], 1),
+    makeQuestion(`quiz_l${level}_10`, level, mix[9], ["spectral", "classification"], `Which spectral class is hotter: ${spectralHot} or ${spectralCool}?`, [spectralHot, spectralCool, "They are equally hot", "Neither can be compared"], 0)
+  ];
+}
+
+function buildQuizBank(){
+  return Array.from({ length: 10 }, (_, i) => buildQuizLevelQuestions(i + 1)).flat();
+}
+
+const QUESTION_BANK = buildQuizBank();
 
 function q(id){ return document.getElementById(id); }
 function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
+function safeCSV(v){
+  const s = String(v ?? "");
+  return /[",\n]/.test(s) ? `"${s.replace(/"/g,'""')}"` : s;
+}
+
+function luminosityMainSequence(mass){
+  if(mass < 0.43) return 0.23*Math.pow(mass,2.3);
+  if(mass < 2.0) return Math.pow(mass,4.0);
+  if(mass < 20.0) return 1.5*Math.pow(mass,3.5);
+  return 3200*mass;
+}
+
+function radiusMainSequence(mass){
+  if(mass < 1.0) return Math.pow(mass,0.8);
+  return Math.pow(mass,0.57);
+}
+
+function phaseLabel(phase){
+  if(phase === "ms") return "Main Sequence";
+  if(phase === "giant") return "Giant Branch";
+  if(phase === "wd") return "White Dwarf";
+  if(phase === "ns") return "Neutron Star";
+  if(phase === "bh") return "Black Hole candidate";
+  return "Unknown";
+}
+
+function newTrackColor(index){
+  return TRACK_COLORS[index % TRACK_COLORS.length];
+}
+
+function beginNewTrack(mass, z, label){
+  currentTrack = {
+    id: `track_${Date.now()}_${Math.floor(Math.random()*1000)}`,
+    mass,
+    metallicity: z,
+    label: label || `M=${mass.toFixed(2)} Msun, Z=${z.toFixed(4)}`,
+    color: newTrackColor(hrTracks.length),
+    points: [],
+    events: {}
+  };
+  hrTracks.push(currentTrack);
+  if(hrTracks.length > 12) hrTracks = hrTracks.slice(-12);
+  trendLog = currentTrack.points;
+}
+
+function ensureTrackContext(mass, z){
+  if(!currentTrack){
+    beginNewTrack(mass, z, "Initial run");
+    return;
+  }
+  const massChanged = Math.abs(currentTrack.mass - mass) > 1e-6;
+  const zChanged = Math.abs(currentTrack.metallicity - z) > 1e-8;
+  if(massChanged){
+    q("ageSlider").value = "0";
+    refreshLabels();
+  }
+  if(massChanged || zChanged){
+    beginNewTrack(mass, z, `New setup: M=${mass.toFixed(2)} Msun, Z=${z.toFixed(4)}`);
+  }
+}
 
 function resizeCanvas(){
   const dpr = window.devicePixelRatio || 1;
@@ -885,32 +1192,50 @@ function resizeCanvas(){
 window.addEventListener("resize", ()=>{ resizeCanvas(); draw(); drawLiveGraph(); });
 
 function estimateStar(mass, ageGyr, metallicity, forcedPhase){
-  const tMs = 10*Math.pow(mass,-2.5);
+  const Lms = luminosityMainSequence(mass);
+  const Rms = radiusMainSequence(mass);
+  const TeffMs = 5778*Math.pow(Lms/Math.max(1e-6,Rms*Rms),0.25)*(1-0.15*(metallicity-0.014));
+  const tMs = clamp(10*(mass/Math.max(1e-8,Lms)),0.003,120);
+
   let phase = forcedPhase;
-  if(phase==="auto"){
-    const f = ageGyr/Math.max(0.2,tMs);
+  const f = ageGyr/Math.max(0.003,tMs);
+  if(phase === "auto"){
     if(f < 1.0) phase = "ms";
-    else if(f < 1.25) phase = "giant";
-    else phase = "wd";
+    else if(f < 1.18) phase = "giant";
+    else if(mass < 8.0) phase = "wd";
+    else if(mass < 20.0) phase = "ns";
+    else phase = "bh";
   }
 
   let L, Teff;
   if(phase==="ms"){
-    const ageFrac = clamp(ageGyr/Math.max(0.2,tMs),0,1);
-    L = Math.pow(mass,3.5)*(0.85+0.30*ageFrac);
-    Teff = 5778*Math.pow(mass,0.5)*(1-0.06*ageFrac)*(1-0.15*(metallicity-0.014));
+    const ageFrac = clamp(f,0,1);
+    L = Lms*(0.9 + 0.2*ageFrac);
+    Teff = TeffMs*(1 - 0.06*ageFrac);
   }else if(phase==="giant"){
-    const g = clamp((ageGyr - tMs)/Math.max(0.2,0.25*tMs),0,1);
-    L = Math.pow(mass,3.3)*(20 + 180*g);
-    Teff = 5200 - 2200*g;
+    const g = clamp((f-1.0)/0.18,0,1);
+    const giantBoost = 25 + 35*Math.log10(1+mass);
+    L = Lms*(1 + giantBoost*g);
+    Teff = TeffMs*(1 - 0.35*g);
+  }else if(phase==="wd"){
+    const wdClock = Math.max(0, ageGyr - 1.18*tMs);
+    const w = clamp(wdClock/Math.max(0.3,5 + 12/mass),0,1);
+    L = 0.08*Math.pow(1-w,1.4) + 2e-4;
+    Teff = 28000*Math.pow(1-w,0.6) + 5500;
+  }else if(phase==="ns"){
+    const nsClock = Math.max(0, ageGyr - 1.18*tMs);
+    const n = clamp(nsClock/0.3,0,1);
+    L = 0.004*Math.exp(-3*n) + 1e-5;
+    Teff = 50000 - 18000*n;
   }else{
-    const w = clamp((ageGyr - 1.25*tMs)/Math.max(0.4,2*tMs),0,1);
-    L = 0.02*Math.pow(1-w,1.2) + 0.0008;
-    Teff = 25000 - 17000*w;
+    const bhClock = Math.max(0, ageGyr - 1.18*tMs);
+    const b = clamp(bhClock/0.2,0,1);
+    L = 1e-6 + 5e-6*Math.exp(-4*b);
+    Teff = 4000;
   }
 
   Teff = clamp(Teff, 2500, 50000);
-  L = clamp(L, 1e-4, 1e6);
+  L = clamp(L, 1e-6, 1e6);
   const R = Math.sqrt(L/Math.pow(Teff/5778,4));
   return {
     phase, Teff, L, R, tMs,
@@ -919,8 +1244,17 @@ function estimateStar(mass, ageGyr, metallicity, forcedPhase){
   };
 }
 
+const HR_MARKERS = [
+  { label: "Sun", logT: Math.log10(5778), logL: 0.0, color: "#ffd166" },
+  { label: "Main Sequence", logT: 4.25, logL: 2.4, color: "#59d0ff" },
+  { label: "Turn-off", logT: 3.84, logL: 0.65, color: "#b2f7ef" },
+  { label: "Red Giant", logT: 3.58, logL: 2.7, color: "#ffad6d" },
+  { label: "Red Clump", logT: 3.72, logL: 1.7, color: "#ff8fab" },
+  { label: "White Dwarf", logT: 4.35, logL: -3.2, color: "#e0fbfc" }
+];
+
 function hrToCanvas(logT, logL, w, h, pad){
-  const xMin=3.3, xMax=4.7, yMin=-4, yMax=6;
+  const xMin=3.3, xMax=4.7, yMin=-6, yMax=6;
   const x = pad + ((xMax-logT)/(xMax-xMin))*(w-2*pad);
   const y = h-pad - ((logL-yMin)/(yMax-yMin))*(h-2*pad);
   return {x,y};
@@ -928,9 +1262,131 @@ function hrToCanvas(logT, logL, w, h, pad){
 
 function currentStar(){
   const mass = parseFloat(q("massSlider").value);
-  const age = parseFloat(q("ageSlider").value);
+  const age = myrToGyr(parseFloat(q("ageSlider").value));
   const z = parseFloat(q("metalSlider").value);
-  return estimateStar(mass, age, z, q("phaseMode").value);
+  return estimateStar(mass, age, z, "auto");
+}
+
+function pushMilestoneEffect(kind, label, color, star){
+  milestoneEffects.push({
+    kind,
+    label,
+    color,
+    logT: star.logT,
+    logL: star.logL,
+    startedAt: performance.now(),
+    duration: kind === "supernova" ? 2200 : 1500
+  });
+  if(milestoneEffects.length > 10) milestoneEffects = milestoneEffects.slice(-10);
+  milestoneBanner = {
+    text: label,
+    until: performance.now() + 2600,
+    color
+  };
+}
+
+function checkEvolutionMilestones(mass, age, star){
+  if(!currentTrack || !currentTrack.events) return;
+  const ev = currentTrack.events;
+  const ageGyr = myrToGyr(age);
+
+  if(!ev.zams && ageGyr <= 0.02){
+    ev.zams = true;
+    pushMilestoneEffect("zams", "Zero-Age Main Sequence", "#59d0ff", star);
+  }
+
+  if(!ev.giantEntry && star.phase === "giant"){
+    ev.giantEntry = true;
+    pushMilestoneEffect("giant", "Giant Branch Ascent", "#ffad6d", star);
+  }
+
+  if(!ev.heliumFlash && star.phase === "giant" && mass <= 2.2 && ageGyr >= 1.03*star.tMs){
+    ev.heliumFlash = true;
+    pushMilestoneEffect("helium", "Helium Flash", "#ffd166", star);
+  }
+
+  if(!ev.whiteDwarf && star.phase === "wd"){
+    ev.whiteDwarf = true;
+    pushMilestoneEffect("wd", "White Dwarf Cooling Start", "#e0fbfc", star);
+  }
+
+  if(!ev.supernova && (star.phase === "ns" || star.phase === "bh")){
+    ev.supernova = true;
+    pushMilestoneEffect("supernova", "Core-Collapse Supernova", "#ff7070", star);
+  }
+}
+
+function drawMilestoneEffects(w, h, pad){
+  if(!milestoneEffects.length && performance.now() >= milestoneBanner.until) return;
+  const now = performance.now();
+
+  milestoneEffects = milestoneEffects.filter(fx => {
+    const t = (now - fx.startedAt) / fx.duration;
+    if(t >= 1) return false;
+
+    const p = hrToCanvas(fx.logT, fx.logL, w, h, pad);
+    const alpha = 1 - t;
+    ctx.save();
+
+    if(fx.kind === "supernova"){
+      for(let i=0;i<3;i++){
+        const ring = 12 + 42*t + i*14;
+        ctx.strokeStyle = `rgba(255,112,112,${Math.max(0, alpha - i*0.2)})`;
+        ctx.lineWidth = 2.5 - i*0.5;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, ring, 0, Math.PI*2);
+        ctx.stroke();
+      }
+      for(let k=0;k<10;k++){
+        const a = (k/10)*Math.PI*2 + t*3.2;
+        const r1 = 8 + 10*t;
+        const r2 = 24 + 68*t;
+        ctx.strokeStyle = `rgba(255,173,109,${Math.max(0, alpha*0.85)})`;
+        ctx.lineWidth = 1.1;
+        ctx.beginPath();
+        ctx.moveTo(p.x + r1*Math.cos(a), p.y + r1*Math.sin(a));
+        ctx.lineTo(p.x + r2*Math.cos(a), p.y + r2*Math.sin(a));
+        ctx.stroke();
+      }
+    } else if(fx.kind === "helium"){
+      const pulse = 14 + 10*Math.sin(t*10.5);
+      ctx.fillStyle = `rgba(255,209,102,${0.25*alpha})`;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, pulse + 12*t, 0, Math.PI*2);
+      ctx.fill();
+      ctx.strokeStyle = `rgba(255,209,102,${0.9*alpha})`;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, pulse, 0, Math.PI*2);
+      ctx.stroke();
+    } else {
+      ctx.strokeStyle = `rgba(89,208,255,${0.75*alpha})`;
+      if(fx.kind === "giant") ctx.strokeStyle = `rgba(255,173,109,${0.78*alpha})`;
+      if(fx.kind === "wd") ctx.strokeStyle = `rgba(224,251,252,${0.85*alpha})`;
+      const r = 11 + 28*t;
+      ctx.lineWidth = 1.8;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, r, 0, Math.PI*2);
+      ctx.stroke();
+    }
+
+    ctx.restore();
+    return true;
+  });
+
+  if(now < milestoneBanner.until){
+    const t = (milestoneBanner.until - now) / 2600;
+    const a = clamp(t, 0, 1);
+    ctx.save();
+    ctx.fillStyle = `rgba(7,18,33,${0.65*a})`;
+    ctx.fillRect(pad + 10, pad + 8, 255, 22);
+    ctx.strokeStyle = `rgba(89,208,255,${0.45*a})`;
+    ctx.strokeRect(pad + 10, pad + 8, 255, 22);
+    ctx.fillStyle = milestoneBanner.color;
+    ctx.font = "12px 'Space Grotesk', sans-serif";
+    ctx.fillText(milestoneBanner.text, pad + 18, pad + 23);
+    ctx.restore();
+  }
 }
 
 function draw(){
@@ -958,21 +1414,71 @@ function draw(){
     const p = hrToCanvas(t,-4,w,h,pad);
     ctx.fillText(t.toFixed(1), p.x-10, h-pad+14);
   }
-  for(let l=-4;l<=6;l+=2){
+  for(let l=-6;l<=6;l+=2){
     const p = hrToCanvas(4.7,l,w,h,pad);
     ctx.fillText(String(l), 8, p.y+4);
   }
 
-  const star = currentStar();
-  if(q("showTrack").checked && trendLog.length>1){
+  // Reference loci and anchors on the H-R plane for guided learning.
+  ctx.save();
+  ctx.setLineDash([5,4]);
+  ctx.strokeStyle = "rgba(89,208,255,.35)";
+  ctx.lineWidth = 1;
+  const msA = hrToCanvas(4.6, 4.8, w, h, pad);
+  const msB = hrToCanvas(3.55, -2.2, w, h, pad);
+  ctx.beginPath();
+  ctx.moveTo(msA.x, msA.y);
+  ctx.lineTo(msB.x, msB.y);
+  ctx.stroke();
+  ctx.restore();
+
+  HR_MARKERS.forEach((m, idx) => {
+    const p = hrToCanvas(m.logT, m.logL, w, h, pad);
+    const side = idx % 2 === 0 ? 1 : -1;
+    const lx = clamp(p.x + side * 62, pad + 8, w - pad - 95);
+    const ly = clamp(p.y - 12, pad + 12, h - pad - 8);
+
+    ctx.strokeStyle = "rgba(180,210,235,.55)";
+    ctx.lineWidth = 1;
     ctx.beginPath();
-    trendLog.forEach((p,i)=>{
-      const c = hrToCanvas(p.logT,p.logL,w,h,pad);
-      if(i===0) ctx.moveTo(c.x,c.y); else ctx.lineTo(c.x,c.y);
-    });
-    ctx.strokeStyle="#59d0ff";
-    ctx.lineWidth=1.5;
+    ctx.moveTo(p.x, p.y);
+    ctx.lineTo(lx - side * 6, ly);
     ctx.stroke();
+
+    ctx.fillStyle = m.color;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 4.2, 0, Math.PI*2);
+    ctx.fill();
+    ctx.strokeStyle = "rgba(8,20,38,.9)";
+    ctx.stroke();
+
+    ctx.fillStyle = "rgba(7,18,33,.88)";
+    ctx.fillRect(lx - 4, ly - 11, 88, 15);
+    ctx.fillStyle = m.color;
+    ctx.font = "11px 'Space Grotesk', sans-serif";
+    ctx.fillText(m.label, lx, ly);
+  });
+
+  const rgTop = hrToCanvas(3.54, 4.8, w, h, pad);
+  ctx.fillStyle = "#ffad6d";
+  ctx.font = "11px 'Space Grotesk', sans-serif";
+  ctx.fillText("RGB", rgTop.x - 14, rgTop.y - 6);
+
+  const star = currentStar();
+  if(q("showTrack").checked){
+    hrTracks.forEach(track => {
+      if(!track.points || track.points.length < 2) return;
+      ctx.beginPath();
+      track.points.forEach((pt,i)=>{
+        const c = hrToCanvas(pt.logT, pt.logL, w, h, pad);
+        if(i===0) ctx.moveTo(c.x,c.y); else ctx.lineTo(c.x,c.y);
+      });
+      ctx.strokeStyle = track.color;
+      ctx.lineWidth = track === currentTrack ? 2.2 : 1.4;
+      ctx.globalAlpha = track === currentTrack ? 1 : 0.7;
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+    });
   }
 
   const p = hrToCanvas(star.logT, star.logL, w, h, pad);
@@ -982,10 +1488,12 @@ function draw(){
   ctx.fillStyle=grad; ctx.beginPath(); ctx.arc(p.x,p.y,16,0,Math.PI*2); ctx.fill();
   ctx.fillStyle="#ffad6d"; ctx.beginPath(); ctx.arc(p.x,p.y,5,0,Math.PI*2); ctx.fill();
 
+  drawMilestoneEffects(w, h, pad);
+
   const mass = parseFloat(q("massSlider").value);
   const age = parseFloat(q("ageSlider").value);
   q("time").textContent = age.toFixed(2);
-  q("nBodies").textContent = star.phase==="ms"?"Main Sequence":(star.phase==="giant"?"Giant Branch":"White Dwarf");
+  q("nBodies").textContent = phaseLabel(star.phase);
   q("heaviestInfo").textContent = mass.toFixed(1)+" M\u2609";
   q("outEnergy").textContent = star.Teff.toFixed(0);
   q("outLz").textContent = star.L.toExponential(3);
@@ -1040,11 +1548,14 @@ function drawLiveGraph(){
 
 function maybeSample(){
   const mass = parseFloat(q("massSlider").value);
-  const age = parseFloat(q("ageSlider").value);
   const z = parseFloat(q("metalSlider").value);
-  const star = estimateStar(mass, age, z, q("phaseMode").value);
 
-  trendLog.push({ age:age, logL:star.logL, teff:star.Teff, radius:star.R, logT:star.logT });
+  ensureTrackContext(mass, z);
+  const ageMyr = parseFloat(q("ageSlider").value);
+  const ageGyr = myrToGyr(ageMyr);
+  const star = estimateStar(mass, ageGyr, z, "auto");
+  checkEvolutionMilestones(mass, ageMyr, star);
+  trendLog.push({ age:ageMyr, logL:star.logL, teff:star.Teff, radius:star.R, logT:star.logT });
   if(trendLog.length>2000) trendLog.shift();
 
   if(!state.authenticated || !q("logData").checked) return;
@@ -1055,7 +1566,7 @@ function maybeSample(){
   const row = {
     sapid: student.sapid,
     student_name: student.name,
-    age_gyr: age.toFixed(3),
+    age_myr: ageMyr.toFixed(2),
     phase: star.phase,
     log10_teff: star.logT.toFixed(4),
     log10_lum: star.logL.toFixed(4),
@@ -1074,7 +1585,7 @@ function maybeSample(){
 function updateDataTab(){
   q("logCount").textContent = String(dataLog.length);
   q("logBodies").textContent = "1";
-  q("logTimeSpan").textContent = dataLog.length ? (parseFloat(dataLog[dataLog.length-1].age_gyr)-parseFloat(dataLog[0].age_gyr)).toFixed(2) : "0.0";
+  q("logTimeSpan").textContent = dataLog.length ? (parseFloat(dataLog[dataLog.length-1].age_myr)-parseFloat(dataLog[0].age_myr)).toFixed(2) : "0.0";
   q("logInterval").textContent = "Every "+Math.max(1,parseInt(q("sampleEvery").value||"1",10))+" step(s)";
 
   const body = q("previewBody");
@@ -1083,7 +1594,7 @@ function updateDataTab(){
     return;
   }
   body.innerHTML = dataLog.slice(-20).map(r=>
-    "<tr><td>"+r.age_gyr+"</td><td>"+r.phase+"</td><td>"+r.log10_teff+"</td><td>"+r.log10_lum+"</td><td>"+r.teff_k+"</td><td>"+r.lum_lsun+"</td><td>"+r.radius_rsun+"</td></tr>"
+    "<tr><td>"+r.age_myr+"</td><td>"+r.phase+"</td><td>"+r.log10_teff+"</td><td>"+r.log10_lum+"</td><td>"+r.teff_k+"</td><td>"+r.lum_lsun+"</td><td>"+r.radius_rsun+"</td></tr>"
   ).join("");
 }
 
@@ -1098,7 +1609,7 @@ function exportCSV(){
   if(!state.authenticated){ alert("Login required before export."); return; }
   if(!dataLog.length){ alert("No data logged yet."); return; }
   const h = Object.keys(dataLog[0]);
-  const rows = dataLog.map(r=>h.map(k=>r[k]).join(","));
+  const rows = dataLog.map(r=>h.map(k=>safeCSV(r[k])).join(","));
   dlBlob([h.join(","),...rows].join("\n"),"hr_diagram_data.csv","text/csv");
 }
 function exportJSON(){
@@ -1115,13 +1626,18 @@ function loadPersistentLogs(){
   try{
     loginAudit = JSON.parse(localStorage.getItem("hr_login_audit")||"[]");
     quizAttempts = JSON.parse(localStorage.getItem("hr_quiz_attempts")||"[]");
-  }catch(e){ loginAudit=[]; quizAttempts=[]; }
+    quizProgressLog = JSON.parse(localStorage.getItem("hr_quiz_progress_log")||"[]");
+    quizProgressByStudent = JSON.parse(localStorage.getItem("hr_quiz_progress_by_student")||"{}");
+  }catch(e){ loginAudit=[]; quizAttempts=[]; quizProgressLog=[]; quizProgressByStudent={}; }
 }
 function savePersistentLogs(){
   localStorage.setItem("hr_login_audit",JSON.stringify(loginAudit));
   localStorage.setItem("hr_quiz_attempts",JSON.stringify(quizAttempts));
+  localStorage.setItem("hr_quiz_progress_log",JSON.stringify(quizProgressLog));
+  localStorage.setItem("hr_quiz_progress_by_student",JSON.stringify(quizProgressByStudent));
 }
 function updateLoginAuditUI(){
+  if(!q("loginLogCount") || !q("loginLogBody")) return;
   q("loginLogCount").textContent = String(loginAudit.length);
   q("loginLogBody").innerHTML = loginAudit.length
     ? loginAudit.slice(-30).reverse().map(r=>"<tr><td>"+r.timestamp+"</td><td>"+r.name+"</td><td>"+r.sapid+"</td></tr>").join("")
@@ -1129,8 +1645,137 @@ function updateLoginAuditUI(){
 }
 function exportLoginCSV(){
   if(!loginAudit.length){ alert("No login logs yet."); return; }
-  const rows = loginAudit.map(r=>r.timestamp+","+r.name+","+r.sapid);
-  dlBlob(["timestamp_iso,student_name,sapid",...rows].join("\n"),"hr_login_audit.csv","text/csv");
+  const rows = loginAudit.map(r=>safeCSV(r.timestamp)+","+safeCSV(r.name)+","+safeCSV(r.sapid));
+  dlBlob(["timestamp_iso,student_name,sapid",...rows].join("\n"),"hr_diagram_socratic_lab_login_audit.csv","text/csv");
+}
+
+function studentProgressKey(){
+  return (student.sapid && String(student.sapid).trim()) ? String(student.sapid).trim() : "guest";
+}
+
+function defaultQuizProgress(){
+  return {
+    level: 1,
+    highestLevel: 1,
+    answered: 0,
+    correct: 0,
+    attempts: 0,
+    levelAttempts: 0,
+    lastScore: 0,
+    lastTotal: 0,
+    lastPassed: false
+  };
+}
+
+function ensureActiveQuizProgress(){
+  const key = studentProgressKey();
+  if(!quizProgressByStudent[key]) quizProgressByStudent[key] = defaultQuizProgress();
+  activeQuizProgress = quizProgressByStudent[key];
+  updateQuizProgressUI();
+}
+
+function updateQuizProgressUI(){
+  if(!q("quizLevel") || !activeQuizProgress) return;
+  const answered = Math.max(0, activeQuizProgress.answered || 0);
+  const correct = Math.max(0, activeQuizProgress.correct || 0);
+  const mastery = answered ? Math.round(correct * 100 / answered) : 0;
+  const level = clamp(activeQuizProgress.level || 1, 1, 10);
+  const progressPct = Math.max(0, Math.min(100, ((level - 1) / 9) * 100));
+  q("quizLevel").textContent = String(level);
+  q("quizMastery").textContent = mastery + "%";
+  q("quizAnswered").textContent = answered + "/100";
+  q("quizProgressFill").style.width = progressPct.toFixed(1) + "%";
+  q("quizProgressNote").textContent = activeQuizProgress.lastPassed
+    ? "Level cleared. The next round is unlocked with a harder mix of questions."
+    : "Answer 10 questions per level. Score at least 6/10 to unlock the next level and raise the difficulty.";
+
+  const track = q("quizLevelTrack");
+  if(track){
+    const highest = clamp(activeQuizProgress.highestLevel || level, 1, 10);
+    const chips = [];
+    for(let lv=1; lv<=10; lv++){
+      const cls = lv < level ? "done" : (lv === level ? "active" : "");
+      chips.push(`<div class="quizLevelPill ${cls}">L${lv}</div>`);
+    }
+    track.innerHTML = chips.join("");
+  }
+}
+
+function buildQuizProgressCSV(){
+  if(!quizProgressLog.length) return "";
+  const rows = quizProgressLog.map(r=>[
+    safeCSV(r.timestamp),
+    safeCSV(r.name),
+    safeCSV(r.sapid),
+    r.level,
+    r.score,
+    r.total,
+    r.accuracy,
+    r.mastery,
+    r.answered,
+    r.highestLevel,
+    r.passed ? "yes" : "no"
+  ].join(","));
+  return ["timestamp_iso,student_name,sapid,level,score,total,accuracy_pct,mastery_pct,answered_total,highest_level,passed", ...rows].join("\n");
+}
+
+async function saveQuizProgressToFolder(){
+  if(!quizProgressLog.length || !loginCsvFolderHandle) return false;
+  try{
+    const fileHandle = await loginCsvFolderHandle.getFileHandle("hr_diagram_socratic_lab_quiz_progress.csv", { create: true });
+    const writable = await fileHandle.createWritable();
+    await writable.write(buildQuizProgressCSV());
+    await writable.close();
+    return true;
+  }catch(err){
+    console.error(err);
+    return false;
+  }
+}
+
+function buildLoginCSV(){
+  const rows = loginAudit.map(r=>safeCSV(r.timestamp)+","+safeCSV(r.name)+","+safeCSV(r.sapid));
+  return ["timestamp_iso,student_name,sapid",...rows].join("\n");
+}
+
+async function saveLoginCSVToFolder(){
+  if(!loginAudit.length){ alert("No login logs yet."); return false; }
+  if(!loginCsvFolderHandle){ alert("Enable local CSV saving first."); return false; }
+  try{
+    const fileHandle = await loginCsvFolderHandle.getFileHandle("hr_diagram_socratic_lab_login_audit.csv", { create: true });
+    const writable = await fileHandle.createWritable();
+    await writable.write(buildLoginCSV());
+    await writable.close();
+    if(q("loginCsvStatus")) q("loginCsvStatus").textContent = "Saved to data_collected/hr_diagram_socratic_lab_login_audit.csv";
+    return true;
+  }catch(err){
+    console.error(err);
+    if(q("loginCsvStatus")) q("loginCsvStatus").textContent = "Local save failed.";
+    alert("Could not write to the selected folder. Choose the data_collected folder again.");
+    return false;
+  }
+}
+
+async function enableLoginCsvFolder(){
+  if(!window.showDirectoryPicker){
+    alert("This browser does not support folder selection for local CSV saving.");
+    return;
+  }
+  try{
+    const handle = await window.showDirectoryPicker({ mode: "readwrite" });
+    loginCsvFolderHandle = handle;
+    loginCsvExportEnabled = true;
+    if(q("loginCsvStatus")) q("loginCsvStatus").textContent = "Local CSV saving enabled.";
+    await saveLoginCSVToFolder();
+  }catch(err){
+    if(q("loginCsvStatus")) q("loginCsvStatus").textContent = "Local CSV saving disabled.";
+  }
+}
+
+function maybeSaveLoginCSVToFolder(){
+  if(loginCsvExportEnabled && loginCsvFolderHandle){
+    saveLoginCSVToFolder();
+  }
 }
 
 function pickRandom(arr,n){
@@ -1150,25 +1795,34 @@ function inferDifficultyTarget(){
   return "easy";
 }
 function parsePromptTokens(text){ return String(text||"").toLowerCase().split(/[^a-z0-9]+/).filter(Boolean); }
+function scoreQuestionAgainstPrompt(question, tokens){
+  if(!tokens.length) return 0;
+  const corpus = [question.q, ...(question.tags || []), question.difficulty, String(question.level || "")].join(" ").toLowerCase();
+  let score = 0;
+  tokens.forEach(token=>{ if(corpus.includes(token)) score++; });
+  return score;
+}
 function generateQuizSet(){
+  ensureActiveQuizProgress();
   const tokens=parsePromptTokens(q("quizPrompt").value.trim());
-  const target=inferDifficultyTarget();
-  let pool=QUESTION_BANK.filter(x=>x.difficulty===target);
-  if(tokens.length){
-    const tagged=QUESTION_BANK.filter(x=>x.tags.some(t=>tokens.includes(t)) || tokens.some(tok=>x.q.toLowerCase().includes(tok)));
-    if(tagged.length) pool=[...new Set([...tagged,...pool])];
-  }
-  if(pool.length<5) pool=[...QUESTION_BANK];
-  currentQuizQuestions=pickRandom(pool,5);
+  const level = activeQuizProgress ? clamp(activeQuizProgress.level || 1, 1, 10) : 1;
+  const pool = QUESTION_BANK.filter(x=>x.level===level);
+  const ordered = tokens.length
+    ? [...pool].sort((a,b)=>scoreQuestionAgainstPrompt(b,tokens)-scoreQuestionAgainstPrompt(a,tokens) || Math.random()-0.5)
+    : shuffleArray(pool);
+  currentQuizQuestions=ordered.slice(0,10);
 }
 function renderQuizQuestions(){
   const wrap=q("quizQuestionsWrap");
   if(!currentQuizQuestions.length){
     wrap.innerHTML='<div class="quizHint">Click "Ask New Quiz" to generate a fresh interactive quiz.</div>';
+    if(q("quizLevelTrack") && (!activeQuizProgress || !q("quizLevelTrack").children.length)){
+      q("quizLevelTrack").innerHTML = Array.from({length:10},(_,i)=>`<div class="quizLevelPill ${i===0?"active":""}">L${i+1}</div>`).join("");
+    }
     return;
   }
   wrap.innerHTML=currentQuizQuestions.map((it,i)=>
-    "<div class=\"quizQ\"><p>"+(i+1)+". "+it.q+"</p>"+
+    "<div class=\"quizQ\"><p><span class=\"quizDiff "+it.difficulty+"\">"+it.difficulty+"</span>"+(i+1)+". "+it.q+"</p>"+
     it.options.map((o,j)=>"<label><input type=\"radio\" name=\"q_"+i+"\" value=\""+j+"\"> "+o+"</label>").join("")+
     "</div>"
   ).join("");
@@ -1176,7 +1830,8 @@ function renderQuizQuestions(){
 function generateAndRenderQuiz(){
   if(!state.authenticated){ alert("Please log in first."); q("loginOverlay").classList.remove("hidden"); return; }
   generateQuizSet(); renderQuizQuestions();
-  q("quizResult").textContent="New quiz generated for "+student.name+". Difficulty profile: "+inferDifficultyTarget()+".";
+  q("quizResult").textContent="Level "+(activeQuizProgress ? activeQuizProgress.level : 1)+" loaded for "+student.name+". Ten questions are ready.";
+  updateQuizProgressUI();
 }
 function submitQuiz(ev){
   ev.preventDefault();
@@ -1189,33 +1844,84 @@ function submitQuiz(ev){
     if(parseInt(picked.value,10)===currentQuizQuestions[i].answer) score++;
   }
   const total=currentQuizQuestions.length;
-  q("quizResult").textContent="Submitted. Score: "+score+"/"+total+" ("+Math.round(score*100/total)+"%).";
-  quizAttempts.push({timestamp:new Date().toISOString(),name:student.name,sapid:student.sapid||"NA",score:score,total:total});
+  const levelBefore = activeQuizProgress ? clamp(activeQuizProgress.level || 1, 1, 10) : 1;
+  const passed = score >= 6;
+  const accuracy = Math.round(score * 100 / total);
+  if(!activeQuizProgress) ensureActiveQuizProgress();
+  activeQuizProgress.attempts = (activeQuizProgress.attempts || 0) + 1;
+  activeQuizProgress.answered = (activeQuizProgress.answered || 0) + total;
+  activeQuizProgress.correct = (activeQuizProgress.correct || 0) + score;
+  activeQuizProgress.lastScore = score;
+  activeQuizProgress.lastTotal = total;
+  activeQuizProgress.lastPassed = passed;
+  if(passed && activeQuizProgress.level < 10){
+    activeQuizProgress.level += 1;
+    activeQuizProgress.highestLevel = Math.max(activeQuizProgress.highestLevel || 1, activeQuizProgress.level);
+  }else{
+    activeQuizProgress.highestLevel = Math.max(activeQuizProgress.highestLevel || 1, activeQuizProgress.level || 1);
+  }
+  quizAttempts.push({timestamp:new Date().toISOString(),name:student.name,sapid:student.sapid||"NA",level:levelBefore,score:score,total:total,passed:passed});
   if(quizAttempts.length>3000) quizAttempts=quizAttempts.slice(-3000);
+  quizProgressLog.push({
+    timestamp:new Date().toISOString(),
+    name:student.name,
+    sapid:student.sapid||"NA",
+    level:levelBefore,
+    score:score,
+    total:total,
+    accuracy:accuracy,
+    mastery:activeQuizProgress.answered ? Math.round(activeQuizProgress.correct*100/activeQuizProgress.answered) : 0,
+    answered:activeQuizProgress.answered,
+    highestLevel:activeQuizProgress.highestLevel || activeQuizProgress.level,
+    passed:passed
+  });
+  if(quizProgressLog.length>5000) quizProgressLog=quizProgressLog.slice(-5000);
   savePersistentLogs();
   updateQuizAttemptUI();
+  updateQuizProgressUI();
+  saveQuizCSVToFolder();
+  saveQuizProgressToFolder();
+  const nextLevel = activeQuizProgress.level || 1;
+  if(passed){
+    generateQuizSet();
+    renderQuizQuestions();
+  }
+  q("quizResult").textContent = passed
+    ? "Submitted. Score: "+score+"/"+total+" ("+accuracy+"%). Level "+levelBefore+" cleared. Level "+nextLevel+" has been loaded automatically."
+    : "Submitted. Score: "+score+"/"+total+" ("+accuracy+"%). Keep going to unlock Level "+levelBefore+".";
 }
-function resetQuizForm(){ q("quizForm").reset(); q("quizResult").textContent="Quiz selection reset. You can submit or generate a new set."; }
+function resetQuizForm(){ q("quizForm").reset(); q("quizResult").textContent="Quiz selection reset. You can submit or generate a new 10-question set."; }
 function updateQuizAttemptUI(){
+  if(!q("quizAttemptCount")) return;
   q("quizAttemptCount").textContent=String(quizAttempts.length);
-  q("quizAttemptBody").innerHTML = quizAttempts.length
-    ? quizAttempts.slice(-30).reverse().map(r=>"<tr><td>"+r.timestamp+"</td><td>"+r.name+"</td><td>"+r.sapid+"</td><td>"+r.score+"/"+r.total+"</td></tr>").join("")
-    : '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px">No quiz attempts yet.</td></tr>';
 }
-function exportQuizCSV(){
-  if(!quizAttempts.length){ alert("No quiz attempts yet."); return; }
-  const rows=quizAttempts.map(r=>r.timestamp+","+r.name+","+r.sapid+","+r.score+","+r.total);
-  dlBlob(["timestamp_iso,student_name,sapid,score,total",...rows].join("\n"),"hr_quiz_attempts.csv","text/csv");
+function buildQuizCSV(){
+  const rows=quizAttempts.map(r=>safeCSV(r.timestamp)+","+safeCSV(r.name)+","+safeCSV(r.sapid)+","+r.score+","+r.total);
+  return ["timestamp_iso,student_name,sapid,score,total",...rows].join("\n");
+}
+
+async function saveQuizCSVToFolder(){
+  if(!quizAttempts.length || !loginCsvFolderHandle) return false;
+  try{
+    const fileHandle = await loginCsvFolderHandle.getFileHandle("hr_diagram_socratic_lab_quiz_attempts.csv", { create: true });
+    const writable = await fileHandle.createWritable();
+    await writable.write(buildQuizCSV());
+    await writable.close();
+    return true;
+  }catch(err){
+    console.error(err);
+    return false;
+  }
 }
 
 function buildTutorMessage(){
   const mass = parseFloat(q("massSlider").value);
   const age = parseFloat(q("ageSlider").value);
   const z = parseFloat(q("metalSlider").value);
-  const star = estimateStar(mass, age, z, q("phaseMode").value);
+  const star = estimateStar(mass, myrToGyr(age), z, "auto");
   return "Topic: Stellar Evolution and H-R Diagram\n"+
          "Mass: "+mass.toFixed(2)+" M\u2609\n"+
-         "Age: "+age.toFixed(2)+" Gyr\n"+
+         "Age: "+age.toFixed(1)+" Myr\n"+
          "Phase: "+star.phase+"\n"+
          "Teff: "+star.Teff.toFixed(0)+" K\n"+
          "L/L\u2609: "+star.L.toExponential(3)+"\n\n"+
@@ -1229,32 +1935,73 @@ function closeTutor(){ q("tutorModal").classList.remove("show"); }
 
 function refreshLabels(){
   q("massVal").textContent=parseFloat(q("massSlider").value).toFixed(1)+" M\u2609";
-  q("ageVal").textContent=parseFloat(q("ageSlider").value).toFixed(2)+" Gyr";
+  q("ageVal").textContent=parseFloat(q("ageSlider").value).toFixed(1)+" Myr";
   q("metalVal").textContent=parseFloat(q("metalSlider").value).toFixed(4);
-  q("simRateVal").textContent=parseFloat(q("simRate").value).toFixed(2)+" Gyr/s";
+  q("simRateVal").textContent=parseFloat(q("simRate").value).toFixed(1)+" Myr/s";
+
+  q("massInput").value = q("massSlider").value;
+  q("ageInput").value = q("ageSlider").value;
+  q("metalInput").value = q("metalSlider").value;
+  q("simRateInput").value = q("simRate").value;
+
+  q("massInput").step = q("massSlider").step;
+  q("ageInput").step = q("ageSlider").step;
+  q("metalInput").step = q("metalSlider").step;
+  q("simRateInput").step = q("simRate").step;
+}
+
+function runControlRefresh(){
+  refreshLabels();
+  maybeSample();
+  draw();
+  drawLiveGraph();
+  updateDataTab();
+}
+
+function bindSliderManual(sliderId, valueId){
+  const slider = q(sliderId);
+  const valueInput = q(valueId);
+
+  const syncAndRender = ()=>runControlRefresh();
+
+  slider.addEventListener("input", syncAndRender);
+
+  const applyManualValue = ()=>{
+    const min = parseFloat(slider.min);
+    const max = parseFloat(slider.max);
+    const raw = parseFloat(valueInput.value);
+    if(Number.isNaN(raw)) return;
+    slider.value = String(clamp(raw, min, max));
+    syncAndRender();
+  };
+  valueInput.addEventListener("input", applyManualValue);
+  valueInput.addEventListener("change", applyManualValue);
 }
 function setPreset(m,a,z){
   q("massSlider").value=String(m);
   q("ageSlider").value=String(a);
   q("metalSlider").value=String(z);
+  beginNewTrack(m, z, `Preset run: M=${m.toFixed(2)} Msun, Z=${z.toFixed(4)}`);
   refreshLabels();
   maybeSample(); draw(); drawLiveGraph();
 }
 function resetAllToDefaults(){
-  q("phaseMode").value="auto";
   q("showTrack").checked=true;
   q("logData").checked=true;
   q("graphMetric").value="logL";
   q("sampleEvery").value="1";
   q("maxRows").value="5000";
-  state.playing=true;
-  q("playBtn").textContent="\u23F8 Pause";
-  trendLog=[]; dataLog=[]; state.stepCount=0; lastLogStep=-Infinity;
-  setPreset(1.0,4.6,0.014);
+  state.playing=false;
+  q("playBtn").textContent="\u25B6 Run";
+  trendLog=[]; dataLog=[]; hrTracks=[]; currentTrack=null;
+  milestoneEffects=[];
+  milestoneBanner = { text:"", until:0, color:"#59d0ff" };
+  state.stepCount=0; lastLogStep=-Infinity;
+  setPreset(1.0,0.0,0.014);
 }
 
 function stepOnce(deltaGyr){
-  const age = clamp(parseFloat(q("ageSlider").value)+deltaGyr,0,13.5);
+  const age = clamp(parseFloat(q("ageSlider").value)+deltaGyr,0,13500);
   q("ageSlider").value = String(age);
   refreshLabels();
   state.stepCount++;
@@ -1293,32 +2040,56 @@ function setStudent(name,id){
   q("studentBadge").textContent="User: "+label;
   q("footerStudent").textContent=label+" - session active";
   q("studentIdentityLine").textContent="Student: "+student.name+" | SAPID: "+(student.sapid||"NA")+" | Topic: Stellar Evolution and H-R Diagram";
+  ensureActiveQuizProgress();
 }
 function showApp(){ q("loginOverlay").classList.add("hidden"); q("appShell").style.visibility="visible"; }
 q("loginBtn").addEventListener("click",()=>{
   const name=q("loginName").value.trim(), sapid=q("loginID").value.trim();
   if(!name){ q("loginName").focus(); return; }
   if(!sapid){ q("loginID").focus(); return; }
+  if(!allowedSapIdsLoaded){
+    alert("Allowed SAP ID list is still loading. Please try again in a moment.");
+    return;
+  }
+  if(allowedSapIdsLoadError){
+    alert("Allowed SAP ID list could not be loaded from static file.");
+    return;
+  }
+  if(!isValidSapId(sapid)){
+    alert("Invalid SAP ID. Please use an allowed SAP ID or continue as Guest.");
+    q("loginID").focus();
+    return;
+  }
   state.authenticated=true;
   setStudent(name,sapid);
   loginAudit.push({timestamp:new Date().toISOString(),name:name,sapid:sapid});
   if(loginAudit.length>3000) loginAudit=loginAudit.slice(-3000);
   savePersistentLogs();
   updateLoginAuditUI();
+  maybeSaveLoginCSVToFolder();
   showApp();
 });
 q("loginName").addEventListener("keydown",e=>{ if(e.key==="Enter") q("loginID").focus(); });
 q("loginID").addEventListener("keydown",e=>{ if(e.key==="Enter") q("loginBtn").click(); });
-q("skipLogin").addEventListener("click",()=>alert("Guest access is disabled. Please log in with Name and SAPID."));
+q("skipLogin").addEventListener("click",()=>{ state.authenticated=false; setStudent("Guest","NA"); showApp(); });
 q("studentBadge").addEventListener("click",()=>q("loginOverlay").classList.remove("hidden"));
 
-["massSlider","ageSlider","metalSlider","phaseMode","graphMetric","simRate","showTrack"].forEach(id=>{
-  q(id).addEventListener("input",()=>{ refreshLabels(); maybeSample(); draw(); drawLiveGraph(); updateDataTab(); });
+bindSliderManual("massSlider","massInput");
+bindSliderManual("ageSlider","ageInput");
+bindSliderManual("metalSlider","metalInput");
+bindSliderManual("simRate","simRateInput");
+
+["graphMetric","showTrack"].forEach(id=>{
+  q(id).addEventListener("input",()=>{ refreshLabels(); draw(); drawLiveGraph(); updateDataTab(); });
 });
 q("playBtn").addEventListener("click",()=>{ state.playing=!state.playing; q("playBtn").textContent=state.playing?"\u23F8 Pause":"\u25B6 Run"; });
-q("stepBtn").addEventListener("click",()=>stepOnce(0.1));
+q("stepBtn").addEventListener("click",()=>{
+  const raw = parseFloat(q("stepInput").value);
+  const delta = Number.isFinite(raw) && raw > 0 ? raw : 0.1;
+  q("stepInput").value = String(delta);
+  stepOnce(delta);
+});
 q("resetBtn").addEventListener("click",resetAllToDefaults);
-q("resetZoom").addEventListener("click",()=>{ draw(); });
 q("helpBtn").addEventListener("click",openTutor);
 q("closeTutor").addEventListener("click",closeTutor);
 q("tutorModal").addEventListener("click",(e)=>{ if(e.target.id==="tutorModal") closeTutor(); });
@@ -1327,21 +2098,21 @@ q("dlCSV").addEventListener("click",exportCSV);
 q("dlJSON").addEventListener("click",exportJSON);
 q("dlPython").addEventListener("click",exportPython);
 q("clearLogBtn").addEventListener("click",()=>{ dataLog=[]; updateDataTab(); });
-q("dlLoginCSV").addEventListener("click",exportLoginCSV);
-q("dlQuizCSV").addEventListener("click",exportQuizCSV);
 
 q("quizForm").addEventListener("submit",submitQuiz);
 q("resetQuizBtn").addEventListener("click",resetQuizForm);
 q("askQuizBtn").addEventListener("click",generateAndRenderQuiz);
 q("newQuizBtn").addEventListener("click",generateAndRenderQuiz);
 
-q("presetLow").addEventListener("click",()=>setPreset(0.6,8.0,0.012));
-q("presetSolar").addEventListener("click",()=>setPreset(1.0,4.6,0.014));
-q("presetHigh").addEventListener("click",()=>setPreset(12.0,0.02,0.010));
+q("presetLow").addEventListener("click",()=>setPreset(0.6,0.0,0.012));
+q("presetSolar").addEventListener("click",()=>setPreset(1.0,0.0,0.014));
+q("presetHigh").addEventListener("click",()=>setPreset(12.0,0.0,0.010));
 
+loadAllowedSapIds();
 loadPersistentLogs();
 updateLoginAuditUI();
 updateQuizAttemptUI();
+setStudent("Guest","NA");
 renderQuizQuestions();
 resetAllToDefaults();
 resizeCanvas();
