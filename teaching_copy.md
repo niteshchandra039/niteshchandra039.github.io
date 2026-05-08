@@ -1,7 +1,7 @@
 ---
 layout: splash
-title: "Teaching"
-permalink: /teaching/
+title: "Teaching Copy"
+permalink: /teaching-copy/
 ---
 
 <style>
