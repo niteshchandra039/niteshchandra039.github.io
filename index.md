@@ -3,20 +3,6 @@ layout: home
 title: "Dr. Nitesh Kumar | Astrophysicist"
 author_profile: true
 ---
-
-
-<script>
-  // --- 0. DYNAMIC FAVICON INJECTION (Physics Atom) ---
-  (function() {
-    const link = document.createElement('link');
-    link.rel = 'icon';
-    // This creates an SVG favicon on the fly using an emoji
-    link.href = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚛️</text></svg>";
-    document.head.appendChild(link);
-  })();
-</script>
-
-
 <style>
   /* ===============================
      TYPOGRAPHY & GLOBAL STYLES

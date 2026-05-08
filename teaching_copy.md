@@ -435,7 +435,7 @@ permalink: /teaching/
 <div class="page__content page-wrapper">
 
   <section class="hero" id="top">
-    <span class="brand-kicker">Professor Brand Studio · Physics + Computation</span>
+    <span class="brand-kicker">Physics + Computation</span>
     <h1>Teaching, Simulations, and Mentorship by Nitesh Kumar</h1>
     <p>
       This page is designed as a live academic workspace: fast access to classroom-ready simulations,
