@@ -1,7 +1,7 @@
 ---
 layout: splash
 title: "Teaching Copy"
-permalink: /teaching-copy/
+permalink: /teaching/
 ---
 
 <style>
@@ -435,11 +435,10 @@ permalink: /teaching-copy/
 <div class="page__content page-wrapper">
 
   <section class="hero" id="top">
-    <span class="brand-kicker">Physics + Computation</span>
-    <h1>Teaching, Simulations, and Mentorship by Nitesh Kumar</h1>
-    <p>
-      This page is designed as a live academic workspace: fast access to classroom-ready simulations,
-      structured course resources, and guided pathways for students and collaborators.
+    <span class="brand-kicker"> Teaching & Mentorship
+    </span>
+    <h1>Teaching, Simulations, and Mentorship by Dr. Nitesh Kumar</h1>
+    <p> Hi there! I'm Dr. Nitesh Kumar an IUCAA visiting associate faculty and astrophysicist with a passion for teaching and mentorship. I teach courses in astrophysics, computational physics, and data science at the undergraduate and graduate levels. I also develop interactive simulations and computational labs to make complex concepts accessible and engaging for students. My teaching philosophy centers around fostering curiosity, critical thinking, and hands-on learning through real-world applications and research-led mentorship.
     </p>
 
     <div class="hero-grid">
@@ -454,7 +453,7 @@ permalink: /teaching-copy/
       <div class="hero-card">
         <h3>Teaching Focus</h3>
         <p style="margin:0;color:#49607f;font-size:0.95rem">
-          Concept-first physics teaching with computational thinking, data literacy,
+          Concept-first astrophysics teaching with computational thinking, data literacy,
           and simulation-led understanding.
         </p>
       </div>
