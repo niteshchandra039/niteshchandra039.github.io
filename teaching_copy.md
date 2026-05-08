@@ -706,12 +706,14 @@ permalink: /teaching/
     <h2>Courses Taught</h2>
     <p class="section-intro">Interdisciplinary coverage across foundational programming, computational methods, and astrophysical applications.</p>
     <div class="topic-grid">
+      <article class="topic-card"><h3>Classical Mechanics</h3><p>M.Sc. Physics</p></article>
+      <article class="topic-card"><h3>Computational Astrophysics</h3><p>M.Sc. Physics</p></article>
+      <article class="topic-card"><h3>Machine Learning Techniques</h3><p>Hands-on analysis using real observational datasets.</p></article>
       <article class="topic-card"><h3>Python Programming</h3><p>Data structures, logic building, and scientific computing.</p></article>
       <article class="topic-card"><h3>Fortran Programming</h3><p>Fundamentals and numerical applications in scientific problems.</p></article>
       <article class="topic-card"><h3>C++ Programming</h3><p>Object-oriented methods and modeling workflows.</p></article>
       <article class="topic-card"><h3>LaTeX for Science</h3><p>Scientific writing and reproducible documentation practices.</p></article>
       <article class="topic-card"><h3>Computational Physics</h3><p>Numerical methods applied to real physics systems.</p></article>
-      <article class="topic-card"><h3>Machine Learning in Astronomy</h3><p>Hands-on analysis using real observational datasets.</p></article>
       <article class="topic-card"><h3>Astrophysics and Cosmology</h3><p>Stellar evolution, variable stars, and cosmic-scale structures.</p></article>
       <article class="topic-card"><h3>Astronomy and Physics Labs</h3><p>Observation, experimentation, and simulation-enhanced interpretation.</p></article>
     </div>
@@ -727,6 +729,12 @@ permalink: /teaching/
           <li>RR Lyrae and Cepheid variable star classification</li>
           <li>Machine learning in astronomical time series</li>
           <li>Photometric data analysis with neural-network tools</li>
+          <li>X-Ray binary timing and spectral studies</li>
+          <li>Stellar evolution modeling with MESA</li>
+          <li>Distance calibration using period-luminosity relations</li>
+          <li>Open cluster age and metallicity estimation</li>
+          <li>Exoplanet parameter extraction with transit modeling</li>
+          <li>Gaia DR3 variable star analysis and classification</li>
         </ul>
       </article>
       <article class="mentor-card">
@@ -736,7 +744,7 @@ permalink: /teaching/
           <li><strong>Aniket Prakash:</strong> Theoretical modelling of variable stars using MESA</li>
           <li><strong>Shagun Thakur:</strong> Variable-star analysis in the Gaia DR3 era</li>
           <li><strong>Divya Krishna:</strong> SMC distance calibration via multiphase P-L relations</li>
-          <li><strong>Rushil Soni:</strong> Age and metallicity of open cluster Berkeley 6</li>
+          <li><strong>Rushil Soni:</strong> Age and metallicity of open cluster Berkeley 6 and S1</li>
           <li><strong>Atharva Bhatele:</strong> Multiwavelength study of RR Lyrae stars</li>
           <li><strong>Neelesh:</strong> Exoplanet parameter extraction with ExoFAST</li>
         </ul>
