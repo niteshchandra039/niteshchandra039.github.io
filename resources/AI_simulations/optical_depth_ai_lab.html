@@ -851,7 +851,7 @@
     <label for="loginID">Student / SAPID</label>
     <input id="loginID" type="text" placeholder="e.g. 2023PHY042" autocomplete="off" />
     <button id="loginBtn" type="button">Enter Simulator</button>
-    <div class="skip" id="skipLogin">Guest mode disabled (student login required)</div>
+    <div class="skip" id="skipLogin">Continue as Guest</div>
     <div class="loginStatus" id="loginStatus">Enter Name and SAPID to continue.</div>
     <div class="aiCredit">Creator and Maintainer: Dr. Nitesh Kumar, UPES</div>
   </div>
@@ -2298,7 +2298,11 @@ document.querySelectorAll(".tabBar button").forEach(btn => {
 q("loginBtn").addEventListener("click", login);
 q("loginName").addEventListener("keydown", e => { if (e.key === "Enter") q("loginID").focus(); });
 q("loginID").addEventListener("keydown", e => { if (e.key === "Enter") login(); });
-q("skipLogin").addEventListener("click", () => alert("Guest access is disabled. Please log in with Name and SAPID."));
+q("skipLogin").addEventListener("click", () => {
+  state.authenticated = false;
+  setStudent("Guest", "NA");
+  showApp();
+});
 q("studentBadge").addEventListener("click", reopenLogin);
 q("presetDiffuse").addEventListener("click", () => setPreset("diffuse"));
 q("presetCloud").addEventListener("click", () => setPreset("cloud"));

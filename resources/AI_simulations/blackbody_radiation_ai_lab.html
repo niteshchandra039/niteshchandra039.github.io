@@ -377,7 +377,7 @@
     <label for="loginID">Student / Roll Number</label>
     <input id="loginID" type="text" placeholder="e.g. 2023PHY042" autocomplete="off" />
     <button id="loginBtn">Enter Simulator &#x2192;</button>
-    <div class="skip disabled" id="skipLogin">Guest mode disabled (student login required)</div>
+    <div class="skip" id="skipLogin">Continue as Guest</div>
     <div class="aiCredit">Creator and Maintainer: Dr. Nitesh Kumar, UPES</div>
   </div>
 </div>
@@ -1395,6 +1395,7 @@ function submitQuiz(ev){
 function updateQuizAttemptUI(){
   q("quizAttemptCount").textContent = String(quizAttempts.length);
   const body=q("quizAttemptBody");
+  if(!body) return;
   if(!quizAttempts.length){
     body.innerHTML='<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px">No quiz attempts yet.</td></tr>'; return;
   }
@@ -1539,7 +1540,11 @@ q("loginBtn").addEventListener("click",()=>{
   recordLogin(name,sapid);
   showApp();
 });
-q("skipLogin").addEventListener("click",()=>alert("Guest mode disabled. Login required."));
+q("skipLogin").addEventListener("click",()=>{
+  state.authenticated=false;
+  setStudent("Guest","NA");
+  showApp();
+});
 q("studentBadge").addEventListener("click",()=>q("loginOverlay").classList.remove("hidden"));
 
 loadAllowedSapIds().then(()=>{
