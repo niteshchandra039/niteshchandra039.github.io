@@ -1,6 +1,6 @@
 ---
 layout: splash
-title: "Teaching Copy"
+title: "Resources"
 permalink: /teaching/
 ---
 
