@@ -7,7 +7,7 @@ main:
   - title: "Biography"
     url: "/about/"
   - title: "Resources"
-    url: "/teaching.html"
+    url: "/teaching"
   - title: "News"
     url: "/update/"
   - title: "Resume"
