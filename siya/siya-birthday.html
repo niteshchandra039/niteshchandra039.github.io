@@ -557,6 +557,65 @@
         --rise: 520px;
         height: 460px;
       }
+
+      .hero {
+        min-height: auto;
+        padding: 1.8rem 1rem 2rem;
+      }
+
+      .hero-present-row {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        margin-bottom: .6rem;
+      }
+
+      .hero-title {
+        font-size: clamp(1.9rem, 9vw, 3.4rem);
+      }
+
+      .hero-sub {
+        margin-top: .75rem;
+      }
+
+      .scroll-hint {
+        margin-top: 1.6rem;
+      }
+
+      .frame-border img {
+        height: 200px;
+      }
+
+      .photo-frame {
+        width: min(100%, 220px);
+      }
+
+      .photo-frame .frame-msg {
+        max-width: 100%;
+      }
+
+      .letter-card {
+        padding: 1.6rem 1.2rem;
+      }
+
+      .letter-card::after {
+        left: 1.5rem;
+      }
+
+      .letter-body {
+        line-height: 1.8;
+      }
+
+      .letter-date,
+      .letter-salutation,
+      .letter-sign {
+        text-align: left;
+      }
+
+      footer {
+        padding: 1.8rem 1rem 2.5rem;
+      }
     }
 
     button.orb {
@@ -1628,8 +1687,9 @@
       el.appendChild(frag);
     }
 
-    makeStars('starfield', 110);
-    makeDust('dustfield', 16);
+    const isMobileViewport = window.matchMedia('(max-width: 640px)').matches;
+    makeStars('starfield', isMobileViewport ? 70 : 110);
+    makeDust('dustfield', isMobileViewport ? 10 : 16);
 
 
   </script>
