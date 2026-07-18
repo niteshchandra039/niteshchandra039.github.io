@@ -88,30 +88,6 @@
       border: 0;
     }
 
-    .replay-btn {
-      margin-top: 1rem;
-      border: 1px solid rgba(107, 78, 113, .22);
-      background: rgba(255, 253, 248, .7);
-      color: var(--twilight-plum);
-      padding: .7rem 1rem;
-      border-radius: 999px;
-      cursor: pointer;
-      font-weight: 600;
-      box-shadow: 0 10px 24px rgba(107, 78, 113, .12);
-      transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
-    }
-
-    .replay-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 14px 28px rgba(107, 78, 113, .16);
-      background: rgba(255, 253, 248, .9);
-    }
-
-    .replay-btn:focus-visible {
-      outline: 3px solid var(--twilight-plum);
-      outline-offset: 4px;
-    }
-
     @media (prefers-reduced-motion: reduce) {
       * {
         animation-duration: 0.01ms !important;
@@ -1295,7 +1271,6 @@
       </div>
     </div>
     <p class="present-hint" id="presentHint">tap the present ✨</p>
-    <button class="replay-btn" id="replayBtn" type="button" hidden>open it again ✨</button>
 
     <div class="hero-reveal" id="heroReveal">
       <div class="orbit-wrap" aria-hidden="true">
@@ -1305,7 +1280,7 @@
         <span class="orbit-dot d2" style="--radius:150px; animation-duration:13s;"></span>
         <span class="orbit-dot d3" style="--radius:190px; animation-duration:17s;"></span>
       </div>
-      <h1 class="hero-title">Happy Birthday,<br><span>Siya</span></h1>
+      <h1 class="hero-title">Happy Birthday, Dear<br><span>Siya</span></h1>
       <p class="hero-sub">Madhumita Rajesh Singh &middot; turning 25 ✨</p>
       <a href="#orbs" class="scroll-hint">scroll for more magic ↓</a>
     </div>
@@ -1544,32 +1519,9 @@
     const present = document.getElementById('present');
     const presentHint = document.getElementById('presentHint');
     const heroReveal = document.getElementById('heroReveal');
-    const replayBtn = document.getElementById('replayBtn');
     const sunflower = document.getElementById('sunflower');
     const wishStatus = document.getElementById('wishStatus');
     let opened = false;
-
-    function triggerRevealAnimation() {
-      const rect = present.getBoundingClientRect();
-      const cx = rect.left + rect.width / 2;
-      const cy = rect.top + rect.height / 2;
-
-      present.classList.remove('opened');
-      void present.offsetWidth;
-      present.classList.add('opened');
-      presentHint.classList.add('hide');
-      replayBtn.hidden = false;
-
-      heroReveal.classList.remove('show');
-      void heroReveal.offsetWidth;
-      heroReveal.classList.add('show');
-
-      sunflower.classList.remove('bloom');
-      void sunflower.offsetWidth;
-      sunflower.classList.add('bloom');
-
-      spawnParticles(cx, cy, 60, PALETTE, 230, [7, 13], [900, 1700]);
-    }
 
     present.addEventListener('click', () => {
       const rect = present.getBoundingClientRect();
@@ -1578,15 +1530,14 @@
 
       if (!opened) {
         opened = true;
-        triggerRevealAnimation();
+        present.classList.add('opened');
+        presentHint.classList.add('hide');
+        setTimeout(() => heroReveal.classList.add('show'), 260);
+        sunflower.classList.add('bloom');
+        spawnParticles(cx, cy, 60, PALETTE, 230, [7, 13], [900, 1700]);
       } else {
         spawnParticles(cx, cy, 24, PALETTE, 150, [5, 9], [700, 1200]);
       }
-    });
-
-    replayBtn.addEventListener('click', (event) => {
-      event.stopPropagation();
-      triggerRevealAnimation();
     });
 
     // ---------- wish popup ----------
