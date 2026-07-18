@@ -1,0 +1,1638 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy 25th Birthday, Siya ✨🌙</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,500;0,600;1,500;1,600&family=Quicksand:wght@400;500;600;700&family=Caveat:wght@500;600;700&family=Dancing+Script:wght@500;600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    /* ============================= */
+    /* Tokens                        */
+    /* ============================= */
+    :root {
+      --pixie-pink: #FBD6E8;
+      --stardust-lavender: #E3C9F0;
+      --buttercup-yellow: #FFF0C2;
+      --honey-glow: #FFD976;
+      --rose-quartz: #F4A9C6;
+      --twilight-plum: #6B4E71;
+      --cloud-white: #FFFDF8;
+      --shadow-glow: rgba(244, 169, 198, 0.55);
+
+      --mint: #CFEFD9;
+      --mint-text: #2F6B45;
+      --blush: #FBD3D3;
+      --blush-text: #8A3B3B;
+
+      --font-display: 'Fraunces', serif;
+      --font-body: 'Quicksand', sans-serif;
+      --font-script: 'Caveat', cursive;
+    }
+
+    /* ============================= */
+    /* Reset & base                  */
+    /* ============================= */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--font-body);
+      color: var(--twilight-plum);
+      background-color: #FBE3ED;
+      overflow-x: hidden;
+      line-height: 1.5;
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-family: var(--font-display);
+      margin: 0;
+    }
+
+    p {
+      margin: 0;
+    }
+
+    button {
+      font-family: inherit;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    /* ============================= */
+    /* Fixed atmosphere layers        */
+    /* ============================= */
+    .sky {
+      position: fixed;
+      inset: 0;
+      z-index: -3;
+      background: linear-gradient(160deg,
+          #f3d3e9 0%,
+          #ecc9ef 22%,
+          #eed3f0 40%,
+          #f6dfe8 58%,
+          #fde8d3 76%,
+          #fff2c6 100%);
+    }
+
+    .nebula {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .nebula span {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(50px);
+      mix-blend-mode: soft-light;
+      opacity: .7;
+    }
+
+    .nebula span:nth-child(1) {
+      width: 38vw;
+      height: 38vw;
+      top: -8%;
+      left: -10%;
+      background: radial-gradient(circle, var(--rose-quartz), transparent 70%);
+    }
+
+    .nebula span:nth-child(2) {
+      width: 42vw;
+      height: 42vw;
+      bottom: -12%;
+      right: -12%;
+      background: radial-gradient(circle, var(--honey-glow), transparent 70%);
+    }
+
+    .nebula span:nth-child(3) {
+      width: 30vw;
+      height: 30vw;
+      top: 35%;
+      left: 60%;
+      background: radial-gradient(circle, var(--stardust-lavender), transparent 70%);
+    }
+
+    #starfield,
+    #dustfield {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .star {
+      position: absolute;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 0 4px 1px rgba(255, 255, 255, .9);
+      animation-name: twinkle;
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+    }
+
+    .dust {
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fff, var(--honey-glow));
+      opacity: 0;
+      filter: blur(.3px);
+      animation-name: driftDust;
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+    }
+
+    .shooting-star {
+      position: fixed;
+      top: -5%;
+      width: 2px;
+      height: 2px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 0 8px 2px rgba(255, 255, 255, .9);
+      z-index: -1;
+      opacity: 0;
+      pointer-events: none;
+      animation: shootingStar linear infinite;
+    }
+
+    .shooting-star::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 110px;
+      height: 1.5px;
+      background: linear-gradient(90deg, rgba(255, 255, 255, .95), transparent);
+      transform: rotate(215deg);
+      transform-origin: left center;
+    }
+
+    .shooting-star.s1 {
+      left: 65%;
+      animation-duration: 9s;
+      animation-delay: 2s;
+    }
+
+    .shooting-star.s2 {
+      left: 25%;
+      animation-duration: 13s;
+      animation-delay: 7s;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .shooting-star {
+        display: none;
+      }
+    }
+
+    /* ============================= */
+    /* Layout helpers                 */
+    /* ============================= */
+    .section {
+      position: relative;
+      z-index: 1;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: clamp(3rem, 8vw, 5rem) clamp(1.2rem, 5vw, 2.5rem);
+    }
+
+    .section-card {
+      background: rgba(255, 253, 248, 0.5);
+      -webkit-backdrop-filter: blur(16px) saturate(140%);
+      backdrop-filter: blur(16px) saturate(140%);
+      border: 1px solid rgba(255, 255, 255, .65);
+      border-radius: 32px;
+      box-shadow: 0 25px 60px rgba(107, 78, 113, .15);
+      padding: clamp(1.6rem, 5vw, 3rem);
+    }
+
+    .section-title {
+      font-size: clamp(1.6rem, 5vw, 2.3rem);
+      font-weight: 600;
+      text-align: center;
+      color: var(--twilight-plum);
+    }
+
+    .section-sub {
+      text-align: center;
+      margin: .6rem auto 2.2rem;
+      max-width: 32rem;
+      font-size: clamp(.95rem, 2.5vw, 1.05rem);
+      opacity: .85;
+    }
+
+    /* ============================= */
+    /* Hero                            */
+    /* ============================= */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem clamp(1rem, 6vw, 2rem);
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-moon {
+      position: absolute;
+      top: 6%;
+      right: 8%;
+      font-size: clamp(2.2rem, 6vw, 3.4rem);
+      filter: drop-shadow(0 0 14px rgba(255, 217, 118, .7));
+      animation: breathe 6s ease-in-out infinite;
+    }
+
+    @media (max-width:640px) {
+      .hero-moon {
+        top: 4%;
+        right: 6%;
+      }
+    }
+
+    button.present {
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      position: relative;
+      width: clamp(150px, 38vw, 210px);
+      height: clamp(150px, 38vw, 210px);
+      margin-bottom: 1.2rem;
+    }
+
+    button.present:focus-visible {
+      outline: 3px solid var(--twilight-plum);
+      outline-offset: 8px;
+      border-radius: 20px;
+    }
+
+    .present-glow {
+      position: absolute;
+      left: -18%;
+      top: -18%;
+      width: 136%;
+      height: 136%;
+      border-radius: 50%;
+      z-index: 0;
+      background: radial-gradient(circle, rgba(255, 217, 118, .6), rgba(244, 169, 198, .35) 55%, transparent 75%);
+      animation: pulseGlow 3s ease-in-out infinite;
+    }
+
+    .present-lid {
+      position: absolute;
+      top: 18%;
+      left: 50%;
+      width: 82%;
+      height: 20%;
+      background: linear-gradient(160deg, var(--honey-glow), var(--buttercup-yellow));
+      border-radius: 10px 10px 6px 6px;
+      box-shadow: 0 8px 16px rgba(107, 78, 113, .22);
+      transform: translateX(-50%);
+      transform-origin: top center;
+      z-index: 3;
+      transition: transform .7s cubic-bezier(.34, 1.56, .64, 1), opacity .6s ease;
+    }
+
+    .present-body {
+      position: absolute;
+      bottom: 8%;
+      left: 50%;
+      width: 70%;
+      height: 52%;
+      background: linear-gradient(160deg, var(--rose-quartz), var(--pixie-pink));
+      border-radius: 14px;
+      box-shadow: inset 0 -8px 16px rgba(107, 78, 113, .15), 0 12px 26px rgba(107, 78, 113, .25);
+      transform: translateX(-50%);
+      transform-origin: bottom center;
+      z-index: 2;
+      transition: transform .6s ease .12s, opacity .6s ease .12s;
+    }
+
+    .ribbon-vertical {
+      position: absolute;
+      left: 50%;
+      top: 8%;
+      bottom: 8%;
+      width: 14%;
+      background: linear-gradient(var(--stardust-lavender), var(--rose-quartz));
+      border-radius: 4px;
+      transform: translateX(-50%);
+      z-index: 4;
+      box-shadow: inset 0 0 8px rgba(255, 255, 255, .5);
+    }
+
+    .bow {
+      position: absolute;
+      top: 4%;
+      left: 50%;
+      width: 48%;
+      height: 24%;
+      transform: translateX(-50%);
+      z-index: 5;
+      transition: transform .7s ease, opacity .6s ease;
+    }
+
+    .bow-loop {
+      position: absolute;
+      top: 0;
+      width: 56%;
+      height: 100%;
+      background: linear-gradient(160deg, var(--rose-quartz), var(--stardust-lavender));
+      box-shadow: 0 5px 12px rgba(107, 78, 113, .25);
+    }
+
+    .bow-loop.left {
+      left: 0;
+      border-radius: 50% 50% 0 55%;
+      transform: rotate(-22deg);
+    }
+
+    .bow-loop.right {
+      right: 0;
+      border-radius: 50% 50% 55% 0;
+      transform: rotate(22deg);
+    }
+
+    .bow-knot {
+      position: absolute;
+      left: 50%;
+      top: 30%;
+      width: 22%;
+      height: 48%;
+      background: var(--rose-quartz);
+      border-radius: 50%;
+      transform: translate(-50%, -30%);
+      box-shadow: 0 3px 8px rgba(107, 78, 113, .3);
+    }
+
+    button.present.opened .present-lid {
+      transform: translateX(-50%) translateY(-120px) rotate(-24deg);
+      opacity: 0;
+    }
+
+    button.present.opened .present-body {
+      transform: translateX(-50%) scaleY(.35);
+      opacity: 0;
+    }
+
+    button.present.opened .bow {
+      transform: translateX(-50%) translateY(-140px) rotate(18deg) scale(.8);
+      opacity: 0;
+    }
+
+    button.present.opened .present-glow {
+      opacity: 0;
+      transition: opacity .9s ease .3s;
+    }
+
+    .present-hint {
+      font-family: var(--font-script);
+      font-size: clamp(1.2rem, 3.4vw, 1.5rem);
+      color: var(--twilight-plum);
+      opacity: .9;
+      animation: bob 2.4s ease-in-out infinite;
+      transition: opacity .4s ease;
+    }
+
+    .present-hint.hide {
+      opacity: 0;
+    }
+
+    .hero-reveal {
+      position: relative;
+      opacity: 0;
+      transform: translateY(24px);
+      pointer-events: none;
+      transition: opacity 1s ease .25s, transform 1s ease .25s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: .5rem;
+    }
+
+    .hero-reveal.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .orbit-wrap {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .orbit-ring {
+      position: absolute;
+      border: 1.5px dashed rgba(107, 78, 113, .3);
+      border-radius: 50%;
+      animation: orbitRotate 46s linear infinite;
+    }
+
+    .orbit-ring.r1 {
+      width: clamp(230px, 62vw, 430px);
+      height: clamp(230px, 62vw, 430px);
+    }
+
+    .orbit-ring.r2 {
+      width: clamp(310px, 78vw, 560px);
+      height: clamp(310px, 78vw, 560px);
+      border-color: rgba(244, 169, 198, .32);
+      animation-duration: 62s;
+      animation-direction: reverse;
+    }
+
+    .orbit-dot {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin: -4px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--honey-glow);
+      box-shadow: 0 0 10px 3px var(--honey-glow);
+      animation-name: orbitDot;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+    }
+
+    .orbit-dot.d2 {
+      background: var(--rose-quartz);
+      box-shadow: 0 0 10px 3px var(--rose-quartz);
+    }
+
+    .orbit-dot.d3 {
+      background: var(--stardust-lavender);
+      box-shadow: 0 0 10px 3px var(--stardust-lavender);
+    }
+
+    .hero-title {
+      position: relative;
+      font-weight: 600;
+      font-size: clamp(2.1rem, 8vw, 4.2rem);
+      line-height: 1.15;
+    }
+
+    .hero-title span {
+      font-style: italic;
+      font-weight: 500;
+      background: linear-gradient(90deg, var(--rose-quartz), var(--honey-glow), var(--stardust-lavender));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: glowText 3.4s ease-in-out infinite;
+    }
+
+    .hero-sub {
+      position: relative;
+      margin-top: .9rem;
+      font-size: clamp(1rem, 3vw, 1.2rem);
+      letter-spacing: .02em;
+    }
+
+    .scroll-hint {
+      position: relative;
+      margin-top: 2.4rem;
+      font-size: .95rem;
+      opacity: .75;
+      text-decoration: none;
+      color: var(--twilight-plum);
+      font-family: var(--font-body);
+      font-weight: 600;
+      animation: bob 2.4s ease-in-out infinite;
+    }
+
+    /* ============================= */
+    /* Orbs / exoplanets               */
+    /* ============================= */
+    .orbs-field {
+      --rise: 780px;
+      position: relative;
+      height: 640px;
+      overflow: hidden;
+      margin-bottom: 2rem;
+      border-radius: 28px;
+    }
+
+    @media (max-width:640px) {
+      .orbs-field {
+        --rise: 520px;
+        height: 460px;
+      }
+    }
+
+    button.orb {
+      position: absolute;
+      bottom: -90px;
+      left: var(--l);
+      width: var(--size);
+      height: var(--size);
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      padding: 0;
+      animation-name: floatUp;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+      animation-duration: var(--dur);
+      animation-delay: var(--delay);
+    }
+
+    button.orb:focus-visible {
+      outline: 3px solid var(--twilight-plum);
+      outline-offset: 4px;
+    }
+
+    button.orb[data-variant="pink"] {
+      background: radial-gradient(circle at 35% 30%, #fff 0%, var(--pixie-pink) 35%, var(--rose-quartz) 100%);
+      box-shadow: 0 0 20px 5px rgba(244, 169, 198, .55);
+    }
+
+    button.orb[data-variant="yellow"] {
+      background: radial-gradient(circle at 35% 30%, #fff 0%, var(--buttercup-yellow) 35%, var(--honey-glow) 100%);
+      box-shadow: 0 0 20px 5px rgba(255, 217, 118, .55);
+    }
+
+    button.orb[data-variant="lavender"] {
+      background: radial-gradient(circle at 35% 30%, #fff 0%, var(--stardust-lavender) 35%, #c9a3e0 100%);
+      box-shadow: 0 0 20px 5px rgba(227, 201, 240, .55);
+    }
+
+    button.orb.ringed::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 172%;
+      height: 58%;
+      border: 3px solid rgba(255, 255, 255, .6);
+      border-radius: 50%;
+      transform: translate(-50%, -50%) rotate(-18deg);
+      pointer-events: none;
+    }
+
+    button.orb.popped {
+      animation: popBurst .6s ease forwards;
+    }
+
+    .collected-wishes {
+      text-align: center;
+    }
+
+    .collected-wishes h3 {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: clamp(1.15rem, 3.2vw, 1.4rem);
+      margin-bottom: .8rem;
+    }
+
+    #wishList {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: .6rem;
+    }
+
+    #wishList li {
+      font-family: var(--font-script);
+      font-size: clamp(1.15rem, 3.2vw, 1.4rem);
+      color: var(--twilight-plum);
+      background: rgba(255, 255, 255, .5);
+      border-radius: 14px;
+      padding: .5rem 1rem;
+      animation: fadeUp .5s ease;
+    }
+
+    #wishList li.empty-hint {
+      font-family: var(--font-body);
+      font-size: .92rem;
+      opacity: .65;
+      background: none;
+    }
+
+    /* ============================= */
+    /* Wish popup overlay              */
+    /* ============================= */
+    #wishPopup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(.7);
+      z-index: 10000;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .35s ease, transform .35s cubic-bezier(.34, 1.56, .64, 1);
+      max-width: min(90vw, 420px);
+      background: rgba(255, 253, 248, 0.92);
+      -webkit-backdrop-filter: blur(20px) saturate(150%);
+      backdrop-filter: blur(20px) saturate(150%);
+      border: 1.5px solid rgba(255, 255, 255, .8);
+      border-radius: 28px;
+      box-shadow: 0 30px 70px rgba(107, 78, 113, .28), 0 0 0 1px rgba(244, 169, 198, .3);
+      padding: 2rem 2.4rem;
+      text-align: center;
+    }
+
+    #wishPopup.show {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    #wishPopup .popup-planet {
+      font-size: 2.6rem;
+      margin-bottom: .5rem;
+      display: block;
+      animation: breathe 3s ease-in-out infinite;
+    }
+
+    #wishPopup .popup-msg {
+      font-family: var(--font-script);
+      font-size: clamp(1.25rem, 4vw, 1.6rem);
+      color: var(--twilight-plum);
+      line-height: 1.4;
+    }
+
+    #wishPopup .popup-close-hint {
+      margin-top: 1rem;
+      font-size: .78rem;
+      opacity: .5;
+      font-family: var(--font-body);
+      letter-spacing: .03em;
+    }
+
+    /* ============================= */
+    /* Gallery                          */
+    /* ============================= */
+    .frames {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: clamp(1.4rem, 4vw, 2.2rem);
+    }
+
+    .photo-frame {
+      margin: 0;
+      width: clamp(190px, 38vw, 240px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .6rem;
+      /* subtle tilt — overridden on hover */
+      --tilt: 0deg;
+      transform: rotate(var(--tilt));
+      transition: transform .4s ease;
+    }
+
+    /* Auto-assign alternating tilts for any number of frames */
+    .photo-frame:nth-child(odd) {
+      --tilt: -2.5deg;
+    }
+
+    .photo-frame:nth-child(even) {
+      --tilt: 2deg;
+    }
+
+    .photo-frame:nth-child(3n) {
+      --tilt: -1deg;
+    }
+
+    .photo-frame:hover {
+      transform: rotate(0deg) scale(1.03);
+    }
+
+    .frame-border {
+      padding: 8px;
+      border-radius: 20px;
+      background: linear-gradient(120deg, var(--rose-quartz), var(--honey-glow), var(--stardust-lavender), var(--rose-quartz));
+      background-size: 250% 250%;
+      animation: shimmerBorder 6s linear infinite;
+      box-shadow: 0 16px 34px rgba(107, 78, 113, .22);
+    }
+
+    .frame-border img {
+      width: 100%;
+      height: 240px;
+      object-fit: cover;
+      border-radius: 14px;
+      display: block;
+      background: var(--cloud-white);
+    }
+
+    .photo-frame figcaption {
+      font-family: var(--font-script);
+      font-size: 1.15rem;
+      text-align: center;
+      opacity: .85;
+    }
+
+    /* optional caption-message below the script caption */
+    .photo-frame .frame-msg {
+      font-family: var(--font-body);
+      font-size: .88rem;
+      text-align: center;
+      opacity: .7;
+      margin-top: -.3rem;
+      line-height: 1.45;
+      max-width: 200px;
+    }
+
+
+
+    /* ============================= */
+    /* Birthday Letter                 */
+    /* ============================= */
+    .letter-card {
+      position: relative;
+      background: linear-gradient(160deg, #fffdf4 0%, #fff8ee 40%, #fdf3f8 100%);
+      border-radius: 28px;
+      box-shadow:
+        0 30px 70px rgba(107, 78, 113, .18),
+        inset 0 1px 0 rgba(255, 255, 255, .9);
+      border: 1px solid rgba(244, 169, 198, .35);
+      padding: clamp(2.2rem, 7vw, 4rem) clamp(1.8rem, 7vw, 4.5rem);
+      overflow: hidden;
+    }
+
+    /* Subtle ruled lines like notebook paper */
+    .letter-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: repeating-linear-gradient(transparent,
+          transparent 31px,
+          rgba(244, 169, 198, .18) 31px,
+          rgba(244, 169, 198, .18) 32px);
+      background-position: 0 4.5rem;
+      pointer-events: none;
+      border-radius: 28px;
+    }
+
+    /* Left margin line */
+    .letter-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: clamp(3rem, 9vw, 5rem);
+      width: 1.5px;
+      background: rgba(244, 169, 198, .35);
+      pointer-events: none;
+    }
+
+    /* Wax seal / stamp decoration */
+    .letter-seal {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 38% 35%, #ffd97a, #f4a9c6 55%, #c98fd4);
+      box-shadow: 0 8px 24px rgba(107, 78, 113, .35), inset 0 -3px 6px rgba(0, 0, 0, .1);
+      font-size: 2rem;
+      margin: 0 auto 1.6rem;
+      animation: breathe 5s ease-in-out infinite;
+    }
+
+    .letter-date {
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(1rem, 2.8vw, 1.2rem);
+      color: var(--twilight-plum);
+      opacity: .65;
+      text-align: right;
+      margin-bottom: 1.2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .letter-salutation {
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(1.55rem, 5vw, 2.1rem);
+      font-weight: 700;
+      color: var(--twilight-plum);
+      margin-bottom: 1.4rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .letter-body {
+      font-family: 'Caveat', cursive;
+      font-size: clamp(1.18rem, 3.2vw, 1.45rem);
+      line-height: 2.0;
+      color: #4a3558;
+      position: relative;
+      z-index: 1;
+    }
+
+    .letter-body p {
+      margin: 0 0 .2rem;
+    }
+
+    .letter-body .letter-gap {
+      display: block;
+      height: 1rem;
+    }
+
+    /* ink-style horizontal divider */
+    .letter-divider {
+      display: block;
+      margin: 1.6rem auto;
+      width: clamp(120px, 40%, 240px);
+      height: 2px;
+      background: linear-gradient(90deg,
+          transparent, rgba(244, 169, 198, .7) 30%,
+          rgba(107, 78, 113, .45) 50%,
+          rgba(244, 169, 198, .7) 70%, transparent);
+      border: none;
+      position: relative;
+      z-index: 1;
+    }
+
+    .letter-sign {
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(1.6rem, 5vw, 2.4rem);
+      font-weight: 700;
+      color: var(--twilight-plum);
+      margin-top: .6rem;
+      text-align: right;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* floating ink specks */
+    .ink-speck {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(107, 78, 113, .12);
+      pointer-events: none;
+    }
+
+    /* ============================= */
+    /* Footer                          */
+    /* ============================= */
+    footer {
+      text-align: center;
+      padding: 2.5rem 1.5rem 3.5rem;
+      position: relative;
+      z-index: 1;
+      font-size: .9rem;
+      opacity: .75;
+    }
+
+    /* ============================= */
+    /* Keyframes                       */
+    /* ============================= */
+    @keyframes twinkle {
+
+      0%,
+      100% {
+        opacity: .2;
+        transform: scale(.7);
+      }
+
+      50% {
+        opacity: 1;
+        transform: scale(1.25);
+      }
+    }
+
+    @keyframes driftDust {
+      0% {
+        transform: translate(0, 0);
+        opacity: 0;
+      }
+
+      10% {
+        opacity: .85;
+      }
+
+      90% {
+        opacity: .5;
+      }
+
+      100% {
+        transform: translate(var(--dx), var(--dy));
+        opacity: 0;
+      }
+    }
+
+    @keyframes shootingStar {
+      0% {
+        transform: translate(0, 0);
+        opacity: 0;
+      }
+
+      3% {
+        opacity: 1;
+      }
+
+      18% {
+        transform: translate(-380px, 380px);
+        opacity: 0;
+      }
+
+      100% {
+        opacity: 0;
+      }
+    }
+
+    @keyframes pulseGlow {
+
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: .9;
+      }
+
+      50% {
+        transform: scale(1.08);
+        opacity: 1;
+      }
+    }
+
+    @keyframes bob {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-8px);
+      }
+    }
+
+    @keyframes breathe {
+
+      0%,
+      100% {
+        transform: scale(1) rotate(0deg);
+      }
+
+      50% {
+        transform: scale(1.08) rotate(4deg);
+      }
+    }
+
+    @keyframes glowText {
+
+      0%,
+      100% {
+        filter: drop-shadow(0 0 14px rgba(255, 217, 118, .55));
+      }
+
+      50% {
+        filter: drop-shadow(0 0 26px rgba(244, 169, 198, .8));
+      }
+    }
+
+    @keyframes orbitRotate {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes orbitDot {
+      from {
+        transform: rotate(0deg) translateX(var(--radius)) rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg) translateX(var(--radius)) rotate(-360deg);
+      }
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translate(0, 0);
+        opacity: 0;
+      }
+
+      8% {
+        opacity: 1;
+      }
+
+      90% {
+        opacity: 1;
+      }
+
+      100% {
+        transform: translate(18px, calc(-1 * var(--rise)));
+        opacity: 0;
+      }
+    }
+
+    @keyframes popBurst {
+      0% {
+        transform: scale(1);
+        opacity: 1;
+      }
+
+      55% {
+        transform: scale(1.55);
+        opacity: .55;
+      }
+
+      100% {
+        transform: scale(0);
+        opacity: 0;
+      }
+    }
+
+    @keyframes shimmerBorder {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      100% {
+        background-position: 200% 50%;
+      }
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* fx particles (confetti / sparkle bursts) */
+    #fxLayer {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .fx-particle {
+      position: fixed;
+      will-change: transform, opacity;
+      animation-name: confettiBurst;
+      animation-timing-function: ease-out;
+      animation-fill-mode: forwards;
+    }
+
+    @keyframes confettiBurst {
+      0% {
+        transform: translate(0, 0) rotate(0deg);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translate(var(--tx), var(--ty)) rotate(var(--rot));
+        opacity: 0;
+      }
+    }
+
+    /* ============================= */
+    /* Sunflower                      */
+    /* ============================= */
+    .hero-present-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: clamp(.6rem, 3vw, 1.6rem);
+      margin-bottom: .2rem;
+    }
+
+    .sunflower-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transform-origin: bottom center;
+      animation: sway 4s ease-in-out infinite;
+      will-change: transform;
+    }
+
+    .sunflower-wrap.bloom {
+      animation: bloom .7s cubic-bezier(.34, 1.56, .64, 1) forwards,
+        sway 4s ease-in-out infinite 0.7s;
+    }
+
+    @keyframes sway {
+
+      0%,
+      100% {
+        transform: rotate(-4deg);
+      }
+
+      50% {
+        transform: rotate(4deg);
+      }
+    }
+
+    @keyframes bloom {
+      0% {
+        transform: scale(1) rotate(-4deg);
+      }
+
+      50% {
+        transform: scale(1.3) rotate(7deg);
+      }
+
+      100% {
+        transform: scale(1.12) rotate(0deg);
+      }
+    }
+
+    .sunflower-svg {
+      width: clamp(52px, 13vw, 78px);
+      height: auto;
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Fixed atmosphere -->
+  <div class="sky"></div>
+  <div class="nebula"><span></span><span></span><span></span></div>
+  <div id="starfield"></div>
+  <div id="dustfield"></div>
+  <div class="shooting-star s1"></div>
+  <div class="shooting-star s2"></div>
+
+  <!-- ============================= -->
+  <!-- HERO                           -->
+  <!-- ============================= -->
+  <section class="hero">
+    <span class="hero-moon" aria-hidden="true">🌙</span>
+
+    <div class="hero-present-row">
+      <button class="present" id="present" aria-label="Tap to open your birthday present">
+        <div class="present-glow"></div>
+        <div class="present-lid"></div>
+        <div class="present-body">
+          <div class="ribbon-vertical"></div>
+        </div>
+        <div class="bow">
+          <span class="bow-loop left"></span>
+          <span class="bow-loop right"></span>
+          <span class="bow-knot"></span>
+        </div>
+      </button>
+
+      <!-- Sunflower -->
+      <div class="sunflower-wrap" id="sunflower" aria-hidden="true">
+        <svg class="sunflower-svg" viewBox="0 0 80 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Petals -->
+          <g transform="translate(40,54)">
+            <ellipse rx="6" ry="16" fill="#FFD233" transform="rotate(0)  translate(0,-22)" />
+            <ellipse rx="6" ry="16" fill="#FFBC00" transform="rotate(30) translate(0,-22)" />
+            <ellipse rx="6" ry="16" fill="#FFD233" transform="rotate(60) translate(0,-22)" />
+            <ellipse rx="6" ry="16" fill="#FFBC00" transform="rotate(90) translate(0,-22)" />
+            <ellipse rx="6" ry="16" fill="#FFD233" transform="rotate(120) translate(0,-22)" />
+            <ellipse rx="6" ry="16" fill="#FFBC00" transform="rotate(150) translate(0,-22)" />
+            <ellipse rx="6" ry="16" fill="#FFD233" transform="rotate(180) translate(0,-22)" />
+            <ellipse rx="6" ry="16" fill="#FFBC00" transform="rotate(210) translate(0,-22)" />
+            <ellipse rx="6" ry="16" fill="#FFD233" transform="rotate(240) translate(0,-22)" />
+            <ellipse rx="6" ry="16" fill="#FFBC00" transform="rotate(270) translate(0,-22)" />
+            <ellipse rx="6" ry="16" fill="#FFD233" transform="rotate(300) translate(0,-22)" />
+            <ellipse rx="6" ry="16" fill="#FFBC00" transform="rotate(330) translate(0,-22)" />
+          </g>
+          <!-- Seed head -->
+          <circle cx="40" cy="54" r="13" fill="#5C3317" />
+          <circle cx="40" cy="54" r="10" fill="#7B4A22" />
+          <!-- Seed texture dots -->
+          <circle cx="37" cy="51" r="1.2" fill="#5C3317" />
+          <circle cx="41" cy="50" r="1.2" fill="#5C3317" />
+          <circle cx="44" cy="53" r="1.2" fill="#5C3317" />
+          <circle cx="42" cy="57" r="1.2" fill="#5C3317" />
+          <circle cx="38" cy="58" r="1.2" fill="#5C3317" />
+          <circle cx="35" cy="55" r="1.2" fill="#5C3317" />
+          <!-- Leaf -->
+          <ellipse cx="29" cy="100" rx="10" ry="5" fill="#4CAF50" transform="rotate(-30,29,100)" />
+          <!-- Stem -->
+          <rect x="38" y="66" width="4" height="90" rx="2" fill="#388E3C" />
+        </svg>
+      </div>
+    </div>
+    <p class="present-hint" id="presentHint">tap the present ✨</p>
+
+    <div class="hero-reveal" id="heroReveal">
+      <div class="orbit-wrap" aria-hidden="true">
+        <span class="orbit-ring r1"></span>
+        <span class="orbit-ring r2"></span>
+        <span class="orbit-dot d1" style="--radius:115px; animation-duration:9s;"></span>
+        <span class="orbit-dot d2" style="--radius:150px; animation-duration:13s;"></span>
+        <span class="orbit-dot d3" style="--radius:190px; animation-duration:17s;"></span>
+      </div>
+      <h1 class="hero-title">Happy Birthday,<br><span>Siya</span></h1>
+      <p class="hero-sub">Madhumita Rajesh Singh &middot; turning 25 ✨</p>
+      <a href="#orbs" class="scroll-hint">scroll for more magic ↓</a>
+    </div>
+  </section>
+
+  <!-- ============================= -->
+  <!-- ORBS / EXOPLANETS              -->
+  <!-- ============================= -->
+  <section class="section" id="orbs">
+    <div class="section-card">
+      <h2 class="section-title">Catch a Wishing Planet</h2>
+      <p class="section-sub">tap a glowing planet as it drifts by to pop it and find a hidden message 🪐</p>
+
+      <div class="orbs-field" id="orbsField">
+        <!-- =====================================================
+             🪐 WISHING PLANETS — edit data-message to set the
+             wish text that appears when each planet is popped.
+             You can add more <button> blocks following the same
+             pattern.  Variants: pink | yellow | lavender
+             ===================================================== -->
+
+        <!-- WISH 1 Change the message below -->
+        <button class="orb ringed" data-variant="pink" data-message="To the most helpful soul in the universe 💫"
+          style="--l:4%;  --size:64px; --dur:16s; --delay:0s;"></button>
+
+        <!-- WISH 2 Change the message below -->
+        <button class="orb" data-variant="yellow" data-message="25 and shining brighter than a supernova ⭐"
+          style="--l:19%; --size:46px; --dur:13s; --delay:2s;"></button>
+
+        <!-- WISH 3 Change the message below -->
+        <button class="orb ringed" data-variant="lavender" data-message="Proud of your Rajput core ⚔️"
+          style="--l:37%; --size:70px; --dur:19s; --delay:1s;"></button>
+
+        <!-- WISH 4 Change the message below -->
+        <button class="orb" data-variant="pink" data-message="Here's to a whole new galaxy of adventures 🌌"
+          style="--l:55%; --size:50px; --dur:14s; --delay:3.5s;"></button>
+
+        <!-- WISH 5 Change the message below -->
+        <button class="orb" data-variant="yellow"
+          data-message="Amaze! Amaze! Amaze! (Because you are a hail marry paglu) 🤪"
+          style="--l:72%; --size:58px; --dur:17s; --delay:.8s;"></button>
+
+        <!-- WISH 6 Change the message below -->
+        <button class="orb" data-variant="lavender" data-message="May your orbit always be full of light 🌙"
+          style="--l:87%; --size:44px; --dur:12s; --delay:2.6s;"></button>
+
+        <!-- ➕ ADD MORE WISHES — copy one block above and paste here.
+             Adjust --l (left%), --size (px), --dur (speed) and --delay.  -->
+      </div>
+
+      <div class="collected-wishes">
+        <h3>✨ Wishes You've Found ✨</h3>
+        <ul id="wishList">
+          <li class="empty-hint">pop some planets above to collect their wishes here&hellip;</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================= -->
+  <!-- PHOTO GALLERY                  -->
+  <!-- ============================= -->
+  <section class="section" id="gallery">
+    <div class="section-card">
+      <h2 class="section-title">A Few Favorite Moments</h2>
+      <p class="section-sub">frames are ready and waiting for your favorite photos of Siya 💛</p>
+
+      <!-- =====================================================
+           📸 PHOTO GALLERY
+           To add a photo:
+             1. Replace src="..." with your image path or URL
+             2. Edit <figcaption> for the script-font caption
+             3. Edit <p class="frame-msg"> for a longer note
+                (remove the <p> tag if you don't need it)
+           To add more photos: copy one <figure> block and paste.
+           ===================================================== -->
+      <div class="frames">
+
+        <!--  PHOTO 1 -->
+        <figure class="photo-frame">
+          <div class="frame-border">
+            <!-- Replace src below with your photo URL or file path -->
+            <img src="pics/IMG_20260402_230836_115.webp" alt="Photo of Siya">
+          </div>
+          <!-- Short script caption -->
+          <figcaption>core memory unlocked</figcaption>
+          <!-- Longer custom message (optional — delete this line if unused) -->
+          <p class="frame-msg">just look at that smile!! </p>
+        </figure>
+
+        <!--  PHOTO 2 -->
+        <figure class="photo-frame">
+          <div class="frame-border">
+            <!-- Replace src below with your photo URL or file path -->
+            <img src="pics/IMG-20260627-WA0037.jpg" alt="Photo of Siya">
+          </div>
+          <!-- Short script caption -->
+          <figcaption>effortlessly her</figcaption>
+          <!-- Longer custom message (optional — delete this line if unused) -->
+          <p class="frame-msg">you and the traditional outfit</p>
+        </figure>
+
+        <!--  PHOTO 3 -->
+        <figure class="photo-frame">
+          <div class="frame-border">
+            <!-- Replace src below with your photo URL or file path -->
+            <img src="pics/IMG-20260401-WA0175.jpg" alt="Photo of Siya">
+          </div>
+          <!-- Short script caption -->
+          <figcaption>25 looks good on her</figcaption>
+          <!-- Longer custom message (optional — delete this line if unused) -->
+          <p class="frame-msg"></p>
+        </figure>
+
+        <!-- ➕ ADD MORE PHOTOS — copy one <figure> block above and paste here -->
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================= -->
+  <!-- BIRTHDAY LETTER               -->
+  <!-- ============================= -->
+  <section class="section" id="letter">
+    <div class="section-card letter-card">
+
+      <!-- Decorative ink specks -->
+      <span class="ink-speck" style="width:80px;height:80px;top:-20px;right:8%;"></span>
+      <span class="ink-speck" style="width:44px;height:44px;bottom:6%;left:3%;"></span>
+      <span class="ink-speck" style="width:28px;height:28px;top:40%;right:2%;"></span>
+
+      <!-- Wax seal -->
+      <div class="letter-seal" aria-hidden="true">🌙</div>
+
+      <!-- Change the date if you like -->
+      <p class="letter-date">19th July, 2026</p>
+
+      <!-- Edit the salutation -->
+      <p class="letter-salutation">Dearest Siya,</p>
+
+      <!-- Edit the letter body freely — each <p> is one paragraph -->
+      <div class="letter-body">
+
+        <p>I don't quite know how to begin a letter like this, because there are too many things I want to say and no
+          single sentence that feels big enough to hold all of them.</p>
+        <span class="letter-gap"></span>
+
+        <p>So let me start simply: happy birthday. Twenty-five years of you existing in this world, and somehow the
+          universe still hasn't figured out how lucky it got.</p>
+        <span class="letter-gap"></span>
+
+        <p>I've been thinking about what it means to know someone the way I know you — to have seen you in your most
+          curious, most determined, most wonderfully chaotic moments. The way you light up when someone mentions
+          exoplanets, as if the whole sky just leaned in to listen. The way you carry your Rajput roots with a quiet,
+          easy pride. The way you recommend books like Project Hail Mary with the urgency of someone handing out oxygen
+          — because to you, good stories are exactly that.</p>
+        <span class="letter-gap"></span>
+
+        <hr class="letter-divider">
+
+        <p>Twenty-five is one of those ages that sounds significant from the outside but I think you'll wear it like you
+          wear everything else — with warmth, with humour, and with absolutely no regard for the idea that you're
+          supposed to have everything figured out by now. (Nobody does. Anyone who says otherwise is lying, or selling
+          something.)</p>
+        <span class="letter-gap"></span>
+
+        <p>What I do know is this: you are one of those rare people who makes the people around her feel genuinely seen.
+          You ask real questions. You listen like you mean it. You show up — not in the performative way, but in the
+          quiet, dependable way that actually counts.</p>
+        <span class="letter-gap"></span>
+
+        <p>I hope this year gives you back a fraction of that energy. I hope it holds more wonder than worry. More
+          late-night conversations under open skies than early-morning alarms. More of the things that make your eyes go
+          bright — whether that's a new discovery from JWST, a particularly beautiful passage in a book, or just a
+          really, really good cup of tea on a slow afternoon.</p>
+        <span class="letter-gap"></span>
+
+        <hr class="letter-divider">
+
+        <p>May you keep chasing your corner of the cosmos with everything you have. May the next orbit around the sun be
+          your most adventurous yet. And may you always, always know how genuinely extraordinary you are — not because
+          it's your birthday and someone is supposed to say so, but because it's simply, undeniably true.</p>
+        <span class="letter-gap"></span>
+
+        <p>Here's to 25, Siya. Here's to you. 🌙✨</p>
+        <span class="letter-gap"></span>
+
+        <!-- Sign your name here -->
+        <p class="letter-sign">with stardust &amp; love, always 💛</p>
+        <p class="letter-sign">- Nitesh</p>
+
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    made with 💛 for Siya's 25th spin around the sun 🌙✨
+  </footer>
+
+  <script>
+    // ---------- fx layer (confetti + sparkle bursts) ----------
+    const fxLayer = document.createElement('div');
+    fxLayer.id = 'fxLayer';
+    document.body.appendChild(fxLayer);
+
+    function spawnParticles(x, y, count, palette, spread, sizeRange, durRange) {
+      for (let i = 0; i < count; i++) {
+        const p = document.createElement('span');
+        p.className = 'fx-particle';
+        const angle = Math.random() * Math.PI * 2;
+        const dist = spread * (0.4 + Math.random() * 0.6);
+        const tx = Math.cos(angle) * dist;
+        const ty = Math.sin(angle) * dist - Math.random() * 60;
+        const rot = (Math.random() * 720 - 360) + 'deg';
+        const size = sizeRange[0] + Math.random() * (sizeRange[1] - sizeRange[0]);
+        const dur = durRange[0] + Math.random() * (durRange[1] - durRange[0]);
+        const color = palette[Math.floor(Math.random() * palette.length)];
+        const shape = Math.random() > 0.5 ? '50%' : '3px';
+        p.style.cssText = `left:${x}px; top:${y}px; width:${size}px; height:${size}px; background:${color}; border-radius:${shape}; --tx:${tx}px; --ty:${ty}px; --rot:${rot}; animation-duration:${dur}ms;`;
+        fxLayer.appendChild(p);
+        p.addEventListener('animationend', () => p.remove());
+        setTimeout(() => p.remove(), durRange[1] + 300);
+      }
+    }
+
+    const PALETTE = ['#FBD6E8', '#FFD976', '#E3C9F0', '#F4A9C6', '#FFFDF8'];
+
+    // ---------- present box ----------
+    const present = document.getElementById('present');
+    const presentHint = document.getElementById('presentHint');
+    const heroReveal = document.getElementById('heroReveal');
+    let opened = false;
+
+    present.addEventListener('click', () => {
+      const rect = present.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+
+      if (!opened) {
+        opened = true;
+        present.classList.add('opened');
+        presentHint.classList.add('hide');
+        setTimeout(() => heroReveal.classList.add('show'), 260);
+        document.getElementById('sunflower').classList.add('bloom');
+        spawnParticles(cx, cy, 60, PALETTE, 230, [7, 13], [900, 1700]);
+      } else {
+        spawnParticles(cx, cy, 24, PALETTE, 150, [5, 9], [700, 1200]);
+      }
+    });
+
+    // ---------- wish popup ----------
+    const wishPopup = document.createElement('div');
+    wishPopup.id = 'wishPopup';
+    wishPopup.innerHTML = `
+    <span class="popup-planet" aria-hidden="true">🪐</span>
+    <p class="popup-msg" id="popupMsg"></p>
+    <p class="popup-close-hint">tap anywhere to collect the wish ✨</p>
+  `;
+    document.body.appendChild(wishPopup);
+
+    let popupTimer = null;
+
+    function showWishPopup(msg, variant) {
+      const planetEmojis = { pink: '🌸', yellow: '⭐', lavender: '🪐' };
+      wishPopup.querySelector('.popup-planet').textContent = planetEmojis[variant] || '🪐';
+      document.getElementById('popupMsg').textContent = msg;
+      wishPopup.classList.add('show');
+      clearTimeout(popupTimer);
+      popupTimer = setTimeout(hideWishPopup, 5000);
+    }
+
+    function hideWishPopup() {
+      wishPopup.classList.remove('show');
+    }
+
+    // Tap anywhere (not on an orb) dismisses the popup
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.orb') && wishPopup.classList.contains('show')) {
+        hideWishPopup();
+      }
+    });
+
+    // ---------- orbs ----------
+    const collected = new Set();
+    const wishList = document.getElementById('wishList');
+    const orbPalettes = {
+      pink: ['#FBD6E8', '#F4A9C6', '#FFFDF8'],
+      yellow: ['#FFD976', '#FFF0C2', '#FFFDF8'],
+      lavender: ['#E3C9F0', '#F4A9C6', '#FFFDF8']
+    };
+
+    document.querySelectorAll('.orb').forEach(orb => {
+      orb.addEventListener('click', () => {
+        const msg = orb.dataset.message;
+
+        // Ignore taps on already-collected orbs
+        if (collected.has(msg)) return;
+
+        const rect = orb.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const palette = orbPalettes[orb.dataset.variant] || PALETTE;
+
+        spawnParticles(cx, cy, 16, palette, 70, [4, 8], [500, 900]);
+
+        orb.classList.add('popped');
+
+        // Show popup with the wish
+        showWishPopup(msg, orb.dataset.variant);
+
+        // Add to wish list
+        collected.add(msg);
+        const emptyHint = wishList.querySelector('.empty-hint');
+        if (emptyHint) emptyHint.remove();
+        const li = document.createElement('li');
+        li.textContent = msg;
+        wishList.appendChild(li);
+
+        // Remove orb from the field once the pop animation finishes
+        setTimeout(() => orb.remove(), 700);
+      });
+    });
+
+    // ---------- ambient starfield & dust ----------
+    function makeStars(containerId, count) {
+      const el = document.getElementById(containerId);
+      const frag = document.createDocumentFragment();
+      for (let i = 0; i < count; i++) {
+        const s = document.createElement('span');
+        s.className = 'star';
+        const top = Math.random() * 100;
+        const left = Math.random() * 100;
+        const size = 1 + Math.random() * 2;
+        const dur = 2 + Math.random() * 3;
+        const delay = Math.random() * 5;
+        s.style.cssText = `top:${top}%; left:${left}%; width:${size}px; height:${size}px; animation-duration:${dur}s; animation-delay:${delay}s;`;
+        frag.appendChild(s);
+      }
+      el.appendChild(frag);
+    }
+
+    function makeDust(containerId, count) {
+      const el = document.getElementById(containerId);
+      const frag = document.createDocumentFragment();
+      for (let i = 0; i < count; i++) {
+        const d = document.createElement('span');
+        d.className = 'dust';
+        const top = Math.random() * 100;
+        const left = Math.random() * 100;
+        const dx = (Math.random() * 160 - 80) + 'px';
+        const dy = (-120 - Math.random() * 160) + 'px';
+        const dur = 10 + Math.random() * 10;
+        const delay = Math.random() * 12;
+        d.style.cssText = `top:${top}%; left:${left}%; --dx:${dx}; --dy:${dy}; animation-duration:${dur}s; animation-delay:${delay}s;`;
+        frag.appendChild(d);
+      }
+      el.appendChild(frag);
+    }
+
+    makeStars('starfield', 110);
+    makeDust('dustfield', 16);
+
+
+  </script>
+</body>
+
+</html>
