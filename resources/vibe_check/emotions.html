@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Emotion Detection Simulator</title>
+    
+    <!-- External Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Using a reliable CDN for face-api.js -->
+    <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;600&display=swap');
+
+        :root {
+            --neon-cyan: #00f0ff;
+            --neon-purple: #b026ff;
+            --neon-blue: #0088ff;
+            --dark-bg: #050914;
+            --panel-bg: rgba(10, 15, 30, 0.6);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--dark-bg);
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(0, 240, 255, 0.05), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(176, 38, 255, 0.05), transparent 25%);
+        }
+
+        h1, h2, h3, .sci-fi-text {
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        .glass-panel {
+            background: var(--panel-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 240, 255, 0.15);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 240, 255, 0.05);
+            border-radius: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .glass-panel:hover {
+            border-color: rgba(0, 240, 255, 0.3);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 240, 255, 0.1);
+        }
+
+        .neon-text-cyan {
+            text-shadow: 0 0 8px rgba(0, 240, 255, 0.8);
+            color: var(--neon-cyan);
+        }
+
+        .neon-border {
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.5), inset 0 0 10px rgba(0, 240, 255, 0.5);
+            border: 1px solid var(--neon-cyan);
+        }
+
+        .video-container {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #000;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1); /* Mirror effect */
+        }
+
+        canvas#overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+        }
+
+        canvas#particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Progress Bar Styles */
+        .emotion-bar-container {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 999px;
+            height: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .emotion-bar-fill {
+            height: 100%;
+            border-radius: 999px;
+            transition: width 0.3s ease-out, background-color 0.3s;
+            position: relative;
+        }
+        
+        .emotion-bar-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmer 1.5s infinite linear;
+        }
+
+        /* Button Styles */
+        .btn-sci-fi {
+            background: rgba(0, 240, 255, 0.1);
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-sci-fi:hover {
+            background: var(--neon-cyan);
+            color: #000;
+            box-shadow: 0 0 15px var(--neon-cyan);
+        }
+
+        .btn-sci-fi:disabled {
+            border-color: #444;
+            color: #666;
+            background: transparent;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        @keyframes pulse-glow {
+            0% { opacity: 0.5; box-shadow: 0 0 10px rgba(0,240,255,0.2); }
+            50% { opacity: 1; box-shadow: 0 0 20px rgba(0,240,255,0.6); }
+            100% { opacity: 0.5; box-shadow: 0 0 10px rgba(0,240,255,0.2); }
+        }
+
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100vh); }
+        }
+
+        .scanning-line {
+            position: absolute;
+            width: 100%;
+            height: 4px;
+            background: rgba(0, 240, 255, 0.5);
+            box-shadow: 0 0 15px var(--neon-cyan);
+            z-index: 20;
+            animation: scanline 3s linear infinite;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .active-scan .scanning-line {
+            opacity: 0.5;
+        }
+
+        /* Splash Screen */
+        #splash-screen {
+            position: fixed;
+            inset: 0;
+            background: var(--dark-bg);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s ease;
+        }
+
+        .loader-core {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 4px solid transparent;
+            border-top-color: var(--neon-cyan);
+            border-bottom-color: var(--neon-purple);
+            animation: spin 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+            position: relative;
+        }
+        
+        .loader-core::before {
+            content: '';
+            position: absolute;
+            inset: 10px;
+            border-radius: 50%;
+            border: 4px solid transparent;
+            border-left-color: var(--neon-cyan);
+            border-right-color: var(--neon-purple);
+            animation: spin 1s linear infinite reverse;
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+        ::-webkit-scrollbar-thumb { background: var(--neon-cyan); border-radius: 10px; }
+
+        .hidden-visually { opacity: 0; pointer-events: none; visibility: hidden; }
+
+    </style>
+</head>
+<body class="antialiased flex flex-col h-screen">
+
+    <canvas id="particles"></canvas>
+
+    <!-- Splash Screen -->
+    <div id="splash-screen">
+        <div class="loader-core mb-8"></div>
+        <h1 class="text-4xl sci-fi-text neon-text-cyan tracking-wider mb-2">INITIALIZING AI CORE</h1>
+        <p class="text-gray-400 font-mono text-sm tracking-widest mb-6" id="loading-text">Loading Neural Networks...</p>
+        <div class="w-64 h-2 bg-gray-800 rounded-full overflow-hidden">
+            <div id="loading-progress" class="h-full bg-cyan-400 shadow-[0_0_10px_#00f0ff] w-0 transition-all duration-300"></div>
+        </div>
+        <p class="mt-8 text-gray-500 text-xs">From Formula to Future: Physics, Maths and AI in Action</p>
+    </div>
+
+    <!-- Header -->
+    <header class="glass-panel mx-4 mt-4 p-4 flex justify-between items-center shrink-0 z-50 relative">
+        <div class="flex items-center gap-4">
+            <div class="w-10 h-10 rounded-full border-2 border-cyan-400 flex items-center justify-center animate-[pulse-glow_2s_infinite]">
+                <i class="fa-solid fa-brain text-cyan-400"></i>
+            </div>
+            <div>
+                <h1 class="text-2xl font-bold sci-fi-text tracking-wide uppercase text-white">
+                    Emotion <span class="neon-text-cyan">Detection</span> Matrix
+                </h1>
+                <p class="text-xs text-gray-400 font-mono">From Formula to Future: Physics, Maths and AI in Action</p>
+            </div>
+        </div>
+        <div class="flex gap-6 items-center">
+            <div class="text-right hidden sm:block">
+                <div class="text-sm text-cyan-400 font-mono" id="current-time">00:00:00</div>
+                <div class="text-xs text-gray-400 uppercase tracking-widest" id="current-date">YYYY-MM-DD</div>
+            </div>
+            <div class="flex items-center gap-2 px-3 py-1 rounded bg-gray-800 border border-gray-700">
+                <div id="ai-status-indicator" class="w-3 h-3 rounded-full bg-red-500 shadow-[0_0_8px_#ef4444]"></div>
+                <span id="ai-status-text" class="text-xs font-mono text-gray-300 uppercase">Offline</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-y-auto p-4 flex flex-col xl:flex-row gap-4 relative z-40">
+        
+        <!-- Left Column: Vision & Controls -->
+        <div class="w-full xl:w-7/12 flex flex-col gap-4">
+            
+            <!-- Video Feed Panel -->
+            <div class="glass-panel p-1 rounded-xl flex-1 min-h-[400px] flex flex-col">
+                <div class="px-4 py-2 border-b border-gray-800 flex justify-between items-center bg-black/20 rounded-t-xl">
+                    <h2 class="sci-fi-text text-lg text-gray-200"><i class="fa-solid fa-camera mr-2"></i> OPTICAL SENSOR</h2>
+                    <span id="fps-counter" class="font-mono text-xs text-cyan-400 border border-cyan-900 bg-cyan-900/30 px-2 py-1 rounded">FPS: 0</span>
+                </div>
+                
+                <div class="relative flex-1 video-container bg-gray-950 active-scan group" id="video-wrapper">
+                    <div class="scanning-line"></div>
+                    <!-- Notification Toast Overlay -->
+                    <div id="ai-message-overlay" class="absolute top-4 left-1/2 transform -translate-x-1/2 bg-black/60 backdrop-blur-sm border border-cyan-500/50 text-cyan-300 px-6 py-2 rounded-full font-mono text-sm z-20 opacity-0 transition-opacity duration-300 pointer-events-none text-center shadow-[0_0_15px_rgba(0,240,255,0.2)]">
+                        Connecting...
+                    </div>
+                    
+                    <video id="webcam" autoplay muted playsinline></video>
+                    <canvas id="overlay"></canvas>
+                    
+                    <div class="absolute bottom-4 left-4 z-20 flex gap-2">
+                        <span id="face-count-badge" class="bg-black/70 backdrop-blur border border-purple-500 text-purple-300 px-3 py-1 rounded font-mono text-xs flex items-center gap-2">
+                            <i class="fa-solid fa-users"></i> <span id="face-count-val">0</span> Faces
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controls Panel -->
+            <div class="glass-panel p-4 rounded-xl flex flex-wrap gap-3 items-center justify-center sm:justify-start">
+                <button id="btn-toggle-cam" class="btn-sci-fi px-4 py-2 rounded-lg text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-video-slash"></i> Stop Cam
+                </button>
+                <button id="btn-toggle-detect" class="btn-sci-fi px-4 py-2 rounded-lg text-sm flex items-center gap-2" disabled>
+                    <i class="fa-solid fa-pause"></i> Pause AI
+                </button>
+                <button id="btn-snapshot" class="btn-sci-fi px-4 py-2 rounded-lg text-sm flex items-center gap-2" disabled>
+                    <i class="fa-solid fa-camera-retro"></i> Snapshot
+                </button>
+                <button id="btn-fullscreen" class="btn-sci-fi px-4 py-2 rounded-lg text-sm flex items-center gap-2 ml-auto">
+                    <i class="fa-solid fa-expand"></i> Fullscreen
+                </button>
+            </div>
+        </div>
+
+        <!-- Right Column: Analytics & Data -->
+        <div class="w-full xl:w-5/12 flex flex-col gap-4">
+            
+            <!-- Primary Emotion Display -->
+            <div class="glass-panel p-6 rounded-xl flex items-center gap-6 relative overflow-hidden">
+                <!-- Decorative background elements -->
+                <i class="fa-solid fa-fingerprint absolute -right-10 -bottom-10 text-9xl text-white/5 rotate-12 pointer-events-none"></i>
+                
+                <div class="w-24 h-24 sm:w-32 sm:h-32 shrink-0 rounded-2xl bg-gradient-to-br from-gray-800 to-black border border-gray-700 flex items-center justify-center shadow-inner relative">
+                    <div class="absolute inset-0 rounded-2xl border border-cyan-500/30 animate-pulse pointer-events-none"></div>
+                    <span id="primary-emoji" class="text-6xl sm:text-7xl drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] transition-transform duration-300 hover:scale-110 cursor-default">
+                        🤖
+                    </span>
+                </div>
+                
+                <div class="flex-1">
+                    <h3 class="text-gray-400 text-sm tracking-widest uppercase mb-1 font-mono">Dominant State</h3>
+                    <h2 id="primary-emotion-name" class="text-3xl sm:text-4xl font-bold sci-fi-text text-white capitalize mb-2">Analyzing...</h2>
+                    
+                    <div class="flex items-end gap-3 mb-2">
+                        <span id="primary-confidence" class="text-3xl font-mono text-cyan-400">0.0%</span>
+                        <span class="text-xs text-gray-500 mb-1 font-mono">Confidence</span>
+                    </div>
+                    
+                    <div class="emotion-bar-container bg-gray-800 h-2">
+                        <div id="primary-bar-fill" class="emotion-bar-fill bg-cyan-400 w-0"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Predictions Breakdown -->
+            <div class="glass-panel p-5 rounded-xl flex-1 flex flex-col min-h-[250px]">
+                <h3 class="sci-fi-text text-lg text-gray-200 border-b border-gray-800 pb-2 mb-4">
+                    <i class="fa-solid fa-chart-bar mr-2"></i> NEURAL PREDICTIONS
+                </h3>
+                
+                <div id="predictions-list" class="flex flex-col gap-4 flex-1 justify-center">
+                    <!-- Dynamic Bars will be injected here -->
+                    <div class="text-center text-gray-500 font-mono text-sm animate-pulse">Waiting for subject...</div>
+                </div>
+            </div>
+
+            <!-- History Chart -->
+            <div class="glass-panel p-5 rounded-xl flex-1 min-h-[200px] flex flex-col">
+                <h3 class="sci-fi-text text-lg text-gray-200 border-b border-gray-800 pb-2 mb-4">
+                    <i class="fa-solid fa-wave-square mr-2"></i> EMOTION TIMELINE
+                </h3>
+                <div class="flex-1 relative w-full">
+                    <canvas id="emotion-chart"></canvas>
+                </div>
+            </div>
+
+            <!-- Session Stats -->
+            <div class="glass-panel p-4 rounded-xl grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+                <div class="bg-black/30 p-2 rounded-lg border border-gray-800/50">
+                    <div class="text-gray-500 text-[10px] uppercase tracking-wider mb-1">Session Time</div>
+                    <div id="stat-time" class="font-mono text-sm text-cyan-300">00:00</div>
+                </div>
+                <div class="bg-black/30 p-2 rounded-lg border border-gray-800/50">
+                    <div class="text-gray-500 text-[10px] uppercase tracking-wider mb-1">Detections</div>
+                    <div id="stat-detections" class="font-mono text-sm text-purple-400">0</div>
+                </div>
+                <div class="bg-black/30 p-2 rounded-lg border border-gray-800/50">
+                    <div class="text-gray-500 text-[10px] uppercase tracking-wider mb-1">Compute (ms)</div>
+                    <div id="stat-compute" class="font-mono text-sm text-emerald-400">0</div>
+                </div>
+                <div class="bg-black/30 p-2 rounded-lg border border-gray-800/50">
+                    <div class="text-gray-500 text-[10px] uppercase tracking-wider mb-1">Status</div>
+                    <div id="stat-status" class="font-mono text-sm text-blue-400">STDBY</div>
+                </div>
+            </div>
+            
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="p-2 text-center text-gray-600 text-[10px] font-mono tracking-widest bg-black/50 border-t border-gray-900 z-50 shrink-0">
+        AI EMOTION DETECTION SIMULATOR v1.0.0 // LOCAL PROCESSING ONLY // NO CLOUD TRANSMISSION
+    </footer>
+
+    <!-- Hidden canvas for screenshots -->
+    <canvas id="screenshot-canvas" style="display:none;"></canvas>
+
+    <script>
+        /**
+         * AI Emotion Detection Application
+         * Architecture: Single File, Pure HTML/JS, face-api.js, Chart.js
+         */
+
+        // --- Application State ---
+        const State = {
+            isModelLoaded: false,
+            isCameraActive: false,
+            isDetecting: false,
+            stream: null,
+            faceCount: 0,
+            currentEmotion: 'neutral',
+            lastEmotion: null,
+            sessionStartTime: null,
+            totalDetections: 0,
+            fps: 0,
+            lastFrameTime: 0,
+            computeTimes: [],
+            modelsUrl: 'https://justadudewhohacks.github.io/face-api.js/models',
+            history: {
+                labels: [],
+                happy: [], neutral: [], sad: [], angry: [], surprise: [], fear: [], disgust: []
+            }
+        };
+
+        // Emotion configuration (Colors, Emojis, AI Context Messages)
+        const EMOTION_MAP = {
+            happy:    { emoji: '😊', color: '#10b981', hex: 'rgba(16, 185, 129, 1)', msg: "😊 You look excited!" },
+            neutral:  { emoji: '😐', color: '#9ca3af', hex: 'rgba(156, 163, 175, 1)', msg: "Ready to explore AI?" },
+            sad:      { emoji: '😢', color: '#3b82f6', hex: 'rgba(59, 130, 246, 1)', msg: "Hope your day gets brighter." },
+            angry:    { emoji: '😠', color: '#ef4444', hex: 'rgba(239, 68, 68, 1)', msg: "Take a deep breath." },
+            surprise: { emoji: '😲', color: '#f59e0b', hex: 'rgba(245, 158, 11, 1)', msg: "Wow! Something caught your attention." },
+            fear:     { emoji: '😨', color: '#8b5cf6', hex: 'rgba(139, 92, 246, 1)', msg: "No need to fear, it's just math!" },
+            disgust:  { emoji: '🤢', color: '#84cc16', hex: 'rgba(132, 204, 22, 1)', msg: "Not a fan of that?" }
+        };
+
+        // --- DOM Elements ---
+        const els = {
+            video: document.getElementById('webcam'),
+            overlay: document.getElementById('overlay'),
+            videoWrapper: document.getElementById('video-wrapper'),
+            
+            // Splash & Status
+            splash: document.getElementById('splash-screen'),
+            loadText: document.getElementById('loading-text'),
+            loadProgress: document.getElementById('loading-progress'),
+            statusInd: document.getElementById('ai-status-indicator'),
+            statusText: document.getElementById('ai-status-text'),
+            messageOverlay: document.getElementById('ai-message-overlay'),
+            
+            // Stats & Analytics
+            primaryEmoji: document.getElementById('primary-emoji'),
+            primaryName: document.getElementById('primary-emotion-name'),
+            primaryConf: document.getElementById('primary-confidence'),
+            primaryBar: document.getElementById('primary-bar-fill'),
+            predList: document.getElementById('predictions-list'),
+            faceCountVal: document.getElementById('face-count-val'),
+            fps: document.getElementById('fps-counter'),
+            statTime: document.getElementById('stat-time'),
+            statDet: document.getElementById('stat-detections'),
+            statComp: document.getElementById('stat-compute'),
+            statStatus: document.getElementById('stat-status'),
+            
+            // Controls
+            btnCam: document.getElementById('btn-toggle-cam'),
+            btnDetect: document.getElementById('btn-toggle-detect'),
+            btnSnap: document.getElementById('btn-snapshot'),
+            btnFull: document.getElementById('btn-fullscreen')
+        };
+
+        // --- STREAMING_CHUNK:Audio System ---
+        // Simple Web Audio API Synthesizer for notifications
+        const AudioSys = {
+            ctx: null,
+            init() {
+                try {
+                    window.AudioContext = window.AudioContext || window.webkitAudioContext;
+                    this.ctx = new AudioContext();
+                } catch (e) { console.warn("Web Audio API not supported"); }
+            },
+            playChime() {
+                if (!this.ctx) return;
+                if (this.ctx.state === 'suspended') this.ctx.resume();
+                
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(880, this.ctx.currentTime); // A5
+                osc.frequency.exponentialRampToValueAtTime(1760, this.ctx.currentTime + 0.1); // A6
+                
+                gain.gain.setValueAtTime(0, this.ctx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.05, this.ctx.currentTime + 0.05); // low volume
+                gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.4);
+                
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.4);
+            }
+        };
+
+        // --- STREAMING_CHUNK:Particle System ---
+        // Simple floating particles background
+        function initParticles() {
+            const canvas = document.getElementById('particles');
+            const ctx = canvas.getContext('2d');
+            let w = canvas.width = window.innerWidth;
+            let h = canvas.height = window.innerHeight;
+            const particles = [];
+
+            window.addEventListener('resize', () => {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+            });
+
+            for(let i=0; i<50; i++) {
+                particles.push({
+                    x: Math.random() * w,
+                    y: Math.random() * h,
+                    r: Math.random() * 2 + 0.5,
+                    dx: (Math.random() - 0.5) * 0.5,
+                    dy: (Math.random() - 0.5) * 0.5,
+                    color: Math.random() > 0.5 ? 'rgba(0, 240, 255, ' : 'rgba(176, 38, 255, '
+                });
+            }
+
+            function animateP() {
+                ctx.clearRect(0, 0, w, h);
+                particles.forEach(p => {
+                    p.x += p.dx;
+                    p.y += p.dy;
+                    if(p.x < 0 || p.x > w) p.dx *= -1;
+                    if(p.y < 0 || p.y > h) p.dy *= -1;
+                    
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    // Pulsing opacity
+                    const op = (Math.sin(Date.now() * 0.001 + p.x) + 1) * 0.2 + 0.1;
+                    ctx.fillStyle = p.color + op + ')';
+                    ctx.fill();
+                });
+                requestAnimationFrame(animateP);
+            }
+            animateP();
+        }
+
+        // --- STREAMING_CHUNK:Chart.js Initialization ---
+        let emotionChart;
+        function initChart() {
+            const ctx = document.getElementById('emotion-chart').getContext('2d');
+            
+            // Init empty arrays for last 15 seconds
+            for(let i=0; i<15; i++) {
+                State.history.labels.push('');
+                Object.keys(EMOTION_MAP).forEach(k => State.history[k].push(0));
+            }
+
+            const datasets = Object.keys(EMOTION_MAP).map(k => ({
+                label: k.charAt(0).toUpperCase() + k.slice(1),
+                data: State.history[k],
+                borderColor: EMOTION_MAP[k].hex,
+                backgroundColor: 'transparent',
+                borderWidth: 2,
+                tension: 0.4,
+                pointRadius: 0,
+                hidden: k !== 'happy' && k !== 'neutral' && k !== 'surprise' // Hide some by default to avoid clutter
+            }));
+
+            Chart.defaults.color = 'rgba(255, 255, 255, 0.5)';
+            Chart.defaults.font.family = "'Inter', sans-serif";
+
+            emotionChart = new Chart(ctx, {
+                type: 'line',
+                data: { labels: State.history.labels, datasets: datasets },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: { duration: 0 },
+                    plugins: { 
+                        legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } },
+                        tooltip: { enabled: false }
+                    },
+                    scales: {
+                        x: { display: false },
+                        y: { 
+                            min: 0, max: 100, 
+                            grid: { color: 'rgba(255,255,255,0.05)', tickLength: 0 },
+                            ticks: { maxTicksLimit: 5, font: { size: 10 } }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateChartTick(expressions) {
+            if(!emotionChart || !State.isDetecting) return;
+            
+            State.history.labels.shift();
+            State.history.labels.push('');
+            
+            Object.keys(EMOTION_MAP).forEach((k, idx) => {
+                State.history[k].shift();
+                // If expressions exist, push value, else 0
+                let val = 0;
+                if(expressions && expressions[k]) {
+                    val = (expressions[k] * 100);
+                }
+                State.history[k].push(val);
+                emotionChart.data.datasets[idx].data = State.history[k];
+            });
+            
+            emotionChart.update();
+        }
+
+        // Run chart update every second
+        setInterval(() => {
+            // we will pass the latest expressions inside the main loop to a global var, 
+            // but for safety, if no face, pass null
+            updateChartTick(window.currentExpressions || null);
+        }, 1000);
+
+        // --- STREAMING_CHUNK:Model Loading & Setup ---
+        async function loadModels() {
+            try {
+                let p = 10;
+                els.loadProgress.style.width = p + '%';
+                
+                // Load Tiny Face Detector
+                els.loadText.innerText = "Loading TinyFaceDetector (1/2)...";
+                await faceapi.nets.tinyFaceDetector.loadFromUri(State.modelsUrl);
+                p += 40; els.loadProgress.style.width = p + '%';
+
+                // Load Face Expression Net
+                els.loadText.innerText = "Loading FaceExpressionNet (2/2)...";
+                await faceapi.nets.faceExpressionNet.loadFromUri(State.modelsUrl);
+                p += 50; els.loadProgress.style.width = p + '%';
+
+                els.loadText.innerText = "Neural Networks Initialized.";
+                State.isModelLoaded = true;
+                
+                setTimeout(() => {
+                    els.splash.style.opacity = '0';
+                    setTimeout(() => els.splash.remove(), 800);
+                    startCamera(); // Auto start camera after load
+                }, 500);
+
+            } catch (error) {
+                console.error("Model loading failed:", error);
+                els.loadText.innerText = "ERROR: Failed to fetch AI models. Check internet connection.";
+                els.loadText.classList.replace('text-gray-400', 'text-red-500');
+                els.loadProgress.classList.replace('bg-cyan-400', 'bg-red-500');
+            }
+        }
+
+        // --- STREAMING_CHUNK:Camera Handling ---
+        async function startCamera() {
+            try {
+                els.statusText.innerText = "Requesting Camera...";
+                els.statusInd.classList.replace('bg-red-500', 'bg-yellow-500');
+                els.statusInd.style.boxShadow = "0 0 8px #eab308";
+                
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } }, 
+                    audio: false 
+                });
+                
+                els.video.srcObject = stream;
+                State.stream = stream;
+                State.isCameraActive = true;
+                
+                els.btnCam.innerHTML = '<i class="fa-solid fa-video-slash"></i> Stop Cam';
+                els.btnDetect.disabled = false;
+                els.btnSnap.disabled = false;
+                
+                els.statusText.innerText = "Camera Active";
+                els.statusInd.classList.replace('bg-yellow-500', 'bg-cyan-400');
+                els.statusInd.style.boxShadow = "0 0 8px #00f0ff";
+
+                State.sessionStartTime = Date.now();
+                
+                // Once video plays, set up canvas and start detection
+                els.video.addEventListener('play', () => {
+                    const displaySize = { width: els.video.clientWidth, height: els.video.clientHeight };
+                    faceapi.matchDimensions(els.overlay, displaySize);
+                    
+                    if(!State.isDetecting) {
+                        toggleDetection(true);
+                    }
+                }, { once: true });
+
+            } catch (error) {
+                console.error("Camera Error:", error);
+                els.statusText.innerText = "Camera Denied";
+                els.statusInd.classList.replace('bg-yellow-500', 'bg-red-500');
+                els.statusInd.style.boxShadow = "0 0 8px #ef4444";
+                showToast("Camera permission is required to use AI Emotion Detection.", "error");
+            }
+        }
+
+        function stopCamera() {
+            if(State.stream) {
+                State.stream.getTracks().forEach(track => track.stop());
+                els.video.srcObject = null;
+                State.isCameraActive = false;
+                toggleDetection(false);
+                els.btnCam.innerHTML = '<i class="fa-solid fa-video"></i> Start Cam';
+                els.btnDetect.disabled = true;
+                els.btnSnap.disabled = true;
+                els.statusText.innerText = "Offline";
+                els.statusInd.className = "w-3 h-3 rounded-full bg-red-500 shadow-[0_0_8px_#ef4444]";
+                clearCanvas();
+                resetUI();
+            }
+        }
+
+        // --- STREAMING_CHUNK:Detection Loop & AI Logic ---
+        function toggleDetection(forceState) {
+            State.isDetecting = forceState !== undefined ? forceState : !State.isDetecting;
+            
+            if(State.isDetecting) {
+                els.btnDetect.innerHTML = '<i class="fa-solid fa-pause"></i> Pause AI';
+                els.videoWrapper.classList.add('active-scan');
+                els.statStatus.innerText = "ACTIVE";
+                els.statStatus.className = "font-mono text-sm text-green-400";
+                detectFrame();
+            } else {
+                els.btnDetect.innerHTML = '<i class="fa-solid fa-play"></i> Resume AI';
+                els.videoWrapper.classList.remove('active-scan');
+                els.statStatus.innerText = "PAUSED";
+                els.statStatus.className = "font-mono text-sm text-yellow-400";
+                clearCanvas();
+                resetUI();
+                window.currentExpressions = null;
+            }
+        }
+
+        async function detectFrame() {
+            if(!State.isDetecting || !State.isCameraActive || els.video.paused) return;
+
+            const t0 = performance.now();
+            
+            // Ensure video dimensions match canvas layout due to potential responsive resizing
+            if (els.video.clientWidth !== els.overlay.width || els.video.clientHeight !== els.overlay.height) {
+                faceapi.matchDimensions(els.overlay, { width: els.video.clientWidth, height: els.video.clientHeight });
+            }
+
+            try {
+                // Using TinyFaceDetector for performance
+                const options = new faceapi.TinyFaceDetectorOptions({ inputSize: 224, scoreThreshold: 0.4 });
+                const detections = await faceapi.detectAllFaces(els.video, options).withFaceExpressions();
+                
+                const displaySize = { width: els.video.clientWidth, height: els.video.clientHeight };
+                const resizedDetections = faceapi.resizeResults(detections, displaySize);
+
+                const t1 = performance.now();
+                updateStats(t1 - t0);
+
+                const ctx = els.overlay.getContext('2d');
+                ctx.clearRect(0, 0, els.overlay.width, els.overlay.height);
+
+                State.faceCount = resizedDetections.length;
+                els.faceCountVal.innerText = State.faceCount;
+
+                if (State.faceCount > 0) {
+                    State.totalDetections++;
+                    // Draw futuristic bounding boxes
+                    drawSciFiBoxes(ctx, resizedDetections);
+                    
+                    // Process expressions from the primary face (largest area)
+                    const primaryFace = getLargestFace(resizedDetections);
+                    processEmotions(primaryFace.expressions);
+                    window.currentExpressions = primaryFace.expressions; // for chart
+                } else {
+                    resetUI("No face detected");
+                    window.currentExpressions = null;
+                }
+
+            } catch (err) {
+                console.error("Detection error:", err);
+            }
+
+            // Loop
+            if(State.isDetecting) {
+                requestAnimationFrame(detectFrame);
+            }
+        }
+
+        // --- STREAMING_CHUNK:UI Drawing & Updating ---
+        function drawSciFiBoxes(ctx, detections) {
+            ctx.strokeStyle = "rgba(0, 240, 255, 0.8)";
+            ctx.lineWidth = 2;
+            
+            detections.forEach(det => {
+                const box = det.detection.box;
+                const { x, y, width, height } = box;
+                const len = 20; // Corner line length
+
+                // Since video is mirrored via CSS (scaleX(-1)), 
+                // the canvas coordinates overlap correctly natively IF canvas is NOT mirrored.
+                // However, user sees video mirrored. If we draw at (x,y), it will appear on wrong side.
+                // Fix: Mirror the context horizontally before drawing.
+                ctx.save();
+                ctx.translate(els.overlay.width, 0);
+                ctx.scale(-1, 1);
+
+                ctx.beginPath();
+                // Top Left
+                ctx.moveTo(x, y + len); ctx.lineTo(x, y); ctx.lineTo(x + len, y);
+                // Top Right
+                ctx.moveTo(x + width - len, y); ctx.lineTo(x + width, y); ctx.lineTo(x + width, y + len);
+                // Bottom Right
+                ctx.moveTo(x + width, y + height - len); ctx.lineTo(x + width, y + height); ctx.lineTo(x + width - len, y + height);
+                // Bottom Left
+                ctx.moveTo(x + len, y + height); ctx.lineTo(x, y + height); ctx.lineTo(x, y + height - len);
+                
+                ctx.stroke();
+
+                // Add slight fill
+                ctx.fillStyle = "rgba(0, 240, 255, 0.1)";
+                ctx.fillRect(x, y, width, height);
+
+                // Add text label
+                ctx.scale(-1, 1); // unscale text so it's not backwards
+                ctx.fillStyle = "rgba(0, 240, 255, 1)";
+                ctx.font = "12px monospace";
+                // calculate corrected x for text due to mirror
+                const textX = -(x + width);
+                ctx.fillText(`ID:${Math.floor(Math.random()*9999)}`, textX, y - 5);
+                ctx.restore();
+            });
+        }
+
+        function getLargestFace(detections) {
+            return detections.reduce((prev, current) => {
+                return (prev.detection.box.width * prev.detection.box.height > current.detection.box.width * current.detection.box.height) ? prev : current;
+            });
+        }
+
+        function processEmotions(expressions) {
+            // Find dominant emotion
+            let maxEmotion = 'neutral';
+            let maxScore = 0;
+            
+            // Map to array for sorting
+            const expArray = [];
+            
+            Object.keys(expressions).forEach(emotion => {
+                const score = expressions[emotion];
+                expArray.push({ name: emotion, score: score });
+                if (score > maxScore) {
+                    maxScore = score;
+                    maxEmotion = emotion;
+                }
+            });
+
+            // Update Primary UI
+            const confPct = (maxScore * 100).toFixed(1);
+            const confStr = confPct + '%';
+            const emData = EMOTION_MAP[maxEmotion];
+
+            if(els.primaryName.innerText.toLowerCase() !== maxEmotion) {
+                // Emotion changed
+                els.primaryName.innerText = maxEmotion;
+                els.primaryEmoji.innerText = emData.emoji;
+                
+                // Color updates
+                els.primaryName.style.color = emData.color;
+                els.primaryBar.style.backgroundColor = emData.color;
+                els.primaryConf.style.color = emData.color;
+                
+                // Trigger Audio & Toast
+                if(State.lastEmotion && State.lastEmotion !== maxEmotion) {
+                    AudioSys.playChime();
+                    showToast(emData.msg);
+                }
+                State.lastEmotion = maxEmotion;
+            }
+
+            els.primaryConf.innerText = confStr;
+            els.primaryBar.style.width = confStr;
+
+            // Sort for top 3
+            expArray.sort((a, b) => b.score - a.score);
+            const top3 = expArray.slice(0, 3);
+            
+            // Render predictions breakdown
+            els.predList.innerHTML = '';
+            top3.forEach(exp => {
+                if(exp.score < 0.01) return; // skip negligible
+                const eData = EMOTION_MAP[exp.name] || EMOTION_MAP['neutral'];
+                const pct = (exp.score * 100).toFixed(1);
+                
+                const html = `
+                    <div class="flex items-center gap-3">
+                        <span class="text-xl w-8 text-center">${eData.emoji}</span>
+                        <div class="flex-1">
+                            <div class="flex justify-between text-xs mb-1 font-mono">
+                                <span class="capitalize text-gray-300">${exp.name}</span>
+                                <span style="color: ${eData.color}">${pct}%</span>
+                            </div>
+                            <div class="emotion-bar-container bg-gray-800 h-1.5">
+                                <div class="emotion-bar-fill transition-all duration-75" style="width: ${pct}%; background-color: ${eData.color}"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                els.predList.insertAdjacentHTML('beforeend', html);
+            });
+        }
+
+        // --- STREAMING_CHUNK:Utilities & Helpers ---
+        function clearCanvas() {
+            const ctx = els.overlay.getContext('2d');
+            ctx.clearRect(0, 0, els.overlay.width, els.overlay.height);
+        }
+
+        function resetUI(msg = "Scanning...") {
+            els.primaryName.innerText = msg;
+            els.primaryName.style.color = "#ffffff";
+            els.primaryEmoji.innerText = "🤖";
+            els.primaryConf.innerText = "0.0%";
+            els.primaryConf.style.color = "var(--neon-cyan)";
+            els.primaryBar.style.width = "0%";
+            els.primaryBar.style.backgroundColor = "var(--neon-cyan)";
+            els.predList.innerHTML = `<div class="text-center text-gray-500 font-mono text-sm animate-pulse">${msg === "Scanning..." ? "Waiting for subject..." : msg}</div>`;
+            els.faceCountVal.innerText = "0";
+        }
+
+        let toastTimeout;
+        function showToast(message, type="info") {
+            els.messageOverlay.innerText = message;
+            els.messageOverlay.style.opacity = '1';
+            
+            if(type === "error") {
+                els.messageOverlay.style.borderColor = "rgba(239, 68, 68, 0.5)";
+                els.messageOverlay.style.color = "#fca5a5";
+                els.messageOverlay.style.boxShadow = "0 0 15px rgba(239, 68, 68, 0.2)";
+            } else {
+                els.messageOverlay.style.borderColor = "rgba(0, 240, 255, 0.5)";
+                els.messageOverlay.style.color = "#67e8f9";
+                els.messageOverlay.style.boxShadow = "0 0 15px rgba(0, 240, 255, 0.2)";
+            }
+
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                els.messageOverlay.style.opacity = '0';
+            }, 3000);
+        }
+
+        function updateStats(computeTime) {
+            // FPS
+            const now = performance.now();
+            const delta = now - State.lastFrameTime;
+            State.lastFrameTime = now;
+            State.fps = Math.round(1000 / delta);
+            if(State.fps > 60) State.fps = 60; // cap for display anomaly
+            els.fps.innerText = `FPS: ${State.fps}`;
+            
+            // Compute rolling avg
+            State.computeTimes.push(computeTime);
+            if(State.computeTimes.length > 30) State.computeTimes.shift();
+            const avgComp = State.computeTimes.reduce((a,b)=>a+b,0) / State.computeTimes.length;
+            els.statComp.innerText = avgComp.toFixed(1);
+            
+            els.statDet.innerText = State.totalDetections;
+        }
+
+        // Global Clocks
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('current-time').innerText = now.toLocaleTimeString('en-US', { hour12: false });
+            document.getElementById('current-date').innerText = now.toISOString().split('T')[0];
+            
+            // Session Timer
+            if(State.isCameraActive && State.sessionStartTime) {
+                const diff = Math.floor((Date.now() - State.sessionStartTime) / 1000);
+                const m = Math.floor(diff / 60).toString().padStart(2, '0');
+                const s = (diff % 60).toString().padStart(2, '0');
+                els.statTime.innerText = `${m}:${s}`;
+            }
+        }, 1000);
+
+        // --- STREAMING_CHUNK:Event Listeners & Initialization Trigger ---
+        els.btnCam.addEventListener('click', () => {
+            if(State.isCameraActive) stopCamera();
+            else startCamera();
+        });
+
+        els.btnDetect.addEventListener('click', () => {
+            toggleDetection();
+        });
+
+        els.btnFull.addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    showToast(`Error attempting to enable full-screen mode: ${err.message}`, "error");
+                });
+                els.btnFull.innerHTML = '<i class="fa-solid fa-compress"></i> Exit Full';
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                    els.btnFull.innerHTML = '<i class="fa-solid fa-expand"></i> Fullscreen';
+                }
+            }
+        });
+
+        // Snapshot Logic
+        els.btnSnap.addEventListener('click', () => {
+            if(!State.isCameraActive) return;
+            
+            AudioSys.init(); // ensure audio is init on user interaction
+            
+            const snapCanvas = document.getElementById('screenshot-canvas');
+            const ctx = snapCanvas.getContext('2d');
+            
+            snapCanvas.width = els.video.videoWidth;
+            snapCanvas.height = els.video.videoHeight;
+            
+            // Mirror horizontal to match view
+            ctx.translate(snapCanvas.width, 0);
+            ctx.scale(-1, 1);
+            ctx.drawImage(els.video, 0, 0, snapCanvas.width, snapCanvas.height);
+            
+            // Draw overlay logic (detections) on top (un-mirrored to match canvas space)
+            ctx.setTransform(1, 0, 0, 1, 0, 0); // reset transform
+            ctx.drawImage(els.overlay, 0, 0, snapCanvas.width, snapCanvas.height);
+            
+            // Add watermark
+            ctx.fillStyle = "rgba(0,0,0,0.5)";
+            ctx.fillRect(10, snapCanvas.height - 30, 250, 20);
+            ctx.fillStyle = "#00f0ff";
+            ctx.font = "12px monospace";
+            ctx.fillText("AI EMOTION SIMULATOR - " + new Date().toLocaleTimeString(), 15, snapCanvas.height - 15);
+
+            const dataURL = snapCanvas.toDataURL('image/jpeg', 0.9);
+            const link = document.createElement('a');
+            link.href = dataURL;
+            link.download = `AI_Emotion_Snap_${Date.now()}.jpg`;
+            link.click();
+            
+            showToast("📸 Snapshot saved securely.");
+            
+            // Visual flash
+            const flash = document.createElement('div');
+            flash.className = "absolute inset-0 bg-white z-50 transition-opacity duration-300 pointer-events-none";
+            els.videoWrapper.appendChild(flash);
+            setTimeout(() => { flash.style.opacity = '0'; }, 50);
+            setTimeout(() => { flash.remove(); }, 350);
+        });
+
+        // Window resize handling for canvas overlay
+        window.addEventListener('resize', () => {
+            if (State.isCameraActive) {
+                faceapi.matchDimensions(els.overlay, { width: els.video.clientWidth, height: els.video.clientHeight });
+            }
+        });
+
+        // Bootstrap Application
+        window.addEventListener('DOMContentLoaded', () => {
+            initParticles();
+            initChart();
+            // User interaction needed for AudioContext, bind to first click
+            document.body.addEventListener('click', () => AudioSys.init(), { once: true });
+            
+            // Start Model Loading Process
+            setTimeout(loadModels, 500); // slight delay for visual effect of splash screen
+        });
+
+    </script>
+</body>
+</html>
