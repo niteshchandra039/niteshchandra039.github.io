@@ -364,7 +364,7 @@
 <body>
 
 <!-- LOGIN MODAL -->
-<div id="loginOverlay">
+<div id="loginOverlay" style="display:none">
   <div class="loginBox">
     <h2>&#x269B; N-Body Orbit Simulator</h2>
     <p>Computational Astrophysics &middot; Interactive Learning Module<br>Please enter your details to continue.</p>
@@ -379,7 +379,7 @@
 </div>
 
 <!-- APP SHELL -->
-<div class="app" id="appShell" style="visibility:hidden">
+<div class="app" id="appShell" style="visibility:visible">
 
   <header>
     <div class="titleBlock">
@@ -1115,7 +1115,7 @@ const state  = {
   pxPerM:1.2e-10, basePxPerM:1.2e-10,
   heaviestIdx:0,
   isPanning:false, panStart:{x:0,y:0}, panOffset:{x:0,y:0},
-  authenticated:false
+  authenticated:true
 };
 const student = { name:"Guest", sapid:"" };
 
@@ -1948,9 +1948,13 @@ function setStudent(name,id){
   ensureActiveQuizProgress();
 }
 function showApp(){
-  document.getElementById("loginOverlay").classList.add("hidden");
+  const overlay=document.getElementById("loginOverlay");
+  if(overlay){ overlay.style.display="none"; overlay.classList.add("hidden"); }
   document.getElementById("appShell").style.visibility="visible";
 }
+state.authenticated=true;
+setStudent("Guest","NA");
+showApp();
 document.getElementById("loginBtn").addEventListener("click",()=>{
   const name=document.getElementById("loginName").value.trim();
   const sapid=document.getElementById("loginID").value.trim();

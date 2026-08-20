@@ -842,7 +842,7 @@
   </style>
 </head>
 <body>
-<div id="loginOverlay">
+<div id="loginOverlay" style="display:none">
   <div class="loginBox">
     <h2>Optical Depth Interstellar Medium Simulator</h2>
     <p>Computational Astrophysics · Interactive Learning Module<br>Please enter your details to continue.</p>
@@ -857,7 +857,7 @@
   </div>
 </div>
 
-<div class="app" id="appShell" style="visibility:hidden">
+<div class="app" id="appShell" style="visibility:visible">
   <header>
     <div class="titleBlock">
       <h1>Optical Depth Interstellar Medium Simulator</h1>
@@ -1249,13 +1249,13 @@
 "use strict";
 
 const state = {
-  authenticated: false,
+  authenticated: true,
   playing: true,
   runtime: 0,
   activeTab: "tab-theory"
 };
 
-const student = { name: "", sapid: "" };
+const student = { name: "Guest", sapid: "NA" };
 
 const STORAGE_KEYS = {
   loginAudit: "optical_depth_login_audit_v4",

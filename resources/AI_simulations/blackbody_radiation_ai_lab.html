@@ -368,7 +368,7 @@
 <body>
 
 <!-- LOGIN MODAL -->
-<div id="loginOverlay">
+<div id="loginOverlay" style="display:none">
   <div class="loginBox">
     <h2>&#x269B; Blackbody Radiation Simulator</h2>
     <p>Computational Astrophysics &middot; Interactive Learning Module<br>Please enter your details to continue.</p>
@@ -383,7 +383,7 @@
 </div>
 
 <!-- APP SHELL -->
-<div class="app" id="appShell" style="visibility:hidden">
+<div class="app" id="appShell" style="visibility:visible">
 
   <header>
     <div class="titleBlock">
@@ -897,7 +897,7 @@ const PC = 3.085677581e16;
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
-const state = { playing: true, t: 0, authenticated: false };
+const state = { playing: true, t: 0, authenticated: true };
 const student = { name: "Guest", sapid: "" };
 
 let dataLog = [];
@@ -1514,9 +1514,13 @@ function setStudent(name,id){
   ensureActiveQuizProgress();
 }
 function showApp(){
-  q("loginOverlay").classList.add("hidden");
+  const overlay = q("loginOverlay");
+  if (overlay) { overlay.style.display = "none"; overlay.classList.add("hidden"); }
   q("appShell").style.visibility="visible";
 }
+state.authenticated = true;
+setStudent("Guest","NA");
+showApp();
 q("loginBtn").addEventListener("click",()=>{
   const name=q("loginName").value.trim();
   const sapid=q("loginID").value.trim();

@@ -368,7 +368,7 @@
 <body>
 
 <!-- LOGIN MODAL -->
-<div id="loginOverlay">
+<div id="loginOverlay" style="display:none">
   <div class="loginBox">
     <h2>&#x269B; Hubble Law Cosmology Simulator</h2>
     <p>Computational Astrophysics &middot; Interactive Learning Module<br>Please enter your details to continue.</p>
@@ -383,7 +383,7 @@
 </div>
 
 <!-- APP SHELL -->
-<div class="app" id="appShell" style="visibility:hidden">
+<div class="app" id="appShell" style="visibility:visible">
 
   <header>
     <div class="titleBlock">
@@ -917,7 +917,7 @@ const state  = {
   runId:0,
   frameAccumulator:0,
   plotRange:null,
-  authenticated:false
+  authenticated:true
 };
 const student = { name:"Guest", sapid:"" };
 
@@ -1773,9 +1773,13 @@ function setStudent(name,id){
   ensureActiveQuizProgress();
 }
 function showApp(){
-  document.getElementById("loginOverlay").classList.add("hidden");
+  const overlay = document.getElementById("loginOverlay");
+  if (overlay) { overlay.style.display="none"; overlay.classList.add("hidden"); }
   document.getElementById("appShell").style.visibility="visible";
 }
+state.authenticated = true;
+setStudent("Guest","NA");
+showApp();
 document.getElementById("loginBtn").addEventListener("click",()=>{
   const name=document.getElementById("loginName").value.trim();
   const sapid=document.getElementById("loginID").value.trim();

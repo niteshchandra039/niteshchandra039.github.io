@@ -464,7 +464,7 @@
 <body>
 
 <!-- LOGIN MODAL -->
-<div id="loginOverlay">
+<div id="loginOverlay" style="display:none">
   <div class="loginBox">
     <h2>&#x269B; H-R Diagram Stellar Evolution Simulator</h2>
     <p>Computational Astrophysics &middot; Interactive Learning Module<br>Please enter your details to continue.</p>
@@ -479,7 +479,7 @@
 </div>
 
 <!-- APP SHELL -->
-<div class="app" id="appShell" style="visibility:hidden">
+<div class="app" id="appShell" style="visibility:visible">
 
   <header>
     <div class="titleBlock">
@@ -977,7 +977,7 @@
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
-const state = { playing:false, authenticated:false, stepCount:0 };
+const state = { playing:false, authenticated:true, stepCount:0 };
 const student = { name:"Guest", sapid:"" };
 
 let dataLog = [];
@@ -2042,7 +2042,14 @@ function setStudent(name,id){
   q("studentIdentityLine").textContent="Student: "+student.name+" | SAPID: "+(student.sapid||"NA")+" | Topic: Stellar Evolution and H-R Diagram";
   ensureActiveQuizProgress();
 }
-function showApp(){ q("loginOverlay").classList.add("hidden"); q("appShell").style.visibility="visible"; }
+function showApp(){
+  const overlay = q("loginOverlay");
+  if (overlay) { overlay.style.display = "none"; overlay.classList.add("hidden"); }
+  q("appShell").style.visibility="visible";
+}
+state.authenticated=true;
+setStudent("Guest","NA");
+showApp();
 q("loginBtn").addEventListener("click",()=>{
   const name=q("loginName").value.trim(), sapid=q("loginID").value.trim();
   if(!name){ q("loginName").focus(); return; }
