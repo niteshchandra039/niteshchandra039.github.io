@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#071426">
+  <title>Result Compiler | Stellar Quest</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="leaderboard-page">
+  <a class="skip-link" href="#main-content">Skip to main content</a><div class="starfield" aria-hidden="true"></div>
+  <header class="topbar"><a class="brand" href="index.html"><span class="brand__mark" aria-hidden="true">✦</span><span><strong>Stellar Quest</strong><small>Offline result compiler</small></span></a><nav><a href="index.html">Take quiz</a></nav></header>
+  <main id="main-content" class="page-shell leaderboard-shell">
+    <section class="leaderboard-header"><div><p class="eyebrow">No database required</p><h1>Compile class results</h1><p>Import the JSON result files collected from students. Ranking happens in this browser.</p></div><span class="local-badge">Local only</span></section>
+    <section class="glass-card import-card">
+      <div class="import-grid">
+        <div><h2>Import student results</h2><p>Select multiple <code>stellar-quest-result-*.json</code> files. Duplicate result IDs are ignored.</p></div>
+        <label class="button button--primary file-button">Choose result files<input id="result-files" type="file" accept="application/json,.json" multiple></label>
+      </div>
+      <div id="drop-zone" class="drop-zone" tabindex="0">Or drag and drop result files here</div>
+      <p id="import-status" class="muted" role="status"></p>
+    </section>
+    <section id="podium" class="podium" aria-label="Top three students"></section>
+    <section class="glass-card table-card">
+      <div class="table-card__heading"><div><h2>Compiled leaderboard</h2><p id="leaderboard-count">No results imported.</p></div><div class="heading-actions"><button id="export-csv" class="button button--secondary" type="button">Export CSV</button><button id="clear-results" class="button button--danger" type="button">Clear imported results</button></div></div>
+      <div class="table-wrap"><table><thead><tr><th>Rank</th><th>Student</th><th>ID</th><th>Score</th><th>Correct</th><th>Incorrect</th><th>Unanswered</th><th>Completion time</th><th>Submitted</th></tr></thead><tbody id="leaderboard-body"><tr><td colspan="9" class="empty-state">Import student result files to begin.</td></tr></tbody></table></div>
+    </section>
+    <section class="notice notice--warning static-warning"><strong>Important limitation:</strong> JSON files and scores are generated in the student's browser and are not cryptographically trustworthy. This zero-backend edition is suitable for practice or supervised low-stakes use, not a secure examination.</section>
+  </main>
+  <div id="toast-region" class="toast-region" aria-live="polite"></div>
+  <script type="module" src="js/leaderboard.js"></script>
+</body>
+</html>
