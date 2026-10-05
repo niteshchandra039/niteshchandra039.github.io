@@ -217,7 +217,7 @@ permalink: /marks/
         <div class="input-wrap">
           <label>Year</label>
           <select id="year" class="field">
-              <option value="2026">2026</option>
+              <option value="2026" selected>2026</option>
               <option value="2025">2025</option>
               <option value="2024">2024</option>
           </select>
@@ -226,7 +226,7 @@ permalink: /marks/
           <label>Semester</label>
           <select id="semester" class="field">
               <option value="even">Even</option>
-              <option value="odd">Odd</option>
+              <option value="odd" selected>Odd</option>
           </select>
         </div>
         <div class="input-wrap" style="flex: 2;">
@@ -236,6 +236,7 @@ permalink: /marks/
             <option value="Computational Astrophysics">Computational Astrophysics</option>
             <option value="Classical Mechanics">Classical Mechanics</option>
             <option value="Computational Techniques">Computational Techniques</option>
+            <option value="Fundamentals of Astrophysics" selected>Fundamentals of Astrophysics</option>
           </select>
         </div>
         <div class="input-wrap" style="flex: 1.5;">
@@ -295,6 +296,14 @@ const EXAM_ORDER = [
   "end sem"
 ];
 
+const COURSE_FILE_MAP = {
+  "Fundamentals of Astrophysics": "Fundamentals of Astrophysics_MARKS.xlsx"
+};
+
+function getCourseFileName(courseName) {
+  return COURSE_FILE_MAP[courseName] || `${courseName}.xlsx`;
+}
+
 function getRandomJoke() { return JOKES[Math.floor(Math.random() * JOKES.length)]; }
 
 // Normalize string for consistent matching
@@ -324,7 +333,8 @@ async function fetchMarks() {
   try {
     await new Promise(r => setTimeout(r, 600)); // Smooth UX delay
 
-    const path = `/resources/Marks/${ui.year}/${ui.sem}/${encodeURIComponent(ui.course)}.xlsx`;
+    const fileName = getCourseFileName(ui.course);
+    const path = `/resources/Marks/${ui.year}/${ui.sem}/${encodeURIComponent(fileName)}`;
     const response = await fetch(path);
     if (!response.ok) throw new Error("Course file not found. Please contact the Professor.");
     
