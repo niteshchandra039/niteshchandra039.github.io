@@ -359,7 +359,7 @@ async function fetchMarks() {
       
       if (record) {
         studentName = record['Name'] || record['Name '];
-        compositeScore = record['Total'] || record['Total '] || "xx";
+        compositeScore = record['Total'] ?? record['Total '] ?? "xx";
       }
     }
 
@@ -379,7 +379,7 @@ async function fetchMarks() {
         const maxRow = data.find(r => Object.values(r).some(val => String(val).toLowerCase().includes("max marks")));
 
         if (studentRow) {
-          const score = studentRow['Total'] || studentRow['Total '] || "-";
+          const score = studentRow['Total'] ?? studentRow['Total '] ?? "-";
           let maxScore = 0;
           if (maxRow) {
             if (maxRow['Total'] && !isNaN(maxRow['Total'])) {
