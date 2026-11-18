@@ -1,0 +1,29 @@
+{%- assign navitems = "research:Research:/research/,publications:Publications:/publications/,teaching:Teaching:/teaching/,outreach:Outreach:/outreach/,cv:CV:/cv/,contact:Contact:/contact/" | split: ',' -%}
+<header class="site-header">
+  <div class="wrap">
+    <div class="bar glass">
+      <a class="brand" href="{{ '/' | relative_url }}" aria-label="Dr. Nitesh Kumar, home">
+        <svg viewBox="0 0 64 40" aria-hidden="true"><path d="M3 33 C7 33 9 6 14 5 C22 4 32 22 42 27 C46 29 52 33 61 33" fill="none" stroke="#E9A23B" stroke-width="4" stroke-linecap="round"/></svg>
+        <b>Nitesh Kumar</b>
+      </a>
+      <nav class="nav" aria-label="Main">
+        <div class="nav-panel" id="nav-panel">
+          <ul>
+            {%- for item in navitems -%}
+            {%- assign parts = item | split: ':' %}
+            <li><a href="{{ parts[2] | relative_url }}"{% if page.nav == parts[0] %} aria-current="page"{% endif %}>{{ parts[1] }}</a></li>
+            {%- endfor %}
+          </ul>
+          <a class="btn btn-amber" href="{{ site.data.profile.cv_pdf | relative_url }}">Download CV (PDF)</a>
+        </div>
+        <button class="icon-btn theme" type="button" aria-label="Switch colour theme">
+          <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>
+          <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg>
+        </button>
+        <button class="icon-btn menu-btn" type="button" aria-expanded="false" aria-controls="nav-panel">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg><span class="lbl">Menu</span>
+        </button>
+      </nav>
+    </div>
+  </div>
+</header>

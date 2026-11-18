@@ -1,0 +1,42 @@
+{%- assign p = site.data.profile -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "{{ '/' | absolute_url }}#person",
+      "name": "{{ p.name }}",
+      "honorificPrefix": "{{ p.honorific }}",
+      "jobTitle": "{{ p.title }}",
+      "description": {{ p.statement | strip_html | replace: '&nbsp;', ' ' | jsonify }},
+      "url": "{{ '/' | absolute_url }}",
+      "image": "{{ '/assets/site/img/portrait-320.jpg' | absolute_url }}",
+      "email": "mailto:{{ p.email }}",
+      "worksFor": { "@type": "CollegeOrUniversity", "name": "UPES", "alternateName": "University of Petroleum and Energy Studies", "url": "https://www.upes.ac.in/",
+        "address": { "@type": "PostalAddress", "streetAddress": "Energy Acres, Bidholi, via Prem Nagar", "addressLocality": "Dehradun", "addressRegion": "Uttarakhand", "postalCode": "248007", "addressCountry": "IN" } },
+      "affiliation": [{ "@type": "ResearchOrganization", "name": "Inter-University Centre for Astronomy and Astrophysics (IUCAA)", "url": "https://www.iucaa.in/" }],
+      "alumniOf": [{ "@type": "CollegeOrUniversity", "name": "University of Delhi" }],
+      "memberOf": [{ "@type": "Organization", "name": "Astronomical Society of India" }],
+      "knowsAbout": ["RR Lyrae variable stars", "Globular clusters", "Stellar spectroscopy", "Machine learning", "Computational astrophysics"],
+      "identifier": { "@type": "PropertyValue", "propertyID": "ORCID", "value": "{{ p.orcid }}" },
+      "sameAs": ["{{ p.links.orcid }}", "{{ p.links.scholar }}", "{{ p.links.github }}", "{{ p.links.linkedin }}", "{{ p.links.x }}"]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "{{ '/' | absolute_url }}#website",
+      "url": "{{ '/' | absolute_url }}",
+      "name": "Dr. Nitesh Kumar",
+      "publisher": { "@id": "{{ '/' | absolute_url }}#person" }
+    }{% if page.nav == 'publications' %}{% for pub in site.data.publications %},
+    {
+      "@type": "ScholarlyArticle",
+      "headline": {{ pub.title | jsonify }},
+      "author": {{ pub.authors | split: ', ' | jsonify }},
+      "datePublished": "{{ pub.year }}",
+      "isPartOf": { "@type": "Periodical", "name": {{ pub.journal | jsonify }} },
+      "sameAs": "https://doi.org/{{ pub.doi }}"
+    }{% endfor %}{% endif %}
+  ]
+}
+</script>

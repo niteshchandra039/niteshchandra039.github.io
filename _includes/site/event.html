@@ -1,0 +1,16 @@
+{%- assign ev = include.ev -%}
+<li class="ev reveal" id="{{ ev.id }}">
+  <time datetime="{{ ev.date }}">{{ ev.when }}</time>
+  <div>
+    <h3>{{ ev.title }}</h3>
+    <p class="ev-sum">{{ ev.summary }}</p>
+    {% if ev.role %}<span class="role">{{ ev.role }}</span>{% endif %}
+    {% if ev.photos %}
+    <ul class="gallery{% if ev.photos.size >= 3 %} lead{% endif %}" aria-label="Photos: {{ ev.title | escape }}">
+      {%- for ph in ev.photos %}
+      <li{% if ph.h > ph.w %} class="tall"{% endif %}><a href="{{ '/assets/site/img/events/' | append: ph.name | append: '.webp' | relative_url }}" data-lightbox="{{ ev.id }}"><img src="{{ '/assets/site/img/events/' | append: ph.name | append: '-sm.webp' | relative_url }}" alt="{{ ph.alt | escape }}" width="{{ ph.w }}" height="{{ ph.h }}" loading="lazy" decoding="async"></a></li>
+      {%- endfor %}
+    </ul>
+    {% endif %}
+  </div>
+</li>

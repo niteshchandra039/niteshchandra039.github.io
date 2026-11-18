@@ -1,0 +1,45 @@
+{%- assign p = site.data.profile -%}
+{%- if page.url == '/' -%}
+  {%- assign doc_title = 'Dr. Nitesh Kumar — Astrophysicist, UPES Dehradun' -%}
+{%- else -%}
+  {%- assign doc_title = page.title | append: ' · Dr. Nitesh Kumar' -%}
+{%- endif -%}
+{%- assign doc_desc = page.description | default: site.description | strip_html | strip_newlines -%}
+{%- assign og_img = page.og_image | default: '/assets/site/img/og-image.jpg' | absolute_url -%}
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{{ doc_title }}</title>
+<meta name="description" content="{{ doc_desc | escape }}">
+<meta name="author" content="{{ p.honorific }} {{ p.name }}">
+<link rel="canonical" href="{{ page.url | replace: 'index.html', '' | absolute_url }}">
+<meta name="theme-color" content="#0C0A0B">
+<meta property="og:type" content="{% if page.url == '/' %}profile{% else %}website{% endif %}">
+<meta property="og:site_name" content="Dr. Nitesh Kumar">
+<meta property="og:title" content="{{ doc_title | escape }}">
+<meta property="og:description" content="{{ doc_desc | escape }}">
+<meta property="og:url" content="{{ page.url | replace: 'index.html', '' | absolute_url }}">
+<meta property="og:image" content="{{ og_img }}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Dr. Nitesh Kumar, Assistant Professor of Physics at UPES, over an image of the Helix Nebula">
+<meta property="og:locale" content="en_IN">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@astro_nitesh">
+<meta name="twitter:title" content="{{ doc_title | escape }}">
+<meta name="twitter:description" content="{{ doc_desc | escape }}">
+<meta name="twitter:image" content="{{ og_img }}">
+<link rel="icon" href="{{ '/assets/site/img/favicon.svg' | relative_url }}" type="image/svg+xml">
+<link rel="icon" href="{{ '/favicon.ico' | relative_url }}" sizes="any">
+<link rel="apple-touch-icon" href="{{ '/assets/site/img/apple-touch-icon.png' | relative_url }}">
+<link rel="sitemap" type="application/xml" href="{{ '/sitemap.xml' | relative_url }}">
+<link rel="preload" href="{{ '/assets/site/fonts/archivo-var.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="{{ '/assets/site/fonts/plex-sans-400.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
+{%- if page.url == '/' %}
+<link rel="preload" as="image" type="image/webp" imagesrcset="{{ '/assets/site/img/helix-square-1000.webp' | relative_url }} 1000w, {{ '/assets/site/img/helix-wide-1440.webp' | relative_url }} 1440w, {{ '/assets/site/img/helix-wide-2400.webp' | relative_url }} 2400w" imagesizes="100vw">
+{%- endif %}
+<link rel="stylesheet" href="{{ '/assets/site/css/site.css' | relative_url }}">
+<script>
+  document.documentElement.classList.add('js');
+  (function () { try { var t = localStorage.getItem('theme'); if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t); } catch (e) {} })();
+</script>
+{% include site/jsonld.html %}

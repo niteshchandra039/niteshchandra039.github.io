@@ -1,0 +1,7 @@
+{%- assign pub = include.pub -%}
+<li class="pub" data-topics="{{ pub.topics | join: ' ' }}">
+  <h3><a href="https://doi.org/{{ pub.doi }}">{{ pub.title }}</a></h3>
+  <span class="yr">{{ pub.year }}</span>
+  <p class="by">{{ pub.authors | replace: 'N. Kumar', '<b>N. Kumar</b>' }} · <i>{{ pub.short | default: pub.journal }}</i> {{ pub.ref }}</p>
+  <p class="links"><a href="https://doi.org/{{ pub.doi }}" aria-label="DOI {{ pub.doi }}: {{ pub.title | escape }}">DOI</a><a href="https://ui.adsabs.harvard.edu/search/q=doi%3A%22{{ pub.doi | url_encode }}%22" aria-label="NASA ADS record: {{ pub.title | escape }}">ADS</a>{% for x in pub.extra %}<a href="{{ x.url }}">{{ x.label }}</a>{% endfor %}</p>
+</li>

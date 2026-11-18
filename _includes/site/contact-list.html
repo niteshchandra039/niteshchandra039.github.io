@@ -1,0 +1,9 @@
+{%- assign p = site.data.profile -%}
+<ul class="contact">
+  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 6 8.5 7 8.5-7"/></svg>
+    <span><span class="lab">Email</span><a class="mail" href="mailto:{{ p.email }}">{{ p.email }}</a><button class="copy" type="button" data-copy="{{ p.email }}">Copy</button></span></li>
+  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+    <span><span class="lab">Office</span>{{ p.address | join: '<br>' }}</span></li>
+  <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.8 3.5 5.8 3.5 9s-1 6.2-3.5 9c-2.5-2.8-3.5-5.8-3.5-9s1-6.2 3.5-9z"/></svg>
+    <span><span class="lab">Profiles</span><a href="{{ p.links.scholar }}">Scholar</a> · <a href="{{ p.links.orcid }}">ORCID</a> · <a href="{{ p.links.ads }}">ADS</a> · <a href="{{ p.links.github }}">GitHub</a> · <a href="{{ p.links.linkedin }}">LinkedIn</a> · <a href="{{ p.links.x }}">X</a></span></li>
+</ul>

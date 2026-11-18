@@ -1,0 +1,36 @@
+{%- assign p = site.data.profile -%}
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <p class="foot-name">{{ p.honorific }} {{ p.name }}</p>
+        <p style="margin-top:8px">{{ p.title }}, UPES Dehradun · {{ p.roles | join: ' · ' }}</p>
+        <p style="margin-top:8px"><a href="mailto:{{ p.email }}">{{ p.email }}</a></p>
+      </div>
+      <div>
+        <h2>Explore</h2>
+        <ul>
+          <li><a href="{{ '/research/' | relative_url }}">Research</a></li>
+          <li><a href="{{ '/publications/' | relative_url }}">Publications</a></li>
+          <li><a href="{{ '/teaching/' | relative_url }}">Teaching &amp; resources</a></li>
+          <li><a href="{{ '/outreach/' | relative_url }}">Outreach &amp; events</a></li>
+          <li><a href="{{ '/news/' | relative_url }}">News</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Profiles</h2>
+        <ul>
+          <li><a href="{{ p.links.scholar }}">Google Scholar</a></li>
+          <li><a href="{{ p.links.ads }}">NASA ADS</a></li>
+          <li><a href="{{ p.links.orcid }}">ORCID</a></li>
+          <li><a href="{{ p.links.github }}">GitHub</a></li>
+          <li><a href="{{ p.links.medium }}">Writing on Medium</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-meta">
+      <span>© {{ site.time | date: '%Y' }} {{ p.name }} · Department of Physics, UPES Dehradun</span>
+      <span>Last updated {{ site.time | date: '%B %Y' }}</span>
+    </div>
+  </div>
+</footer>
