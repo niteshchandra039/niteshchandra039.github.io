@@ -1,0 +1,46 @@
+# Monthly check of every link on the live site's main pages.
+# If anything is broken, a GitHub issue titled "Broken links report" is opened.
+# Run it any time from the repository's Actions tab ("Run workflow").
+name: Link check
+
+on:
+  schedule:
+    - cron: "30 3 1 * *"   # 03:30 UTC on the 1st of every month
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  links:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check links
+        id: lychee
+        uses: lycheeverse/lychee-action@v2.0.2
+        with:
+          fail: false
+          output: ./lychee-report.md
+          # Sites that block automated checkers are accepted rather than reported.
+          args: >-
+            --no-progress
+            --max-concurrency 4
+            --accept 200,202,203,206,403,429,999
+            --exclude-mail
+            https://niteshchandra039.github.io/
+            https://niteshchandra039.github.io/research/
+            https://niteshchandra039.github.io/publications/
+            https://niteshchandra039.github.io/teaching/
+            https://niteshchandra039.github.io/outreach/
+            https://niteshchandra039.github.io/news/
+            https://niteshchandra039.github.io/cv/
+            https://niteshchandra039.github.io/contact/
+
+      - name: Open an issue if links are broken
+        if: steps.lychee.outputs.exit_code != 0
+        uses: peter-evans/create-issue-from-file@v5.0.1
+        with:
+          title: Broken links report
+          content-filepath: ./lychee-report.md
+          labels: links
