@@ -18,10 +18,10 @@ permalink: /marks/
     --text: #f5f7ff;
     --text-dim: rgba(235, 238, 255, 0.72);
     --text-faint: rgba(235, 238, 255, 0.5);
-    --accent: #8b9dff;
-    --accent-2: #5eead4;
+    --accent: #fbbf24;
+    --accent-2: #fb923c;
     --good: #34d399;
-    --ok: #60a5fa;
+    --ok: #a3e635;
     --warn: #fbbf24;
     --bad: #f87171;
     --radius: 20px;
@@ -36,7 +36,7 @@ permalink: /marks/
     overflow: hidden;
     font-family: 'Poppins', system-ui, sans-serif;
     color: var(--text);
-    background: linear-gradient(135deg, #0b1026 0%, #1a1446 45%, #2a1250 100%);
+    background: linear-gradient(135deg, #140d08 0%, #24150c 45%, #321a10 100%);
     border-radius: 28px;
     padding: 48px 32px 32px;
     margin: 8px auto 40px;
@@ -45,9 +45,9 @@ permalink: /marks/
     line-height: 1.5;
   }
   #mp .blob { position: absolute; border-radius: 50%; filter: blur(70px); opacity: .55; z-index: -1; pointer-events: none; animation: float 18s ease-in-out infinite alternate; }
-  #mp .b1 { width: 380px; height: 380px; background: #7c3aed; top: -120px; left: -80px; }
-  #mp .b2 { width: 320px; height: 320px; background: #06b6d4; bottom: 10%; right: -100px; animation-delay: -6s; }
-  #mp .b3 { width: 260px; height: 260px; background: #ec4899; top: 40%; left: 30%; opacity: .32; animation-delay: -12s; }
+  #mp .b1 { width: 380px; height: 380px; background: #ea580c; top: -120px; left: -80px; }
+  #mp .b2 { width: 320px; height: 320px; background: #f59e0b; bottom: 10%; right: -100px; animation-delay: -6s; }
+  #mp .b3 { width: 260px; height: 260px; background: #e11d48; top: 40%; left: 30%; opacity: .32; animation-delay: -12s; }
   #mp .stars { position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: .5;
     background-image:
       radial-gradient(1px 1px at 12% 18%, #fff, transparent), radial-gradient(1px 1px at 82% 12%, #fff, transparent),
@@ -69,7 +69,7 @@ permalink: /marks/
   #mp .hero { text-align: center; margin-bottom: 28px; }
   #mp .hero .badge { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; letter-spacing: .6px; text-transform: uppercase; padding: 6px 14px; border-radius: 999px; background: var(--glass); border: 1px solid var(--glass-border); color: var(--text-dim); }
   #mp .hero h1 { margin: 14px 0 6px; font-size: clamp(28px, 4vw, 40px); font-weight: 800; letter-spacing: -1px; color: var(--text); line-height: 1.15;
-    background: linear-gradient(90deg, #fff 0%, #c7d2fe 50%, #99f6e4 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    background: linear-gradient(90deg, #fff 0%, #fde68a 50%, #fdba74 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
   #mp .hero p { margin: 0; color: var(--text-dim); font-size: 14px; }
 
   /* ============ CONTROLS ============ */
@@ -87,7 +87,7 @@ permalink: /marks/
   #mp .courses { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px; }
   #mp .course-chip { all: unset; cursor: pointer; display: flex; gap: 12px; align-items: center; padding: 14px 16px; border-radius: 16px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.14); transition: transform .2s, background .2s, border-color .2s, box-shadow .2s; }
   #mp .course-chip:hover { transform: translateY(-2px); background: rgba(255,255,255,.11); }
-  #mp .course-chip[aria-pressed="true"] { background: linear-gradient(135deg, rgba(139,157,255,.35), rgba(94,234,212,.18)); border-color: var(--glass-hi); box-shadow: 0 8px 24px -10px rgba(139,157,255,.8); }
+  #mp .course-chip[aria-pressed="true"] { background: linear-gradient(135deg, rgba(251,191,36,.30), rgba(251,146,60,.16)); border-color: var(--glass-hi); box-shadow: 0 8px 24px -10px rgba(251,146,60,.7); }
   #mp .course-chip .ic { flex: 0 0 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; background: rgba(255,255,255,.12); font-size: 16px; }
   #mp .course-chip .nm { font-size: 14px; font-weight: 600; line-height: 1.25; color: var(--text); }
   #mp .course-chip .tp { font-size: 11px; color: var(--text-faint); text-transform: uppercase; letter-spacing: .6px; }
@@ -98,9 +98,9 @@ permalink: /marks/
   #mp .field-wrap i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-faint); font-size: 14px; }
   #mp input.field { all: unset; box-sizing: border-box; width: 100%; height: 50px; padding: 0 16px 0 42px; border-radius: 14px; font-size: 16px; font-weight: 500; letter-spacing: .5px; color: #fff; background: rgba(0,0,0,.25); border: 1px solid var(--glass-border); transition: border-color .2s, box-shadow .2s, background .2s; }
   #mp input.field::placeholder { color: var(--text-faint); letter-spacing: 0; }
-  #mp input.field:focus { border-color: var(--accent); background: rgba(0,0,0,.32); box-shadow: 0 0 0 4px rgba(139,157,255,.22); }
-  #mp .btn { all: unset; cursor: pointer; height: 50px; padding: 0 24px; border-radius: 14px; display: inline-flex; align-items: center; gap: 10px; font-weight: 600; font-size: 15px; color: #0b1026; background: linear-gradient(135deg, #c7d2fe, #99f6e4); box-shadow: 0 8px 24px -8px rgba(153,246,228,.6); transition: transform .15s, box-shadow .2s, filter .2s; white-space: nowrap; }
-  #mp .btn:hover { transform: translateY(-2px); filter: brightness(1.05); box-shadow: 0 12px 28px -8px rgba(153,246,228,.75); }
+  #mp input.field:focus { border-color: var(--accent); background: rgba(0,0,0,.32); box-shadow: 0 0 0 4px rgba(251,191,36,.22); }
+  #mp .btn { all: unset; cursor: pointer; height: 50px; padding: 0 24px; border-radius: 14px; display: inline-flex; align-items: center; gap: 10px; font-weight: 600; font-size: 15px; color: #1c1008; background: linear-gradient(135deg, #fde68a, #fb923c); box-shadow: 0 8px 24px -8px rgba(251,146,60,.6); transition: transform .15s, box-shadow .2s, filter .2s; white-space: nowrap; }
+  #mp .btn:hover { transform: translateY(-2px); filter: brightness(1.05); box-shadow: 0 12px 28px -8px rgba(251,146,60,.75); }
   #mp .btn:active { transform: scale(.97); }
   #mp .btn[disabled] { opacity: .6; pointer-events: none; }
 
@@ -128,7 +128,7 @@ permalink: /marks/
   #mp .who h2 { margin: 0; font-size: 24px; font-weight: 700; color: #fff; line-height: 1.2; border: 0; padding: 0; }
   #mp .tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 18px; }
   #mp .tag { font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.16); color: var(--text-dim); }
-  #mp .tag.mono { font-family: ui-monospace, 'SFMono-Regular', Menlo, monospace; color: #c7d2fe; }
+  #mp .tag.mono { font-family: ui-monospace, 'SFMono-Regular', Menlo, monospace; color: #fde68a; }
   #mp .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; }
   #mp .stat { padding: 10px 14px; border-radius: 14px; background: rgba(0,0,0,.18); border: 1px solid rgba(255,255,255,.1); }
   #mp .stat .k { font-size: 11px; text-transform: uppercase; letter-spacing: .7px; color: var(--text-faint); font-weight: 600; }
@@ -198,7 +198,7 @@ permalink: /marks/
   #mp .foot { text-align: center; margin-top: 28px; font-size: 12px; color: var(--text-faint); }
   #mp .foot i { color: var(--accent); }
 
-  #mp .toast { position: fixed; left: 50%; bottom: 28px; transform: translate(-50%, 30px); opacity: 0; pointer-events: none; padding: 12px 18px; border-radius: 14px; background: rgba(30, 20, 60, .75); border: 1px solid var(--glass-border); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur); color: #fff; font-size: 14px; transition: all .3s; z-index: 50; display: flex; gap: 10px; align-items: center; }
+  #mp .toast { position: fixed; left: 50%; bottom: 28px; transform: translate(-50%, 30px); opacity: 0; pointer-events: none; padding: 12px 18px; border-radius: 14px; background: rgba(40, 24, 14, .78); border: 1px solid var(--glass-border); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur); color: #fff; font-size: 14px; transition: all .3s; z-index: 50; display: flex; gap: 10px; align-items: center; }
   #mp .toast.show { opacity: 1; transform: translate(-50%, 0); }
   #mp .toast i { color: var(--warn); }
 
