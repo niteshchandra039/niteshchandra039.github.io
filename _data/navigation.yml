@@ -1,15 +1,15 @@
-# main links
+# Menu for legacy pages that still use the Minimal Mistakes theme (e.g. /marks/).
+# The main site menu lives in _includes/site/header.html.
 main:
-
-  # Custom navigation bar
-  - title: "Homepage"
-    url: "/"
-  - title: "Biography"
-    url: "/about/"
-  - title: "Resources"
-    url: "/teaching"
-  - title: "News"
-    url: "/update/"
-  - title: "Resume"
-    url: "/Nitesh_CV_19_Jan.pdf"
-    target: "_blank"
+  - title: "Research"
+    url: "/research/"
+  - title: "Publications"
+    url: "/publications/"
+  - title: "Teaching"
+    url: "/teaching/"
+  - title: "Outreach"
+    url: "/outreach/"
+  - title: "CV"
+    url: "/cv/"
+  - title: "Contact"
+    url: "/contact/"

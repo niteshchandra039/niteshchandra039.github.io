@@ -27,12 +27,12 @@ title                    : "Nitesh Kumar"
 title_separator          : "-"
 subtitle                 : # site tagline that appears below site title in masthead
 name                     : "Nitesh Kumar"
-description              : "My profile."
-url                      : # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
-baseurl                  : # the subpath of your site, e.g. "/blog"
+description              : "Dr. Nitesh Kumar — astrophysicist, Assistant Professor of Physics at UPES Dehradun and IUCAA Associate, working on RR Lyrae stars, globular clusters and machine learning for astronomy."
+url                      : "https://niteshchandra039.github.io"
+baseurl                  : "" # user site served from the domain root
 repository               : # GitHub username/repo-name e.g. "mmistakes/minimal-mistakes"
 teaser                   : # path of fallback teaser image, e.g. "/assets/images/500x300.png"
-logo                     : "/assets/images/opo0432d.jpg" # path of logo image to display in the masthead, e.g. "/assets/images/88x88.png"
+logo                     : "/assets/site/img/apple-touch-icon.png" # path of logo image to display in the masthead, e.g. "/assets/images/88x88.png"
 masthead_title           : # overrides the website title displayed in the masthead, use " " for no title
 breadcrumbs              : true # true, false (default)
 words_per_minute         : 200
@@ -101,7 +101,7 @@ facebook:
   username               : "Nits874"
   app_id                 :
   publisher              :
-og_image                 : # Open Graph/Twitter default site image
+og_image                 : "/assets/site/img/og-image.jpg" # Open Graph/Twitter default site image
 # For specifying social profiles
 # - https://developers.google.com/structured-data/customize/social-profiles
 social:
@@ -121,8 +121,8 @@ analytics:
 author:
   name             : "Nitesh Kumar"
   avatar           : "nitesh.jpeg" # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
-  bio              : "**Assistant Professor** at UPES, Dehradun."
-  location         : "Deharadun"
+  bio              : "**Assistant Professor of Physics** at UPES, Dehradun · IUCAA Associate"
+  location         : "Dehradun, India"
   email            : "nitesh.kumar@ddn.upes.ac.in"
   links:
     - label: "Email"
@@ -168,7 +168,7 @@ footer:
   
 # Site Header
 header:
-  overlay_images: assets/images/opo0432d.jpg
+  overlay_images: assets/site/img/helix-wide-1440.jpg
   overlay_filter: 0.5
   caption: overlay
 
@@ -203,6 +203,9 @@ exclude:
   - tmp
   - /docs # ignore Minimal Mistakes /docs
   - /test # ignore Minimal Mistakes /test
+  - cv-llt.pdf # source copy; the published CV is /cv.pdf
+  - README.md
+  - data_collected
 keep_files:
   - .git
   - .svn
