@@ -1,0 +1,20 @@
+---
+layout: site
+title: "News"
+permalink: /news/
+nav: news
+hero: true
+kicker: "News"
+heading: "News"
+lede: "Papers, meetings, schools and events, newest first."
+description: "Latest news from Dr. Nitesh Kumar: new papers, conference presentations, and astronomy schools and workshops organised at UPES."
+---
+<section class="block" aria-label="All news">
+  <div class="wrap">
+    <ol class="rows reveal" style="max-width:860px">
+      {%- for n in site.data.news %}
+      <li><time datetime="{{ n.date }}">{{ n.when }}</time><p>{{ n.text }}{% if n.link %} <a class="row-link" href="{{ n.link | relative_url }}">More<span class="sr-only"> about this item</span></a>{% endif %}</p></li>
+      {%- endfor %}
+    </ol>
+  </div>
+</section>

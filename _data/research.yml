@@ -1,0 +1,14 @@
+# Research themes (wording based on the CV research profile, Nov 2026).
+# `id` must match the `topics` used in publications.yml.
+- id: variables
+  title: "RR Lyrae variability"
+  text: "RR Lyrae stars are old, pulsating stars whose light curves encode their physical properties. I work on light-curve modelling, photometric metallicities and stellar-parameter estimation for RR Lyrae variables, in the field and in globular clusters."
+- id: ml
+  title: "Machine learning & model interpolation"
+  text: "I develop artificial-neural-network interpolators for grids of stellar pulsation models and spectra, so that observed light curves and spectra can be compared with model predictions across the grid and physical parameters recovered directly."
+- id: clusters
+  title: "Globular clusters & stellar spectroscopy"
+  text: "I combine multiband photometry with full-spectrum fitting to characterise stars in globular clusters, including the RR Lyrae populations of M3 and M53 and the stars of NGC 6397."
+- id: surveys
+  title: "Observations & surveys"
+  text: "I am Co-Principal Investigator on successful proposals in two successive cycles for time-series photometry and spectroscopy of RR Lyrae stars in M3 (NGC 5272) with the 3.6 m Devasthal Optical Telescope, and I work with Gaia DR3 survey data."

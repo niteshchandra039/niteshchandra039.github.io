@@ -1,291 +1,220 @@
 ---
-layout: home
-title: "Dr. Nitesh Kumar | Astrophysicist"
-author_profile: true
+layout: site
+title: "Home"
+nav: home
+description: "Dr. Nitesh Kumar is an astrophysicist and Assistant Professor of Physics at UPES, Dehradun, and an IUCAA Associate. He applies computational and machine-learning methods to RR Lyrae stars and globular clusters, and builds simulation-led astronomy teaching."
 ---
-<style>
-  /* ===============================
-     TYPOGRAPHY & GLOBAL STYLES
-     =============================== */
-
-  .wide-content {
-    max-width: calc(100vw - 280px);
-  }
-
-  @media (max-width: 1024px) {
-    .wide-content {
-      max-width: 100%;
-    }
-  }
-
-  .page__title { display: none; }
-
-  .wide-content {
-    font-size: 16px;
-    line-height: 1.6;
-    color: #444;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-  }
-
-  h1 {
-    font-size: 1.75em;
-    margin-bottom: 0.5em;
-    color: #222;
-    font-weight: 700;
-  }
-
-  h2 {
-    font-size: 1.4em;
-    margin-top: 1.6em;
-    margin-bottom: 0.8em;
-    color: #333;
-    border-bottom: 2px solid #f0f0f0;
-    padding-bottom: 8px;
-  }
-
-  h3 {
-    font-size: 1.15em;
-    margin-bottom: 10px;
-    color: #222;
-    font-weight: 600;
-  }
-
-  a {
-    color: #2a7ae2;
-    text-decoration: none;
-  }
-
-  a:hover {
-    color: #1a5cba;
-    text-decoration: underline;
-  }
-
-  /* ===============================
-     COMPONENTS
-     =============================== */
-
-  .intro-card {
-    background: linear-gradient(to right, #f9fbfd, #ffffff);
-    border-left: 4px solid #2a7ae2;
-    padding: 20px 25px;
-    border-radius: 6px;
-    margin-bottom: 30px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-  }
-
-  .grid-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 25px;
-    margin-top: 20px;
-  }
-
-  .card {
-    background: #ffffff;
-    border: 1px solid #e1e4e8;
-    border-radius: 8px;
-    padding: 20px;
-    height: 100%;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-
-  .card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 15px rgba(0,0,0,0.06);
-    border-color: #2a7ae2;
-  }
-
-  .card ul {
-    margin: 0;
-    padding-left: 20px;
-  }
-
-  .card li {
-    margin-bottom: 6px;
-    font-size: 0.95em;
-  }
-
-  .pub-item {
-    margin-bottom: 14px;
-    padding-bottom: 14px;
-    border-bottom: 1px dashed #eee;
-    font-size: 0.95em;
-  }
-
-  .pub-item:last-child {
-    border-bottom: none;
-    margin-bottom: 0;
-    padding-bottom: 0;
-  }
-
-  .badge {
-    display: inline-block;
-    padding: 3px 10px;
-    margin: 0 4px 6px 0;
-    background: #f1f8ff;
-    color: #0366d6;
-    border: 1px solid #c8e1ff;
-    border-radius: 12px;
-    font-size: 0.8em;
-    font-weight: 600;
-  }
-
-  .btn {
-    display: inline-block;
-    background: #2a7ae2;
-    color: #ffffff;
-    padding: 8px 16px;
-    border-radius: 4px;
-    font-size: 0.9em;
-    font-weight: 500;
-    margin-top: 10px;
-  }
-
-  .btn:hover {
-    background: #1d5cb0;
-  }
-
-  hr {
-    border: 0;
-    border-top: 1px solid #eaeaea;
-    margin: 40px 0;
-  }
-</style>
-
-<div class="wide-content">
-
-  <div class="intro-card">
-    <h1>Welcome</h1>
-    <p style="font-size:1.05em; color:#555;">
-      I am <strong>Dr. Nitesh Kumar</strong>, an <strong>Assistant Professor</strong> at UPES, Dehradun and an
-      <strong>IUCAA Associate</strong>. I completed my Ph.D. in 2025 from the University of Delhi.
-      My research bridges <strong>Stellar Astrophysics</strong> and <strong>Machine Learning</strong>,
-      focusing on variable stars and large astronomical surveys.
-    </p>
-  </div>
-
-  <h2>🔬 Research & Skills</h2>
-
-  <div class="grid-container">
-    <div class="card">
-      <h3>Research Focus</h3>
-      <ul>
-        <li>RR Lyrae and pulsating variable stars</li>
-        <li>ANN based stellar model interpolation</li>
-        <li>Gaia DR3 and JWST data mining</li>
-        <li>Photometric and spectroscopic analysis</li>
-      </ul>
-    </div>
-
-    <div class="card">
-      <h3>Technical Skills</h3>
-      <span class="badge">Python</span>
-      <span class="badge">C++ / Fortran</span>
-      <span class="badge">Machine Learning</span>
-      <span class="badge">TensorFlow</span>
-      <span class="badge">SQL / ADQL</span>
-      <span class="badge">HPC</span>
-      <p style="font-size:0.9em; color:#666;">
-        Development of automated pipelines for astronomical time series.
-      </p>
+{%- assign p = site.data.profile -%}
+<!-- ============================ HERO ============================ -->
+<section class="hero" aria-labelledby="name">
+  <picture class="hero-bg">
+    <source media="(max-width:700px)" type="image/webp" srcset="{{ '/assets/site/img/helix-square-1000.webp' | relative_url }}">
+    <source media="(max-width:700px)" srcset="{{ '/assets/site/img/helix-square-1000.jpg' | relative_url }}">
+    <source type="image/webp" srcset="{{ '/assets/site/img/helix-wide-1440.webp' | relative_url }} 1440w, {{ '/assets/site/img/helix-wide-2400.webp' | relative_url }} 2400w" sizes="100vw">
+    <img src="{{ '/assets/site/img/helix-wide-1440.jpg' | relative_url }}" srcset="{{ '/assets/site/img/helix-wide-1440.jpg' | relative_url }} 1440w, {{ '/assets/site/img/helix-wide-2400.jpg' | relative_url }} 2400w" sizes="100vw" alt="" width="1440" height="840" fetchpriority="high">
+  </picture>
+  <svg class="hero-curve" viewBox="0 0 1600 70" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0 60 C16 60 26 8 42 6 C92 4 172 36 262 48 C302 53 326 52 348 54 C392 58 430 60 460 60 C476 60 486 8 502 6 C552 4 632 36 722 48 C762 53 786 52 808 54 C852 58 890 60 920 60 C936 60 946 8 962 6 C1012 4 1092 36 1182 48 C1222 53 1246 52 1268 54 C1312 58 1350 60 1380 60 C1396 60 1406 8 1422 6 C1472 4 1540 30 1600 40"/>
+  </svg>
+  <div class="wrap" style="width:100%">
+    <div class="hero-card glass">
+      <div class="who">
+        <picture>
+          <source type="image/webp" srcset="{{ '/assets/site/img/portrait-160.webp' | relative_url }} 1x, {{ '/assets/site/img/portrait-320.webp' | relative_url }} 2x">
+          <img src="{{ '/assets/site/img/portrait-160.jpg' | relative_url }}" srcset="{{ '/assets/site/img/portrait-320.jpg' | relative_url }} 2x" alt="Portrait of Dr. Nitesh Kumar" width="76" height="76">
+        </picture>
+        <p><strong>{{ p.title }}, {{ p.affiliation }}</strong>{{ p.roles | join: ' · ' }}</p>
+      </div>
+      <h1 id="name">{{ p.honorific }} {{ p.name }}</h1>
+      <p class="statement">I apply computational and machine-learning methods to stellar photometry and spectroscopy, to study <em>RR&nbsp;Lyrae variables</em> and characterise stars in globular clusters.</p>
+      <div class="btn-row">
+        <a class="btn btn-amber" href="{{ '/research/' | relative_url }}">Research</a>
+        <a class="btn btn-ghost" href="{{ '/teaching/' | relative_url }}">Teaching &amp; simulations</a>
+      </div>
+      <div class="profiles" aria-label="Research profiles">
+        <a href="{{ p.links.scholar }}">Google Scholar</a>
+        <a href="{{ p.links.orcid }}">ORCID</a>
+        <a href="{{ p.links.ads }}">NASA ADS</a>
+        <a href="{{ p.links.github }}">GitHub</a>
+        <a href="{{ p.cv_pdf | relative_url }}">CV (PDF)</a>
+      </div>
     </div>
   </div>
+  <p class="credit"><a href="{{ p.hero_credit_url }}">{{ p.hero_credit }}</a></p>
+</section>
 
-  <hr>
-
-  <h2>🚀 Featured Projects</h2>
-
-  <div class="grid-container">
-    <div class="card">
-      <h3>ANN Interpolator</h3>
-      <p>
-        Neural network based interpolation framework for RRab star light curves.
-      </p>
-      <a class="btn" href="http://ann-interpolator.web.app/" target="_blank">Project Website</a>
+<!-- ============================ RESEARCH ============================ -->
+<section class="block" aria-labelledby="research-h">
+  <div class="wrap split">
+    <div class="split-head reveal">
+      <span class="kicker">Research</span>
+      <h2 id="research-h">Stars that pulse, and the clusters they live in</h2>
+      <p>Model-based interpolation and full-spectrum analysis, applied to pulsating stars and the clusters that host them. Pick a theme to see its papers.</p>
+      <a class="more" href="{{ '/research/' | relative_url }}">More about my research</a>
     </div>
-
-    <div class="card">
-      <h3>RR Lyrae in M3</h3>
-      <p>
-        Photometric analysis of RR Lyrae stars in the globular cluster NGC 5272.
-      </p>
-      <a class="btn" href="https://academic.oup.com/mnras/article/531/3/2976/7681976" target="_blank">MNRAS Paper</a>
-    </div>
-  </div>
-
-  <hr>
-
-  <h2>📚 Recent Publications (2025–2026)</h2>
-  <div class="card">
-    <div class="pub-item">
-      <strong>A multiband photometric study of RR Lyrae stars in M53</strong><br>
-      <em>S. A. Gaur, Nitesh Kumar et al.</em><br>
-      New Astronomy (2026) | <a href="https://doi.org/10.1016/j.newast.2025.102515">DOI</a>
-    </div>
-    <div class="pub-item">
-      <strong>Physical parameters of stars in NGC 6397 using ANN</strong><br>
-      <em>Nitesh Kumar, P. Prugniel, H. P. Singh</em><br>
-      New Astronomy (2025) | <a href="https://doi.org/10.1016/j.newast.2025.102416">DOI</a>
-    </div>
-    <div class="pub-item">
-      <strong>Extraction of physical parameters of RRab variables</strong><br>
-      <em>Nitesh Kumar et al.</em><br>
-      Universe (2025) | <a href="https://doi.org/10.3390/universe11070207">DOI</a>
-    </div>
-    <div style="text-align:right;">
-      <a class="btn" href="https://ui.adsabs.harvard.edu/search/q=orcid%3A0000-0003-0668-9999" target="_blank"> View full list on NASA ADS </a>
-    </div>
-  </div>
-
-  <hr>
-
-  <h2>🎓 Teaching & Mentorship</h2>
-
-  <div class="grid-container">
-    <div class="card">
-      <h3>Resources</h3>
-      <ul>
-        <li>Computational Physics</li>
-        <li>Python, C++ and Fortran Programming</li>
-        <li>Machine Learning in Astronomy</li>
-        <li>Observational Astronomy</li>
-      </ul>
-      <a href="/teaching/" class="btn">Teaching Resources</a>
-    </div>
-
-    <div class="card">
-      <h3>Mentorship</h3>
-      <ul>
-        <li>Exoplanets with JWST data</li>
-        <li>Globular clusters using Gaia DR3</li>
-        <li>Age and metallicity of star clusters</li>
-      </ul>
-    </div>
-  </div>
-
-  <hr>
-
-  <h2>✍️ Recent Blog</h2>
-
-  <div class="card">
-    <p>
-      <a href="https://medium.com/@niteshchandra039/computational-astrophysics-in-india-exploring-the-cosmos-with-computational-power-cf9d864858b3" target="_blank">
-        Computational Astrophysics in India: Exploring the Cosmos with Computational Power
+    <div class="areas">
+      <a class="area reveal" href="{{ '/publications/?topic=variables' | relative_url }}">
+        <span class="num" aria-hidden="true">01</span>
+        <h3>RR Lyrae variability</h3>
+        <p>Light-curve modelling, photometric metallicities and stellar-parameter estimation for RR Lyrae stars.</p>
+        <span class="topics">RR Lyrae / light curves / metallicity</span>
+        <span class="go">Papers on this theme</span>
       </a>
-    </p>
+      <a class="area reveal" href="{{ '/publications/?topic=ml' | relative_url }}">
+        <span class="num" aria-hidden="true">02</span>
+        <h3>Machine learning &amp; model interpolation</h3>
+        <p>Neural networks that interpolate grids of pulsation models and spectra, recovering physical parameters directly from observations.</p>
+        <span class="topics">ANN / TensorFlow / scikit-learn</span>
+        <span class="go">Papers on this theme</span>
+      </a>
+      <a class="area reveal" href="{{ '/publications/?topic=clusters' | relative_url }}">
+        <span class="num" aria-hidden="true">03</span>
+        <h3>Globular clusters &amp; stellar spectroscopy</h3>
+        <p>Full-spectrum fitting and multiband photometry of the stellar populations of M3, M53 and NGC 6397.</p>
+        <span class="topics">M3 / M53 / NGC 6397</span>
+        <span class="go">Papers on this theme</span>
+      </a>
+      <a class="area reveal" href="{{ '/publications/?topic=surveys' | relative_url }}">
+        <span class="num" aria-hidden="true">04</span>
+        <h3>Observations &amp; surveys</h3>
+        <p>Co-PI of time-series photometry and spectroscopy of RR Lyrae stars in M3 with the 3.6&nbsp;m Devasthal Optical Telescope (two cycles), alongside Gaia DR3 survey analysis.</p>
+        <span class="topics">3.6 m DOT / Gaia DR3 / SQL &amp; ADQL</span>
+        <span class="go">Papers on this theme</span>
+      </a>
+    </div>
   </div>
+</section>
 
-  <hr>
-
-  <h2>📬 Connect</h2>
-
-  <div class="card" style="text-align:center;">
-    <p>Open to academic collaborations and student research projects.</p>
-    <span class="badge">📧 <a href="mailto:niteshchandra039@gmail.com">Email</a></span>
-    <span class="badge">🐦 <a href="https://twitter.com/astro_nitesh">Twitter</a></span>
-    <span class="badge">💼 <a href="https://linkedin.com/in/astro-nitesh">LinkedIn</a></span>
-    <span class="badge">💻 <a href="https://github.com/niteshchandra039">GitHub</a></span>
+<!-- ============================ NEWS ============================ -->
+<section class="block tight" aria-labelledby="news-h">
+  <div class="wrap split">
+    <div class="split-head reveal">
+      <span class="kicker">News</span>
+      <h2 id="news-h">Recently</h2>
+      <a class="more" href="{{ '/news/' | relative_url }}">All news</a>
+    </div>
+    <ol class="rows reveal">
+      {%- for n in site.data.news limit: 4 %}
+      <li><time datetime="{{ n.date }}">{{ n.when }}</time><p>{{ n.text }}</p></li>
+      {%- endfor %}
+    </ol>
   </div>
+</section>
 
-</div>
+<!-- ============================ TEACHING (night band) ============================ -->
+<section class="block night" aria-labelledby="teach-h">
+  <picture class="night-bg"><source type="image/webp" srcset="{{ '/assets/site/img/helix-band-1600.webp' | relative_url }}"><img src="{{ '/assets/site/img/helix-band-1600.jpg' | relative_url }}" alt="" loading="lazy" width="1600" height="1149"></picture>
+  <div class="wrap split">
+    <div class="split-head reveal">
+      <span class="kicker">Teaching</span>
+      <h2 id="teach-h">Learning astrophysics by simulating it</h2>
+      <p>I teach astrophysics, computational physics and scientific programming at UPES. Each course comes with open notebooks, lab manuals and interactive simulations that students can explore at their own pace.</p>
+      <div class="btn-row">
+        <a class="btn btn-amber" href="{{ '/teaching/' | relative_url }}">Course resources</a>
+        <a class="btn btn-ghost" href="{{ '/teaching/#mentorship' | relative_url }}">Student projects</a>
+      </div>
+    </div>
+    <div class="teach-cards">
+      <div class="sims glass reveal">
+        <header>
+          <h3>Fundamentals of Astrophysics: simulation labs</h3>
+          <p>PHYS4022P. One guided lab per unit: change the physics, predict, then check.</p>
+        </header>
+        <ol>
+          <li><a href="{{ '/resources/AI_simulations/simple_nbody_orbits.html' | relative_url }}"><span class="t">N-body orbits</span><span class="arr" aria-hidden="true">↗</span></a></li>
+          <li><a href="{{ '/resources/AI_simulations/blackbody_radiation_ai_lab.html' | relative_url }}"><span class="t">Blackbody radiation</span><span class="arr" aria-hidden="true">↗</span></a></li>
+          <li><a href="{{ '/resources/AI_simulations/hr_diagram_socratic_lab.html' | relative_url }}"><span class="t">The H–R diagram</span><span class="arr" aria-hidden="true">↗</span></a></li>
+          <li><a href="{{ '/resources/AI_simulations/optical_depth_ai_lab.html' | relative_url }}"><span class="t">Optical depth &amp; dust</span><span class="arr" aria-hidden="true">↗</span></a></li>
+          <li><a href="{{ '/resources/AI_simulations/hubble_law_debate_lab.html' | relative_url }}"><span class="t">Hubble’s law &amp; cosmology</span><span class="arr" aria-hidden="true">↗</span></a></li>
+          <li class="all"><a href="{{ '/resources/AI_simulations/phys4022p_llm_sim_hub.html' | relative_url }}"><span class="t">All units in one hub</span><span class="arr" aria-hidden="true">↗</span></a></li>
+        </ol>
+      </div>
+      <div class="side">
+        <div class="glass reveal">
+          <h3>Teaching this semester</h3>
+          <ul class="plain-list">
+            {%- for c in site.data.teaching.semesters[0].courses %}<li>{{ c }}</li>{% endfor %}
+          </ul>
+        </div>
+        <div class="glass reveal">
+          <h3>Mentorship</h3>
+          {%- assign mcount = 0 -%}
+          {%- for blk in site.data.teaching.mentorship -%}{%- for g in blk.groups -%}{%- assign mcount = mcount | plus: g.students.size -%}{%- endfor -%}{%- endfor %}
+          <p>{{ mcount }} dissertation students since 2025, on TESS exoplanets, Baade–Wesselink distances, MESA pulsation models, OGLE-IV period–luminosity relations and machine learning with SDSS galaxies, plus eight summer interns from Miranda House.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
+<!-- ============================ OUTREACH ============================ -->
+<section class="block" aria-labelledby="events-h">
+  <div class="wrap split">
+    <div class="split-head reveal">
+      <span class="kicker">Organised at UPES</span>
+      <h2 id="events-h">Building astronomy on campus</h2>
+      <p>As coordinator of IUCAA–ICARD at UPES, I organise schools, workshops, observing nights and observatory visits that connect students with Indian astronomy.</p>
+      <a class="more" href="{{ '/outreach/' | relative_url }}">All events &amp; photos</a>
+    </div>
+    <div>
+      <div class="ev-feature-grid">
+        {%- for ev in site.data.events %}{% if ev.featured %}
+        <a class="ev-card reveal" href="{{ '/outreach/#' | append: ev.id | relative_url }}">
+          <img src="{{ '/assets/site/img/events/' | append: ev.photos[0].name | append: '-sm.webp' | relative_url }}" alt="{{ ev.photos[0].alt | escape }}" width="{{ ev.photos[0].w }}" height="{{ ev.photos[0].h }}" loading="lazy" decoding="async">
+          <div class="glass"><p>{{ ev.when }} · {{ ev.role }}</p><h3>{{ ev.title }}</h3></div>
+        </a>
+        {%- endif %}{% endfor %}
+      </div>
+      <ol class="rows ev-more reveal">
+        {%- for ev in site.data.events %}{% unless ev.featured %}
+        <li><time datetime="{{ ev.date }}">{{ ev.when }}</time><p><a href="{{ '/outreach/#' | append: ev.id | relative_url }}">{{ ev.title }}</a></p></li>
+        {%- endunless %}{% endfor %}
+      </ol>
+      <p class="photo-credit">{{ p.photo_credit }}</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ PUBLICATIONS ============================ -->
+<section class="block tight" aria-labelledby="pubs-h">
+  <div class="wrap split">
+    <div class="split-head reveal">
+      <span class="kicker">Publications</span>
+      <h2 id="pubs-h">Latest papers</h2>
+      <p>Six refereed articles on RR Lyrae stars, globular clusters and neural-network methods, four as first author.</p>
+      <a class="more" href="{{ '/publications/' | relative_url }}">All publications</a>
+    </div>
+    <ol class="pubs reveal">
+      {%- for pub in site.data.publications limit: 3 %}
+      {% include site/pub.html pub=pub %}
+      {%- endfor %}
+    </ol>
+  </div>
+</section>
+
+<!-- ============================ CV + CONTACT (night band) ============================ -->
+<section class="block night" aria-label="CV and contact">
+  <picture class="night-bg"><source type="image/webp" srcset="{{ '/assets/site/img/helix-wide-1440.webp' | relative_url }}"><img src="{{ '/assets/site/img/helix-wide-1440.jpg' | relative_url }}" alt="" loading="lazy" width="1440" height="840" style="object-position:85% 50%;opacity:.7"></picture>
+  <div class="wrap cc">
+    <div class="glass reveal">
+      <span class="kicker">Curriculum vitae</span>
+      <h2>Career</h2>
+      <ul class="tl">
+        <li><span class="w">2025–</span><span>Coordinator, IUCAA Centre for Astronomy Research and Development (ICARD), UPES</span></li>
+        <li><span class="w">2024–</span><span>Assistant Professor, Department of Physics, School of Engineering, UPES, Dehradun</span></li>
+        <li><span class="w">Now</span><span>IUCAA Associate · Life Member, Astronomical Society of India</span></li>
+        <li><span class="w">2025</span><span>Ph.D., Astronomy &amp; Astrophysics, University of Delhi</span></li>
+      </ul>
+      <div class="btn-row">
+        <a class="btn btn-amber" href="{{ p.cv_pdf | relative_url }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Download CV <span class="sr-only">(PDF)</span></a>
+        <a class="btn btn-ghost" href="{{ '/cv/' | relative_url }}">Full CV online</a>
+      </div>
+    </div>
+    <div class="glass reveal">
+      <span class="kicker">Contact</span>
+      <h2>Get in touch</h2>
+      <p class="lede">Open to research collaborations, and to students looking for projects in variable stars, star clusters and astronomical machine learning.</p>
+      {% include site/contact-list.html %}
+    </div>
+  </div>
+</section>

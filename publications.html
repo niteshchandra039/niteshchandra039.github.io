@@ -1,0 +1,55 @@
+---
+layout: site
+title: "Publications"
+permalink: /publications/
+nav: publications
+hero: true
+kicker: "Publications"
+heading: "Journal articles"
+lede: "Refereed work on RR Lyrae stars, globular clusters and neural-network methods, in MNRAS, Universe, New Astronomy and Galaxies."
+description: "Refereed publications of Dr. Nitesh Kumar on RR Lyrae variables, globular clusters (M3, M53, NGC 6397) and artificial-neural-network interpolation, with DOI and NASA ADS links."
+---
+{%- assign p = site.data.profile -%}
+<section class="block" aria-labelledby="list-h">
+  <div class="wrap split">
+    <div class="split-head reveal">
+      <span class="kicker">{{ site.data.publications.size }} articles</span>
+      <h2 id="list-h">Refereed papers</h2>
+      <p>Newest first. Filter by research theme; your selection is kept in the page address so it can be shared.</p>
+      <div class="btn-row">
+        <a class="btn btn-ink" href="{{ p.links.ads }}">NASA ADS</a>
+        <a class="btn btn-line" href="{{ p.links.scholar }}">Google Scholar</a>
+        <a class="btn btn-line" href="{{ p.links.orcid }}">ORCID</a>
+      </div>
+    </div>
+    <div>
+      <div class="tabs" role="group" aria-label="Filter papers by theme">
+        <button class="tab" type="button" data-filter="all" aria-pressed="true">All</button>
+        <button class="tab" type="button" data-filter="variables" aria-pressed="false">RR Lyrae</button>
+        <button class="tab" type="button" data-filter="ml" aria-pressed="false">Machine learning</button>
+        <button class="tab" type="button" data-filter="clusters" aria-pressed="false">Clusters</button>
+        <button class="tab" type="button" data-filter="surveys" aria-pressed="false">Observations &amp; surveys</button>
+      </div>
+      <ol class="pubs" id="pub-list">
+        {%- for pub in site.data.publications %}
+        {% include site/pub.html pub=pub %}
+        {%- endfor %}
+      </ol>
+      <p class="status" id="pub-status" aria-live="polite">Showing all {{ site.data.publications.size }} papers.</p>
+    </div>
+  </div>
+</section>
+
+<section class="block tight" aria-labelledby="pres-h">
+  <div class="wrap split">
+    <div class="split-head reveal">
+      <span class="kicker">Conferences</span>
+      <h2 id="pres-h">Presentations</h2>
+    </div>
+    <ul class="ylist reveal">
+      {%- for t in site.data.talks.presentations %}
+      <li><span class="w">{{ t.year }}</span><span>{{ t.text }}{% if t.url %} · <a href="{{ t.url }}">Abstract</a>{% endif %}</span></li>
+      {%- endfor %}
+    </ul>
+  </div>
+</section>

@@ -1,0 +1,61 @@
+# Teaching history and mentorship (source: CV, November 2026).
+semesters:
+  - term: "Aug–Dec 2026"
+    courses:
+      - "Fundamentals of Astrophysics — B.Sc. Physics, VII semester"
+      - "Planetary Science — M.Sc. Physics, IV semester"
+  - term: "Jan–Jul 2026"
+    courses:
+      - "Computational Astrophysics"
+      - "Physics for Computer Engineers — B.Tech., I year"
+  - term: "Aug–Dec 2025"
+    courses:
+      - "Classical Mechanics — M.Sc. Physics, I semester"
+      - "Computational Techniques — B.Sc. (Hons.) Physics, I semester"
+      - "Physics for Computer Engineers & Physics Labs — B.Tech., I year"
+  - term: "Jan–Jul 2025"
+    courses:
+      - "Introduction to Computational Physics (C++, Fortran, Gnuplot, LaTeX, numerical methods) — M.Sc. Physics, II semester"
+      - "Fundamentals of Astronomy & Observational Astronomy Lab — B.Sc. (Hons.) Physics, VI semester"
+      - "Physics for Computer Engineers — B.Tech., I year"
+  - term: "Aug–Dec 2024"
+    courses:
+      - "Introduction to Computational Physics & Lab — Integrated B.Sc.+M.Sc. Physics, VII semester"
+      - "Computational Techniques (Python, Gnuplot, LaTeX) — B.Sc., I semester"
+      - "Planetary Sciences — B.Sc. (Hons.) Physics by Research, VII semester"
+      - "Physics Labs — B.Tech., I semester"
+
+mentorship:
+  - period: "2026–present"
+    groups:
+      - level: "M.Sc. Physics dissertation"
+        students:
+          - { name: "Madhumita Singh", topic: "Homogeneous Bayesian characterisation of TESS exoplanet candidates" }
+      - level: "B.Sc. (Hons.) Physics by Research, fourth year"
+        students:
+          - { name: "Shagun Thakur", topic: "Distance determination of pulsating variable stars using the Baade–Wesselink method" }
+          - { name: "Aniket Nishant Prakash", topic: "Theoretical multiphase analysis of pulsating variable stars using MESA stellar evolution and pulsation models" }
+          - { name: "Kalpita", topic: "Multiphase period–luminosity relations of pulsating variable stars using OGLE-IV photometry" }
+      - level: "B.Sc. (Hons.) Physics, third year"
+        students:
+          - { name: "Ananya Chona", topic: "Photometric redshift estimation of galaxies from SDSS colours using machine-learning methods" }
+          - { name: "Deeksha Saklani", topic: "Machine-learning-based classification of galaxies using SDSS photometric data" }
+  - period: "2025"
+    groups:
+      - level: "M.Sc. Physics dissertations"
+        students:
+          - { name: "Divyakrishna", topic: "Multiphase period–luminosity relations of RR Lyrae stars using OGLE-IV photometry" }
+          - { name: "Rushil Soni", topic: "Photometric study of globular clusters using Gaia DR3 data" }
+          - { name: "Stuti", topic: "Determination of the age and metallicity of a globular cluster (Dolphin (PG) Institute, Dehradun)" }
+      - level: "B.Sc. (Hons.) Physics dissertations"
+        students:
+          - { name: "Satyansh Srivastava", topic: "Himalayan Fellow, UPES (recipient of the Himalayan Fellowship)" }
+          - { name: "Atharava Bhatele", topic: "Multiwavelength study of RR Lyrae stars in a globular cluster" }
+      - level: "B.Sc. (Hons.) Physics by Research, fourth year"
+        students:
+          - { name: "Neelesh", topic: "Characterisation of exoplanets using TESS archival data" }
+
+internships:
+  - "2025 — mentored three students in the Summer Internship Programme of Miranda House, University of Delhi."
+  - "2024 — mentored five students in the Summer Internship Programme of Miranda House, University of Delhi."
+  - "2019–2024 — mentored M.Sc. Physics students in observational astronomy laboratory projects, Department of Physics & Astrophysics, University of Delhi."

@@ -1,0 +1,53 @@
+---
+layout: site
+title: "Outreach & events"
+permalink: /outreach/
+nav: outreach
+hero: true
+lightbox: true
+kicker: "Outreach & events"
+heading: "Building astronomy at UPES"
+lede: "As coordinator of the IUCAA Centre for Astronomy Research and Development (ICARD) at UPES, I organise schools, workshops, observing nights and observatory visits that connect students with Indian astronomy."
+description: "Astronomy schools, workshops, observing nights and visits organised by Dr. Nitesh Kumar at UPES, including HiSTAR 2026 and the National Workshop on Data Science in Astronomy, with photographs, invited talks and academic service."
+---
+<section class="block" aria-labelledby="events-h">
+  <div class="wrap split">
+    <div class="split-head reveal">
+      <span class="kicker">Organised at UPES</span>
+      <h2 id="events-h">Events</h2>
+      <p>Select any photo to enlarge it. Full reports are on the <a href="https://astroupes.github.io/activities">Astronomy &amp; Astrophysics @ UPES</a> site, which I co-curate.</p>
+    </div>
+    <div>
+      <ol class="ev-list">
+        {%- for ev in site.data.events %}
+        {% include site/event.html ev=ev %}
+        {%- endfor %}
+      </ol>
+      <p class="photo-credit">{{ site.data.profile.photo_credit }}</p>
+    </div>
+  </div>
+</section>
+
+<section class="block tight" id="talks" aria-labelledby="talks-h">
+  <div class="wrap split">
+    <div class="split-head reveal">
+      <span class="kicker">Speaking</span>
+      <h2 id="talks-h">Invited talks &amp; lectures</h2>
+    </div>
+    <ul class="ylist reveal">
+      {%- for t in site.data.talks.invited %}<li><span class="w">{{ t.year }}</span><span>{{ t.text }}</span></li>{% endfor %}
+    </ul>
+  </div>
+</section>
+
+<section class="block tight" id="service" aria-labelledby="service-h">
+  <div class="wrap split">
+    <div class="split-head reveal">
+      <span class="kicker">Service</span>
+      <h2 id="service-h">Academic service &amp; membership</h2>
+    </div>
+    <ul class="ylist reveal">
+      {%- for t in site.data.talks.service %}<li><span class="w">{{ t.year }}</span><span>{{ t.text }}</span></li>{% endfor %}
+    </ul>
+  </div>
+</section>

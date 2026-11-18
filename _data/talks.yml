@@ -1,0 +1,35 @@
+# Talks, presentations, meetings and service (source: CV, November 2026).
+presentations:
+  - { year: 2026, text: "Ph.D. thesis, “Automated Analysis of Stellar Photometric and Spectroscopic Astronomical Data” — oral, K. D. Abhyankar Best Thesis Presentation category, 44th ASI Annual Meeting, IIT Guwahati (15–19 May)" }
+  - { year: 2024, text: "Research presentation as resource person, “Probing Stars and Galaxies Using Innovative Data Science Tools”, Gauhati University with University of Delhi, IUCAA and NIF (4–6 Sep)" }
+  - { year: 2022, text: "“Application of Artificial Neural Networks in Generating RR Lyrae Light Curves” — Young Astronomers’ Meet (YAM 2022), ARIES, Nainital (9–13 Nov)" }
+  - { year: 2021, text: "Poster, “Spectral Interpolation Using Artificial Neural Networks (ANN)” — 39th ASI Annual Meeting (virtual, 18–23 Feb)", url: "https://astron-soc.in/asi2021/abstract_details/ASI2021_66" }
+
+invited:
+  - { year: 2025, text: "“Measuring the Universe: the cosmic distance ladder” — expert talk, Government Mahila Degree College, Budaun, Uttar Pradesh (26 Apr 2025)" }
+  - { year: 2024, text: "“Basics of Telescopes and How to Use Them for Night Sky Observations” — invited lecture, Dolphin (PG) Institute of Biomedical and Natural Sciences, Dehradun" }
+  - { year: 2024, text: "Resource person — Introductory Workshop on Astronomy and Astrophysics, Dolphin (PG) Institute with IUCAA, Pune (18–20 Dec 2024)" }
+  - { year: 2023, text: "“Introduction to Astronomy” — expert talk, Government Degree College, Budaun, Uttar Pradesh (16 Jan 2023)" }
+
+meetings:
+  - { year: 2026, text: "Rubin–LSST Alert Brokers: Alerts to Discoveries — IUCAA, Pune (2–5 Nov)" }
+  - { year: 2026, text: "44th Annual Meeting of the Astronomical Society of India — IIT Guwahati (15–19 May)" }
+  - { year: 2026, text: "12th BRICS Astronomy Working Group Meeting, “Multi-messenger and Multi-wavelength Transients” — IUCAA & DST, Pune" }
+  - { year: 2025, text: "Stellar Variability: Taking the Pulse of the Universe — IUCAA, Pune (24–28 Nov)" }
+  - { year: 2025, text: "National Workshop on Statistical Methods and Data Analysis Techniques in Astrophysics — Hansraj College, University of Delhi, under ANRF–DST (7–8 Mar)" }
+  - { year: 2025, text: "Space Science and Technology Awareness Training (START), “Future of India’s Space Exploration” — ISRO–IIRS, online (9–29 Jan, 19.5 h)" }
+  - { year: 2023, text: "Pedagogic Workshop on Astronomy, Astrophysics and Cosmology — St. Stephen’s College, University of Delhi (6–10 Nov)" }
+  - { year: 2023, text: "Workshop on Stellar and Dynamical Evolution — Miranda House, University of Delhi (3–5 Oct)" }
+  - { year: 2022, text: "Indo-French Astronomy School (IFAS 7), “Spectroscopy and Spectrographs” — IUCAA, Pune (21–27 Nov)" }
+  - { year: 2022, text: "European Astronomical Society Annual Meeting (EAS 2022) (27 Jun–1 Jul)" }
+  - { year: 2022, text: "International Staff Week, “Internationalization in the New Era” — WSB University, Dąbrowa Górnicza, Poland (16–20 May), supported by an ERASMUS+ grant of €2,800" }
+  - { year: 2022, text: "Faculty Development Programme on Recent Trends and Challenges in Intelligent Systems and Machines — Amity University Patna (25–29 Jul)" }
+  - { year: 2021, text: "Code/Astro — 40-hour programme on scientific software development for astronomy" }
+  - { year: 2020, text: "Indo-French Astronomy School (IFAS 6), “Treasures in the Voxels” — CRAL, Lyon, online (9–17 Jul)" }
+
+service:
+  - { year: "2025–", text: "Coordinator, IUCAA Centre for Astronomy Research and Development (ICARD), UPES — coordinating astronomy research, training, academic activities and collaborative programmes with IUCAA" }
+  - { year: "2026", text: "Workshop coordinator — HiSTAR (8–12 Jun) and the National Workshop on Data Science in Astronomy (24–26 Feb)" }
+  - { year: "Life", text: "Life Member, Astronomical Society of India" }
+  - { year: "2023", text: "Reviewer for The Astronomical Journal (AAS)" }
+  - { year: "2022", text: "Subject-matter expert for the assessment and Hindi translation of the SWAYAM course “Quantum Mechanics – I”" }

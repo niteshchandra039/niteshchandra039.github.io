@@ -1,0 +1,50 @@
+# Refereed journal articles, newest first.
+# Metadata verified against Crossref (DOI registry) and the CV (Nov 2026).
+# topics: variables | ml | clusters | surveys  (drives the filters)
+- title: "A multiband photometric study of RR Lyrae stars in M53 (NGC 5024)"
+  authors: "S. A. Gaur, N. Kumar, A. Bhardwaj, A. Raturi"
+  journal: "New Astronomy"
+  ref: "124, 102515"
+  year: 2026
+  doi: "10.1016/j.newast.2025.102515"
+  topics: [variables, clusters]
+- title: "Photometric metallicity of Galactic RR Lyrae stars in the Gaia DR3 era"
+  authors: "M. Prakash, S. Das, H. P. Singh, N. Kumar"
+  journal: "Galaxies"
+  ref: "14, 51"
+  year: 2026
+  doi: "10.3390/galaxies14030051"
+  topics: [variables, surveys]
+- title: "Physical parameters of stars in NGC 6397 using ANN-based interpolation and full spectrum fitting"
+  authors: "N. Kumar, P. Prugniel, H. P. Singh"
+  journal: "New Astronomy"
+  ref: "119, 102416"
+  year: 2025
+  doi: "10.1016/j.newast.2025.102416"
+  topics: [ml, clusters]
+- title: "Extraction of physical parameters of RRab variables using neural network based interpolator"
+  authors: "N. Kumar, H. P. Singh, O. Malkov, S. Joshi, K. Tan, P. Prugniel, A. Bhardwaj"
+  journal: "Universe"
+  ref: "11, 207"
+  year: 2025
+  doi: "10.3390/universe11070207"
+  topics: [ml, variables]
+- title: "Multiwavelength photometric study of RR Lyrae variables in the globular cluster NGC 5272 (Messier 3)"
+  authors: "N. Kumar, A. Bhardwaj, H. P. Singh, M. Rejkuba, M. Marconi, P. Prugniel"
+  journal: "Monthly Notices of the Royal Astronomical Society"
+  short: "MNRAS"
+  ref: "531, 2976–2997"
+  year: 2024
+  doi: "10.1093/mnras/stae1334"
+  topics: [variables, clusters, surveys]
+- title: "Predicting light curves of RR Lyrae variables using artificial neural network based interpolation of a grid of pulsation models"
+  authors: "N. Kumar, A. Bhardwaj, H. P. Singh, S. Das, M. Marconi, S. M. Kanbur, P. Prugniel"
+  journal: "Monthly Notices of the Royal Astronomical Society"
+  short: "MNRAS"
+  ref: "522, 1504–1520"
+  year: 2023
+  doi: "10.1093/mnras/stad937"
+  topics: [ml, variables]
+  extra:
+    - label: "Web tool"
+      url: "https://ann-interpolator.web.app/"

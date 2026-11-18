@@ -1,0 +1,98 @@
+---
+layout: site
+title: "Research"
+permalink: /research/
+nav: research
+hero: true
+kicker: "Research"
+heading: "Pulsating stars, star clusters and machine learning"
+lede: "I apply computational and machine-learning methods to stellar photometric and spectroscopic data, using model-based interpolation and full-spectrum analysis to study RR Lyrae variables and characterise stars in globular clusters."
+description: "Research of Dr. Nitesh Kumar: RR Lyrae variability, neural-network interpolation of stellar models, globular-cluster spectroscopy and time-series observations with the 3.6 m Devasthal Optical Telescope."
+---
+{%- assign pubs = site.data.publications -%}
+<section class="block" aria-labelledby="themes-h">
+  <div class="wrap split">
+    <div class="split-head reveal">
+      <span class="kicker">Themes</span>
+      <h2 id="themes-h">Four connected questions</h2>
+      <p>Each theme links to the papers behind it.</p>
+    </div>
+    <div>
+      {%- for t in site.data.research %}
+      <article class="theme-detail reveal" id="{{ t.id }}">
+        <span class="num" aria-hidden="true">0{{ forloop.index }}</span>
+        <h3>{{ t.title }}</h3>
+        <p>{{ t.text }}</p>
+        <ul aria-label="Papers on {{ t.title | escape }}">
+          {%- for pub in pubs %}{% if pub.topics contains t.id %}
+          <li><a href="https://doi.org/{{ pub.doi }}">{{ pub.title }}</a> <span class="muted">({{ pub.short | default: pub.journal }}, {{ pub.year }})</span></li>
+          {%- endif %}{% endfor %}
+        </ul>
+      </article>
+      {%- endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="block tight" aria-labelledby="thesis-h">
+  <div class="wrap split">
+    <div class="split-head reveal">
+      <span class="kicker">Background</span>
+      <h2 id="thesis-h">Thesis &amp; observing</h2>
+    </div>
+    <dl class="facts reveal">
+      <dt>Ph.D. 2025</dt>
+      <dd><i>Automated Analysis of Stellar Photometric and Spectroscopic Astronomical Data</i>, Astronomy and Astrophysics, University of Delhi<small>Supervisors: Prof. H. P. Singh (University of Delhi) and Prof. Philippe Prugniel (University of Lyon). Presented in the K. D. Abhyankar Best Thesis Presentation category at ASI 2026.</small></dd>
+      <dt>Observing</dt>
+      <dd>Co-PI, 3.6 m Devasthal Optical Telescope (ARIES), two successive cycles<small>Time-series photometry and spectroscopy of RR Lyrae stars in the globular cluster M3 (NGC 5272).</small></dd>
+      <dt>Computing</dt>
+      <dd>Python, C, C++, Fortran, IDL, SQL/ADQL; TensorFlow and scikit-learn<small>Large-scale computation on the IUCAA Pegasus cluster.</small></dd>
+      <dt>Instruments</dt>
+      <dd>Celestron 11″ and 8″ telescopes<small>Installation, operation and astrophotography for teaching and outreach at UPES.</small></dd>
+    </dl>
+  </div>
+</section>
+
+<section class="block tight" aria-labelledby="tools-h">
+  <div class="wrap split">
+    <div class="split-head reveal">
+      <span class="kicker">Software</span>
+      <h2 id="tools-h">Tools</h2>
+    </div>
+    <div class="tools reveal">
+      <article class="tool">
+        <span class="meta">Web app · 2023</span>
+        <h3>ANN Interpolator</h3>
+        <p>Predicts RRab light curves by neural-network interpolation of a grid of pulsation models.</p>
+        <p class="links"><a href="https://ann-interpolator.web.app/">Open tool</a><a href="https://doi.org/10.1093/mnras/stad937">Paper</a></p>
+      </article>
+      <article class="tool">
+        <span class="meta">Teaching · interactive</span>
+        <h3>Simulation hub</h3>
+        <p>Browser-based labs on orbits, blackbody radiation, the H–R diagram, optical depth and cosmology.</p>
+        <p class="links"><a href="{{ '/resources/AI_simulations/phys4022p_llm_sim_hub.html' | relative_url }}">Open hub</a></p>
+      </article>
+      <article class="tool">
+        <span class="meta">Teaching · quiz</span>
+        <h3>Stellar Quest</h3>
+        <p>A stellar structure and evolution challenge with a class leaderboard.</p>
+        <p class="links"><a href="{{ '/resources/stellar-quest/' | relative_url }}">Open quiz</a></p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="block tight" aria-labelledby="pres-h">
+  <div class="wrap split">
+    <div class="split-head reveal">
+      <span class="kicker">Presentations</span>
+      <h2 id="pres-h">Talks &amp; posters</h2>
+      <p>Invited talks and outreach lectures are listed on the <a href="{{ '/outreach/#talks' | relative_url }}">Outreach</a> page.</p>
+    </div>
+    <ul class="ylist reveal">
+      {%- for t in site.data.talks.presentations %}
+      <li><span class="w">{{ t.year }}</span><span>{{ t.text }}{% if t.url %} · <a href="{{ t.url }}">Abstract</a>{% endif %}</span></li>
+      {%- endfor %}
+    </ul>
+  </div>
+</section>

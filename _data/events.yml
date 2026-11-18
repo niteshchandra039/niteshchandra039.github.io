@@ -1,0 +1,64 @@
+# Events organised at UPES (source: https://astroupes.github.io/activities and the CV).
+# Photos: Astronomy & Astrophysics @ UPES, resized and stripped of metadata.
+# Each photo: base name in /assets/site/img/events/ (NAME-sm.webp = card, NAME.webp = full view).
+- id: histar
+  title: "HiSTAR: Himalayan School for Training in Astronomy Research"
+  when: "8–12 Jun 2026"
+  date: "2026-06-08"
+  role: "Workshop coordinator"
+  featured: true
+  summary: "A five-day school of lectures, hands-on sessions, projects and observational training, hosted across UPES and Dolphin (PG) Institute of Biomedical & Natural Sciences in collaboration with IUCAA, Pune."
+  photos:
+    - { name: histar-1, w: 720, h: 480, alt: "HiSTAR 2026 participants, resource persons and organisers in a group photograph in the UPES atrium" }
+    - { name: histar-2, w: 720, h: 480, alt: "Panel of speakers seated in front of the HiSTAR banner at the opening session" }
+    - { name: histar-3, w: 720, h: 480, alt: "A resource person lecturing at the podium during HiSTAR" }
+- id: nwdsa
+  title: "National Workshop on Data Science in Astronomy"
+  when: "24–26 Feb 2026"
+  date: "2026-02-24"
+  role: "Workshop coordinator"
+  featured: true
+  summary: "Keynote lectures, guided Python labs on real astronomical datasets, and participant project and poster sessions, with academic support from IUCAA."
+  photos:
+    - { name: nwdsa-1, w: 720, h: 480, alt: "Workshop participants and speakers in a group photograph outside the UPES academic block" }
+    - { name: nwdsa-2, w: 720, h: 480, alt: "Participants looking through a solar-filtered telescope during the workshop" }
+    - { name: nwdsa-3, w: 720, h: 480, alt: "Participants gathered in front of the poster session boards" }
+- id: nso
+  title: "Night Sky Observation"
+  when: "2 Dec 2025"
+  date: "2025-12-02"
+  summary: "Telescope-guided observing on campus with live sky navigation, star identification and a faculty talk before the session."
+  photos:
+    - { name: nso-1, w: 720, h: 480, alt: "Students and faculty with telescopes on the floodlit UPES ground at night" }
+    - { name: nso-2, w: 720, h: 480, alt: "A faculty member presenting a historical sky illustration before the observing session" }
+- id: space-day
+  title: "National Space Day 2025"
+  when: "22 Aug 2025"
+  date: "2025-08-22"
+  summary: "A special talk, “India’s Space Odyssey: Chandrayaan and Beyond”, by Prof. Varun Sheel, Head of the Planetary Science Division at PRL, Ahmedabad."
+  photos:
+    - { name: spaceday-1, w: 720, h: 406, alt: "Prof. Varun Sheel beside his title slide, India’s Space Odyssey: Chandrayaan and Beyond" }
+    - { name: spaceday-2, w: 720, h: 406, alt: "Students in the audience during the National Space Day talk" }
+- id: aries
+  title: "Student visit to ARIES, Nainital"
+  when: "Apr 2025"
+  date: "2025-04-10"
+  summary: "Undergraduates met astronomers and engineers at ARIES and toured the 3.6 m Devasthal Optical Telescope, the Devasthal Fast Optical Telescope and the International Liquid Mirror Telescope."
+  photos:
+    - { name: aries-1, w: 720, h: 406, alt: "UPES students in a group photograph outside a telescope building at Devasthal" }
+    - { name: aries-2, w: 720, h: 406, alt: "Students standing beside a large telescope inside its dome at ARIES" }
+- id: lectures
+  title: "Weekly Lecture Series on Astrophysics"
+  when: "From Mar 2025"
+  date: "2025-03-01"
+  summary: "An open weekly series introducing students to stellar evolution, black holes and observational techniques. I gave lecture 2, “Measuring the Universe: the cosmic distance ladder”."
+  photos:
+    - { name: lectures-1, w: 509, h: 720, alt: "Poster for the expert talk Measuring the Universe: the cosmic distance ladder by Dr. Nitesh Kumar" }
+- id: skygazing
+  title: "Campus sky-gazing"
+  when: "Feb 2025"
+  date: "2025-02-01"
+  summary: "A guided solar-observing session with the department’s in-house telescope: students safely viewed sunspots through a solar filter."
+  photos:
+    - { name: skygazing-1, w: 720, h: 406, alt: "Faculty members with the department telescope on a rooftop, with hills behind" }
+    - { name: skygazing-2, w: 288, h: 720, alt: "Comparison of the Sun imaged by NASA SDO and through the UPES telescope, showing sunspots" }

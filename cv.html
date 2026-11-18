@@ -1,0 +1,80 @@
+---
+layout: site
+title: "Curriculum vitae"
+permalink: /cv/
+nav: cv
+hero: true
+kicker: "Curriculum vitae"
+heading: "CV"
+lede: "Assistant Professor of Physics at UPES, Dehradun, IUCAA Associate, and coordinator of IUCAA–ICARD at UPES."
+description: "Curriculum vitae of Dr. Nitesh Kumar: employment at UPES, Ph.D. in Astronomy and Astrophysics from the University of Delhi, observing proposals, service, skills, meetings and schools."
+---
+{%- assign p = site.data.profile -%}
+<section class="block" aria-labelledby="bio-h">
+  <div class="wrap split">
+    <div class="split-head reveal">
+      <span class="kicker">Biography</span>
+      <h2 id="bio-h">About</h2>
+      <div class="btn-row">
+        <a class="btn btn-ink" href="{{ p.cv_pdf | relative_url }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Download CV (PDF)</a>
+      </div>
+    </div>
+    <div class="prose reveal">
+      <p>Dr. Nitesh Kumar is an Assistant Professor in the Department of Physics, Applied Science Cluster, School of Engineering at UPES, Dehradun. He is an Associate of the Inter-University Centre for Astronomy and Astrophysics (IUCAA), coordinates the IUCAA Centre for Astronomy Research and Development (ICARD) at UPES, and is a Life Member of the Astronomical Society of India.</p>
+      <p>He received his Ph.D. in Astronomy and Astrophysics from the University of Delhi in 2025, supervised by Prof. H. P. Singh and Prof. Philippe Prugniel (University of Lyon). His research applies computational and machine-learning methods to stellar photometric and spectroscopic data, using model-based interpolation and full-spectrum analysis to study RR Lyrae variables and characterise stars in globular clusters.</p>
+      <p>At UPES he teaches astrophysics, computational physics and programming, builds simulation-based teaching labs, and organises astronomy schools and workshops with IUCAA.</p>
+    </div>
+  </div>
+</section>
+
+<section class="block tight" aria-labelledby="pos-h">
+  <div class="wrap split">
+    <div class="split-head reveal"><span class="kicker">Career</span><h2 id="pos-h">Employment &amp; education</h2></div>
+    <dl class="facts reveal">
+      <dt>2024–present</dt><dd>Assistant Professor, Department of Physics, Applied Science Cluster, School of Engineering, UPES, Dehradun</dd>
+      <dt>2025–present</dt><dd>Coordinator, IUCAA Centre for Astronomy Research and Development (ICARD), UPES</dd>
+      <dt>2025</dt><dd>Ph.D., Astronomy and Astrophysics, University of Delhi<small>Thesis: <i>Automated Analysis of Stellar Photometric and Spectroscopic Astronomical Data</i>. Supervisors: Prof. H. P. Singh (University of Delhi) and Prof. Philippe Prugniel (University of Lyon).</small></dd>
+      <dt>2018</dt><dd>M.Sc. Physics, Hansraj College, University of Delhi</dd>
+      <dt>2015</dt><dd>B.Sc. (Hons.) Physics, Deshbandhu College, University of Delhi</dd>
+      <dt>2018</dt><dd>CSIR JRF/NET (Physical Sciences), June &amp; December 2018 · GATE Physics 2018</dd>
+    </dl>
+  </div>
+</section>
+
+<section class="block tight" aria-labelledby="res-h">
+  <div class="wrap split">
+    <div class="split-head reveal"><span class="kicker">Research</span><h2 id="res-h">Research record</h2></div>
+    <dl class="facts reveal">
+      <dt>Interests</dt><dd>Computational stellar astrophysics and machine learning for astronomical data; RR Lyrae variability, light-curve modelling and stellar-parameter estimation; stellar spectroscopy and the populations of globular clusters.</dd>
+      <dt>Observing</dt><dd>Co-Principal Investigator, successful proposals in two successive cycles for time-series photometry and spectroscopy of RR Lyrae stars in M3 (NGC 5272) with the 3.6 m Devasthal Optical Telescope.</dd>
+      <dt>Papers</dt><dd>{{ site.data.publications.size }} refereed journal articles · <a href="{{ '/publications/' | relative_url }}">full list</a></dd>
+      <dt>Reviewing</dt><dd>Reviewer for <i>The Astronomical Journal</i> (2023)</dd>
+      <dt>Skills</dt><dd>Python, C, C++, Fortran, IDL, SQL/ADQL · HTML, CSS, JavaScript, Git · TensorFlow, scikit-learn · IUCAA Pegasus cluster · Celestron 11″ and 8″ telescopes · LaTeX publishing<small>Languages: English, Hindi</small></dd>
+    </dl>
+  </div>
+</section>
+
+<section class="block tight" aria-labelledby="svc-h">
+  <div class="wrap split">
+    <div class="split-head reveal"><span class="kicker">Service</span><h2 id="svc-h">Service &amp; events organised</h2><p>Photos and details on the <a href="{{ '/outreach/' | relative_url }}">Outreach</a> page.</p></div>
+    <ul class="ylist reveal">
+      {%- for t in site.data.talks.service %}<li><span class="w">{{ t.year }}</span><span>{{ t.text }}</span></li>{% endfor %}
+    </ul>
+  </div>
+</section>
+
+<section class="block tight" aria-labelledby="mt-h">
+  <div class="wrap split">
+    <div class="split-head reveal"><span class="kicker">Meetings</span><h2 id="mt-h">Conferences, workshops &amp; schools</h2></div>
+    <ul class="ylist reveal">
+      {%- for t in site.data.talks.meetings %}<li><span class="w">{{ t.year }}</span><span>{{ t.text }}</span></li>{% endfor %}
+    </ul>
+  </div>
+</section>
+
+<section class="block tight" aria-labelledby="teach-h">
+  <div class="wrap split">
+    <div class="split-head reveal"><span class="kicker">Teaching &amp; mentoring</span><h2 id="teach-h">Teaching</h2></div>
+    <p class="prose reveal">Courses taught each semester since 2024 and the full list of mentored students are on the <a href="{{ '/teaching/#courses' | relative_url }}">Teaching</a> page. References are available on request.</p>
+  </div>
+</section>
