@@ -73,7 +73,7 @@ reCaptcha:
   secret                 :
 atom_feed:
   path                   : # blank (default) uses feed.xml
-  hide                   : # true, false (default)
+  hide                   : true # no blog posts, so no feed link
 search                   : # true, false (default)
 search_full_content      : # true, false (default)
 search_provider          : # lunr (default), algolia, google
@@ -206,6 +206,29 @@ exclude:
   - cv-llt.pdf # source copy; the published CV is /cv.pdf
   - README.md
   - data_collected
+  # --- Kept in the repository but not published (superseded or not meant for the public) ---
+  - index_old.html
+  - teaching_old.md
+  - teaching-dev.html
+  - Hindu.html
+  - Nitesh_CV.pdf            # old CVs contain personal phone numbers; the current CV is /cv.pdf
+  - Nitesh_CV_19_Jan.pdf
+  - Nitesh_CV_20_july_25.pdf
+  - Nitesh_CV_22_may_25.pdf
+  - Nitesh_CV_23Jan_2025.pdf
+  - styles.css               # misnamed quiz script, unused by any page
+  - feed.xml                 # placeholder template; the site has no posts, so no feed is published
+  - staticman.yml
+  - ai_generated.jpg
+  - telescope.jpeg
+  # LaTeX build artefacts in the teaching slides folder (sources and PDFs stay published)
+  - resources/computational_techniques/ppt/*.aux
+  - resources/computational_techniques/ppt/*.log
+  - resources/computational_techniques/ppt/*.nav
+  - resources/computational_techniques/ppt/*.out
+  - resources/computational_techniques/ppt/*.snm
+  - resources/computational_techniques/ppt/*.toc
+  - resources/computational_techniques/ppt/*.text
 keep_files:
   - .git
   - .svn
