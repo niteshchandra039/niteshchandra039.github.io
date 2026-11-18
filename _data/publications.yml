@@ -1,5 +1,6 @@
 # Refereed journal articles, newest first.
-# Metadata verified against Crossref (DOI registry) and the CV (Nov 2026).
+# Metadata verified against Crossref (DOI registry), arXiv and the CV (Nov 2026).
+# arxiv: arXiv identifier of the free-to-read version; bibtex: copied by the "Cite" button.
 # topics: variables | ml | clusters | surveys  (drives the filters)
 - title: "A multiband photometric study of RR Lyrae stars in M53 (NGC 5024)"
   authors: "S. A. Gaur, N. Kumar, A. Bhardwaj, A. Raturi"
@@ -7,6 +8,20 @@
   ref: "124, 102515"
   year: 2026
   doi: "10.1016/j.newast.2025.102515"
+  arxiv: "2601.03758"
+  bibkey: "Gaur2026M53"
+  bibtex: |
+    @article{Gaur2026M53,
+      title     = {A multiband photometric study of {RR Lyrae} stars in {M53} ({NGC 5024})},
+      author    = {Gaur, Shantanu A. and Kumar, Nitesh and Bhardwaj, Anupam and Raturi, Aasheesh},
+      journal   = {New Astronomy},
+      volume    = {124},
+      pages     = {102515},
+      year      = {2026},
+      doi       = {10.1016/j.newast.2025.102515},
+      eprint    = {2601.03758},
+      archivePrefix = {arXiv}
+    }
   topics: [variables, clusters]
 - title: "Photometric metallicity of Galactic RR Lyrae stars in the Gaia DR3 era"
   authors: "M. Prakash, S. Das, H. P. Singh, N. Kumar"
@@ -14,6 +29,21 @@
   ref: "14, 51"
   year: 2026
   doi: "10.3390/galaxies14030051"
+  arxiv: "2605.13811"
+  bibkey: "Prakash2026Galaxies"
+  bibtex: |
+    @article{Prakash2026Galaxies,
+      title     = {Photometric Metallicity of Galactic {RR Lyrae} Stars in the {Gaia DR3} Era},
+      author    = {Prakash, Mahiguhappriya and Das, Susmita and Singh, Harinder P. and Kumar, Nitesh},
+      journal   = {Galaxies},
+      volume    = {14},
+      number    = {3},
+      pages     = {51},
+      year      = {2026},
+      doi       = {10.3390/galaxies14030051},
+      eprint    = {2605.13811},
+      archivePrefix = {arXiv}
+    }
   topics: [variables, surveys]
 - title: "Physical parameters of stars in NGC 6397 using ANN-based interpolation and full spectrum fitting"
   authors: "N. Kumar, P. Prugniel, H. P. Singh"
@@ -21,6 +51,20 @@
   ref: "119, 102416"
   year: 2025
   doi: "10.1016/j.newast.2025.102416"
+  arxiv: "2504.09278"
+  bibkey: "Kumar2025NGC6397"
+  bibtex: |
+    @article{Kumar2025NGC6397,
+      title     = {Physical parameters of stars in {NGC 6397} using {ANN}-based interpolation and full spectrum fitting},
+      author    = {Kumar, Nitesh and Prugniel, Philippe and Singh, Harinder P.},
+      journal   = {New Astronomy},
+      volume    = {119},
+      pages     = {102416},
+      year      = {2025},
+      doi       = {10.1016/j.newast.2025.102416},
+      eprint    = {2504.09278},
+      archivePrefix = {arXiv}
+    }
   topics: [ml, clusters]
 - title: "Extraction of physical parameters of RRab variables using neural network based interpolator"
   authors: "N. Kumar, H. P. Singh, O. Malkov, S. Joshi, K. Tan, P. Prugniel, A. Bhardwaj"
@@ -28,6 +72,21 @@
   ref: "11, 207"
   year: 2025
   doi: "10.3390/universe11070207"
+  arxiv: "2507.01554"
+  bibkey: "Kumar2025Universe"
+  bibtex: |
+    @article{Kumar2025Universe,
+      title     = {Extraction of Physical Parameters of {RRab} Variables Using Neural Network Based Interpolator},
+      author    = {Kumar, Nitesh and Singh, Harinder P. and Malkov, Oleg and Joshi, Santosh and Tan, Kefeng and Prugniel, Philippe and Bhardwaj, Anupam},
+      journal   = {Universe},
+      volume    = {11},
+      number    = {7},
+      pages     = {207},
+      year      = {2025},
+      doi       = {10.3390/universe11070207},
+      eprint    = {2507.01554},
+      archivePrefix = {arXiv}
+    }
   topics: [ml, variables]
 - title: "Multiwavelength photometric study of RR Lyrae variables in the globular cluster NGC 5272 (Messier 3)"
   authors: "N. Kumar, A. Bhardwaj, H. P. Singh, M. Rejkuba, M. Marconi, P. Prugniel"
@@ -36,6 +95,21 @@
   ref: "531, 2976–2997"
   year: 2024
   doi: "10.1093/mnras/stae1334"
+  arxiv: "2405.13464"
+  bibkey: "Kumar2024M3"
+  bibtex: |
+    @article{Kumar2024M3,
+      title     = {Multiwavelength photometric study of {RR Lyrae} variables in the globular cluster {NGC 5272} ({Messier 3})},
+      author    = {Kumar, Nitesh and Bhardwaj, Anupam and Singh, Harinder P. and Rejkuba, Marina and Marconi, Marcella and Prugniel, Philippe},
+      journal   = {Monthly Notices of the Royal Astronomical Society},
+      volume    = {531},
+      number    = {3},
+      pages     = {2976--2997},
+      year      = {2024},
+      doi       = {10.1093/mnras/stae1334},
+      eprint    = {2405.13464},
+      archivePrefix = {arXiv}
+    }
   topics: [variables, clusters, surveys]
 - title: "Predicting light curves of RR Lyrae variables using artificial neural network based interpolation of a grid of pulsation models"
   authors: "N. Kumar, A. Bhardwaj, H. P. Singh, S. Das, M. Marconi, S. M. Kanbur, P. Prugniel"
@@ -44,6 +118,21 @@
   ref: "522, 1504–1520"
   year: 2023
   doi: "10.1093/mnras/stad937"
+  arxiv: "2303.15117"
+  bibkey: "Kumar2023ANN"
+  bibtex: |
+    @article{Kumar2023ANN,
+      title     = {Predicting light curves of {RR Lyrae} variables using artificial neural network based interpolation of a grid of pulsation models},
+      author    = {Kumar, Nitesh and Bhardwaj, Anupam and Singh, Harinder P. and Das, Susmita and Marconi, Marcella and Kanbur, Shashi M. and Prugniel, Philippe},
+      journal   = {Monthly Notices of the Royal Astronomical Society},
+      volume    = {522},
+      number    = {1},
+      pages     = {1504--1520},
+      year      = {2023},
+      doi       = {10.1093/mnras/stad937},
+      eprint    = {2303.15117},
+      archivePrefix = {arXiv}
+    }
   topics: [ml, variables]
   extra:
     - label: "Web tool"

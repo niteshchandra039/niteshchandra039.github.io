@@ -98,10 +98,13 @@
   }
 
   /* ---- Copy e-mail ---- */
-  $$('.copy[data-copy]').forEach(function (b) {
+  $$('.copy[data-copy], .copy[data-copy-from]').forEach(function (b) {
     b.addEventListener('click', function () {
       if (!navigator.clipboard) return;
-      navigator.clipboard.writeText(b.getAttribute('data-copy')).then(function () {
+      var src = b.getAttribute('data-copy-from');
+      var text = src ? (document.getElementById(src) || {}).textContent : b.getAttribute('data-copy');
+      if (!text) return;
+      navigator.clipboard.writeText(text).then(function () {
         var old = b.textContent; b.textContent = 'Copied';
         setTimeout(function () { b.textContent = old; }, 1600);
       });

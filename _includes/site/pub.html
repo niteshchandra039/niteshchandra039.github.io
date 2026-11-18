@@ -3,5 +3,19 @@
   <h3><a href="https://doi.org/{{ pub.doi }}">{{ pub.title }}</a></h3>
   <span class="yr">{{ pub.year }}</span>
   <p class="by">{{ pub.authors | replace: 'N. Kumar', '<b>N. Kumar</b>' }} · <i>{{ pub.short | default: pub.journal }}</i> {{ pub.ref }}</p>
-  <p class="links"><a href="https://doi.org/{{ pub.doi }}" aria-label="DOI {{ pub.doi }}: {{ pub.title | escape }}">DOI</a><a href="https://ui.adsabs.harvard.edu/search/q=doi%3A%22{{ pub.doi | url_encode }}%22" aria-label="NASA ADS record: {{ pub.title | escape }}">ADS</a>{% for x in pub.extra %}<a href="{{ x.url }}">{{ x.label }}</a>{% endfor %}</p>
+  <div class="links">
+    <a href="https://doi.org/{{ pub.doi }}" aria-label="Journal version (DOI): {{ pub.title | escape }}">DOI</a>
+    {%- if pub.arxiv %}<a href="https://arxiv.org/abs/{{ pub.arxiv }}" aria-label="Free-to-read version on arXiv: {{ pub.title | escape }}">arXiv</a>{% endif %}
+    <a href="https://ui.adsabs.harvard.edu/search/q=doi%3A%22{{ pub.doi | url_encode }}%22" aria-label="NASA ADS record: {{ pub.title | escape }}">ADS</a>
+    {%- for x in pub.extra %}<a href="{{ x.url }}">{{ x.label }}</a>{% endfor %}
+    {%- if pub.bibtex %}
+    <details class="cite">
+      <summary>Cite<span class="sr-only">: BibTeX for {{ pub.title | escape }}</span></summary>
+      <div class="cite-box">
+        <pre id="bib-{{ pub.bibkey }}">{{ pub.bibtex | strip | escape }}</pre>
+        <button class="copy" type="button" data-copy-from="bib-{{ pub.bibkey }}">Copy BibTeX</button>
+      </div>
+    </details>
+    {%- endif %}
+  </div>
 </li>
