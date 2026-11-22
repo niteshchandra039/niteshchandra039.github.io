@@ -1,0 +1,116 @@
+# Daily marks update for the /marks/ page.
+#
+# Downloads each course's shared Excel workbook and, if its contents changed,
+# replaces the copy in resources/Marks/ that marks.html reads.
+# The share link is kept in a repository secret, not in this public file.
+#
+# To add a course: create a secret holding its share link
+# (Settings → Secrets and variables → Actions → New repository secret),
+# then add an entry to the matrix below with the secret's name and the
+# workbook path that marks.html already lists for that course.
+#
+# Run it any time from the Actions tab ("Run workflow").
+name: Update marks
+
+on:
+  schedule:
+    - cron: "30 0 * * *"    # 00:30 UTC = 06:00 IST, daily
+  workflow_dispatch:
+
+permissions:
+  contents: write   # commit the updated workbook
+  pages: write      # ask GitHub Pages to rebuild after a commit
+
+concurrency:
+  group: update-marks
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 1        # one course at a time, so commits never collide
+      fail-fast: false
+      matrix:
+        include:
+          - course: "PHYS 4022 Fundamentals of Astrophysics"
+            secret: MARKS_URL_2026_ODD_PHYS4022
+            path: "resources/Marks/2026/odd/Fundamentals of Astrophysics_MARKS.xlsx"
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Download workbook
+        env:
+          SHARE_URL: ${{ secrets[matrix.secret] }}
+        run: |
+          set -euo pipefail
+          if [ -z "${SHARE_URL}" ]; then
+            echo "::error::Secret ${{ matrix.secret }} is not set."; exit 1
+          fi
+          url="${SHARE_URL}"
+          case "$url" in *download=1*) ;; *\?*) url="${url}&download=1" ;; *) url="${url}?download=1" ;; esac
+          jar="$RUNNER_TEMP/cookies.txt"
+          # SharePoint "anyone" links need the cookie set on the first redirect.
+          curl --silent --show-error --fail --location --max-time 120 \
+               --cookie-jar "$jar" --cookie "$jar" \
+               --user-agent "Mozilla/5.0 (marks-updater)" \
+               --output "$RUNNER_TEMP/new.xlsx" "$url"
+          rm -f "$jar"
+          # An .xlsx file is a ZIP archive and starts with "PK". Anything else is
+          # usually a sign-in page, meaning the link is no longer public.
+          if [ "$(head -c 2 "$RUNNER_TEMP/new.xlsx")" != "PK" ]; then
+            echo "::error::The share link did not return an Excel file. Check that it is still shared with 'Anyone with the link'."
+            exit 1
+          fi
+
+      - name: Replace the workbook if its contents changed
+        id: replace
+        env:
+          DEST: ${{ matrix.path }}
+        run: |
+          set -euo pipefail
+          # Compare cell data and sheet structure (xl/*), ignoring file metadata
+          # such as save timestamps, so unchanged marks never create a commit.
+          sig() {
+            python3 - "$1" <<'PY'
+          import hashlib, sys, zipfile
+          h = hashlib.sha256()
+          with zipfile.ZipFile(sys.argv[1]) as z:
+              for name in sorted(n for n in z.namelist() if n.startswith("xl/")):
+                  h.update(name.encode()); h.update(z.read(name))
+          print(h.hexdigest())
+          PY
+          }
+          new_sig="$(sig "$RUNNER_TEMP/new.xlsx")"
+          old_sig=""
+          [ -f "$DEST" ] && old_sig="$(sig "$DEST")"
+          if [ "$new_sig" = "$old_sig" ]; then
+            echo "No changes for ${{ matrix.course }}."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            mkdir -p "$(dirname "$DEST")"
+            cp "$RUNNER_TEMP/new.xlsx" "$DEST"
+            echo "Updated ${{ matrix.course }}."
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+          rm -f "$RUNNER_TEMP/new.xlsx"
+
+      - name: Commit and push
+        if: steps.replace.outputs.changed == 'true'
+        env:
+          DEST: ${{ matrix.path }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- "$DEST"
+          git commit --quiet -m "Update marks: ${{ matrix.course }}"
+          git pull --rebase --quiet origin "${GITHUB_REF_NAME}"
+          git push --quiet origin "HEAD:${GITHUB_REF_NAME}"
+
+      - name: Request a GitHub Pages rebuild
+        if: steps.replace.outputs.changed == 'true'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api --method POST "repos/${{ github.repository }}/pages/builds" --silent
