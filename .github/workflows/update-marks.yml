@@ -36,6 +36,9 @@ jobs:
           - course: "PHYS 4022 Fundamentals of Astrophysics"
             secret: MARKS_URL_2026_ODD_PHYS4022
             path: "resources/Marks/2026/odd/Fundamentals of Astrophysics_MARKS.xlsx"
+          - course: "PHYS 1036 Physics Lab, B.Tech (SoCS) B17"
+            secret: MARKS_URL_2026_ODD_PHYS1036_B17
+            path: "resources/Marks/2026/odd/SOCS__B17_Nitesh_Kumar_LAB.xlsx"
     steps:
       - uses: actions/checkout@v4.2.2
 
