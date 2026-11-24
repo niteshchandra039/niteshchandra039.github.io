@@ -1,0 +1,41 @@
+{
+  "_about": "Course list for /marks/. Read by marks.html (what students can pick) and by .github/workflows/update-marks.yml (which files to refresh daily). Each file lives at resources/Marks/<year>/<sem>/<file>. A file with a 'secret' is downloaded daily from the share link stored in that GitHub Actions secret; files without one are updated by hand. type is 'theory' or 'lab'.",
+  "courses": [
+    {
+      "year": "2026", "sem": "odd", "name": "Fundamentals of Astrophysics", "type": "theory",
+      "files": [
+        { "file": "Fundamentals of Astrophysics_MARKS.xlsx", "secret": "MARKS_URL_2026_ODD_PHYS4022" }
+      ]
+    },
+    {
+      "year": "2026", "sem": "odd", "name": "Planetary Science", "type": "theory",
+      "files": [
+        { "file": "Planetary Science Marks.xlsx", "secret": "MARKS_URL_2026_ODD_PHYS8098" }
+      ]
+    },
+    {
+      "year": "2026", "sem": "odd", "name": "Physics Lab (PHYS 1036)", "type": "lab",
+      "files": [
+        { "file": "SOAE_EL_B1_Nitesh_Kumar_LAB.xlsx", "secret": "MARKS_URL_2026_ODD_PHYS1036_EL_B1" },
+        { "file": "SOCS__B17_Nitesh_Kumar_LAB.xlsx", "secret": "MARKS_URL_2026_ODD_PHYS1036_B17" },
+        { "file": "SOAE_FSE_B2_Nitesh_Kumar_LAB.xlsx", "secret": "MARKS_URL_2026_ODD_PHYS1036_FSE_B2" }
+      ]
+    },
+    {
+      "year": "2026", "sem": "even", "name": "Physics For Computer Engineers", "type": "theory",
+      "files": [ { "file": "Physics For Computer Engineers.xlsx" } ]
+    },
+    {
+      "year": "2026", "sem": "even", "name": "Computational Astrophysics", "type": "theory",
+      "files": [ { "file": "Computational Astrophysics.xlsx" } ]
+    },
+    {
+      "year": "2025", "sem": "odd", "name": "Classical Mechanics", "type": "theory",
+      "files": [ { "file": "Classical Mechanics.xlsx" } ]
+    },
+    {
+      "year": "2025", "sem": "odd", "name": "Computational Techniques", "type": "theory",
+      "files": [ { "file": "Computational Techniques.xlsx" } ]
+    }
+  ]
+}

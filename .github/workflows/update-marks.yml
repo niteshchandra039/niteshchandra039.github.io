@@ -1,13 +1,15 @@
 # Daily marks update for the /marks/ page.
 #
-# Downloads each course's shared Excel workbook and, if its contents changed,
-# replaces the copy in resources/Marks/ that marks.html reads.
-# The share link is kept in a repository secret, not in this public file.
+# Reads marks-courses.json and, for every course file that names a "secret",
+# downloads the shared Excel workbook from the link stored in that secret.
+# If the workbook's contents changed, it replaces the copy in
+# resources/Marks/<year>/<sem>/<file> that marks.html reads.
+# Share links stay in repository secrets, never in this public repository.
 #
 # To add a course: create a secret holding its share link
 # (Settings → Secrets and variables → Actions → New repository secret),
-# then add an entry to the matrix below with the secret's name and the
-# workbook path that marks.html already lists for that course.
+# then add the course (or a new file under an existing course) with that
+# secret's name to marks-courses.json. No change to this file is needed.
 #
 # Run it any time from the Actions tab ("Run workflow").
 name: Update marks
@@ -26,28 +28,34 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      files: ${{ steps.list.outputs.files }}
+      count: ${{ steps.list.outputs.count }}
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - name: List auto-updated files from marks-courses.json
+        id: list
+        run: |
+          set -euo pipefail
+          files=$(jq -c '[.courses[] as $c | $c.files[] | select(.secret != null and .secret != "")
+                    | { course: ($c.name + " (" + $c.year + " " + $c.sem + ")"),
+                        secret: .secret,
+                        path: ("resources/Marks/" + $c.year + "/" + $c.sem + "/" + .file) }]' marks-courses.json)
+          echo "files=${files}" >> "$GITHUB_OUTPUT"
+          echo "count=$(jq 'length' <<< "${files}")" >> "$GITHUB_OUTPUT"
+          jq -r '.[] | "- \(.course): \(.path)"' <<< "${files}"
+
   update:
+    needs: plan
+    if: needs.plan.outputs.count != '0'
     runs-on: ubuntu-latest
     strategy:
-      max-parallel: 1        # one course at a time, so commits never collide
+      max-parallel: 1        # one file at a time, so commits never collide
       fail-fast: false
       matrix:
-        include:
-          - course: "PHYS 4022 Fundamentals of Astrophysics"
-            secret: MARKS_URL_2026_ODD_PHYS4022
-            path: "resources/Marks/2026/odd/Fundamentals of Astrophysics_MARKS.xlsx"
-          - course: "PHYS 1036 Physics Lab, B.Tech (SoCS) B17"
-            secret: MARKS_URL_2026_ODD_PHYS1036_B17
-            path: "resources/Marks/2026/odd/SOCS__B17_Nitesh_Kumar_LAB.xlsx"
-          - course: "PHYS 1036 Physics Lab, B.Tech (SoAE) FSE B2"
-            secret: MARKS_URL_2026_ODD_PHYS1036_FSE_B2
-            path: "resources/Marks/2026/odd/SOAE_FSE_B2_Nitesh_Kumar_LAB.xlsx"
-          - course: "PHYS 1036 Physics Lab, B.Tech (SoAE) EL B1"
-            secret: MARKS_URL_2026_ODD_PHYS1036_EL_B1
-            path: "resources/Marks/2026/odd/SOAE_EL_B1_Nitesh_Kumar_LAB.xlsx"
-          - course: "PHYS 8098 Planetary Science"
-            secret: MARKS_URL_2026_ODD_PHYS8098
-            path: "resources/Marks/2026/odd/Planetary Science Marks.xlsx"
+        include: ${{ fromJSON(needs.plan.outputs.files) }}
     steps:
       - uses: actions/checkout@v4.2.2
 

@@ -284,31 +284,24 @@ permalink: /marks/
 <script>
 (function () {
   /* ---------------- CONFIGURATION ----------------
-     Add a course here when you upload a new marks file.
+     Courses come from /marks-courses.json (shared with the daily update workflow).
      type "theory": workbook with a "Marksheet" sheet plus one sheet per exam.
      type "lab":    lab CE workbook with a "CE Sheet" (and optional "Attendance").
      A course with several files is searched file by file until the SAP ID is found. */
-  const CATALOG = {
-    "2026": {
-      odd: [
-        { name: "Fundamentals of Astrophysics", type: "theory", files: ["Fundamentals of Astrophysics_MARKS.xlsx"] },
-        { name: "Planetary Science", type: "theory", files: ["Planetary Science Marks.xlsx"] },
-        { name: "Physics Lab (PHYS 1036)", type: "lab", files: ["SOAE_EL_B1_Nitesh_Kumar_LAB.xlsx", "SOCS__B17_Nitesh_Kumar_LAB.xlsx", "SOAE_FSE_B2_Nitesh_Kumar_LAB.xlsx"] }
-      ],
-      even: [
-        { name: "Physics For Computer Engineers", type: "theory", files: ["Physics For Computer Engineers.xlsx"] },
-        { name: "Computational Astrophysics", type: "theory", files: ["Computational Astrophysics.xlsx"] }
-      ]
-    },
-    "2025": {
-      odd: [
-        { name: "Classical Mechanics", type: "theory", files: ["Classical Mechanics.xlsx"] },
-        { name: "Computational Techniques", type: "theory", files: ["Computational Techniques.xlsx"] }
-      ],
-      even: []
-    },
-    "2024": { odd: [], even: [] }
-  };
+  let CATALOG = {};
+
+  async function loadCatalog() {
+    const res = await fetch("/marks-courses.json", { cache: "no-cache" });
+    if (!res.ok) throw new Error("Couldn't load the course list.");
+    const data = await res.json();
+    const cat = {};
+    (data.courses || []).forEach((c) => {
+      const y = String(c.year), sem = c.sem === "even" ? "even" : "odd";
+      cat[y] = cat[y] || { odd: [], even: [] };
+      cat[y][sem].push({ name: c.name, type: c.type === "lab" ? "lab" : "theory", files: (c.files || []).map((f) => f.file) });
+    });
+    return cat;
+  }
 
   const JOKES = [
     "Why can't you trust an atom? Because they make up everything!",
@@ -734,7 +727,15 @@ permalink: /marks/
   results.addEventListener("mouseover", (e) => { const t = e.target.closest("[data-i]"); if (t) hl(t.dataset.i, true); });
   results.addEventListener("mouseout", (e) => { const t = e.target.closest("[data-i]"); if (t) hl(t.dataset.i, false); });
 
-  renderControls();
+  loadCatalog().then((cat) => {
+    CATALOG = cat;
+    const years = Object.keys(CATALOG).sort().reverse();
+    if (!CATALOG[state.year] && years.length) state.year = years[0];
+    renderControls();
+  }).catch((err) => {
+    console.error(err);
+    results.innerHTML = `<div class="glass state error"><i class="fa-solid fa-triangle-exclamation"></i><h3>Couldn't load courses</h3><p>Please refresh the page in a moment.</p></div>`;
+  });
   $("btnFetch").addEventListener("click", fetchMarks);
   $("sapid").addEventListener("keydown", (e) => { if (e.key === "Enter") fetchMarks(); });
 })();
