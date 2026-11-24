@@ -367,8 +367,8 @@ permalink: /marks/
   }
 
   function renderControls() {
-    renderSeg($("yearSeg"), Object.keys(CATALOG).sort().reverse().map((y) => ({ v: y, l: y })), state.year, (v) => { state.year = v; state.course = null; renderControls(); });
-    renderSeg($("semSeg"), [{ v: "odd", l: "Odd" }, { v: "even", l: "Even" }], state.sem, (v) => { state.sem = v; state.course = null; renderControls(); });
+    renderSeg($("yearSeg"), Object.keys(CATALOG).sort().reverse().map((y) => ({ v: y, l: y })), state.year, (v) => { state.year = v; state.course = null; clearResults(); renderControls(); });
+    renderSeg($("semSeg"), [{ v: "odd", l: "Odd" }, { v: "even", l: "Even" }], state.sem, (v) => { state.sem = v; state.course = null; clearResults(); renderControls(); });
 
     const list = (CATALOG[state.year] || {})[state.sem] || [];
     if (!list.find((c) => c.name === state.course)) state.course = list.length ? list[0].name : null;
@@ -385,6 +385,7 @@ permalink: /marks/
       if (!b) return;
       state.course = b.dataset.v;
       cl.querySelectorAll(".course-chip").forEach((x) => x.setAttribute("aria-pressed", x === b));
+      clearResults();
       if ($("sapid").value.trim()) fetchMarks();
     };
   }
@@ -512,13 +513,14 @@ permalink: /marks/
   }
 
   /* ---------------- FETCH ---------------- */
+  let requestSeq = 0;
+  const READY_HTML = results.innerHTML;   // the initial "Ready when you are" panel
   async function fetchMarks() {
     const sap = cleanId($("sapid").value);
     if (!state.course) { toast("No course available for this semester."); return; }
     if (!sap) { toast("Please enter your SAP ID."); $("sapid").focus(); return; }
     if (!/^\d+$/.test(sap)) { toast("SAP ID should contain digits only."); $("sapid").focus(); return; }
-    store.set("mp.sap", sap);
-
+    const my = ++requestSeq;   // only the latest search may show results
     const course = ((CATALOG[state.year] || {})[state.sem] || []).find((c) => c.name === state.course);
     const btn = $("btnFetch");
     btn.disabled = true;
@@ -530,10 +532,12 @@ permalink: /marks/
       for (const file of course.files) {
         try {
           const wb = await loadWorkbook(state.year, state.sem, file);
+          if (my !== requestSeq) return;
           data = course.type === "lab" ? parseLab(wb, sap) : parseTheory(wb, sap);
           if (data) break;
         } catch (e) { lastErr = e; }
       }
+      if (my !== requestSeq) return;
       if (!data && lastErr) throw lastErr;
       if (!data) {
         results.innerHTML = `<div class="glass state error"><i class="fa-solid fa-user-slash"></i><h3>No record found</h3><p>SAP ID <b>${esc(sap)}</b> isn't listed in <b>${esc(course.name)}</b>. Check the ID and course.</p></div>`;
@@ -543,12 +547,25 @@ permalink: /marks/
       data.course = course;
       render(data);
     } catch (err) {
+      if (my !== requestSeq) return;
       console.error(err);
       results.innerHTML = `<div class="glass state error"><i class="fa-solid fa-triangle-exclamation"></i><h3>Couldn't load marks</h3><p>${esc(err.message)}</p></div>`;
     } finally {
-      btn.disabled = false;
-      btn.innerHTML = `<i class="fa-solid fa-magnifying-glass"></i><span>View Marks</span>`;
+      if (my === requestSeq) resetButton();
     }
+  }
+
+  function resetButton() {
+    const btn = $("btnFetch");
+    btn.disabled = false;
+    btn.innerHTML = `<i class="fa-solid fa-magnifying-glass"></i><span>View Marks</span>`;
+  }
+
+  // Remove any marks on screen and cancel a search in progress.
+  function clearResults() {
+    requestSeq++;
+    results.innerHTML = READY_HTML;
+    resetButton();
   }
 
   /* ---------------- RENDER ---------------- */
@@ -719,8 +736,10 @@ permalink: /marks/
   /* ---------------- INIT ---------------- */
   const savedView = store.get("mp.view");
   if (savedView === "table" || savedView === "cards") state.view = savedView;
-  const savedSap = store.get("mp.sap");
-  if (savedSap) $("sapid").value = savedSap;
+  // SAP IDs are not remembered: on shared computers the next student must not
+  // see the previous one. Remove any ID saved by older versions of this page.
+  try { localStorage.removeItem("mp.sap"); } catch (e) { /* storage unavailable */ }
+  $("sapid").value = "";
 
   /* Cross-highlight: hovering a chart bar highlights the matching card/row and vice-versa */
   const hl = (i, on) => results.querySelectorAll(`[data-i="${i}"]`).forEach((el) => el.classList.toggle("hl", on));
@@ -738,5 +757,9 @@ permalink: /marks/
   });
   $("btnFetch").addEventListener("click", fetchMarks);
   $("sapid").addEventListener("keydown", (e) => { if (e.key === "Enter") fetchMarks(); });
+  // Editing the SAP ID hides the previous result straight away.
+  $("sapid").addEventListener("input", () => { if (results.innerHTML !== READY_HTML) clearResults(); });
+  // Returning with the Back button restores pages from cache: start clean instead.
+  window.addEventListener("pageshow", (e) => { if (e.persisted) { $("sapid").value = ""; clearResults(); } });
 })();
 </script>
