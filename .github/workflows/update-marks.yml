@@ -39,6 +39,9 @@ jobs:
           - course: "PHYS 1036 Physics Lab, B.Tech (SoCS) B17"
             secret: MARKS_URL_2026_ODD_PHYS1036_B17
             path: "resources/Marks/2026/odd/SOCS__B17_Nitesh_Kumar_LAB.xlsx"
+          - course: "PHYS 1036 Physics Lab, B.Tech (SoAE) FSE B2"
+            secret: MARKS_URL_2026_ODD_PHYS1036_FSE_B2
+            path: "resources/Marks/2026/odd/SOAE_FSE_B2_Nitesh_Kumar_LAB.xlsx"
     steps:
       - uses: actions/checkout@v4.2.2
 
